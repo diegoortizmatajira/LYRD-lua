@@ -4,6 +4,7 @@ LYRD_setup = {
     plugins = {},
     layers = {
         "layers.general",
+        "layers.ui",
         "layers.lsp",
         "layers.lang.go",
         "layers.lang.csharp",

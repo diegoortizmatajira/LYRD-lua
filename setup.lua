@@ -64,10 +64,12 @@ return {
     end,
 
     -- Enables a plugin with its name and options
-    plugin = function(s, plugin_name, options)
-        options = options or ""
-        plugin_name = string.lower(plugin_name)
-        s.plugins[plugin_name] = options
+    plugin = function(s, plugin_list)
+        for plugin_name, options in pairs(plugin_list) do
+            options = options or ''
+            plugin_name = string.lower(plugin_name)
+            s.plugins[plugin_name] = options
+        end
     end,
 
     register_layer = function (s, layer)
