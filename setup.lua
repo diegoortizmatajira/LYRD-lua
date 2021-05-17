@@ -1,22 +1,19 @@
 if vim.g.LYRD_Settings == nil then
     vim.g.LYRD_Settings = {
-        plugins = {},
-        layers = {}
+        Loaded_layers = {}
     }
 end
 
-local api = vim.api
-local M = {}
 
-function load_plugins()
+function load_plugins(s, loaded_layers)
     vim.fn["plug#begin"](vim.fn.expand("~/.config/nvim/plugged"))
 
-    for i, layer in ipairs(vim.g.LYRD_Settings.layers) do
+    for i, layer in ipairs(loaded_layers) do
         if layer.plugins ~= nil then
-            layer.plugins()
+            layer.plugins(s)
         end
     end
-    for k, v in pairs(vim.g.LYRD_Settings.plugins) do
+    for k, v in pairs(s.plugins) do
         if v ~= "" then
             vim.cmd("Plug '"..k.."', "..v)
         else
@@ -27,44 +24,53 @@ function load_plugins()
     vim.fn["plug#end"]()
 end
 
-function load_settings()
-    for i, layer in ipairs(vim.g.LYRD_Settings.layers) do
+function load_settings(s, loaded_layers)
+    for i, layer in ipairs(loaded_layers) do
         if layer.settings ~= nil then
-            layer.settings()
+            layer.settings(s)
         end
         if layer.keybindings ~= nil then
-            layer.keybindings()
+            layer.keybindings(s)
         end
     end
 end
 
-function load_complete()
-    for i, layer in ipairs(vim.g.LYRD_Settings.layers) do
+function load_complete(s, loaded_layers)
+    for i, layer in ipairs(loaded_layers) do
         if layer.complete ~= nil then
-            layer.complete()
+            layer.complete(s)
         end
     end
 end
 
-function M.load()
-    load_plugins()
-    load_settings()
-    load_complete()
-end
 
--- Enables a plugin with its name and options
-function M.plugin(plugin_name, options)
-    options = options or ""
-    plugin_name = string.lower(plugin_name)
-    local plugins = vim.g.LYRD_Settings.plugins
-    plugins[plugin_name] = options
-    vim.g.LYRD_Settings.plugins = plugins
-end
+return {
+    load = function(s)
+        local loaded_layers = {}
+        local vim_layers = {}
+        for i, layer in ipairs(s.layers) do
+            local L = require(layer)
+            table.insert(loaded_layers, L)
+            table.insert(vim_layers, layer.name)
+        end
+        --Updates LYRD_Settings in vim global
+        local g_var = vim.g.LYRD_Settings
+        g_var.Loaded_layers = vim_layers
+        vim.g.LYRD_Settings = g
+        -- Process each layer
+        load_plugins(s, loaded_layers)
+        load_settings(s, loaded_layers)
+        load_complete(s, loaded_layers)
+    end,
 
-function M.register_layer(layer_name)
-    local layers = vim.g.LYRD_Settings.layers
-    table.insert(layers, layer_name)
-    vim.g.LYRD_Settings.layers = layers
-end
+    -- Enables a plugin with its name and options
+    plugin = function(s, plugin_name, options)
+        options = options or ""
+        plugin_name = string.lower(plugin_name)
+        s.plugins[plugin_name] = options
+    end,
 
-return M
+    register_layer = function (s, layer)
+        table.insert(s.layers, layer)
+    end
+}

@@ -1,0 +1,1 @@
+require ('LYRD.init')

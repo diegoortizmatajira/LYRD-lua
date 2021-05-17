@@ -1,19 +1,22 @@
 local setup = require "setup"
--- require "layers.general"
--- require "layers.core"
--- require "layers.motions"
--- require "layers.treesitter"
--- require "layers.fzf"
--- require "layers.git"
--- require "layers.coc"
--- require "layers.wiki"
--- require "layers.ui"
 
+LYRD_setup = {
+    plugins = {},
+    layers = {
+        "layers.general",
+        "layers.lsp",
+        "layers.lang.go",
+        "layers.lang.csharp",
+        --  "layers.core",
+        --  "layers.motions",
+        --  "layers.treesitter",
+        --  "layers.fzf",
+        --  "layers.git",
+        --  "layers.coc",
+        --  "layers.wiki",
+        --  "layers.ui",
+    },
+}
 
-local M = {}
+setup.load(LYRD_setup)
 
-function M.Execute()
-    setup.load()
-end
-
-return M
