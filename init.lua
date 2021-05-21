@@ -1,12 +1,14 @@
 local setup = require "setup"
 
 LYRD_setup = {
-    plugins = {},
     layers = {
         "layers.general",
+        "layers.mappings",
         "layers.commands",
+        "layers.keyboard",
         "layers.ui",
         "layers.filetree",
+        "layers.dev",
         "layers.git",
         "layers.lsp",
         "layers.completion",

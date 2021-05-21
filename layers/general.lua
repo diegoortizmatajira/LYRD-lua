@@ -11,7 +11,7 @@ function L.settings(s)
     -- Map leader to ,
     vim.g.mapleader = ","
 
-    vim.o.undodir = "~/.config/nvim/undo/"
+    vim.o.undodir = vim.fn.expand('~/.config/nvim/undo/')
     vim.o.undofile = true
 
     vim.o.splitright = true
@@ -60,7 +60,7 @@ function L.settings(s)
 
     vim.o.fileformats = "unix,dos,mac"
 
-    vim.o.shell = "$SHELL"
+    vim.o.shell = vim.fn.expand("$SHELL")
     vim.o.number = true
     vim.o.relativenumber = true
     vim.o.wrap = false

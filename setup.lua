@@ -5,7 +5,7 @@ if vim.g.LYRD_Settings == nil then
 end
 
 
-function load_plugins(s, loaded_layers)
+local function load_plugins(s, loaded_layers)
     vim.fn["plug#begin"](vim.fn.expand("~/.config/nvim/plugged"))
 
     for i, layer in ipairs(loaded_layers) do
@@ -24,18 +24,20 @@ function load_plugins(s, loaded_layers)
     vim.fn["plug#end"]()
 end
 
-function load_settings(s, loaded_layers)
+local function load_settings(s, loaded_layers)
     for i, layer in ipairs(loaded_layers) do
         if layer.settings ~= nil then
             layer.settings(s)
         end
+    end
+    for i, layer in ipairs(loaded_layers) do
         if layer.keybindings ~= nil then
             layer.keybindings(s)
         end
     end
 end
 
-function load_complete(s, loaded_layers)
+local function load_complete(s, loaded_layers)
     for i, layer in ipairs(loaded_layers) do
         if layer.complete ~= nil then
             layer.complete(s)
@@ -46,17 +48,18 @@ end
 
 return {
     load = function(s)
+        s.plugins = {}
         local loaded_layers = {}
         local vim_layers = {}
         for i, layer in ipairs(s.layers) do
             local L = require(layer)
             table.insert(loaded_layers, L)
-            table.insert(vim_layers, layer.name)
+            table.insert(vim_layers, L.name)
         end
         --Updates LYRD_Settings in vim global
         local g_var = vim.g.LYRD_Settings
         g_var.Loaded_layers = vim_layers
-        vim.g.LYRD_Settings = g
+        vim.g.LYRD_Settings = g_var
         -- Process each layer
         load_plugins(s, loaded_layers)
         load_settings(s, loaded_layers)
