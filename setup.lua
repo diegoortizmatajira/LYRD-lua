@@ -65,9 +65,12 @@ return {
 
     -- Enables a plugin with its name and options
     plugin = function(s, plugin_list)
-        for plugin_name, options in pairs(plugin_list) do
-            options = options or ''
-            plugin_name = string.lower(plugin_name)
+        for _ , p in ipairs(plugin_list) do
+            local options = ''
+            if #p > 1 then
+                options = p[2]
+            end
+            plugin_name = string.lower(p[1])
             s.plugins[plugin_name] = options
         end
     end,

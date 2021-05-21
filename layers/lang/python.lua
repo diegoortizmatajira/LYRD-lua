@@ -1,13 +1,10 @@
 local setup = require "setup"
 
 local L = {
-    name = 'General'
+    name = 'Python language'
 }
 
 function L.plugins(s)
-    setup.plugin(s,
-        {
-        })
 end
 
 function L.settings(s)

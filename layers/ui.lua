@@ -7,14 +7,14 @@ local L = {
 function L.plugins(s)
     setup.plugin(s,
         {
-            ['vim-airline/vim-airline'] = '',
-            ['vim-airline/vim-airline-themes'] = '',
-            ['gruvbox-community/gruvbox'] = '',
-            ['jacoborus/tender.vim'] = '',
-            ['mhinz/vim-startify'] = '',
-            ['junegunn/vim-peekaboo'] = '',
-            ['takac/vim-hardtime'] = '',
-            ['ryanoasis/vim-devicons'] = '',
+            {'vim-airline/vim-airline'},
+            {'vim-airline/vim-airline-themes'},
+            {'gruvbox-community/gruvbox'},
+            {'jacoborus/tender.vim'},
+            {'mhinz/vim-startify'},
+            {'junegunn/vim-peekaboo'},
+            {'takac/vim-hardtime'},
+            {'ryanoasis/vim-devicons'},
         })
 end
 
