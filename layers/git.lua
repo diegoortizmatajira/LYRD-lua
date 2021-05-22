@@ -7,9 +7,9 @@ local L = {
 function L.plugins(s)
     setup.plugin(s,
         {
-            {'tpope/vim-fugitive'},
-            {'airblade/vim-gitgutter'},
-            {'tpope/vim-dispatch'},
+            'tpope/vim-fugitive',
+            'airblade/vim-gitgutter',
+            'tpope/vim-dispatch',
         })
 end
 

@@ -1,20 +1,20 @@
 local setup = require "setup"
 
 local L = {
-    name = 'UI'
+    name = 'LYRD UI'
 }
 
 function L.plugins(s)
     setup.plugin(s,
         {
-            {'vim-airline/vim-airline'},
-            {'vim-airline/vim-airline-themes'},
-            {'gruvbox-community/gruvbox'},
-            {'jacoborus/tender.vim'},
-            {'mhinz/vim-startify'},
-            {'junegunn/vim-peekaboo'},
-            {'takac/vim-hardtime'},
-            {'ryanoasis/vim-devicons'},
+            'vim-airline/vim-airline',
+            'vim-airline/vim-airline-themes',
+            'gruvbox-community/gruvbox',
+            'jacoborus/tender.vim',
+            'mhinz/vim-startify',
+            'junegunn/vim-peekaboo',
+            'takac/vim-hardtime',
+            'ryanoasis/vim-devicons',
         })
 end
 
@@ -31,11 +31,11 @@ function startify_setup()
     vim.g.startify_session_autoload = 1
     vim.g.startify_session_delete_buffers = 1
     vim.g.startify_custom_header = {
-        '   ___       __    ______                            ',
-        '   __ |     / /_______  /__________________ ________ ',
-        '   __ | /| / /_  _ \\_  /_  ___/  __ \\_  __ `__ \\  _ \\',
-        '   __ |/ |/ / /  __/  / / /__ / /_/ /  / / / / /  __/',
-        '   ____/|__/  \\___//_/  \\___/ \\____//_/ /_/ /_/\\___/ ',
+        [[   ___       __    ______                            ]],
+        [[   __ |     / /_______  /__________________ ________ ]],
+        [[   __ | /| / /_  _ \_  /_  ___/  __ \_  __ `__ \  _ \]],
+        [[   __ |/ |/ / /  __/  / / /__ / /_/ /  / / / / /  __/]],
+        [[   ____/|__/  \___//_/  \___/ \____//_/ /_/ /_/\___/ ]],
     }
     vim.g.startify_change_to_dir = 0
     vim.g.startify_change_to_vcs_root = 0
@@ -51,11 +51,10 @@ function airline_setup()
 
     -- vim-airline
     vim.g.airline_symbols = {
-
-        ['linenr'] = '␊',
-        ['branch'] = '⎇',
-        ['paste'] = 'ρ',
-        ['whitespace'] = 'Ξ',
+        linenr = '␊',
+        branch = '⎇',
+        paste = 'ρ',
+        whitespace = 'Ξ',
     }
 
     vim.g['airline#extensions#tabline#left_sep'] = ''

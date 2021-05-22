@@ -1,7 +1,7 @@
 local mappings = require "layers.mappings"
 
 local L = {
-    name = 'Keyboard'
+    name = 'LYRD Keyboard'
 }
 
 function L.plugins(s)
@@ -12,11 +12,8 @@ end
 
 function L.keybindings(s)
     mappings.keys(s, {
-        {'n', '<C-s>', [[:w<CR>]]},
-        {'i', '<C-s>', [[<Esc>:w<CR>]]},
-    })
-    mappings.space(s, {
-        {'n', {'b', 'f'}, ':Autoformat<CR>', 'Formatear' }
+        {'n', '<C-s>', ':LYRDBufferSave<CR>'},
+        {'i', '<C-s>', '<Esc>:LYRDBufferSave<CR>'},
     })
 end
 

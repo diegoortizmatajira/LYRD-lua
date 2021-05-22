@@ -1,5 +1,3 @@
-local setup = require "setup"
-
 local L = {
     name = 'Commands'
 }
@@ -7,52 +5,47 @@ local L = {
 function L.plugins(_)
 end
 
-function register_implementation(filetype, commandName, implementation)
-    if LYRD_setup.commands[commandName] == nil then
-        LYRD_setup.commands[commandName] = {
-            ['_'] = '', -- Placeholder
-        }
+local function register_implementation(s, filetype, commandName, implementation)
+    if s.commands[commandName] == nil then
+        s.commands[commandName] = {}
     end
     LYRD_setup.commands[commandName][filetype] = implementation
 end
 
-function execute_command(commandName)
-    local cmd = LYRD_setup.commands[commandName][vim.bo.filetype]
+ local function execute_command(s, commandName)
+    local cmd = s.commands[commandName][vim.bo.filetype]
     if cmd ~= nil and cmd ~= '' then
         vim.cmd(cmd)
         return
     end
-    cmd = LYRD_setup.commands[commandName]['*']
+    cmd = s.commands[commandName]['*']
     if cmd ~= nil and cmd ~= '' then
         vim.cmd(cmd)
         return
     end
-    local message = "Command '"..commandName.."' not implemented for the filetype '"..vim.bo.filetype.."'"
-    vim.cmd('echo '..message)
+    print(string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype))
 end
 
 function L.settings(s)
-    s.commands = {
-        ['_'] = {} -- Placeholder
-    }
-end
-
-function L.keybindings(s)
-end
-
-function L.complete(s)
-end
-
-function L.implementations(filetype, commands)
-    for command, implementation in pairs(commands) do
-        register_implementation(filetype, command, implementation)
+    s.commands = {}
+    L.execute = function(commandName)
+        execute_command(s, commandName)
     end
 end
 
-function L.commands(commands)
-    for _, command in ipairs(commands) do
-        register_implementation('*', command, implementation)
-        vim.cmd("command! '"..command[1].."' call luaeval('require \"layers.command\".execute_command("..command[1]..")')")
+function L.complete(_)
+end
+
+function L.implement(s, filetype, commands)
+    for command, implementation in pairs(commands) do
+        register_implementation(s, filetype, command, implementation)
+    end
+end
+
+function L.register(s, commands)
+    for command, implementation in pairs(commands) do
+        register_implementation(s, '*', command, implementation)
+        vim.cmd(string.format([[command! %s call luaeval('require "layers.commands".execute("%s")')]], command, command))
     end
 end
 

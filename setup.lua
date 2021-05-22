@@ -8,7 +8,7 @@ end
 local function load_plugins(s, loaded_layers)
     vim.fn["plug#begin"](vim.fn.expand("~/.config/nvim/plugged"))
 
-    for i, layer in ipairs(loaded_layers) do
+    for _, layer in ipairs(loaded_layers) do
         if layer.plugins ~= nil then
             layer.plugins(s)
         end
@@ -25,12 +25,12 @@ local function load_plugins(s, loaded_layers)
 end
 
 local function load_settings(s, loaded_layers)
-    for i, layer in ipairs(loaded_layers) do
+    for _, layer in ipairs(loaded_layers) do
         if layer.settings ~= nil then
             layer.settings(s)
         end
     end
-    for i, layer in ipairs(loaded_layers) do
+    for _, layer in ipairs(loaded_layers) do
         if layer.keybindings ~= nil then
             layer.keybindings(s)
         end
@@ -38,7 +38,7 @@ local function load_settings(s, loaded_layers)
 end
 
 local function load_complete(s, loaded_layers)
-    for i, layer in ipairs(loaded_layers) do
+    for _, layer in ipairs(loaded_layers) do
         if layer.complete ~= nil then
             layer.complete(s)
         end
@@ -51,7 +51,7 @@ return {
         s.plugins = {}
         local loaded_layers = {}
         local vim_layers = {}
-        for i, layer in ipairs(s.layers) do
+        for _, layer in ipairs(s.layers) do
             local L = require(layer)
             table.insert(loaded_layers, L)
             table.insert(vim_layers, L.name)
@@ -70,10 +70,15 @@ return {
     plugin = function(s, plugin_list)
         for _ , p in ipairs(plugin_list) do
             local options = ''
-            if #p > 1 then
-                options = p[2]
+            local plugin_name = ''
+            if type(p) == 'string' then
+                plugin_name = p
+            else
+                if #p > 1 then
+                    options = p[2]
+                end
+                plugin_name = string.lower(p[1])
             end
-            plugin_name = string.lower(p[1])
             s.plugins[plugin_name] = options
         end
     end,

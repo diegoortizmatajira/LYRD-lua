@@ -8,7 +8,7 @@ function L.plugins(s)
 
     setup.plugin(s,
         {
-            {'hrsh7th/nvim-compe'},
+            'hrsh7th/nvim-compe',
         })
 end
 

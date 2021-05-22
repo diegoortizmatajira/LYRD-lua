@@ -7,9 +7,9 @@ local L = {
 function L.plugins(s)
     setup.plugin(s,
         {
-            {'tpope/vim-commentary'},
-            {'Chiel92/vim-autoformat'},
-            {'norcalli/nvim-colorizer.lua'},
+            'tpope/vim-commentary',
+            'Chiel92/vim-autoformat',
+            'norcalli/nvim-colorizer.lua',
         })
 end
 

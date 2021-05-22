@@ -7,8 +7,8 @@ local L = {
 function L.plugins(s)
     setup.plugin(s,
         {
-            {'nvim-treesitter/nvim-treesitter', '{\'do\': \':TSUpdate\'}'},
-            {'nvim-treesitter/playground'},
+            {'nvim-treesitter/nvim-treesitter', "{'do': ':TSUpdate'}"},
+            'nvim-treesitter/playground',
         })
 end
 

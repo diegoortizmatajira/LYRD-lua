@@ -4,10 +4,7 @@ local L = {
     name = 'General'
 }
 
-function L.plugins(s)
-end
-
-function L.settings(s)
+function L.settings(_)
     -- Map leader to ,
     vim.g.mapleader = ","
 
@@ -84,12 +81,6 @@ function L.settings(s)
     vim.o.title = true
     vim.o.titleold = "Terminal"
     vim.o.titlestring = "%F"
-end
-
-function L.keybindings(s)
-end
-
-function L.complete(s)
 end
 
 return L

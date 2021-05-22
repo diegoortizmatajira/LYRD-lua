@@ -40,9 +40,7 @@ local function recursive_documentation(mapping_tree, keys, documentation, depth)
         mapping_tree[keys[depth]] = documentation
     else
         if mapping_tree[keys[depth]] == nil then
-            mapping_tree[keys[depth]] = {
-                ['_'] = '', --Placeholder
-            }
+            mapping_tree[keys[depth]] = {}
         end
         if type(mapping_tree[keys[depth]]) ~= 'table' then
             local collapsedkeys = {}
@@ -54,9 +52,9 @@ local function recursive_documentation(mapping_tree, keys, documentation, depth)
                 end
             end
             -- The next iteration would produce and error as the next node is not a dictionary
-            recursive_documentation(mapping_tree, collapsedkeys, description, depth)
+            recursive_documentation(mapping_tree, collapsedkeys, documentation, depth)
         else
-            recursive_documentation(mapping_tree[keys[depth]], keys, description, depth+1)
+            recursive_documentation(mapping_tree[keys[depth]], keys, documentation, depth+1)
         end
     end
 end
@@ -82,35 +80,47 @@ local function map_menu(s, lead, keys, description )
     recursive_documentation(s.mappings[lead], keys, {name = '['..description..']'}, 1)
 end
 
+-- Creates a set of keybindings
+-- @param mappings contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(s, mappings)
     for _, mapping in ipairs(mappings) do
-        map_key(s, mapping[1], nil, {mapping[2]}, mapping[3])
+        map_key(s, mapping[1], nil, {mapping[2]}, mapping[3], nil, mapping[4])
     end
 end
 
+-- Creates a set of keybindings starting with <Leader>
+-- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
 function L.leader(s, mappings)
     for _, mapping in ipairs(mappings) do
         map_key(s, mapping[1], 'Leader', mapping[2], mapping[3], mapping[4], mapping[5])
     end
 end
 
+-- Creates a set of keybindings starting with <Space>
+-- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
 function L.space(s, mappings)
     for _, mapping in ipairs(mappings) do
         map_key(s, mapping[1], 'Space', mapping[2], mapping[3], mapping[4], mapping[5])
     end
 end
 
+-- Creates a cascading menu for a sequence of keys starting with <Space>
+-- @param mappings contains the mapping definition as an array of ({key1, key2 ...}, description)
 function L.space_menu(s, mappings)
     for _, mapping in ipairs(mappings) do
         map_menu(s, 'Space', mapping[1], mapping[2])
     end
 end
 
-function L.leader_ignore_key(keys)
+-- Causes a sequence of keys starting with <Space> to be ignored and to nod appear in the menu
+-- @param keys is an array of keys to be ignored in the menu
+function L.leader_ignore_key(s, keys)
     recursive_documentation(s.mappings['Leader'], keys, 'which_key_ignore', 1)
 end
 
-function L.leader_ignore_menu(keys)
+-- Causes a sequence of keys starting with <Space> to be ignored and to nod appear in the menu
+-- @param keys is an array of keys to be ignored in the menu
+function L.leader_ignore_menu(s, keys)
     recursive_documentation(s.mappings['Leader'], keys,  {name = 'which_key_ignore'}, 1)
 end
 

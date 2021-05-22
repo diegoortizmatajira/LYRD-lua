@@ -7,7 +7,7 @@ local L = {
 function L.plugins(s)
     setup.plugin(s,
         {
-            {'neovim/nvim-lspconfig'},
+            'neovim/nvim-lspconfig',
         })
 
 end
