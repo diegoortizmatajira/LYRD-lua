@@ -1,27 +1,15 @@
 local setup = require 'setup'
 
-local L = {
-    name = 'LSP'
-}
+local L = {name = 'LSP'}
 
-function L.plugins(s)
-    setup.plugin(s,
-        {
-            'neovim/nvim-lspconfig',
-        })
+function L.plugins(s) setup.plugin(s, {'neovim/nvim-lspconfig'}) end
 
-end
+local function setup_servers() end
 
-local function setup_servers()
-end
+function L.settings(s) end
 
-function L.settings(s)
-end
+function L.keybindings(s) end
 
-function L.keybindings(s)
-end
-
-function L.complete(s)
-end
+function L.complete(s) end
 
 return L

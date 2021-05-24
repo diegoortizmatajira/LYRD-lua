@@ -1,8 +1,6 @@
 local setup = require("setup")
 
-local L = {
-    name = 'General'
-}
+local L = {name = 'General'}
 
 function L.settings(_)
     -- Map leader to ,
