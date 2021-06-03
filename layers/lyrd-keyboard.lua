@@ -22,7 +22,9 @@ function L.keybindings(s)
         {'n', 'gr', c('LYRDLSPFindReferences')},
         {'n', 'ga', c('LYRDLSPFindCodeActions')},
         {'n', 'gA', c('LYRDLSPFindRangeCodeActions')},
-        {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')},
+        {'n', '<A-PageUp>', c('LYRDLSPGotoPrevDiagnostic')},
+        {'n', '<A-PageDown>', c('LYRDLSPGotoNextDiagnostic')},
+        {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')}
     })
     mappings.leader(s, {
         {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
@@ -30,7 +32,9 @@ function L.keybindings(s)
         {'n', {'s'}, c('LYRDBufferSave'), 'Save buffer content'},
         {'n', {'c'}, c('LYRDBufferClose'), 'Close buffer'},
         {'n', {'h'}, c('LYRDBufferSplitH'), 'Horizonal split'},
-        {'n', {'v'}, c('LYRDBufferSplitV'), 'Vertical split'}
+        {'n', {'v'}, c('LYRDBufferSplitV'), 'Vertical split'},
+        {'n', {'a'}, c('LYRDLSPFindCodeActions'), 'Actions'},
+        {'n', {'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'}
     })
 end
 

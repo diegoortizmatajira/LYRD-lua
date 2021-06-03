@@ -1,4 +1,3 @@
-local setup = require "setup"
 local commands = require "layers.commands"
 local mappings = require "layers.mappings"
 local c = commands.command_shortcut
@@ -100,7 +99,23 @@ function L.settings(s)
         LYRDLSPGotoNextDiagnostic = '',
         LYRDLSPGotoPrevDiagnostic = '',
         LYRDLSPShowDiagnosticLocList = '',
-        LYRDCodeInsertSnippet = ''
+        LYRDCodeInsertSnippet = '',
+        LYRDTest = '',
+        LYRDTestSuite = '',
+        LYRDTestFile = '',
+        LYRDTestFunc = '',
+        LYRDTestLast = '',
+        LYRDCodeBuild = '',
+        LYRDCodeRun = '',
+        LYRDTestCoverage = '',
+        LYRDDebugStart = '',
+        LYRDDebugBreakpoint = '',
+        LYRDCodeAlternateFile = '',
+        LYRDCodeFixImports = '',
+        LYRDCodeGlobalCheck = '',
+        LYRDViewQuickFix = ':cope',
+        LYRDCodeImplementInterface = '',
+        LYRDCodeFillStructure = ''
     })
 end
 
@@ -109,10 +124,11 @@ function L.keybindings(s)
     mappings.space_menu(s, {
         {{'g'}, 'Git Repository'},
         {{'g', 'f'}, 'Gitflow'},
-        {{'a'}, 'Actions'},
-        {{'A'}, 'Application'},
+        {{'a'}, 'Application'},
         {{'b'}, 'Buffers'},
         {{'c'}, 'Code'},
+        {{'t'}, 'Test'},
+        {{'d'}, 'Debug'},
         {{'p'}, 'Plugins'},
         {{'q'}, 'Quit'},
         {{'s'}, 'Search'},
@@ -128,6 +144,7 @@ function L.keybindings(s)
         {'n', {'v', 'l'}, c('LYRDViewErrorList'), 'List all errors'},
         {'n', {'v', 'r'}, c('LYRDViewRegisters'), 'Registers'},
         {'n', {'v', 'y'}, c('LYRDViewYankList'), 'Yank list'},
+        {'n', {'v', 'q'}, c('LYRDViewQuickFix'), 'QuickFix'},
         -- Buffer Menu
         {'n', {'b', 'e'}, c('LYRDBufferNew'), 'New empty buffer'},
         {'n', {'b', 'n'}, c('LYRDBufferNext'), 'Next buffer'},
@@ -146,10 +163,10 @@ function L.keybindings(s)
         {'n', {'b', 's'}, c('LYRDBufferSave'), 'Save current file'},
         {'n', {'b', 'S'}, c('LYRDBufferSaveAll'), 'Save all files'},
         -- Application Menu
-        {'n', {'A', 'i'}, c('LYRDPluginsInstall'), 'Install plugins'},
-        {'n', {'A', 'u'}, c('LYRDPluginsUpdate'), 'Update plugins'},
-        {'n', {'A', 'c'}, c('LYRDPluginsClean'), 'Clean plugins'},
-        {'n', {'A', 't'}, c('LYRDTerminal'), 'Terminal'},
+        {'n', {'a', 'i'}, c('LYRDPluginsInstall'), 'Install plugins'},
+        {'n', {'a', 'u'}, c('LYRDPluginsUpdate'), 'Update plugins'},
+        {'n', {'a', 'c'}, c('LYRDPluginsClean'), 'Clean plugins'},
+        {'n', {'a', 't'}, c('LYRDTerminal'), 'Terminal'},
         -- Quit Menu
         {'n', {'q', '.'}, c('LYRDWindowClose'), 'Close window'},
         {'n', {'q', 'q'}, c('LYRDWindowForceCloseAll'), 'Quit'},
@@ -200,7 +217,23 @@ function L.keybindings(s)
         {'n', {'g', 'f', 'D'}, c('LYRDGitCheckoutDev'), 'Checkout Develop branch'},
         {'n', {'g', 'f', 'M'}, c('LYRDGitCheckoutMain'), 'Checkout Main branch'},
         -- Code Menu
-        {'n', {'c', 's'}, c('LYRDCodeInsertSnippet'), 'Insert snippet'}
+        {'n', {'c', 'a'}, c('LYRDLSPFindCodeActions'), 'Actions'},
+        {'n', {'c', 'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'},
+        {'n', {'c', 'b'}, c('LYRDCodeBuild'), 'Build'},
+        {'n', {'c', 'r'}, c('LYRDCodeRun'), 'Run'},
+        {'n', {'c', 'a'}, c('LYRDCodeAlternateFile'), 'Toggle alternate file'},
+        {'n', {'c', 'i'}, c('LYRDCodeFixImports'), 'Fix imports'},
+        {'n', {'c', 'c'}, c('LYRDCodeGlobalCheck'), 'Global check'},
+        {'n', {'c', 'I'}, c('LYRDCodeImplementInterface'), 'Implement interface'},
+        {'n', {'c', 's'}, c('LYRDCodeFillStructure'), 'Fill structure'},
+        {'n', {'c', 's'}, c('LYRDCodeInsertSnippet'), 'Insert snippet'},
+        -- Test menu
+        {'n', {'t', 't'}, c('LYRDTest'), 'Test everything'},
+        {'n', {'t', 's'}, c('LYRDTestSuite'), 'Test suite'},
+        {'n', {'t', 'F'}, c('LYRDTestFile'), 'Test current file'},
+        {'n', {'t', 'f'}, c('LYRDTestFunc'), 'Test current function'},
+        {'n', {'t', 'l'}, c('LYRDTestLast'), 'Repeat last test'},
+        {'n', {'t', 'c'}, c('LYRDTestCoverage'), 'Test Coverage'},
     })
 end
 
