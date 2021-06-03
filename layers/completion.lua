@@ -5,6 +5,9 @@ local L = {name = 'Completion'}
 function L.plugins(s) setup.plugin(s, {'hrsh7th/nvim-compe'}) end
 
 function L.settings(_)
+
+    vim.o.completeopt="menuone,noinsert"
+
     require'compe'.setup {
         enabled = true,
         autocomplete = true,

@@ -15,15 +15,15 @@ function L.plugins(s)
     })
 end
 
-function startify_setup()
+local function startify_setup()
     -- Startify settings
 
     vim.g.startify_session_dir = '~/.config/nvim/session'
     vim.g.startify_lists = {
-        {['type'] = 'sessions', ['header'] = {'   Sessions'}},
-        {['type'] = 'dir', ['header'] = {'   Current Directory '}},
-        {['type'] = 'files', ['header'] = {'   Files'}},
-        {['type'] = 'bookmarks', ['header'] = {'   Bookmarks'}}
+        {type = 'sessions', header = {'   Sessions'}},
+        {type = 'dir', header = {'   Current Directory '}},
+        {type = 'files', header = {'   Files'}},
+        {type = 'bookmarks', header = {'   Bookmarks'}}
     }
     vim.g.startify_session_autoload = 1
     vim.g.startify_session_delete_buffers = 1

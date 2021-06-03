@@ -31,11 +31,20 @@ local function show_unimplemented_commands(s)
     print('End of the list')
 end
 
+local function show_implemented_commands(s)
+    print('The next commands are implemented by default')
+    for command, implementation in pairs(s.commands) do
+        if implementation['*'] ~= '' then print('-', command, '=>', implementation['*']) end
+    end
+    print('End of the list')
+end
+
 function L.settings(s)
     s.commands = {}
     L.execute = function(commandName) execute_command(s, commandName) end
 
     L.list_unimplemented = function() show_unimplemented_commands(s) end
+    L.list_implemented = function() show_implemented_commands(s) end
 end
 
 function L.complete(_) end

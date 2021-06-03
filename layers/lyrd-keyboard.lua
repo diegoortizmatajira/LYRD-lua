@@ -10,17 +10,24 @@ function L.keybindings(s)
         {'n', '<C-s>', c('LYRDBufferSave')},
         {'i', '<C-s>', '<Esc>' .. c('LYRDBufferSave')},
         {'n', '<C-p>', c('LYRDSearchFiles')},
-        {'n', '<A-Left>', c('LYRDBufferNext')},
-        {'n', '<A-Right>', c('LYRDBufferPrev')},
-        {'n', '<C-F4>', c('LYRDBufferClose')}
+        {'n', '<A-Left>', c('LYRDBufferPrev')},
+        {'n', '<A-Right>', c('LYRDBufferNext')},
+        {'n', '<C-F4>', c('LYRDBufferClose')},
+        {'n', 'K', c('LYRDLSPHoverInfo')},
+        {'n', '<C-k>', c('LYRDLSPSignatureHelp')},
+        {'n', 'gd', c('LYRDLSPFindDefinitions')},
+        {'n', 'gD', c('LYRDLSPFindDeclaration')},
+        {'n', 'gt', c('LYRDLSPFindTypeDefinition')},
+        {'n', 'gi', c('LYRDLSPFindImplementations')},
+        {'n', 'gr', c('LYRDLSPFindReferences')},
+        {'n', 'ga', c('LYRDLSPFindCodeActions')},
+        {'n', 'gA', c('LYRDLSPFindRangeCodeActions')},
+        {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')},
     })
     mappings.leader(s, {
         {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
         {'n', {'s'}, c('LYRDBufferSave'), 'Save buffer content'},
-        {'n', {'z'}, c('LYRDBufferPrev'), 'Previous buffer'},
-        {'n', {'x'}, c('LYRDBufferNext'), 'Next buffer'},
         {'n', {'c'}, c('LYRDBufferClose'), 'Close buffer'},
-        {'n', {'q'}, c('LYRDWindowClose'), 'Close window'},
         {'n', {'h'}, c('LYRDBufferSplitH'), 'Horizonal split'},
         {'n', {'v'}, c('LYRDBufferSplitV'), 'Vertical split'}
     })

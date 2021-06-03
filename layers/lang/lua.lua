@@ -1,4 +1,5 @@
 local setup = require "setup"
+local lsp = require "layers.lsp"
 
 local L = {name = 'Lua Language'}
 
@@ -7,7 +8,7 @@ function L.plugins(s) end
 function L.settings(s)
     local sumneko_root_path = '.'
     local sumneko_binary = '/usr/bin/lua-language-server'
-    require'lspconfig'.sumneko_lua.setup {
+    lsp.enable('sumneko_lua', {
         cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
         settings = {
             Lua = {
@@ -32,7 +33,7 @@ function L.settings(s)
                 telemetry = {enable = false}
             }
         }
-    }
+    })
     -- Set Formatter for Autoformat
     vim.g.formatdef_my_custom_lua =
         '"lua-format --column-limit=150 --align-table-field --break-after-table-lb --break-before-table-rb --chop-down-table --chop-down-kv-table"'

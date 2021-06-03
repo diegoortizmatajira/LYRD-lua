@@ -6,24 +6,22 @@ local L = {name = 'Development'}
 function L.plugins(s)
     setup.plugin(s, {
         'tpope/vim-commentary',
-        'Chiel92/vim-autoformat',
+        'vim-autoformat/vim-autoformat',
         'norcalli/nvim-colorizer.lua',
         'SirVer/ultisnips',
-        'honza/vim-snippets'
+        'honza/vim-snippets',
+        'steelsojka/pears.nvim',
     })
 end
 
 function L.settings(s)
     require'colorizer'.setup()
+    require "pears".setup()
     vim.g.UltiSnipsExpandTrigger = "<tab>"
     vim.g.UltiSnipsJumpForwardTrigger = "<c-b>"
     vim.g.UltiSnipsJumpBackwardTrigger = "<c-z>"
 
     commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 end
-
-function L.keybindings(s) end
-
-function L.complete(s) end
 
 return L

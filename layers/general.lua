@@ -79,6 +79,8 @@ function L.settings(_)
     vim.o.title = true
     vim.o.titleold = "Terminal"
     vim.o.titlestring = "%F"
+    vim.cmd('set clipboard=unnamed,unnamedplus')
+
 end
 
 return L
