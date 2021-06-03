@@ -19,7 +19,7 @@ function L.settings(s)
         LYRDGitCommit = ':Git commit',
         LYRDGitWrite = ':Gwrite',
         LYRDGitPush = ':Git push',
-        LYRDGitPull = ':Git pull"',
+        LYRDGitPull = ':Git pull',
         LYRDGitViewDiff = ':Gvdiffsplit',
         LYRDGitStageAll = ':Git add .',
         LYRDGitViewBlame = ':Git_blame',

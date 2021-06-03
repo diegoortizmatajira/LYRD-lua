@@ -1,5 +1,3 @@
-local setup = require("setup")
-
 local L = {name = 'General'}
 
 function L.settings(_)
@@ -79,7 +77,49 @@ function L.settings(_)
     vim.o.title = true
     vim.o.titleold = "Terminal"
     vim.o.titlestring = "%F"
-    vim.cmd('set clipboard=unnamed,unnamedplus')
+    vim.cmd([[set clipboard=unnamed,unnamedplus]])
+
+    vim.cmd([[command! FixWhitespace :%s/\s\+$//e]])
+
+    -- don't give |ins-completion-menu| messages.
+    vim.cmd([[set shortmess+=c]])
+
+    -- *****************************************************************************
+    -- Autocmd Rules
+    -- *****************************************************************************
+    -- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
+    vim.cmd([[
+    augroup vimrc-sync-fromstart
+        autocmd!
+        autocmd BufEnter * :syntax sync maxlines=200
+    augroup END
+        ]])
+    -- Remember cursor position
+    vim.cmd([[
+    augroup vimrc-remember-cursor-position
+        autocmd!
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    augroup END
+    ]])
+
+    -- txt
+    vim.cmd([[
+    augroup vimrc-wrapping
+        autocmd!
+        autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+    augroup END
+    ]])
+
+    -- make/cmake
+    vim.cmd([[
+    augroup vimrc-make-cmake
+        autocmd!
+        autocmd FileType make setlocal noexpandtab
+        autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+    augroup END
+    ]])
+
+    vim.cmd([[ set autoread ]])
 
 end
 

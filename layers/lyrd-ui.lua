@@ -1,4 +1,5 @@
 local setup = require "setup"
+local commands = require "layers.commands"
 
 local L = {name = 'LYRD UI'}
 
@@ -10,7 +11,6 @@ function L.plugins(s)
         'jacoborus/tender.vim',
         'mhinz/vim-startify',
         'junegunn/vim-peekaboo',
-        'takac/vim-hardtime',
         'ryanoasis/vim-devicons'
     })
 end
@@ -83,11 +83,21 @@ local function devicons_setup()
     vim.g.WebDevIconsUnicodeDecorateFolderNodesExactMatches = 1
 end
 
-function L.settings(_)
+function L.settings(s)
     vim.cmd('colorscheme gruvbox')
     startify_setup()
     airline_setup()
     devicons_setup()
+    -- Highlight the yanked text
+    vim.cmd([[
+    augroup highlight_yank
+        autocmd!
+        au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=500}
+    augroup END
+    ]])
+    commands.implement(s, '*', {
+        LYRDViewHomePage = ':Startify',
+    })
 end
 
 return L

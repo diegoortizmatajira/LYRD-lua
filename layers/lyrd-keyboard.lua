@@ -26,6 +26,7 @@ function L.keybindings(s)
     })
     mappings.leader(s, {
         {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
+        {'n', {'.'}, c('LYRDViewHomePage'), 'Home page'},
         {'n', {'s'}, c('LYRDBufferSave'), 'Save buffer content'},
         {'n', {'c'}, c('LYRDBufferClose'), 'Close buffer'},
         {'n', {'h'}, c('LYRDBufferSplitH'), 'Horizonal split'},
