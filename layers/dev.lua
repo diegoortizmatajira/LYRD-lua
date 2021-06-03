@@ -16,10 +16,10 @@ end
 
 function L.settings(s)
     require'colorizer'.setup()
-    require "pears".setup()
-    vim.g.UltiSnipsExpandTrigger = "<tab>"
-    vim.g.UltiSnipsJumpForwardTrigger = "<c-b>"
-    vim.g.UltiSnipsJumpBackwardTrigger = "<c-z>"
+    require 'pears'.setup()
+    vim.g.UltiSnipsExpandTrigger = '<tab>'
+    vim.g.UltiSnipsJumpForwardTrigger = '<c-b>'
+    vim.g.UltiSnipsJumpBackwardTrigger = '<c-z>'
 
     commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 end

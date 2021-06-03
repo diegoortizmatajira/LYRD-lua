@@ -4,7 +4,7 @@ local L = {name = 'Treesitter'}
 
 function L.plugins(s) setup.plugin(s, {{'nvim-treesitter/nvim-treesitter', "{'do': ':TSUpdate'}"}, 'nvim-treesitter/playground'}) end
 
-function L.settings(_)
+function L.settings(s)
     require'nvim-treesitter.configs'.setup {
         highlight = {enable = true},
         incremental_selection = {
