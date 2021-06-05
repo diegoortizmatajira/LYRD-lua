@@ -1,13 +1,13 @@
-local commands = require "layers.commands"
-local mappings = require "layers.mappings"
+local commands = require "LYRD.layers.commands"
+local mappings = require "LYRD.layers.mappings"
 local c = commands.command_shortcut
 
 local L = {name = 'LYRD Commands'}
 
 function L.settings(s)
     commands.register(s, {
-        LYRDUnimplementedCommands = ':lua require("layers.commands").list_unimplemented()',
-        LYRDImplementedCommands = ':lua require("layers.commands").list_implemented()',
+        LYRDUnimplementedCommands = ':lua require("LYRD.layers.commands").list_unimplemented()',
+        LYRDImplementedCommands = ':lua require("LYRD.layers.commands").list_implemented()',
         LYRDBufferNew = ':enew',
         LYRDBufferSave = ':w',
         LYRDBufferSaveAll = ':wall',

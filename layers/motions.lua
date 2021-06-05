@@ -1,5 +1,5 @@
-local setup = require "setup"
-local mappings = require "layers.mappings"
+local setup = require "LYRD.setup"
+local mappings = require "LYRD.layers.mappings"
 
 local L = {name = 'Motions'}
 

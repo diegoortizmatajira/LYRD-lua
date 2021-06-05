@@ -1,5 +1,5 @@
-local setup = require "setup"
-local commands = require "layers.commands"
+local setup = require "LYRD.setup"
+local commands = require "LYRD.layers.commands"
 
 local L = {name = 'LYRD UI'}
 
@@ -11,7 +11,7 @@ function L.plugins(s)
         'jacoborus/tender.vim',
         'mhinz/vim-startify',
         'junegunn/vim-peekaboo',
-        'ryanoasis/vim-devicons'
+        'kyazdani42/nvim-web-devicons'
     })
 end
 
@@ -84,7 +84,7 @@ local function devicons_setup()
 end
 
 function L.settings(s)
-    vim.cmd('colorscheme gruvbox')
+    vim.cmd([[colorscheme gruvbox]])
     startify_setup()
     airline_setup()
     devicons_setup()

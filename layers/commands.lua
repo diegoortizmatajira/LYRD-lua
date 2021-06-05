@@ -59,7 +59,7 @@ function L.register(s, commands)
     for command, implementation in pairs(commands) do
         register_implementation(s, '*', command, implementation)
         vim.cmd(string.format(
-                    [[command! %s lua require("layers.commands").execute("%s")]],
+                    [[command! %s lua require("LYRD.layers.commands").execute("%s")]],
                     command, command))
     end
 end

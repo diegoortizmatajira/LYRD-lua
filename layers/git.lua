@@ -1,5 +1,5 @@
-local setup = require "setup"
-local commands = require "layers.commands"
+local setup = require "LYRD.setup"
+local commands = require "LYRD.layers.commands"
 
 local L = {name = 'Git'}
 

@@ -1,25 +1,25 @@
-local setup = require "setup"
+local setup = require "LYRD.setup"
 
 LYRD_setup = {
     layers = {
-        "layers.general",
-        "layers.mappings",
-        "layers.commands",
-        "layers.lyrd-commands",
-        "layers.lyrd-ui",
-        "layers.lyrd-keyboard",
-        "layers.motions",
-        "layers.dev",
-        "layers.git",
-        "layers.lsp",
-        "layers.treesitter",
-        "layers.filetree",
-        "layers.telescope",
-        "layers.completion",
-        "layers.lang.go",
-        "layers.lang.csharp",
-        "layers.lang.lua",
-        "layers.lang.python"
+        "LYRD.layers.general",
+        "LYRD.layers.mappings",
+        "LYRD.layers.commands",
+        "LYRD.layers.lyrd-commands",
+        "LYRD.layers.lyrd-ui",
+        "LYRD.layers.lyrd-keyboard",
+        "LYRD.layers.motions",
+        "LYRD.layers.dev",
+        "LYRD.layers.git",
+        "LYRD.layers.lsp",
+        "LYRD.layers.treesitter",
+        "LYRD.layers.filetree",
+        "LYRD.layers.telescope",
+        "LYRD.layers.completion",
+        "LYRD.layers.lang.go",
+        "LYRD.layers.lang.csharp",
+        "LYRD.layers.lang.lua",
+        "LYRD.layers.lang.python"
     }
 }
 

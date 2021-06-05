@@ -1,4 +1,4 @@
-local setup = require "setup"
+local setup = require "LYRD.setup"
 
 local L = {name = 'Completion'}
 

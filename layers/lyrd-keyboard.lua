@@ -1,5 +1,5 @@
-local mappings = require "layers.mappings"
-local commands = require "layers.commands"
+local mappings = require "LYRD.layers.mappings"
+local commands = require "LYRD.layers.commands"
 local c = commands.command_shortcut
 
 local L = {name = 'LYRD Keyboard'}

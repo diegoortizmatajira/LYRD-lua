@@ -1,5 +1,5 @@
-local setup = require "setup"
-local lsp = require "layers.lsp"
+local setup = require "LYRD.setup"
+local lsp = require "LYRD.layers.lsp"
 
 local L = {
     name = 'Go language'
