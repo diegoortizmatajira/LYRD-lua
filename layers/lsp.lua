@@ -3,13 +3,15 @@ local commands = require "LYRD.layers.commands"
 
 local L = {name = 'LSP'}
 
-function L.plugins(s) setup.plugin(s, {'neovim/nvim-lspconfig'}) end
+function L.plugins(s) setup.plugin(s, {'neovim/nvim-lspconfig', 'folke/trouble.nvim'}) end
 
 function L.settings(s)
     commands.implement(s, '*', {
         LYRDLSPFindReferences = ':lua vim.lsp.buf.references()',
         LYRDLSPFindCodeActions = ':lua vim.lsp.buf.code_action()',
         LYRDLSPFindLineDiagnostics = ':lua vim.lsp.diagnostic.show_line_diagnostics()',
+        LYRDLSPFindDocumentDiagnostics = ':TroubleToggle lsp_document_diagnostics',
+        LYRDLSPFindWorkspaceDiagnostics = ':TroubleToggle lsp_workspace_diagnostics',
         LYRDLSPFindImplementations = ':lua vim.lsp.buf.implementation()',
         LYRDLSPFindDefinitions = ':lua vim.lsp.buf.definition()',
         LYRDLSPFindDeclaration = ':lua vim.lsp.buf.declaration()',
@@ -19,8 +21,12 @@ function L.settings(s)
         LYRDLSPRename = ':lua vim.lsp.buf.rename()',
         LYRDLSPGotoNextDiagnostic = ':lua vim.lsp.diagnostic.goto_next()',
         LYRDLSPGotoPrevDiagnostic = ':lua vim.lsp.diagnostic.goto_prev()',
-        LYRDLSPShowDiagnosticLocList = ':lua vim.lsp.diagnostic.set_loclist()'
+        LYRDLSPShowDocumentDiagnosticLocList = ':TroubleToggle lsp_document_diagnostics',
+        LYRDLSPShowWorkspaceDiagnosticLocList = ':TroubleToggle lsp_workspace_diagnostics',
+        LYRDViewLocationList = ':TroubleToggle loclist',
+        LYRDViewQuickFixList = ':TroubleToggle quickfix',
     })
+    require("trouble").setup {}
 end
 
 function L.enable(server, options)

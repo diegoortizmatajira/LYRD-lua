@@ -1,18 +1,33 @@
 local setup = require "LYRD.setup"
+local commands = require "LYRD.layers.commands"
 local lsp = require "LYRD.layers.lsp"
 
-local L = {
-    name = 'Go language'
-}
+local L = {name = 'Go language'}
 
-function L.plugins(s)
-    setup.plugin(s, {
-        {  'fatih/vim-go', "{'do': ':GoUpdateBinaries'}"},
-    })
-end
+function L.plugins(s) setup.plugin(s, {{'fatih/vim-go', "{'do': ':GoUpdateBinaries'}"}}) end
 
-function L.settings(_)
+function L.settings(s)
     lsp.enable('gopls', {})
+    commands.implement(s, 'go', {
+        LYRDTest = ":GoTest ./...",
+        LYRDTestSuite = ':GoTest ./...',
+        LYRDTestFile = ':GoTest',
+        LYRDTestFunc = ":GoTestFunc",
+        LYRDTestLast = ':GoTest ./...',
+        LYRDCodeBuild = ':lua require("LYRD.layers.lang.go").build_go_files()',
+        LYRDCodeRun = ':GoRun',
+        LYRDTestCoverage = ":GoCoverageToggle",
+        LYRDDebugStart = ":GoDebugStart",
+        LYRDDebugBreakpoint = ":GoDebugBreakpoint",
+        LYRDCodeAlternateFile = ":GoAlternate",
+        LYRDBufferFormat = ":GoFmt",
+        LYRDCodeFixImports = ":GoImports",
+        LYRDCodeGlobalCheck = ":GoMetaLinter!",
+        LYRDCodeImplementInterface = "GoImpl",
+        LYRDCodeFillStructure = ':GoFillStruct',
+        LYRDCodeGenerate = ':GoGenerate'
+
+    })
     vim.g.go_list_type = "quickfix"
     vim.g.go_fmt_command = "goimports"
     vim.g.go_fmt_fail_silently = 1
@@ -37,15 +52,24 @@ function L.settings(_)
     ]])
     vim.cmd([[
     augroup completion_preview_close
-        autocmd!
-        if v:version > 703 || v:version == 703 && has('patch598')
-            autocmd CompleteDone * if !&previewwindow && &completeopt =~ 'preview' | silent! pclose | endif
-        endif
+    autocmd!
+    if v:version > 703 || v:version == 703 && has('patch598')
+    autocmd CompleteDone * if !&previewwindow && &completeopt =~ 'preview' | silent! pclose | endif
+    endif
     augroup END
     ]])
 end
 
-function L.keybindings(s)
+local function ends_with(str, ending) return ending == "" or str:sub(-#ending) == ending end
+
+--  run :GoBuild or :GoTestCompile based on the go file
+function L.build_go_files()
+    local file = vim.fn.expand('%')
+    if ends_with(file, "_test.go") then
+        vim.fn["go#test#Test"](0, 1)
+    else
+        vim.fn["go#cmd#Build"](0)
+    end
 end
 
 return L

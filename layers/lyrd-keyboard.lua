@@ -6,6 +6,7 @@ local L = {name = 'LYRD Keyboard'}
 
 function L.keybindings(s)
     mappings.keys(s, {
+        {'n', 's', '<nop>'},
         {'n', '<F2>', c('LYRDViewFileTree')},
         {'n', '<C-s>', c('LYRDBufferSave')},
         {'i', '<C-s>', '<Esc>' .. c('LYRDBufferSave')},
@@ -24,17 +25,20 @@ function L.keybindings(s)
         {'n', 'gA', c('LYRDLSPFindRangeCodeActions')},
         {'n', '<A-PageUp>', c('LYRDLSPGotoPrevDiagnostic')},
         {'n', '<A-PageDown>', c('LYRDLSPGotoNextDiagnostic')},
-        {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')}
+        {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')},
+        {'n', '<C-r><C-r>', c('LYRDLSPRename')}
     })
     mappings.leader(s, {
         {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
         {'n', {'.'}, c('LYRDViewHomePage'), 'Home page'},
         {'n', {'s'}, c('LYRDBufferSave'), 'Save buffer content'},
         {'n', {'c'}, c('LYRDBufferClose'), 'Close buffer'},
+        {'n', {'C'}, c('LYRDBufferCloseAll'), 'Close all buffers'},
         {'n', {'h'}, c('LYRDBufferSplitH'), 'Horizonal split'},
         {'n', {'v'}, c('LYRDBufferSplitV'), 'Vertical split'},
         {'n', {'a'}, c('LYRDLSPFindCodeActions'), 'Actions'},
-        {'n', {'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'}
+        {'n', {'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'},
+        {'n', {'r', 'n'}, c('LYRDLSPRename'), 'Rename Symbol'}
     })
 end
 

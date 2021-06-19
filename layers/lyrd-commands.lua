@@ -29,12 +29,13 @@ function L.settings(s)
         LYRDWindowCloseAll = ':qa',
         LYRDWindowForceCloseAll = ':qa!',
         LYRDViewHomePage = '',
-        LYRDViewErrorList = '',
+        LYRDViewLocationList = '',
+        LYRDViewQuickFixList = ':cope',
         LYRDViewYankList = '',
         LYRDViewFileTree = '',
         LYRDViewFileExplorer = '',
         LYRDPluginsInstall = ':PlugInstall',
-        LYRDPluginsUpdate = ':PlugClean',
+        LYRDPluginsUpdate = ':PlugUpdate',
         LYRDPluginsClean = ':PlugClean',
         LYRDTerminal = ':terminal',
         LYRDSearchFiles = '',
@@ -98,7 +99,8 @@ function L.settings(s)
         LYRDLSPRename = '',
         LYRDLSPGotoNextDiagnostic = '',
         LYRDLSPGotoPrevDiagnostic = '',
-        LYRDLSPShowDiagnosticLocList = '',
+        LYRDLSPShowDocumentDiagnosticLocList = '',
+        LYRDLSPShowWorkspaceDiagnosticLocList = '',
         LYRDCodeInsertSnippet = '',
         LYRDTest = '',
         LYRDTestSuite = '',
@@ -113,9 +115,9 @@ function L.settings(s)
         LYRDCodeAlternateFile = '',
         LYRDCodeFixImports = '',
         LYRDCodeGlobalCheck = '',
-        LYRDViewQuickFix = ':cope',
         LYRDCodeImplementInterface = '',
-        LYRDCodeFillStructure = ''
+        LYRDCodeFillStructure = '',
+        LYRDCodeGenerate = ''
     })
 end
 
@@ -141,10 +143,12 @@ function L.keybindings(s)
         {'n', {'v', '.'}, c('LYRDViewHomePage'), 'Home page'},
         {'n', {'v', 't'}, c('LYRDViewFileTree'), 'Toggle file tree'},
         {'n', {'v', 'e'}, c('LYRDViewFileExplorer'), 'Explore files'},
-        {'n', {'v', 'l'}, c('LYRDViewErrorList'), 'List all errors'},
+        {'n', {'v', 'l'}, c('LYRDViewLocationList'), 'Location list'},
         {'n', {'v', 'r'}, c('LYRDViewRegisters'), 'Registers'},
         {'n', {'v', 'y'}, c('LYRDViewYankList'), 'Yank list'},
-        {'n', {'v', 'q'}, c('LYRDViewQuickFix'), 'QuickFix'},
+        {'n', {'v', 'q'}, c('LYRDViewQuickFixList'), 'QuickFix'},
+        {'n', {'v', 'd'}, c('LYRDLSPShowDocumentDiagnosticLocList'), 'Document diagnostics'},
+        {'n', {'v', 'D'}, c('LYRDLSPShowWorkspaceDiagnosticLocList'), 'Workspace diagnostics'},
         -- Buffer Menu
         {'n', {'b', 'e'}, c('LYRDBufferNew'), 'New empty buffer'},
         {'n', {'b', 'n'}, c('LYRDBufferNext'), 'Next buffer'},
@@ -227,6 +231,7 @@ function L.keybindings(s)
         {'n', {'c', 'I'}, c('LYRDCodeImplementInterface'), 'Implement interface'},
         {'n', {'c', 's'}, c('LYRDCodeFillStructure'), 'Fill structure'},
         {'n', {'c', 's'}, c('LYRDCodeInsertSnippet'), 'Insert snippet'},
+        {'n', {'c', 'g'}, c('LYRDCodeGenerate'), 'Generate Code'},
         -- Test menu
         {'n', {'t', 't'}, c('LYRDTest'), 'Test everything'},
         {'n', {'t', 's'}, c('LYRDTestSuite'), 'Test suite'},

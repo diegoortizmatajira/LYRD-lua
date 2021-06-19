@@ -10,6 +10,7 @@ function L.plugins(s)
         'norcalli/nvim-colorizer.lua',
         'SirVer/ultisnips',
         'honza/vim-snippets',
+        -- 'codota/tabnine-vim',
         'steelsojka/pears.nvim',
     })
 end
