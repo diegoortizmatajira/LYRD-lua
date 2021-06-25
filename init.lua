@@ -1,6 +1,6 @@
 local setup = require "LYRD.setup"
 
-LYRD_setup = {
+_G.LYRD_setup = {
     layers = {
         "LYRD.layers.general",
         "LYRD.layers.mappings",
@@ -15,6 +15,7 @@ LYRD_setup = {
         "LYRD.layers.treesitter",
         "LYRD.layers.filetree",
         "LYRD.layers.telescope",
+        "LYRD.layers.snippets", -- Before completion
         "LYRD.layers.completion",
         "LYRD.layers.lang.go",
         "LYRD.layers.lang.csharp",
@@ -23,4 +24,4 @@ LYRD_setup = {
     }
 }
 
-setup.load(LYRD_setup)
+setup.load(_G.LYRD_setup)

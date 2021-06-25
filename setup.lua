@@ -57,5 +57,4 @@ return {
         end
     end,
 
-    register_layer = function(s, layer) table.insert(s.layers, layer) end
 }

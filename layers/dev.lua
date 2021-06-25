@@ -8,9 +8,6 @@ function L.plugins(s)
         'tpope/vim-commentary',
         'vim-autoformat/vim-autoformat',
         'norcalli/nvim-colorizer.lua',
-        'SirVer/ultisnips',
-        'honza/vim-snippets',
-        -- 'codota/tabnine-vim',
         'steelsojka/pears.nvim',
     })
 end
@@ -18,10 +15,6 @@ end
 function L.settings(s)
     require'colorizer'.setup()
     require 'pears'.setup()
-    vim.g.UltiSnipsExpandTrigger = '<tab>'
-    vim.g.UltiSnipsJumpForwardTrigger = '<c-b>'
-    vim.g.UltiSnipsJumpBackwardTrigger = '<c-z>'
-
     commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 end
 
