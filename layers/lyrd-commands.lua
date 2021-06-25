@@ -119,8 +119,6 @@ function L.settings(s)
     LYRDCodeImplementInterface = '',
     LYRDCodeFillStructure = '',
     LYRDCodeGenerate = '',
-    LYRDSnippetExpand = '',
-    LYRDSnippetExpandOrJump = ''
   })
 end
 
@@ -248,8 +246,8 @@ function L.keybindings(s)
     {"s", "<Tab>", [[v:lua.LYRD_TabExpression()]]},
     {"i", "<S-Tab>", [[v:lua.LYRD_ShiftTabExpression()]]},
     {"s", "<S-Tab>", [[v:lua.LYRD_ShiftTabExpression()]]},
-    {"i", "<CR>", [[v:lua.LYRD_EnterExpression()]]},
-    {"s", "<CR>", [[v:lua.LYRD_EnterExpression()]]},
+    -- {"i", "<CR>", [[v:lua.LYRD_EnterExpression()]]},
+    -- {"s", "<CR>", [[v:lua.LYRD_EnterExpression()]]},
   }, {silent = true, expr = true, noremap = true})
 end
 

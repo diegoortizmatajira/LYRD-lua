@@ -114,7 +114,7 @@ local function t(str)
 end
 
 local function get_shared_expression(s, key, default)
-  local evaluation_order = {'completion', 'snippets'}
+  local evaluation_order = {'completion', 'snippets', 'dev'}
   for _, layer in ipairs(evaluation_order) do
     local expression_fn = s.SharedExpressions[key][layer]
     if expression_fn ~= nil then
