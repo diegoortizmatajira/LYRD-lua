@@ -1,5 +1,6 @@
 local setup = require"LYRD.setup"
 local commands = require"LYRD.layers.commands"
+local shared_key_handlers = require"LYRD.layers.shared-key-handlers"
 
 local L = {name = 'Development'}
 
@@ -15,15 +16,8 @@ end
 function L.settings(s)
   require'colorizer'.setup()
   require'pears'.setup(function(conf)
-    conf.on_enter(function(pears_handle)
-      if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
-        return vim.fn["compe#confirm"]("<CR>")
-      else
-        pears_handle()
-      end
-    end)
+    conf.on_enter(shared_key_handlers.LYRD_enter_handler)
   end)
-
   commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 end
 

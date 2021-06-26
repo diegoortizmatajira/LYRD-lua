@@ -241,14 +241,6 @@ function L.keybindings(s)
     {'n', {'t', 'l'}, c('LYRDTestLast'), 'Repeat last test'},
     {'n', {'t', 'c'}, c('LYRDTestCoverage'), 'Test Coverage'}
   })
-  mappings.keys(s, {
-    {"i", "<Tab>", [[v:lua.LYRD_TabExpression()]]},
-    {"s", "<Tab>", [[v:lua.LYRD_TabExpression()]]},
-    {"i", "<S-Tab>", [[v:lua.LYRD_ShiftTabExpression()]]},
-    {"s", "<S-Tab>", [[v:lua.LYRD_ShiftTabExpression()]]},
-    -- {"i", "<CR>", [[v:lua.LYRD_EnterExpression()]]},
-    -- {"s", "<CR>", [[v:lua.LYRD_EnterExpression()]]},
-  }, {silent = true, expr = true, noremap = true})
 end
 
 return L

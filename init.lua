@@ -5,6 +5,7 @@ _G.LYRD_setup = {
         "LYRD.layers.general",
         "LYRD.layers.mappings",
         "LYRD.layers.commands",
+        "LYRD.layers.shared-key-handlers",
         "LYRD.layers.lyrd-commands",
         "LYRD.layers.lyrd-ui",
         "LYRD.layers.lyrd-keyboard",

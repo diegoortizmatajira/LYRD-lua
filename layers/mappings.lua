@@ -105,53 +105,9 @@ function L.leader_ignore_menu(s, keys)
   recursive_documentation(s.mappings['Leader'], keys, {name = 'which_key_ignore'}, 1)
 end
 
-local function map_shared_expression(s, key, layer, expression)
-  s.SharedExpressions[key][layer] = expression
-end
-
-local function t(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local function get_shared_expression(s, key, default)
-  local evaluation_order = {'completion', 'snippets', 'dev'}
-  for _, layer in ipairs(evaluation_order) do
-    local expression_fn = s.SharedExpressions[key][layer]
-    if expression_fn ~= nil then
-      local expression = expression_fn()
-      if expression ~= nil then
-        return expression
-      end
-    end
-  end
-  return t(default)
-end
-
-function L.map_tab_expression(s, layer, expression)
-  map_shared_expression(s, 'Tab', layer, expression)
-end
-
-function L.map_shift_tab_expression(s, layer, expression)
-  map_shared_expression(s, 'Shift_Tab', layer, expression)
-end
-
-function L.map_enter_expression(s, layer, expression)
-  map_shared_expression(s, 'Enter', layer, expression)
-end
-
 function L.settings(s)
   s.mappings = {Leader = {}, Space = {}}
-  s.SharedExpressions = {Tab = {}, Shift_Tab = {}, Enter = {}}
   vim.g.which_key_timeout = 100
-  _G.LYRD_TabExpression = function()
-    return get_shared_expression(s, 'Tab', '<Tab>')
-  end
-  _G.LYRD_ShiftTabExpression = function()
-    return get_shared_expression(s, 'Shift_Tab', '<S-Tab>')
-  end
-  _G.LYRD_EnterExpression = function()
-    return get_shared_expression(s, 'Enter', '<CR>')
-  end
 end
 
 return L
