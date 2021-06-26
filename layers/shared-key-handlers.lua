@@ -25,8 +25,10 @@ end
 L.LYRD_tab_handler = function(old_handler)
   if vim.fn.pumvisible() == 1 then
     return vim.fn["compe#confirm"]("<Tab>")
-  elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1 or vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-    return send("<C-R>=UltiSnips#ExpandSnippetOrJump()<CR>")
+  elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1  then
+    return send("<C-R>=UltiSnips#ExpandSnippet()<CR>")
+  elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
+    return send("<C-R>=UltiSnips#JumpForwards()<CR>")
   elseif check_backspace() then
     return old_handler()
   else
@@ -42,7 +44,7 @@ L.LYRD_shift_tab_handler = function(old_handler)
   end
 end
 
-function L.settings(s)
+function L.settings(_)
   _G.LYRD_TabExpression = function()
     return L.LYRD_tab_handler(function()
       return send('<Tab>')
