@@ -22,21 +22,9 @@ local function execute_command(s, commandName)
   print(string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype))
 end
 
-local function evaluate_command(s, commandName)
-  local expression = s.commands[commandName][vim.bo.filetype]
-  if expression ~= nil and expression ~= '' then
-    return vim.api.nvim_eval(expression)
-  end
-  expression = s.commands[commandName]['*']
-  if expression ~= nil and expression ~= '' then
-    return vim.api.nvim_eval(expression)
-  end
-  return ''
-end
-
 local function show_unimplemented_commands(s)
-  print('The next commands are not implemented by default')
-  for command, implementation in pairs(s.commands) do if implementation['*'] == '' then print('-', command) end end
+  print('The next commands are not implemented for any type of file')
+  for command, implementation in pairs(s.commands) do if implementation['*'] == '' and #implementation == 1 then print('-', command) end end
   print('End of the list')
 end
 
@@ -52,9 +40,6 @@ function L.settings(s)
   s.commands = {}
   _G.LYRD_Execute = function(commandName)
     execute_command(s, commandName)
-  end
-  _G.LYRD_Evaluate = function(commandName)
-    evaluate_command(s, commandName)
   end
 
   L.list_unimplemented = function()
@@ -81,10 +66,6 @@ end
 
 function L.command_shortcut(commandName)
   return '<cmd>' .. commandName .. '<CR>'
-end
-
-function L.expression_shortcut(commandName)
-  return string.format([[v:lua.LYRD_Evaluate("%s")]], commandName)
 end
 
 return L

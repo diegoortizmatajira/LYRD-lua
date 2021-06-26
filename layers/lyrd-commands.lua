@@ -1,7 +1,6 @@
 local commands = require"LYRD.layers.commands"
 local mappings = require"LYRD.layers.mappings"
 local c = commands.command_shortcut
-local e = commands.expression_shortcut
 
 local L = {name = 'LYRD Commands'}
 
