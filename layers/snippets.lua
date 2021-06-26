@@ -12,6 +12,6 @@ function L.keybindings(s)
   vim.g.UltiSnipsExpandTrigger = "<c-j>"
   vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
   vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
- end
+end
 
 return L

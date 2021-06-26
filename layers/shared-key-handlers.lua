@@ -10,7 +10,7 @@ local check_backspace = function()
   return (is_first_col or prev_char:match("%s") == " ")
 end
 
-local function t(str)
+local function send(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
@@ -26,7 +26,7 @@ L.LYRD_tab_handler = function(old_handler)
   if vim.fn.pumvisible() == 1 then
     return vim.fn["compe#confirm"]("<Tab>")
   elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1 or vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-    return t("<C-R>=UltiSnips#ExpandSnippetOrJump()<CR>")
+    return send("<C-R>=UltiSnips#ExpandSnippetOrJump()<CR>")
   elseif check_backspace() then
     return old_handler()
   else
@@ -36,7 +36,7 @@ end
 
 L.LYRD_shift_tab_handler = function(old_handler)
   if vim.fn["UltiSnips#CanJumpBackwards"] == 1 then
-    return t("<C-R>=UltiSnips#JumpBackwards()<CR>")
+    return send("<C-R>=UltiSnips#JumpBackwards()<CR>")
   else
     return old_handler()
   end
@@ -45,12 +45,12 @@ end
 function L.settings(s)
   _G.LYRD_TabExpression = function()
     return L.LYRD_tab_handler(function()
-      return t('<Tab>')
+      return send('<Tab>')
     end)
   end
   _G.LYRD_ShiftTabExpression = function()
     return L.LYRD_shift_tab_handler(function()
-      return t('<S-Tab>')
+      return send('<S-Tab>')
     end)
   end
 
