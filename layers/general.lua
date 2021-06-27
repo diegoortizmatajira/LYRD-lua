@@ -59,8 +59,6 @@ function L.settings(_)
     vim.o.wrap = false
 
     vim.o.mousemodel = "popup"
-    vim.o.t_Co = "256"
-    -- vim.o.guioptions = "egmrti"
     vim.o.termguicolors = true
 
     -- Disable the blinking cursor.

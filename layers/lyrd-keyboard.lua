@@ -8,6 +8,7 @@ function L.keybindings(s)
     mappings.keys(s, {
         {'n', 's', '<nop>'},
         {'n', '<F2>', c('LYRDViewFileTree')},
+        {'n', '<S-F2>', c('LYRDViewFileExplorer')},
         {'n', '<C-s>', c('LYRDBufferSave')},
         {'i', '<C-s>', '<Esc>' .. c('LYRDBufferSave')},
         {'n', '<C-p>', c('LYRDSearchFiles')},
