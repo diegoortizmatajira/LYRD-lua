@@ -8,7 +8,6 @@ function L.plugins(s)
         'vim-airline/vim-airline',
         'vim-airline/vim-airline-themes',
         'gruvbox-community/gruvbox',
-        'jacoborus/tender.vim',
         'mhinz/vim-startify',
         'junegunn/vim-peekaboo',
         'kyazdani42/nvim-web-devicons'
