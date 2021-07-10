@@ -14,7 +14,7 @@ function L.settings(s)
     LYRDSearchFiles = ':Telescope find_files',
     LYRDSearchBuffers = ':Telescope buffers',
     LYRDSearchGitFiles = ':Telescope git_files',
-    LYRDSearchRecentFiles = ':Telescope old_files',
+    LYRDSearchRecentFiles = ':Telescope oldfiles',
     LYRDSearchBufferLines = ':Telescope current_buffer_fuzzy_lines',
     LYRDSearchCommandHistory = ':Telescope command_history',
     LYRDSearchKeyMappings = ':Telescope keymaps',
