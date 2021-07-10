@@ -2,7 +2,8 @@ local lsp = require"LYRD.layers.lsp"
 
 local L = {name = 'Lua Language'}
 
-function L.plugins(_) end
+function L.plugins(_)
+end
 
 function L.settings(_)
   local sumneko_root_path = '.'
@@ -23,10 +24,7 @@ function L.settings(_)
         },
         workspace = {
           -- Make the server aware of Neovim runtime files
-          library = {
-            [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-            [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true
-          }
+          library = {[vim.fn.expand('$VIMRUNTIME/lua')] = true, [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true}
         },
         -- Do not send telemetry data containing a randomized but unique identifier
         telemetry = {enable = false}
@@ -34,8 +32,7 @@ function L.settings(_)
     }
   })
   -- Set Formatter for Autoformat
-  vim.g.formatdef_my_custom_lua =
-    '"lua-format -i --config ~/.config/nvim/lua/LYRD/configs/lua-format"'
+  vim.g.formatdef_my_custom_lua = '"lua-format -i --config ~/.config/nvim/lua/LYRD/configs/lua-format"'
   vim.g.formatters_lua = {'my_custom_lua'}
 end
 
