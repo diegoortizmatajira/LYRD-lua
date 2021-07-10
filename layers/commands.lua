@@ -24,7 +24,9 @@ end
 
 local function show_unimplemented_commands(s)
   print('The next commands are not implemented for any type of file')
-  for command, implementation in pairs(s.commands) do if implementation['*'] == '' and #implementation == 1 then print('-', command) end end
+  for command, implementation in pairs(s.commands) do
+    if implementation['*'] == '' and #implementation == 1 then print('-', command) end
+  end
   print('End of the list')
 end
 

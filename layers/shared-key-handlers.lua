@@ -25,7 +25,7 @@ end
 L.LYRD_tab_handler = function(old_handler)
   if vim.fn.pumvisible() == 1 then
     return vim.fn["compe#confirm"]("<Tab>")
-  elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1  then
+  elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
     return send("<C-R>=UltiSnips#ExpandSnippet()<CR>")
   elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
     return send("<C-R>=UltiSnips#JumpForwards()<CR>")

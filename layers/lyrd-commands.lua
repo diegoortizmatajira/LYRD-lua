@@ -117,7 +117,7 @@ function L.settings(s)
     LYRDCodeGlobalCheck = '',
     LYRDCodeImplementInterface = '',
     LYRDCodeFillStructure = '',
-    LYRDCodeGenerate = '',
+    LYRDCodeGenerate = ''
   })
 end
 
