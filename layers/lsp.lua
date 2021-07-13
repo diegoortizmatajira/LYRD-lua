@@ -49,9 +49,10 @@ end
 
 function L.enable(server, options)
   local lsp_installer = require'nvim-lsp-installer'
-
-  local ok, required_server = lsp_installer.get_server(server)
-  if ok then if not required_server:is_installed() then required_server:install() end end
+  if not vim.fn.has('win32') then
+    local ok, required_server = lsp_installer.get_server(server)
+    if ok then if not required_server:is_installed() then required_server:install() end end
+  end
   if options == nil then options = {} end
   if options.capabilities == nil then options.capabilities = capabilities end
   require'lspconfig'[server].setup(options)
