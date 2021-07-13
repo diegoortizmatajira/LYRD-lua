@@ -7,10 +7,17 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true;
 
 function L.plugins(s)
-  setup.plugin(s, {'neovim/nvim-lspconfig', 'williamboman/nvim-lsp-installer', 'folke/trouble.nvim'})
+  setup.plugin(s, {
+    'neovim/nvim-lspconfig',
+    'kabouzeid/nvim-lspinstall',
+    -- 'williamboman/nvim-lsp-installer',
+    'folke/trouble.nvim'
+  })
 end
 
 function L.settings(s)
+  require'lspinstall'.setup()
+
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
     virtual_text = {prefix = "»", spacing = 4},
     signs = true,
@@ -48,11 +55,11 @@ function L.settings(s)
 end
 
 function L.enable(server, options)
-  local lsp_installer = require'nvim-lsp-installer'
-  if not vim.fn.has('win32') then
-    local ok, required_server = lsp_installer.get_server(server)
-    if ok then if not required_server:is_installed() then required_server:install() end end
-  end
+  -- if not vim.fn.has('win32') then
+  --   local lsp_installer = require'nvim-lsp-installer'
+  --   local ok, required_server = lsp_installer.get_server(server)
+  --   if ok then if not required_server:is_installed() then required_server:install() end end
+  -- end
   if options == nil then options = {} end
   if options.capabilities == nil then options.capabilities = capabilities end
   require'lspconfig'[server].setup(options)
