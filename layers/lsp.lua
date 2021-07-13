@@ -7,7 +7,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true;
 
 function L.plugins(s)
-  setup.plugin(s, {'neovim/nvim-lspconfig', 'folke/trouble.nvim'})
+  setup.plugin(s, {'neovim/nvim-lspconfig', 'williamboman/nvim-lsp-installer', 'folke/trouble.nvim'})
 end
 
 function L.settings(s)
@@ -48,6 +48,10 @@ function L.settings(s)
 end
 
 function L.enable(server, options)
+  local lsp_installer = require'nvim-lsp-installer'
+
+  local ok, required_server = lsp_installer.get_server(server)
+  if ok then if not required_server:is_installed() then required_server:install() end end
   if options == nil then options = {} end
   if options.capabilities == nil then options.capabilities = capabilities end
   require'lspconfig'[server].setup(options)
