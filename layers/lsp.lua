@@ -10,12 +10,14 @@ function L.plugins(s)
   setup.plugin(s, {
     'neovim/nvim-lspconfig',
     'kabouzeid/nvim-lspinstall',
-    'folke/trouble.nvim'
+    'folke/trouble.nvim',
+    'ray-x/lsp_signature.nvim'
   })
 end
 
 function L.settings(s)
   require'lspinstall'.setup()
+  require'lsp_signature'.setup()
 
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
     virtual_text = {prefix = "»", spacing = 4},

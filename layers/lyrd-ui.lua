@@ -10,6 +10,7 @@ function L.plugins(s)
     'gruvbox-community/gruvbox',
     'mhinz/vim-startify',
     'junegunn/vim-peekaboo',
+    'lukas-reineke/indent-blankline.nvim',
     'kyazdani42/nvim-web-devicons'
   })
 end
