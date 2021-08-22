@@ -36,6 +36,8 @@ function L.keybindings(s)
   mappings.leader(s, {
     {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
     {'n', {'.'}, c('LYRDViewHomePage'), 'Home page'},
+    {'n', {'b'}, c('LYRDBreakLine'), 'Break current line'},
+    -- {'n', {'b'}, "<ESC>:s/[,(]/\0/ge<CR><BAR>:'[,']normal ==<CR><BAR>:noh<CR>", 'Break current line'},
     {'n', {'s'}, c('LYRDBufferSave'), 'Save buffer content'},
     {'n', {'c'}, c('LYRDBufferClose'), 'Close buffer'},
     {'n', {'C'}, c('LYRDBufferCloseAll'), 'Close all buffers'},

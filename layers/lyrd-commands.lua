@@ -117,7 +117,8 @@ function L.settings(s)
     LYRDCodeGlobalCheck = '',
     LYRDCodeImplementInterface = '',
     LYRDCodeFillStructure = '',
-    LYRDCodeGenerate = ''
+    LYRDCodeGenerate = '',
+    LYRDBreakLine = ":s/[,(]/&\r/ge|:noh|:'[,']normal=="
   })
 end
 
