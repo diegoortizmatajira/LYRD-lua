@@ -8,11 +8,15 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-  vim.g.nvim_tree_side = 'right'
-  vim.g.nvim_tree_width = 60
-  vim.g.nvim_tree_auto_close = 1
+  require'nvim-tree'.setup{
+    disable_netrw = false,
+    auto_close = true,
+    update_cwd = true,
+    lsp_diagnostics = true,
+    view = {width = 60, side = 'right'}
+
+  }
   vim.g.nvim_tree_quit_on_open = 1
-  vim.g.nvim_tree_disable_netrw = 0
   vim.g.nvim_tree_ignore = {'.git', 'node_modules', '.cache', 'bin', 'obj'}
   vim.g.nvim_tree_icons = {
     default = '',

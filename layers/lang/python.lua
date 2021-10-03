@@ -2,14 +2,14 @@ local lsp = require"LYRD.layers.lsp"
 
 local L = {name = 'Python language'}
 
-function L.plugins(s)
+function L.plugins(_)
 end
 
-function L.settings(s)
+function L.settings(_)
   lsp.enable('pyright', {})
 end
 
-function L.keybindings(s)
+function L.keybindings(_)
 end
 
 return L
