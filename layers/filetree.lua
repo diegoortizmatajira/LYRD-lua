@@ -12,7 +12,7 @@ function L.settings(s)
     disable_netrw = false,
     auto_close = true,
     update_cwd = true,
-    lsp_diagnostics = true,
+    diagonostics = {enable = true},
     view = {width = 60, side = 'right'}
 
   }
