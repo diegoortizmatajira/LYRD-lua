@@ -6,7 +6,7 @@ function L.plugins(_)
 end
 
 function L.settings(_)
-  lsp.enable('pyright', {})
+    lsp.enable('pyright', {})
 end
 
 function L.keybindings(_)

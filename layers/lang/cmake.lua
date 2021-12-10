@@ -2,14 +2,14 @@ local lsp = require"LYRD.layers.lsp"
 
 local L = {name = 'CMake Language'}
 
-function L.plugins(s)
+function L.plugins(_)
 end
 
-function L.settings(s)
-  lsp.enable('cmake', {})
+function L.settings(_)
+    lsp.enable('cmake', {})
 end
 
-function L.keybindings(s)
+function L.keybindings(_)
 end
 
 return L

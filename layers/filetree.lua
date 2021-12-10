@@ -17,10 +17,12 @@ function L.settings(s)
         filters = {
             dotfiles = false,
             custom = {'.git', 'node_modules', '.cache', 'bin', 'obj'}
+        },
+        git = {
+            ignore = 1
         }
     }
     vim.g.nvim_tree_quit_on_open = 1
-    vim.g.nvim_tree_gitignore = 1
     vim.g.nvim_tree_icons = {
         default = '',
         symlink = '',
