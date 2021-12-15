@@ -27,11 +27,11 @@ function L.settings(s)
         default = '',
         symlink = '',
         git = {
-            unstaged = "\u{f8eb}",
-            staged = "\u{f8ec}",
-            unmerged = "\u{f5f7}",
-            renamed = "\u{f45a}",
-            untracked = "\u{f893}"
+            unstaged = "u{f8eb}",
+            staged = "u{f8ec}",
+            unmerged = "u{f5f7}",
+            renamed = "u{f45a}",
+            untracked = "u{f893}"
         },
         folder = {default = "", open = "", symlink = ""}
     }

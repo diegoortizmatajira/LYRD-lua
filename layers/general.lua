@@ -100,14 +100,6 @@ function L.settings(_)
     augroup END
     ]])
 
-    -- txt
-    vim.cmd([[
-    augroup vimrc-wrapping
-    autocmd!
-    autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
-    augroup END
-    ]])
-
     -- make/cmake
     vim.cmd([[
     augroup vimrc-make-cmake
