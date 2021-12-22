@@ -4,7 +4,7 @@ local setup = require"LYRD.setup"
 local L = {name = 'Completion'}
 
 function L.plugins(s)
-    setup.plugin(s, {'hrsh7th/nvim-compe'})
+    setup.plugin(s, {'hrsh7th/nvim-compe','tzachar/compe-tabnine'})
 end
 
 function L.settings(_)
@@ -24,8 +24,9 @@ function L.settings(_)
         max_kind_width = 100,
         max_menu_width = 100,
         documentation = true,
-        source = {path = true, buffer = true, calc = true, nvim_lsp = true, nvim_lua = true, ultisnips = true}
+        source = {path = true, buffer = true, calc = true, nvim_lsp = true, nvim_lua = true, ultisnips = true, tabnine = true}
     }
+
 
 end
 
