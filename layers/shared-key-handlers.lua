@@ -2,37 +2,29 @@ local mappings = require"LYRD.layers.mappings"
 
 local L = {name = 'Shared Key Handlers'}
 
-local check_backspace = function()
-    local curr_col = vim.fn.col(".")
-    local is_first_col = vim.fn.col(".") - 1 == 0
-    local prev_char = vim.fn.getline("."):sub(curr_col - 1, curr_col - 1)
+-- local check_backspace = function()
+--     local curr_col = vim.fn.col(".")
+--     local is_first_col = vim.fn.col(".") - 1 == 0
+--     local prev_char = vim.fn.getline("."):sub(curr_col - 1, curr_col - 1)
 
-    return (is_first_col or prev_char:match("%s") == " ")
-end
+--     return (is_first_col or prev_char:match("%s") == " ")
+-- end
 
 local function send(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
 L.LYRD_enter_handler = function(old_handler)
-    if vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected ~= -1 then
-        return vim.fn["compe#confirm"]("<CR>")
-    else
-        return old_handler()
-    end
+    return old_handler()
 end
 
 L.LYRD_tab_handler = function(old_handler)
-    if vim.fn.pumvisible() == 1 then
-        return vim.fn["compe#confirm"]("<Tab>")
-    elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
+    if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
         return send("<C-R>=UltiSnips#ExpandSnippet()<CR>")
     elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
         return send("<C-R>=UltiSnips#JumpForwards()<CR>")
-    elseif check_backspace() then
-        return old_handler()
     else
-        return vim.fn['compe#complete']()
+        return old_handler()
     end
 end
 

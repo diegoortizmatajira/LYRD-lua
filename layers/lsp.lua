@@ -3,8 +3,16 @@ local commands = require"LYRD.layers.commands"
 
 local L = {name = 'LSP'}
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true;
+local capabilities = nil
+
+local plugged_capabilities = function ()
+    return vim.lsp.protocol.make_client_capabilities()
+end
+
+
+function L.plug_capabilities(plug_handler)
+    plugged_capabilities= plug_handler(plugged_capabilities)
+end
 
 function L.plugins(s)
     setup.plugin(s, {
@@ -52,8 +60,11 @@ function L.settings(s)
 end
 
 function L.enable(server, options)
-    if options == nil then options = {} end
-    if options.capabilities == nil then options.capabilities = capabilities end
+    if capabilities == nil then
+        capabilities = plugged_capabilities()
+    end
+    options = options or {}
+    options.capabilities =options.capabilities or capabilities
     require'lspconfig'[server].setup(options)
 end
 

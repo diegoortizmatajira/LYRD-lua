@@ -8,10 +8,13 @@ function L.plugins(s)
 end
 
 function L.settings(_)
-    lsp.enable('tsserver', {})
     vim.g.javascript_plugin_jsdoc = 1
     vim.g.javascript_plugin_ngdoc = 1
     vim.g.javascript_plugin_flow = 1
+end
+
+function L.complete(_)
+    lsp.enable('tsserver', {})
 end
 
 return L

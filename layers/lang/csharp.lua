@@ -12,10 +12,6 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-    local pid = vim.fn.getpid()
-    local omnisharp_bin = vim.fn.expand("~/.cache/omnisharp-vim/omnisharp-roslyn/run")
-    lsp.enable('omnisharp', {cmd = {omnisharp_bin, "--languageserver", "--hostPID", tostring(pid)}})
-
     commands.implement(s, 'cs', {
         LYRDTest = ':OmniSharpRunTest',
         LYRDTestSuite = ':OmniSharpRunTest',
@@ -43,6 +39,12 @@ function L.keybindings(s)
         {'n', {'p', 'o', 'x'}, c('OmniSharpStopServer'), 'Stop OmniSharp server'},
         {'n', {'p', 'o', 'i'}, c('OmniSharpInstall'), 'Install OmniSharp'}
     })
+end
+
+function L.complete(s)
+    local pid = vim.fn.getpid()
+    local omnisharp_bin = vim.fn.expand("~/.cache/omnisharp-vim/omnisharp-roslyn/run")
+    lsp.enable('omnisharp', {cmd = {omnisharp_bin, "--languageserver", "--hostPID", tostring(pid)}})
 end
 
 return L

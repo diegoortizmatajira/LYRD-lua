@@ -6,6 +6,12 @@ function L.plugins(_)
 end
 
 function L.settings(_)
+    -- Set Formatter for Autoformat
+    vim.g.formatdef_my_custom_lua = '"lua-format -i --config ~/.config/nvim/lua/LYRD/configs/lua-format"'
+    vim.g.formatters_lua = {'my_custom_lua'}
+end
+
+function L.complete(_)
     local sumneko_root_path = '.'
     local sumneko_binary = '/usr/bin/lua-language-server'
     lsp.enable('sumneko_lua', {
@@ -31,9 +37,7 @@ function L.settings(_)
             }
         }
     })
-    -- Set Formatter for Autoformat
-    vim.g.formatdef_my_custom_lua = '"lua-format -i --config ~/.config/nvim/lua/LYRD/configs/lua-format"'
-    vim.g.formatters_lua = {'my_custom_lua'}
 end
+
 
 return L

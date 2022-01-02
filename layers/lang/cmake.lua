@@ -6,10 +6,13 @@ function L.plugins(_)
 end
 
 function L.settings(_)
-    lsp.enable('cmake', {})
 end
 
 function L.keybindings(_)
+end
+
+function L.complete(_)
+    lsp.enable('cmake', {})
 end
 
 return L

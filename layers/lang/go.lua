@@ -9,7 +9,6 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-    lsp.enable('gopls', {})
     commands.implement(s, 'go', {
         LYRDTest = ":GoTest ./...",
         LYRDTestSuite = ':GoTest ./...',
@@ -60,6 +59,10 @@ function L.settings(s)
     endif
     augroup END
     ]])
+end
+
+function L.complete(_)
+    lsp.enable('gopls', {})
 end
 
 local function ends_with(str, ending)
