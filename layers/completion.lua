@@ -3,6 +3,41 @@ local lsp = require"LYRD.layers.lsp"
 
 local L = {name = 'Completion'}
 
+local kind_icons = {
+    Text = "",
+    Method = "m",
+    Function = "",
+    Constructor = "",
+    Field = "",
+    Variable = "",
+    Class = "",
+    Interface = "",
+    Module = "",
+    Property = "",
+    Unit = "",
+    Value = "",
+    Enum = "",
+    Keyword = "",
+    Snippet = "",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
+    EnumMember = "",
+    Constant = "",
+    Struct = "",
+    Event = "",
+    Operator = "",
+    TypeParameter = "",
+}
+
+local menu_texts ={
+    luasnip = "[Snippet]",
+    ultisnips = "[Snippet]",
+    buffer = "[Buffer]",
+    path = "[Path]",
+    cmp_tabnine = "[Tab-9]"
+}
 function L.plugins(s)
     setup.plugin(s, {
         'hrsh7th/cmp-nvim-lsp',
@@ -38,13 +73,25 @@ function L.settings(_)
             }),
             ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         },
+        formatting = {
+            fields = { "abbr", "kind", "menu" },
+            format = function(entry, vim_item)
+                -- Kind icons
+                vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind],vim_item.kind)
+                vim_item.menu = menu_texts[entry.source.name]
+                return vim_item
+            end,
+        },
         sources = cmp.config.sources({
+            { name = 'ultisnips' },
             { name = 'nvim_lsp' },
-            { name = 'ultisnips' }, -- For ultisnips users.
-            { name = 'cmp_tabnine'}
-        }, {
-                { name = 'buffer' },
-            })
+            { name = 'cmp_tabnine'},
+            { name = 'buffer' },
+        }),
+        experimental = {
+            ghost_text = true,
+            native_menu = false,
+        },
     })
 
     -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
