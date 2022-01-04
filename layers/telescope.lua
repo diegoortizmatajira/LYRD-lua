@@ -4,7 +4,11 @@ local commands = require"LYRD.layers.commands"
 local L = {name = 'Telescope'}
 
 function L.plugins(s)
-    setup.plugin(s, {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim'})
+    setup.plugin(s, {
+        'nvim-lua/popup.nvim',
+        'nvim-lua/plenary.nvim',
+        'nvim-telescope/telescope.nvim'
+    })
 end
 
 function L.settings(s)
