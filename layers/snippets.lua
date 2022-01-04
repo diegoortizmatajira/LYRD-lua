@@ -3,10 +3,18 @@ local lsp = require"LYRD.layers.lsp"
 local L = {name = 'Snippets'}
 
 function L.plugins(s)
-    setup.plugin(s, {'sirver/ultisnips', 'honza/vim-snippets'})
+    setup.plugin(s, {
+        'L3MON4D3/LuaSnip',
+        'honza/vim-snippets',
+        'rafamadriz/friendly-snippets'
+    })
 end
 
 function L.settings(_)
+    -- local ls = require"luasnip"
+    -- ls.filetype_extend("all", { "_" })
+    -- require("luasnip/loaders/from_snipmate").lazy_load()
+    require("luasnip/loaders/from_vscode").lazy_load()
     -- Setup lspconfig.
     lsp.plug_capabilities(function (previous_plug)
         return function ()
@@ -17,10 +25,7 @@ function L.settings(_)
     end)
 end
 
-function L.keybindings(s)
-    vim.g.UltiSnipsExpandTrigger = "<c-j>"
-    vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
-    vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
+function L.keybindings(_)
 end
 
 return L

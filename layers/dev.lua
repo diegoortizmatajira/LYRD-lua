@@ -1,7 +1,6 @@
 local mappings = require"LYRD.layers.mappings"
 local setup = require"LYRD.setup"
 local commands = require"LYRD.layers.commands"
-local shared_key_handlers = require"LYRD.layers.shared-key-handlers"
 
 local L = {name = 'Development'}
 
@@ -17,9 +16,7 @@ end
 
 function L.settings(s)
     require'colorizer'.setup()
-    require'pears'.setup(function(conf)
-        conf.on_enter(shared_key_handlers.LYRD_enter_handler)
-    end)
+    require'pears'.setup()
     commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 end
 
