@@ -74,12 +74,13 @@ function L.settings(_)
     vim.o.title = true
     vim.o.titleold = "Terminal"
     vim.o.titlestring = "%F"
-    vim.cmd([[set clipboard=unnamed,unnamedplus]])
+    vim.opt.clipboard="unnamedplus"
+    -- vim.cmd([[set clipboard=unnamed,unnamedplus]])
 
     vim.cmd([[command! FixWhitespace :%s/\s\+$//e]])
 
     -- don't give |ins-completion-menu| messages.
-    vim.cmd([[set shortmess+=c]])
+    vim.opt.shortmess:append "c"
 
     -- *****************************************************************************
     -- Autocmd Rules
