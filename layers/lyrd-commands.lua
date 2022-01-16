@@ -29,6 +29,7 @@ function L.settings(s)
         LYRDWindowCloseAll = ':qa',
         LYRDWindowForceCloseAll = ':qa!',
         LYRDViewHomePage = '',
+        LYRDViewRegisters = '',
         LYRDViewLocationList = '',
         LYRDViewQuickFixList = ':cope',
         LYRDViewYankList = '',

@@ -74,8 +74,7 @@ function L.settings(_)
     vim.o.title = true
     vim.o.titleold = "Terminal"
     vim.o.titlestring = "%F"
-    vim.opt.clipboard="unnamedplus"
-    -- vim.cmd([[set clipboard=unnamed,unnamedplus]])
+    vim.cmd([[set clipboard=unnamed,unnamedplus]])
 
     vim.cmd([[command! FixWhitespace :%s/\s\+$//e]])
 

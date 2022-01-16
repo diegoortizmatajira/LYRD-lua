@@ -9,14 +9,14 @@ function L.plugins(s)
         'tpope/vim-commentary',
         'vim-autoformat/vim-autoformat',
         'norcalli/nvim-colorizer.lua',
-        'steelsojka/pears.nvim',
+        'windwp/nvim-autopairs',
         'junegunn/vim-easy-align'
     })
 end
 
 function L.settings(s)
     require'colorizer'.setup()
-    require'pears'.setup()
+    require('nvim-autopairs').setup{}
     commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 end
 
