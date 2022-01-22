@@ -45,6 +45,7 @@ local function airline_setup()
     vim.g['airline#extensions#tabline#enabled'] = 1
     vim.g['airline#extensions#tagbar#enabled'] = 1
     vim.g['airline_skip_empty_sections'] = 1
+    vim.g['airline#extensions#tabline#formatter'] = 'unique_tail'
 
     -- vim-airline
     vim.g.airline_symbols = {linenr = '␊', branch = '⎇', paste = 'ρ', whitespace = 'Ξ'}
