@@ -95,6 +95,7 @@ function L.settings(_)
         },
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
+            { name = 'cmp_tabnine' },
             { name = 'ultisnips' },
             { name = 'buffer' },
             { name = 'path' },
