@@ -36,7 +36,7 @@ function L.settings(s)
         folder = {default = "", open = "", symlink = ""}
     }
 
-    commands.implement(s, '*', {LYRDViewFileTree = ':NvimTreeToggle', LYRDViewFileExplorer = ':Ntree'})
+    commands.implement(s, '*', {LYRDViewFileTree = ':NvimTreeFindFileToggle', LYRDViewFileExplorer = ':Ntree'})
 end
 
 return L
