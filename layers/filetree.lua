@@ -20,9 +20,13 @@ function L.settings(s)
         },
         git = {
             ignore = 1
+        },
+        actions = {
+            open_file = {
+                quit_on_open = true
+            }
         }
     }
-    vim.g.nvim_tree_quit_on_open = 1
     vim.g.nvim_tree_icons = {
         default = '',
         symlink = '',
