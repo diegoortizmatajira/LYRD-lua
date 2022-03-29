@@ -5,7 +5,7 @@ local c = commands.command_shortcut
 local L = {name = 'LYRD Keyboard'}
 
 function L.keybindings(s)
-    mappings.keys(s, {
+  mappings.keys(s, {
     {'n', '<C-j>', '<C-w>j'},
     {'n', '<C-k>', '<C-w>k'},
     {'n', '<C-h>', '<C-w>h'},
@@ -28,18 +28,18 @@ function L.keybindings(s)
     {'n', 'gr', c('LYRDLSPFindReferences')},
     {'n', 'ga', c('LYRDLSPFindCodeActions')},
     {'n', 'gA', c('LYRDLSPFindRangeCodeActions')},
-    {'n', [[gpi"]], [[vi""0p]] },
-    {'n', [[gpi']], [[vi'"0p]] },
+    {'n', [[gpi"]], [[vi""0p]]},
+    {'n', [[gpi']], [[vi'"0p]]},
     {'n', '<A-PageUp>', c('LYRDLSPGotoPrevDiagnostic')},
     {'n', '<A-PageDown>', c('LYRDLSPGotoNextDiagnostic')},
     {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')},
     {'n', '<C-r><C-r>', c('LYRDLSPRename')}
-    })
-    mappings.leader(s, {
+  })
+  mappings.leader(s, {
     {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
     {'n', {'.'}, c('LYRDViewHomePage'), 'Home page'},
     {'n', {'b'}, c('LYRDBreakLine'), 'Break current line'},
-        -- {'n', {'b'}, "<ESC>:s/[,(]/\0/ge<CR><BAR>:'[,']normal ==<CR><BAR>:noh<CR>", 'Break current line'},
+    -- {'n', {'b'}, "<ESC>:s/[,(]/\0/ge<CR><BAR>:'[,']normal ==<CR><BAR>:noh<CR>", 'Break current line'},
     {'n', {'s'}, c('LYRDBufferSave'), 'Save buffer content'},
     {'n', {'c'}, c('LYRDBufferClose'), 'Close buffer'},
     {'n', {'C'}, c('LYRDBufferCloseAll'), 'Close all buffers'},
@@ -49,8 +49,9 @@ function L.keybindings(s)
     {'n', {'x'}, c('LYRDBufferNext'), 'Next buffer'},
     {'n', {'a'}, c('LYRDLSPFindCodeActions'), 'Actions'},
     {'n', {'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'},
+    {'n', {'f'}, c('LYRDBufferFormat'), 'Format document'},
     {'n', {'r', 'n'}, c('LYRDLSPRename'), 'Rename Symbol'}
-    })
+  })
 end
 
 return L
