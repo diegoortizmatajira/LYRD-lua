@@ -10,7 +10,6 @@ end
 function L.settings(s)
     require'nvim-tree'.setup{
         disable_netrw = false,
-        auto_close = true,
         update_cwd = true,
         diagonostics = {enable = true},
         view = {width = 60, side = 'right'},
@@ -31,11 +30,11 @@ function L.settings(s)
         default = '',
         symlink = '',
         git = {
-            unstaged = "u{f8eb}",
-            staged = "u{f8ec}",
-            unmerged = "u{f5f7}",
-            renamed = "u{f45a}",
-            untracked = "u{f893}"
+            unstaged = "\u{f8eb}",
+            staged = "\u{f8ec}",
+            unmerged = "\u{f5f7}",
+            renamed = "\u{f45a}",
+            untracked = "\u{f893}"
         },
         folder = {default = "", open = "", symlink = ""}
     }
