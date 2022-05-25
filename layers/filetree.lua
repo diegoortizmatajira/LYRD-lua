@@ -13,7 +13,11 @@ function L.settings(s)
     update_cwd = true,
     diagnostics = {enable = true, show_on_dirs = true},
     view = {width = 60, side = 'right'},
-    filters = {dotfiles = true, custom = {'^\\.git$', '^node_modules$', '^\\.cache$', '^bin$', '^obj$'}, exclude = {'.gitignore'}},
+    filters = {
+      dotfiles = true,
+      custom = {'^\\.git$', '^node_modules$', '^\\.cache$', '^bin$', '^obj$'},
+      exclude = {'.gitignore'}
+    },
     git = {ignore = true},
     actions = {open_file = {quit_on_open = true}}
   }

@@ -6,20 +6,20 @@ local c = commands.command_shortcut
 local L = {name = 'Motions'}
 
 function L.plugins(s)
-    setup.plugin(s, {'phaazon/hop.nvim'})
+  setup.plugin(s, {'phaazon/hop.nvim'})
 end
 
 function L.settings(_)
-    require('hop').setup{}
+  require('hop').setup{}
 end
 
 function L.keybindings(s)
-    mappings.leader(s, {
-        {'', {'g'}, c('HopLine'), 'Go to line'},
-        {'', {'w'}, c('HopWord'), 'Go to word'},
-        {'', {','}, c('HopPattern'), 'Go to pattern'}
-    })
-    mappings.keys(s, {{'', 's', '<cmd>HopChar1<CR>'}, {'', 'S', '<cmd>HopChar2<CR>'}})
+  mappings.leader(s, {
+    {'', {'g'}, c('HopLine'), 'Go to line'},
+    {'', {'w'}, c('HopWord'), 'Go to word'},
+    {'', {','}, c('HopPattern'), 'Go to pattern'}
+  })
+  mappings.keys(s, {{'', 's', '<cmd>HopChar1<CR>'}, {'', 'S', '<cmd>HopChar2<CR>'}})
 end
 
 return L
