@@ -1,13 +1,12 @@
 local lsp = require"LYRD.layers.lsp"
-local setup = require "LYRD.setup"
+local setup = require"LYRD.setup"
 
 local L = {name = 'Python language'}
 
 function L.plugins(s)
-    setup.plugin(s,
-        {
-            -- 'mfussenegger/nvim-dap-python'
-        })
+  setup.plugin(s, {
+    -- 'mfussenegger/nvim-dap-python'
+  })
 end
 
 function L.settings(_)
@@ -17,16 +16,7 @@ function L.keybindings(_)
 end
 
 function L.complete(_)
-    lsp.enable('pyright', {
-        settings = {
-            python = {
-                analysis = {
-                    typeCheckingMode = "off"
-                }
-            }
-        },
-    })
+  lsp.enable('pyright', {settings = {python = {analysis = {typeCheckingMode = "off"}}}})
 end
-
 
 return L

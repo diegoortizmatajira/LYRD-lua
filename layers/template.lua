@@ -1,13 +1,9 @@
-local setup = require "LYRD.setup"
+local setup = require"LYRD.setup"
 
-local L = {
-    name = 'General'
-}
+local L = {name = 'General'}
 
 function L.plugins(s)
-    setup.plugin(s,
-        {
-        })
+  setup.plugin(s, {})
 end
 
 function L.settings(s)

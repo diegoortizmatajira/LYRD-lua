@@ -12,7 +12,7 @@ function L.keybindings(_)
 end
 
 function L.complete(_)
-    lsp.enable('cmake', {})
+  lsp.enable('cmake', {})
 end
 
 return L
