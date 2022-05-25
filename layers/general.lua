@@ -110,6 +110,9 @@ function L.settings(_)
 
   vim.cmd([[ set autoread ]])
 
+  -- Sets the cursor
+  vim.cmd([[set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50]])
+
 end
 
 return L
