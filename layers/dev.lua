@@ -15,9 +15,10 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-  require'colorizer'.setup()
+  require('colorizer').setup()
   require('nvim-autopairs').setup{}
   commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
+
 end
 
 function L.keybindings(s)

@@ -33,7 +33,9 @@ function L.keybindings(s)
     {'n', '<A-PageUp>', c('LYRDLSPGotoPrevDiagnostic')},
     {'n', '<A-PageDown>', c('LYRDLSPGotoNextDiagnostic')},
     {'n', '<A-Enter>', c('LYRDLSPFindCodeActions')},
-    {'n', '<C-r><C-r>', c('LYRDLSPRename')}
+    {'n', '<C-r><C-r>', c('LYRDLSPRename')},
+    {'n', '<C-r><C-f>', c('LYRDCodeRefactor')},
+    {'v', '<C-r><C-f>', c('LYRDCodeRefactor')}
   })
   mappings.leader(s, {
     {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
@@ -50,7 +52,10 @@ function L.keybindings(s)
     {'n', {'a'}, c('LYRDLSPFindCodeActions'), 'Actions'},
     {'n', {'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'},
     {'n', {'f'}, c('LYRDBufferFormat'), 'Format document'},
-    {'n', {'r', 'n'}, c('LYRDLSPRename'), 'Rename Symbol'}
+    {'n', {'r', 'n'}, c('LYRDLSPRename'), 'Rename Symbol'},
+    {'n', {'r', 'f'}, c('LYRDCodeRefactor'), 'Refactor'},
+    {'v', {'r', 'f'}, c('LYRDCodeRefactor'), 'Refactor'}
+
   })
 end
 

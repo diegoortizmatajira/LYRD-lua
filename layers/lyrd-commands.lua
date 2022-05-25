@@ -119,6 +119,7 @@ function L.settings(s)
     LYRDCodeImplementInterface = '',
     LYRDCodeFillStructure = '',
     LYRDCodeGenerate = '',
+    LYRDCodeRefactor = '',
     LYRDBreakLine = ":s/[,(]/&\r/ge|:noh|:'[,']normal=="
   })
 end
@@ -227,6 +228,7 @@ function L.keybindings(s)
     {'n', {'c', 'A'}, c('LYRDLSPFindRangeCodeActions'), 'Range Actions'},
     {'n', {'c', 'b'}, c('LYRDCodeBuild'), 'Build'},
     {'n', {'c', 'r'}, c('LYRDCodeRun'), 'Run'},
+    {'n', {'c', 'R'}, c('LYRDCodeRefactor'), 'Refactor'},
     {'n', {'c', 't'}, c('LYRDCodeAlternateFile'), 'Toggle alternate file'},
     {'n', {'c', 'i'}, c('LYRDCodeFixImports'), 'Fix imports'},
     {'n', {'c', 'c'}, c('LYRDCodeGlobalCheck'), 'Global check'},
