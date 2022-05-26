@@ -23,6 +23,7 @@ _G.LYRD_setup = {
     "LYRD.layers.lang.lua",
     "LYRD.layers.lang.python",
     "LYRD.layers.lang.typescript",
+    "LYRD.layers.lang.json",
     "LYRD.layers.lang.cmake"
   }
 }
