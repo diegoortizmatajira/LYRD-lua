@@ -5,7 +5,7 @@ local lsp = require"LYRD.layers.lsp"
 local L = {name = 'Go language'}
 
 function L.plugins(s)
-  setup.plugin(s, {{'fatih/vim-go', run = ':GoUpdateBinaries'}})
+  setup.plugin(s, {{'fatih/vim-go', run = ':GoUpdateBinaries'}, 'leoluz/nvim-dap-go'})
 end
 
 function L.settings(s)
@@ -18,8 +18,6 @@ function L.settings(s)
     LYRDCodeBuild = ':lua require("LYRD.layers.lang.go").build_go_files()',
     LYRDCodeRun = ':GoRun',
     LYRDTestCoverage = ":GoCoverageToggle",
-    LYRDDebugStart = ":GoDebugStart",
-    LYRDDebugBreakpoint = ":GoDebugBreakpoint",
     LYRDCodeAlternateFile = ":GoAlternate",
     LYRDBufferFormat = ":GoFmt",
     LYRDCodeFixImports = ":GoImports",
@@ -59,6 +57,8 @@ function L.settings(s)
     endif
     augroup END
     ]])
+
+  require('dap-go').setup()
 end
 
 function L.complete(_)

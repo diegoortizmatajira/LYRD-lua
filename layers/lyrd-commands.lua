@@ -111,8 +111,13 @@ function L.settings(s)
     LYRDCodeBuild = '',
     LYRDCodeRun = '',
     LYRDTestCoverage = '',
-    LYRDDebugStart = '',
+    LYRDDebugContinue = '',
+    LYRDDebugStepInto = '',
+    LYRDDebugStepOver = '',
+    LYRDDebugStop = '',
     LYRDDebugBreakpoint = '',
+    LYRDDebugToggleUI = '',
+    LYRDDebugToggleRepl = '',
     LYRDCodeAlternateFile = '',
     LYRDCodeFixImports = '',
     LYRDCodeGlobalCheck = '',
@@ -242,7 +247,15 @@ function L.keybindings(s)
     {'n', {'t', 'F'}, c('LYRDTestFile'), 'Test current file'},
     {'n', {'t', 'f'}, c('LYRDTestFunc'), 'Test current function'},
     {'n', {'t', 'l'}, c('LYRDTestLast'), 'Repeat last test'},
-    {'n', {'t', 'c'}, c('LYRDTestCoverage'), 'Test Coverage'}
+    {'n', {'t', 'c'}, c('LYRDTestCoverage'), 'Test Coverage'},
+    -- Debug Menu
+    {'n', {'d', 'c'}, c('LYRDDebugContinue'), 'Start / Continue'},
+    {'n', {'d', 'i'}, c('LYRDDebugStepInto'), 'Step into'},
+    {'n', {'d', 'o'}, c('LYRDDebugStepOver'), 'Step over'},
+    {'n', {'d', 's'}, c('LYRDDebugStop'), 'Stop'},
+    {'n', {'d', 'b'}, c('LYRDDebugBreakpoint'), 'Toggle breakpoint'},
+    {'n', {'d', 'u'}, c('LYRDDebugToggleUI'), 'Toggle Debug UI'},
+    {'n', {'d', 'r'}, c('LYRDDebugToggleRepl'), 'Toggle Debug Repl'}
   })
 end
 
