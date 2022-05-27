@@ -147,6 +147,8 @@ function L.keybindings(s)
   })
   mappings.space(s, {
     {'n', {'<Tab>'}, c('LYRDBufferJumpToLast'), 'Jump to last buffer'},
+    {'n', {','}, c('LYRDBufferPrev'), 'Previous buffer'},
+    {'n', {'.'}, c('LYRDBufferNext'), 'Next buffer'},
     -- View Menu
     {'n', {'v', '.'}, c('LYRDViewHomePage'), 'Home page'},
     {'n', {'v', 't'}, c('LYRDViewFileTree'), 'Toggle file tree'},
