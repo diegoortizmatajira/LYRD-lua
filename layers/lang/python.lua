@@ -4,12 +4,11 @@ local setup = require"LYRD.setup"
 local L = {name = 'Python language'}
 
 function L.plugins(s)
-  setup.plugin(s, {
-    -- 'mfussenegger/nvim-dap-python'
-  })
+  setup.plugin(s, {'mfussenegger/nvim-dap-python'})
 end
 
 function L.settings(_)
+  require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
 end
 
 function L.keybindings(_)
