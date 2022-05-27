@@ -1,4 +1,5 @@
 local lsp = require"LYRD.layers.lsp"
+local format = require"LYRD.layers.format"
 
 local L = {name = 'Lua Language'}
 
@@ -6,9 +7,11 @@ function L.plugins(_)
 end
 
 function L.settings(_)
-  -- Set Formatter for Autoformat
-  vim.g.formatdef_my_custom_lua = '"lua-format -i --config ~/.config/nvim/lua/LYRD/configs/lua-format"'
-  vim.g.formatters_lua = {'my_custom_lua'}
+  format.add_formatters('lua', {
+    function()
+      return {exe = "lua-format", args = {"-i", "--config", "~/.config/nvim/lua/LYRD/configs/lua-format"}, stdin = true}
+    end
+  })
 end
 
 function L.complete(_)

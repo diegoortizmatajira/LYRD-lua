@@ -1,15 +1,16 @@
 local lsp = require"LYRD.layers.lsp"
 local setup = require"LYRD.setup"
+local format = require"LYRD.layers.format"
 
 local L = {name = 'Python language'}
 
 function L.plugins(s)
-  setup.plugin(s, {
-    -- 'mfussenegger/nvim-dap-python'
-  })
+  setup.plugin(s, {'mfussenegger/nvim-dap-python'})
 end
 
 function L.settings(_)
+  require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
+  format.add_formatters('python', {require('formatter.filetypes.python').yapf})
 end
 
 function L.keybindings(_)

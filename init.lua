@@ -10,6 +10,7 @@ _G.LYRD_setup = {
     "LYRD.layers.lyrd-keyboard",
     "LYRD.layers.motions",
     "LYRD.layers.dev",
+    "LYRD.layers.format",
     "LYRD.layers.git",
     "LYRD.layers.lsp",
     "LYRD.layers.treesitter",

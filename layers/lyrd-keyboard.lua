@@ -61,7 +61,6 @@ function L.keybindings(s)
     {'n', {'r', 'n'}, c('LYRDLSPRename'), 'Rename Symbol'},
     {'n', {'r', 'f'}, c('LYRDCodeRefactor'), 'Refactor'},
     {'v', {'r', 'f'}, c('LYRDCodeRefactor'), 'Refactor'}
-
   })
 end
 

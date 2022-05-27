@@ -21,10 +21,6 @@ function L.settings(s)
     LYRDViewDocumentation = ':OmniSharpDocumentation',
     LYRDFixImports = ':OmniSharpFixUsings',
     LYRDCodeGlobalCheck = ':OmniSharpGlobalCodeCheck',
-    -- LYRDPreviewDefinitions = ':OmniSharpPreviewDefinition',
-    -- LYRDPreviewImplementations = ':OmniSharpPreviewImplementation',
-    -- LYRDTypeLookup = ':OmniSharpTypeLookup',
-    -- LYRDViewCodeActions = ':OmniSharpGetCodeActions',
     LYRDBufferFormat = ':OmniSharpCodeFormat'
   })
 end
@@ -41,7 +37,7 @@ function L.keybindings(s)
   })
 end
 
-function L.complete(s)
+function L.complete(_)
   local pid = vim.fn.getpid()
   local omnisharp_bin = vim.fn.expand("~/.cache/omnisharp-vim/omnisharp-roslyn/run")
   lsp.enable('omnisharp', {cmd = {omnisharp_bin, "--languageserver", "--hostPID", tostring(pid)}})
