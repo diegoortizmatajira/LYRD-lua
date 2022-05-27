@@ -1,6 +1,5 @@
 local mappings = require"LYRD.layers.mappings"
 local setup = require"LYRD.setup"
-local commands = require"LYRD.layers.commands"
 
 local L = {name = 'Development'}
 
@@ -14,10 +13,9 @@ function L.plugins(s)
   })
 end
 
-function L.settings(s)
+function L.settings(_)
   require('colorizer').setup()
   require('nvim-autopairs').setup{}
-  commands.implement(s, '*', {LYRDBufferFormat = ':Autoformat'})
 
 end
 
