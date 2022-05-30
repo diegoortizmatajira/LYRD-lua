@@ -5,8 +5,8 @@ local L = {name = 'LYRD UI'}
 
 function L.plugins(s)
   setup.plugin(s, {
-    'vim-airline/vim-airline',
-    'vim-airline/vim-airline-themes',
+    {'nvim-lualine/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}},
+    {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'},
     'gruvbox-community/gruvbox',
     'mhinz/vim-startify',
     'junegunn/vim-peekaboo',
@@ -38,30 +38,6 @@ local function startify_setup()
   vim.g.startify_change_to_vcs_root = 0
 end
 
-local function airline_setup()
-  -- vim-airline
-  vim.g['airline#extensions#branch#enabled'] = 1
-  vim.g['airline#extensions#ale#enabled'] = 1
-  vim.g['airline#extensions#tabline#enabled'] = 1
-  vim.g['airline#extensions#tagbar#enabled'] = 1
-  vim.g['airline_skip_empty_sections'] = 1
-  vim.g['airline#extensions#tabline#formatter'] = 'unique_tail'
-
-  -- vim-airline
-  vim.g.airline_symbols = {linenr = '␊', branch = '⎇', paste = 'ρ', whitespace = 'Ξ'}
-
-  vim.g['airline#extensions#tabline#left_sep'] = ''
-  vim.g['airline#extensions#tabline#left_alt_sep'] = '|'
-  vim.g.airline_left_sep = ''
-  vim.g.airline_left_alt_sep = '»'
-  vim.g.airline_right_sep = ''
-  vim.g.airline_right_alt_sep = '«'
-  vim.g['airline#extensions#branch#prefix'] = '⤴'
-  vim.g['airline#extensions#readonly#symbol'] = '⊘'
-  vim.g['airline#extensions#linecolumn#prefix'] = '¶'
-  vim.g['airline#extensions#paste#symbol'] = 'ρ'
-end
-
 local function devicons_setup()
   vim.g.webdevicons_enable = 1
   vim.g.webdevicons_enable_nerdtree = 1
@@ -87,7 +63,9 @@ end
 function L.settings(s)
   vim.cmd([[colorscheme gruvbox]])
   startify_setup()
-  airline_setup()
+  require('lualine').setup({options = {theme = 'gruvbox'}})
+  require("bufferline").setup({options = {separator_style = 'slant', show_buffer_close_icons = false}})
+  -- airline_setup()
   devicons_setup()
   -- Highlight the yanked text
   vim.cmd([[
