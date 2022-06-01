@@ -64,7 +64,11 @@ function L.settings(s)
   vim.cmd([[colorscheme gruvbox]])
   startify_setup()
   require('lualine').setup({options = {theme = 'gruvbox'}})
-  require("bufferline").setup({options = {separator_style = 'slant', show_buffer_close_icons = false}})
+  require("bufferline").setup({
+    options = {
+      diagnostics = 'nvim_lsp',
+    }
+  })
   -- airline_setup()
   devicons_setup()
   -- Highlight the yanked text
