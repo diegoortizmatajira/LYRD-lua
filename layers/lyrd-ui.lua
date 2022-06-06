@@ -78,7 +78,10 @@ function L.settings(s)
     au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=500}
     augroup END
     ]])
-  commands.implement(s, '*', {LYRDViewHomePage = ':Startify'})
+  commands.implement(s, '*', {LYRDViewHomePage = ':Startify',
+    LYRDBufferNext = ':BufferNext',
+    LYRDBufferPrev = ':BufferPrev',
+  })
 end
 
 return L

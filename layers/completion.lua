@@ -81,17 +81,7 @@ function L.settings(_)
         end
       end, {"i", "s", "c"}),
       ["<Tab>"] = cmp.mapping(function(fallback)
-        -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-        if cmp.visible() then
-          local entry = cmp.get_selected_entry()
-          if not entry then
-            cmp.select_next_item({behavior = cmp.SelectBehavior.Select})
-          else
-            cmp.confirm()
-          end
-        else
-          cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-        end
+        cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
       end, {"i", "s", "c"}),
       ["<S-Tab>"] = cmp.mapping(function(fallback)
         cmp_ultisnips_mappings.jump_backwards(fallback)
