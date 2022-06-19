@@ -7,7 +7,8 @@ function L.plugins(s)
   setup.plugin(s, {
     {'nvim-lualine/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}},
     {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'},
-    'gruvbox-community/gruvbox',
+    'ellisonleao/gruvbox.nvim',
+    -- 'gruvbox-community/gruvbox',
     'mhinz/vim-startify',
     'junegunn/vim-peekaboo',
     'lukas-reineke/indent-blankline.nvim',
@@ -64,11 +65,7 @@ function L.settings(s)
   vim.cmd([[colorscheme gruvbox]])
   startify_setup()
   require('lualine').setup({options = {theme = 'gruvbox'}})
-  require("bufferline").setup({
-    options = {
-      diagnostics = 'nvim_lsp',
-    }
-  })
+  require("bufferline").setup({options = {diagnostics = 'nvim_lsp'}})
   -- airline_setup()
   devicons_setup()
   -- Highlight the yanked text
@@ -78,9 +75,10 @@ function L.settings(s)
     au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=500}
     augroup END
     ]])
-  commands.implement(s, '*', {LYRDViewHomePage = ':Startify',
+  commands.implement(s, '*', {
+    LYRDViewHomePage = ':Startify',
     LYRDBufferNext = ':BufferLineCycleNext',
-    LYRDBufferPrev = ':BufferLineCyclePrev',
+    LYRDBufferPrev = ':BufferLineCyclePrev'
   })
 end
 
