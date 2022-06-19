@@ -1,4 +1,3 @@
-local mappings = require"LYRD.layers.mappings"
 local setup = require"LYRD.setup"
 
 local L = {name = 'Development'}

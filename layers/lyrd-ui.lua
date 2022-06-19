@@ -79,8 +79,8 @@ function L.settings(s)
     augroup END
     ]])
   commands.implement(s, '*', {LYRDViewHomePage = ':Startify',
-    LYRDBufferNext = ':BufferNext',
-    LYRDBufferPrev = ':BufferPrev',
+    LYRDBufferNext = ':BufferLineCycleNext',
+    LYRDBufferPrev = ':BufferLineCyclePrev',
   })
 end
 
