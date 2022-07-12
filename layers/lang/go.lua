@@ -12,11 +12,6 @@ end
 
 function L.settings(s)
   commands.implement(s, 'go', {
-    LYRDTest = ":GoTest ./...",
-    LYRDTestSuite = ':GoTest ./...',
-    LYRDTestFile = ':GoTest',
-    LYRDTestFunc = ":GoTestFunc",
-    LYRDTestLast = ':GoTest ./...',
     LYRDCodeBuild = ':lua require("LYRD.layers.lang.go").build_go_files()',
     LYRDCodeRun = ':GoRun',
     LYRDTestCoverage = ":GoCoverageToggle",

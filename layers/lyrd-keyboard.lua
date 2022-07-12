@@ -18,6 +18,7 @@ function L.keybindings(s)
     {'n', '<F11>', c('LYRDDebugStepInto')},
     {'n', '<F2>', c('LYRDViewFileTree')},
     {'n', '<S-F2>', c('LYRDViewFileExplorer')},
+    {'n', '<F3>', c('LYRDTestSummary')},
     {'n', '<C-s>', c('LYRDBufferSave')},
     {'i', '<C-s>', '<Esc>' .. c('LYRDBufferSave')},
     {'n', '<C-p>', c('LYRDSearchFiles')},

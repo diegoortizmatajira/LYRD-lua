@@ -108,6 +108,7 @@ function L.settings(s)
     LYRDTestFile = '',
     LYRDTestFunc = '',
     LYRDTestLast = '',
+    LYRDTestSummary = '',
     LYRDCodeBuild = '',
     LYRDCodeRun = '',
     LYRDTestCoverage = '',
@@ -250,6 +251,8 @@ function L.keybindings(s)
     {'n', {'t', 'f'}, c('LYRDTestFunc'), 'Test current function'},
     {'n', {'t', 'l'}, c('LYRDTestLast'), 'Repeat last test'},
     {'n', {'t', 'c'}, c('LYRDTestCoverage'), 'Test Coverage'},
+    {'n', {'t', 'v'}, c('LYRDTestSummary'), 'View test summary'},
+
     -- Debug Menu
     {'n', {'d', 'c'}, c('LYRDDebugContinue'), 'Start / Continue'},
     {'n', {'d', 'i'}, c('LYRDDebugStepInto'), 'Step into'},
