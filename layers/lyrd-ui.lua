@@ -8,10 +8,9 @@ function L.plugins(s)
     {'nvim-lualine/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}},
     {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'},
     'ellisonleao/gruvbox.nvim',
-    -- 'gruvbox-community/gruvbox',
     'mhinz/vim-startify',
     'junegunn/vim-peekaboo',
-    'lukas-reineke/indent-blankline.nvim',
+    -- 'lukas-reineke/indent-blankline.nvim',
     'kyazdani42/nvim-web-devicons'
   })
 end

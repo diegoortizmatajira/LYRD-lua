@@ -1,6 +1,8 @@
 local setup = require"LYRD.setup"
 local commands = require"LYRD.layers.commands"
+local mappings = require"LYRD.layers.mappings"
 local lsp = require"LYRD.layers.lsp"
+local c = commands.command_shortcut
 
 local L = {name = 'Go language'}
 
@@ -61,6 +63,16 @@ function L.settings(s)
   require('dap-go').setup()
 end
 
+function L.keybindings(s)
+  mappings.space_menu(s, {{{'p', 'g'}, 'Golang'}})
+  mappings.space(s,
+    {{'n', {'p', 'g', 'g'}, ':lua require("LYRD.layers.lang.go").generate_getters()', 'Generate Getters'}})
+  mappings.space(s,
+    {{'n', {'p', 'g', 's'}, ':lua require("LYRD.layers.lang.go").generate_setters()', 'Generate Setters'}})
+  mappings.space(s,
+    {{'n', {'p', 'g', 'm'}, ':lua require("LYRD.layers.lang.go").generate_mapping()', 'Generate Mapping'}})
+end
+
 function L.complete(_)
   lsp.enable('gopls', {})
 end
@@ -77,6 +89,53 @@ function L.build_go_files()
   else
     vim.fn["go#cmd#Build"](0)
   end
+end
+
+function L.generate_getters()
+  local receiver = vim.api.nvim_exec([[
+    let newname = input('Name for the receiver: ')
+    echo newname
+        ]], true)
+  local receiver_type = vim.api.nvim_exec([[
+    let newname = input('Name for the receiver type: ')
+    echo newname
+        ]], true)
+  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) \u\1() \2 { return %s.\1 }/g]],
+    receiver, receiver_type, receiver)))
+  vim.cmd('noh')
+end
+
+function L.generate_setters()
+  local receiver = vim.api.nvim_exec([[
+    let newname = input('Name for the receiver: ')
+    echo newname
+        ]], true)
+  local receiver_type = vim.api.nvim_exec([[
+    let newname = input('Name for the receiver type: ')
+    echo newname
+        ]], true)
+  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) Set\u\1(value \2) { %s.\1 = value }/g]],
+    receiver, receiver_type, receiver)))
+  vim.cmd('noh')
+end
+
+function L.generate_mapping()
+  local receiver = vim.api.nvim_exec([[
+    let newname = input('Name for the target prefix: ')
+    echo newname
+        ]], true)
+  if receiver ~= '' then receiver = receiver .. '.' end
+  local source_prefix = vim.api.nvim_exec([[
+    let newname = input('Name for the source prefix (or empty if not required): ')
+    echo newname
+        ]], true)
+  if source_prefix ~= '' then source_prefix = source_prefix .. '.' end
+  local operator = vim.api.nvim_exec([[
+    let newname = input('Operator sign: ')
+    echo newname
+        ]], true)
+  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/ %s\1 %s %s\1/g]], receiver, operator, source_prefix)))
+  vim.cmd('noh')
 end
 
 return L
