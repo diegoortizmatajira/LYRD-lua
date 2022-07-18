@@ -11,6 +11,7 @@ end
 function L.settings(_)
   require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
   format.add_formatters('python', {require('formatter.filetypes.python').yapf})
+  format.add_formatters('htmldjango', {require('formatter.filetypes.html').prettier})
 end
 
 function L.keybindings(_)

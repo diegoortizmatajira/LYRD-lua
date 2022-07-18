@@ -14,6 +14,7 @@ function L.settings(s)
   commands.implement(s, 'go', {
     LYRDCodeBuild = ':lua require("LYRD.layers.lang.go").build_go_files()',
     LYRDCodeRun = ':GoRun',
+    LYRDTest = ':GoTest',
     LYRDTestCoverage = ":GoCoverageToggle",
     LYRDCodeAlternateFile = ":GoAlternate",
     LYRDBufferFormat = ":GoFmt",
@@ -95,8 +96,8 @@ function L.generate_getters()
     let newname = input('Name for the receiver type: ')
     echo newname
         ]], true)
-  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) \u\1() \2 { return %s.\1 }/g]],
-    receiver, receiver_type, receiver)))
+  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) \u\1() \2 { return %s.\1 }/g]], receiver,
+    receiver_type, receiver)))
   vim.cmd('noh')
 end
 
