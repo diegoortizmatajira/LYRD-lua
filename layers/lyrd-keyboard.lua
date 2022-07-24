@@ -45,6 +45,8 @@ function L.keybindings(s)
   })
   mappings.leader(s, {
     {'n', {'<Space>'}, c('noh'), 'Clear search highlights'},
+    {'n', {'['}, 'O<Esc><Down>', 'Insert line before'},
+    {'n', {']'}, 'o<Esc><Up>', 'Insert line after'},
     {'n', {'.'}, c('LYRDViewHomePage'), 'Home page'},
     {'n', {'b'}, c('LYRDBreakLine'), 'Break current line'},
     -- {'n', {'b'}, "<ESC>:s/[,(]/\0/ge<CR><BAR>:'[,']normal ==<CR><BAR>:noh<CR>", 'Break current line'},
