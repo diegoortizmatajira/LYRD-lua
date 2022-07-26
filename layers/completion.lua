@@ -47,7 +47,8 @@ function L.plugins(s)
     'hrsh7th/cmp-cmdline',
     'saadparwaiz1/cmp_luasnip',
     'hrsh7th/nvim-cmp',
-    {'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp'}
+    {'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp'},
+    'mattn/emmet-vim'
   })
 end
 
