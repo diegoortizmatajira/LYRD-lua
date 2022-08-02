@@ -130,7 +130,7 @@ function L.generate_mapping()
     let newname = input('Operator sign: ')
     echo newname
         ]], true)
-  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/ %s\1 %s %s\1/g]], receiver, operator, source_prefix)))
+  vim.cmd(string.format([[:'<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/ %s\1 %s %s\1/g]], receiver, operator, source_prefix))
   vim.cmd('noh')
 end
 
