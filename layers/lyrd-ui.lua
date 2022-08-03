@@ -8,7 +8,12 @@ function L.plugins(s)
     {'nvim-lualine/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons'},
     {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'},
     'ellisonleao/gruvbox.nvim',
-    {'goolord/alpha-nvim', requires = {'kyazdani42/nvim-web-devicons'}},
+    'tanvirtin/monokai.nvim',
+    'jacoborus/tender.vim',
+    'folke/tokyonight.nvim',
+    {'szsdk/onehalf.nvim', requires = 'rktjmp/lush.nvim'},
+    {'goolord/alpha-nvim', requires = 'kyazdani42/nvim-web-devicons'},
+    'rktjmp/lush.nvim',
     'junegunn/vim-peekaboo',
     'kyazdani42/nvim-web-devicons'
   })
@@ -18,11 +23,17 @@ local function startify_setup()
   local alpha = require'alpha'
   local startify = require'alpha.themes.startify'
   startify.section.header.val = {
-    [[   ___       __    ______                            ]],
-    [[   __ |     / /_______  /__________________ ________ ]],
-    [[   __ | /| / /_  _ \_  /_  ___/  __ \_  __ `__ \  _ \]],
-    [[   __ |/ |/ / /  __/  / / /__ / /_/ /  / / / / /  __/]],
-    [[   ____/|__/  \___//_/  \___/ \____//_/ /_/ /_/\___/ ]]
+    [[   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆           █     █░ ▓█████  ██▓     ▄████▄  ▒█████   ███▄ ▄███▓ ▓█████]],
+    [[    ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡠⢾⣿⣿⡿⠋⠉⠉⠻⣿⣿⡛⣦       ▓█░ █ ░█░ ▓█   ▀ ▓██▒    ▒██▀ ▀█ ▒██▒  ██▒▓██▒▀█▀ ██▒ ▓█   ▀]],
+    [[          ⠈⢿⣿⣟⠦ ⣾⣿⣿⣷    ⠻⠿⢿⣿⣧⣄     ▒█░ █ ░█  ▒███   ▒██░    ▒▓█    ▄▒██░  ██▒▓██    ▓██░ ▒███  ]],
+    [[           ⣸⣿⣿⢧ ⢻⠻⣿⣿⣷⣄⣀⠄⠢⣀⡀⠈⠙⠿⠄    ░█░ █ ░█  ▒▓█  ▄ ▒██░   ▒▒▓▓▄ ▄██▒██   ██░▒██    ▒██  ▒▓█  ▄]],
+    [[          ⢠⣿⣿⣿⠈    ⣻⣿⣿⣿⣿⣿⣿⣿⣛⣳⣤⣀⣀   ░░██▒██▓ ▒░▒████▒░██████░▒ ▓███▀ ░ ████▓▒░▒██▒   ░██▒▒░▒████]],
+    [[   ⢠⣧⣶⣥⡤⢄ ⣸⣿⣿⠘  ⢀⣴⣿⣿⡿⠛⣿⣿⣧⠈⢿⠿⠟⠛⠻⠿⠄  ░ ▓░▒ ▒  ░░░ ▒░ ░░ ▒░▓  ░░ ░▒ ▒  ░ ▒░▒░▒░ ░ ▒░   ░  ░░░░ ▒░ ]],
+    [[  ⣰⣿⣿⠛⠻⣿⣿⡦⢹⣿⣷   ⢊⣿⣿⡏  ⢸⣿⣿⡇ ⢀⣠⣄⣾⠄     ▒ ░ ░  ░ ░ ░  ░░ ░ ▒     ░  ▒    ░ ▒ ▒░ ░  ░      ░░ ░ ░  ]],
+    [[ ⣠⣿⠿⠛ ⢀⣿⣿⣷⠘⢿⣿⣦⡀ ⢸⢿⣿⣿⣄ ⣸⣿⣿⡇⣪⣿⡿⠿⣿⣷⡄    ░   ░      ░     ░ ░   ░       ░ ░ ░ ▒  ░      ░       ░  ]],
+    [[ ⠙⠃   ⣼⣿⡟  ⠈⠻⣿⣿⣦⣌⡇⠻⣿⣿⣷⣿⣿⣿ ⣿⣿⡇ ⠛⠻⢷⣄     ░    ░   ░  ░    ░   ░ ░         ░ ░         ░   ░   ░  ]],
+    [[      ⢻⣿⣿⣄   ⠈⠻⣿⣿⣿⣷⣿⣿⣿⣿⣿⡟ ⠫⢿⣿⡆     ]],
+    [[       ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃     LYRD Neovim by Diego Ortiz]]
   }
   startify.section.top_buttons.val = {startify.button("e", "  New file", ":ene <BAR> startinsert <CR>")}
   startify.section.mru.val[2].val = "Files"
