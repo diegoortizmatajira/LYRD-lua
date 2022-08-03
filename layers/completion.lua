@@ -47,6 +47,7 @@ function L.plugins(s)
     'hrsh7th/cmp-cmdline',
     'saadparwaiz1/cmp_luasnip',
     'hrsh7th/nvim-cmp',
+    'hrsh7th/cmp-nvim-lsp-signature-help',
     {'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp'},
     'mattn/emmet-vim'
   })
@@ -108,7 +109,8 @@ function L.settings(_)
       {name = 'cmp_tabnine'},
       {name = 'buffer'},
       {name = 'luasnip'},
-      {name = 'path'}
+      {name = 'path'},
+      {name = 'nvim_lsp_signature_help'}
     }),
     confirm_opts = {behavior = cmp.ConfirmBehavior.Replace, select = true},
     experimental = {ghost_text = true, native_menu = false}

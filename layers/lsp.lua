@@ -14,7 +14,12 @@ function L.plug_capabilities(plug_handler)
 end
 
 function L.plugins(s)
-  setup.plugin(s, {'neovim/nvim-lspconfig', 'folke/trouble.nvim'})
+  setup.plugin(s, {
+    'neovim/nvim-lspconfig',
+    'folke/trouble.nvim',
+    'j-hui/fidget.nvim',
+    'https://git.sr.ht/~whynothugo/lsp_lines.nvim'
+  })
 end
 
 function L.settings(s)
@@ -29,7 +34,7 @@ function L.settings(s)
   for _, sign in ipairs(signs) do vim.fn.sign_define(sign.name, {texthl = sign.name, text = sign.text, numhl = ""}) end
 
   local config = {
-    virtual_text = true,
+    virtual_text = false,
     -- show signs
     signs = {active = signs},
     update_in_insert = true,
@@ -45,6 +50,8 @@ function L.settings(s)
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {border = "rounded"})
 
   require('trouble').setup()
+  require('fidget').setup()
+  require('lsp_lines').setup()
 
   commands.implement(s, '*', {
     LYRDLSPFindReferences = ':lua vim.lsp.buf.references()',
