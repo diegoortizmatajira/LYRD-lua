@@ -3,11 +3,7 @@ local setup = require"LYRD.setup"
 local L = {name = 'Mappings'}
 
 function L.plugins(s)
-  setup.plugin(s, {'liuchengxu/vim-which-key'})
-end
-
-function L.keybindings(s)
-  L.keys(s, {{'n', '<Leader>', [[:WhichKey '<Leader>'<CR>]]}, {'n', '<Space>', [[:WhichKey '<Space>'<CR>]]}})
+  setup.plugin(s, {'folke/which-key.nvim'})
 end
 
 function L.complete(s)
@@ -15,8 +11,10 @@ function L.complete(s)
   local g_var = vim.g.LYRD_Settings
   g_var.mappings = s.mappings
   vim.g.LYRD_Settings = g_var
-  vim.cmd("call which_key#register(',', g:LYRD_Settings.mappings.Leader)")
-  vim.cmd("call which_key#register('<Space>', g:LYRD_Settings.mappings.Space)")
+
+  local wk = require("which-key")
+  wk.register(s.mappings.Leader, {prefix = "<leader>"})
+  wk.register(s.mappings.Space, {prefix = "<Space>"})
 end
 
 local function recursive_documentation(mapping_tree, keys, documentation, depth)
@@ -107,7 +105,19 @@ end
 
 function L.settings(s)
   s.mappings = {Leader = {}, Space = {}}
-  vim.g.which_key_timeout = 100
+  require("which-key").setup{
+    icons = {
+      group = "" -- symbol prepended to a group
+    },
+    layout = {
+      height = {min = 1, max = 25}, -- min and max height of the columns
+      width = {min = 20, max = 50}, -- min and max width of the columns
+      spacing = 3, -- spacing between columns
+      align = "center" -- align columns left, center or right
+    },
+    ignore_missing = true -- enable this to hide mappings for which you didn't specify a label
+
+  }
 end
 
 return L
