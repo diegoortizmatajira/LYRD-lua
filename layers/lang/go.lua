@@ -25,7 +25,9 @@ function L.settings(s)
 
   })
   vim.g.go_list_type = "quickfix"
-  vim.g.go_fmt_command = "goimports"
+  -- vim.g.go_fmt_command = "goimports"
+  vim.g.go_fmt_command = "gopls"
+  vim.g.go_gopls_gofumpt = 1
   vim.g.go_fmt_fail_silently = 1
   vim.g.go_def_mapping_enabled = 0
   vim.g.go_doc_popup_window = 1
@@ -69,7 +71,7 @@ function L.keybindings(s)
 end
 
 function L.complete(_)
-  lsp.enable('gopls', {})
+  lsp.enable('gopls', {settings = {gopls = {gofumpt = true}}})
 end
 
 local function ends_with(str, ending)

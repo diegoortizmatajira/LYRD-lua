@@ -113,7 +113,7 @@ function L.settings(_)
       {name = 'nvim_lsp_signature_help'}
     }),
     confirm_opts = {behavior = cmp.ConfirmBehavior.Replace, select = true},
-    experimental = {ghost_text = true, native_menu = false}
+    experimental = {ghost_text = true}
   })
 
   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
