@@ -24,7 +24,7 @@ end
 -- Default formatters
 L.add_formatters('cs', {require('formatter.filetypes.cs').dotnetformat})
 L.add_formatters('css', {require('formatter.filetypes.css').prettier})
-L.add_formatters('go', {require('formatter.filetypes.go').gofmt})
+L.add_formatters('go', {require('formatter.filetypes.go').gofumpt})
 L.add_formatters('html', {require('formatter.filetypes.html').prettier})
 L.add_formatters('javascript', {require('formatter.filetypes.javascript').prettier})
 L.add_formatters('json', {require('formatter.filetypes.json').prettier})
