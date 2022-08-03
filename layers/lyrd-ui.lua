@@ -5,37 +5,38 @@ local L = {name = 'LYRD UI'}
 
 function L.plugins(s)
   setup.plugin(s, {
-    {'nvim-lualine/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}},
+    {'nvim-lualine/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons'},
     {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'},
     'ellisonleao/gruvbox.nvim',
-    'mhinz/vim-startify',
+    {'goolord/alpha-nvim', requires = {'kyazdani42/nvim-web-devicons'}},
     'junegunn/vim-peekaboo',
-    -- 'lukas-reineke/indent-blankline.nvim',
     'kyazdani42/nvim-web-devicons'
   })
 end
 
 local function startify_setup()
-  -- Startify settings
-
-  vim.g.startify_session_dir = '~/.config/nvim/session'
-  vim.g.startify_lists = {
-    {type = 'sessions', header = {'   Sessions'}},
-    {type = 'dir', header = {'   Current Directory '}},
-    {type = 'files', header = {'   Files'}},
-    {type = 'bookmarks', header = {'   Bookmarks'}}
-  }
-  vim.g.startify_session_autoload = 1
-  vim.g.startify_session_delete_buffers = 1
-  vim.g.startify_custom_header = {
+  local alpha = require'alpha'
+  local startify = require'alpha.themes.startify'
+  startify.section.header.val = {
     [[   ___       __    ______                            ]],
     [[   __ |     / /_______  /__________________ ________ ]],
     [[   __ | /| / /_  _ \_  /_  ___/  __ \_  __ `__ \  _ \]],
     [[   __ |/ |/ / /  __/  / / /__ / /_/ /  / / / / /  __/]],
     [[   ____/|__/  \___//_/  \___/ \____//_/ /_/ /_/\___/ ]]
   }
-  vim.g.startify_change_to_dir = 0
-  vim.g.startify_change_to_vcs_root = 0
+  startify.section.top_buttons.val = {startify.button("e", "  New file", ":ene <BAR> startinsert <CR>")}
+  startify.section.mru.val[2].val = "Files"
+  startify.section.mru.val[4].val = function()
+    return {startify.mru(10)}
+  end
+  startify.section.mru_cwd.val[2].val = "Current Directory"
+  startify.section.mru_cwd.val[4].val = function()
+    return {startify.mru(0, vim.fn.getcwd())}
+  end
+  local config = startify.config
+  -- Switches the position of the MRU and MRU_CWD
+  config.layout[5], config.layout[6] = config.layout[6], config.layout[5]
+  alpha.setup(config)
 end
 
 local function devicons_setup()
@@ -75,7 +76,7 @@ function L.settings(s)
     augroup END
     ]])
   commands.implement(s, '*', {
-    LYRDViewHomePage = ':Startify',
+    LYRDViewHomePage = ':Alpha',
     LYRDBufferNext = ':BufferLineCycleNext',
     LYRDBufferPrev = ':BufferLineCyclePrev'
   })
