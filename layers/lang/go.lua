@@ -2,7 +2,6 @@ local setup = require"LYRD.setup"
 local commands = require"LYRD.layers.commands"
 local mappings = require"LYRD.layers.mappings"
 local lsp = require"LYRD.layers.lsp"
-local c = commands.command_shortcut
 
 local L = {name = 'Go language'}
 
