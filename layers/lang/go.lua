@@ -96,8 +96,8 @@ function L.generate_getters()
     let newname = input('Name for the receiver type: ')
     echo newname
         ]], true)
-  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) \u\1() \2 { return %s.\1 }/g]], receiver,
-    receiver_type, receiver)))
+  vim.cmd(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) \u\1() \2 { return %s.\1 }/g]], receiver,
+    receiver_type, receiver))
   vim.cmd('noh')
 end
 
@@ -110,8 +110,8 @@ function L.generate_setters()
     let newname = input('Name for the receiver type: ')
     echo newname
         ]], true)
-  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) Set\u\1(value \2) { %s.\1 = value }/g]],
-    receiver, receiver_type, receiver)))
+  vim.cmd(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) Set\u\1(value \2) { %s.\1 = value }/g]],
+    receiver, receiver_type, receiver))
   vim.cmd('noh')
 end
 
@@ -130,7 +130,7 @@ function L.generate_mapping()
     let newname = input('Operator sign: ')
     echo newname
         ]], true)
-  vim.cmd(c(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/ %s\1 %s %s\1/g]], receiver, operator, source_prefix)))
+  vim.cmd(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/ %s\1 %s %s\1/g]], receiver, operator, source_prefix))
   vim.cmd('noh')
 end
 
