@@ -148,6 +148,7 @@ function L.keybindings(s)
   })
   mappings.space(s, {
     {'n', {'<Tab>'}, c('LYRDBufferJumpToLast'), 'Jump to last buffer'},
+    {'n', {'/'}, c('LYRDSearchBuffers'), 'Search buffers'},
     {'n', {','}, c('LYRDBufferPrev'), 'Previous buffer'},
     {'n', {'.'}, c('LYRDBufferNext'), 'Next buffer'},
     -- View Menu

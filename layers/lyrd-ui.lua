@@ -6,7 +6,6 @@ local L = {name = 'LYRD UI'}
 function L.plugins(s)
   setup.plugin(s, {
     {'nvim-lualine/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons'},
-    {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'},
     'ellisonleao/gruvbox.nvim',
     'tanvirtin/monokai.nvim',
     'jacoborus/tender.vim',
@@ -76,8 +75,6 @@ function L.settings(s)
   vim.cmd([[colorscheme gruvbox]])
   startify_setup()
   require('lualine').setup({options = {theme = 'gruvbox'}})
-  require("bufferline").setup({options = {diagnostics = 'nvim_lsp'}})
-  -- airline_setup()
   devicons_setup()
   -- Highlight the yanked text
   vim.cmd([[
@@ -88,8 +85,6 @@ function L.settings(s)
     ]])
   commands.implement(s, '*', {
     LYRDViewHomePage = ':Alpha',
-    LYRDBufferNext = ':BufferLineCycleNext',
-    LYRDBufferPrev = ':BufferLineCyclePrev'
   })
 end
 
