@@ -2,7 +2,6 @@ local setup = require"LYRD.setup"
 local commands = require"LYRD.layers.commands"
 local mappings = require"LYRD.layers.mappings"
 local lsp = require"LYRD.layers.lsp"
-local dap = require('dap')
 local c = commands.command_shortcut
 
 local L = {name = 'C# language'}
@@ -28,6 +27,7 @@ function L.settings(s)
     LYRDCodeGlobalCheck = ':OmniSharpGlobalCodeCheck',
     LYRDBufferFormat = ':OmniSharpCodeFormat'
   })
+  local dap = require('dap')
   dap.adapters.coreclr = {
     type = 'executable',
     command = '/path/to/dotnet/netcoredbg/netcoredbg',

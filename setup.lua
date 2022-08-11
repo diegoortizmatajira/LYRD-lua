@@ -26,7 +26,9 @@ local function load_plugins(s, loaded_layers)
         print("Not supported plugin parameter: (" .. plugin_data .. ")")
       end
     end
-    if packer_bootstrap then require('packer').sync() end
+    if packer_bootstrap then
+      require('packer').sync()
+    end
   end)
 end
 

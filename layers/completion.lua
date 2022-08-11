@@ -1,6 +1,5 @@
 local setup = require"LYRD.setup"
 local lsp = require"LYRD.layers.lsp"
-local luasnip = require("luasnip")
 
 local L = {name = 'Completion'}
 
@@ -54,6 +53,7 @@ function L.plugins(s)
 end
 
 function L.settings(_)
+  local luasnip = require("luasnip")
   vim.o.completeopt = "menu,menuone,noselect"
   local cmp = require'cmp'
   cmp.setup({
