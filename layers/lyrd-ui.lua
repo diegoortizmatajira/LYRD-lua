@@ -7,10 +7,6 @@ function L.plugins(s)
   setup.plugin(s, {
     {'nvim-lualine/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons'},
     'ellisonleao/gruvbox.nvim',
-    'tanvirtin/monokai.nvim',
-    'jacoborus/tender.vim',
-    'folke/tokyonight.nvim',
-    {'szsdk/onehalf.nvim', requires = 'rktjmp/lush.nvim'},
     {'goolord/alpha-nvim', requires = 'kyazdani42/nvim-web-devicons'},
     'rktjmp/lush.nvim',
     'junegunn/vim-peekaboo',
@@ -72,6 +68,7 @@ local function devicons_setup()
 end
 
 function L.settings(s)
+  -- Set theme
   vim.cmd([[colorscheme gruvbox]])
   startify_setup()
   require('lualine').setup({options = {theme = 'gruvbox'}})
@@ -83,9 +80,7 @@ function L.settings(s)
     au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=500}
     augroup END
     ]])
-  commands.implement(s, '*', {
-    LYRDViewHomePage = ':Alpha',
-  })
+  commands.implement(s, '*', {LYRDViewHomePage = ':Alpha'})
 end
 
 return L
