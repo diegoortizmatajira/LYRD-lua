@@ -69,7 +69,9 @@ end
 
 function L.settings(s)
   -- Set theme
+  require('gruvbox').setup({contrast = "hard"})
   vim.cmd([[colorscheme gruvbox]])
+
   startify_setup()
   require('lualine').setup({options = {theme = 'gruvbox'}})
   devicons_setup()
