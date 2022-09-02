@@ -40,8 +40,6 @@ local function startify_setup()
     return {startify.mru(0, vim.fn.getcwd())}
   end
   local config = startify.config
-  -- Switches the position of the MRU and MRU_CWD
-  config.layout[5], config.layout[6] = config.layout[6], config.layout[5]
   alpha.setup(config)
 end
 
