@@ -15,7 +15,10 @@ end
 
 function L.plugins(s)
   setup.plugin(s, {
+    'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
+    'mfussenegger/nvim-lint',
     'folke/trouble.nvim',
     'j-hui/fidget.nvim',
     'https://git.sr.ht/~whynothugo/lsp_lines.nvim'
@@ -23,6 +26,21 @@ function L.plugins(s)
 end
 
 function L.settings(s)
+  require('mason').setup()
+  require("mason-lspconfig").setup()
+  require("mason-lspconfig").setup_handlers{
+    -- The first entry (without a key) will be the default handler
+    -- and will be called for each installed server that doesn't have
+    -- a dedicated handler.
+    function(server_name) -- default handler (optional)
+      L.enable(server_name, {})
+    end
+    -- Next, you can provide targeted overrides for specific servers.
+    -- For example, a handler override for the `rust_analyzer`:
+    -- ["rust_analyzer"] = function()
+    --   require("rust-tools").setup{}
+    -- end
+  }
 
   local signs = {
     {name = "DiagnosticSignError", text = ""},
