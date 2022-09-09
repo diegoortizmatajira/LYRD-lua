@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local mappings = require("LYRD.layers.mappings")
 local lsp = require("LYRD.layers.lsp")
+local c = commands.command_shortcut
 
 local L = { name = "Go language" }
 
@@ -24,7 +25,6 @@ function L.settings(s)
 		LYRDCodeGenerate = ":GoGenerate",
 	})
 	vim.g.go_list_type = "quickfix"
-	-- vim.g.go_fmt_command = "goimports"
 	vim.g.go_fmt_command = "gopls"
 	vim.g.go_gopls_gofumpt = 1
 	vim.g.go_fmt_fail_silently = 1
@@ -63,15 +63,15 @@ function L.keybindings(s)
 	mappings.space_menu(s, { { { "p", "g" }, "Golang" } })
 	mappings.space(
 		s,
-		{ { "n", { "p", "g", "g" }, ':lua require("LYRD.layers.lang.go").generate_getters()', "Generate Getters" } }
+		{ { "n", { "p", "g", "g" }, c('lua require("LYRD.layers.lang.go").generate_getters()'), "Generate Getters" } }
 	)
 	mappings.space(
 		s,
-		{ { "n", { "p", "g", "s" }, ':lua require("LYRD.layers.lang.go").generate_setters()', "Generate Setters" } }
+		{ { "n", { "p", "g", "s" }, c(':lua require("LYRD.layers.lang.go").generate_setters()'), "Generate Setters" } }
 	)
 	mappings.space(
 		s,
-		{ { "n", { "p", "g", "m" }, ':lua require("LYRD.layers.lang.go").generate_mapping()', "Generate Mapping" } }
+		{ { "n", { "p", "g", "m" }, c(':lua require("LYRD.layers.lang.go").generate_mapping()'), "Generate Mapping" } }
 	)
 end
 
