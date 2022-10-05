@@ -1,4 +1,5 @@
 local setup = require("LYRD.setup")
+local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Completion" }
@@ -49,10 +50,12 @@ function L.plugins(s)
 		"hrsh7th/cmp-nvim-lsp-signature-help",
 		{ "tzachar/cmp-tabnine", run = "./install.sh", requires = "hrsh7th/nvim-cmp" },
 		"mattn/emmet-vim",
+		"github/copilot.vim",
 	})
 end
 
-function L.settings(_)
+function L.settings(s)
+	vim.g.copilot_no_tab_map = true
 	local luasnip = require("luasnip")
 	vim.o.completeopt = "menu,menuone,noselect"
 	local cmp = require("cmp")
@@ -60,7 +63,6 @@ function L.settings(_)
 		mapping = {
 			["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
 			["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-			["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
 			["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
 			["<C-e>"] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
@@ -87,6 +89,10 @@ function L.settings(_)
 					fallback()
 				end
 			end, { "i", "s" }),
+			-- ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+			-- ["<C-Space>"] = cmp.mapping(function()
+			-- 	vim.api.nvim_exec([[copilot#Accept('\<CR>')]])
+			-- end),
 		},
 		formatting = {
 			fields = { "abbr", "kind", "menu" },
@@ -138,6 +144,10 @@ function L.settings(_)
 			-- uncomment to ignore in lua:
 			-- lua = true
 		},
+	})
+
+	commands.implement(s, "*", {
+		LYRDSmartCoder = ":Copilot",
 	})
 end
 
