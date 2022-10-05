@@ -60,6 +60,7 @@ function L.keybindings(s)
 		{ "n", { "A" }, c("LYRDLSPFindRangeCodeActions"), "Range Actions" },
 		{ "n", { "f" }, c("LYRDBufferFormat"), "Format document" },
 		{ "n", { "d" }, c("LYRDDebugToggleUI"), "Toggle Debug UI" },
+		{ "n", { "j" }, c("LYRDSmartCoder"), "Smart Coder" },
 		{ "n", { "r", "n" }, c("LYRDLSPRename"), "Rename Symbol" },
 		{ "n", { "r", "f" }, c("LYRDCodeRefactor"), "Refactor" },
 		{ "v", { "r", "f" }, c("LYRDCodeRefactor"), "Refactor" },

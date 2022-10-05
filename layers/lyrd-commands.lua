@@ -127,6 +127,7 @@ function L.settings(s)
 		LYRDCodeGenerate = "",
 		LYRDCodeRefactor = "",
 		LYRDBreakLine = ":s/[,(]/&\r/ge|:noh|:'[,']normal==",
+		LYRDSmartCoder = "",
 	})
 end
 
