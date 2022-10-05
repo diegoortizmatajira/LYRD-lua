@@ -15,7 +15,8 @@ function L.settings(s)
 		view = { width = 60, side = "right" },
 		filters = {
 			dotfiles = true,
-			custom = { "^\\.git$", "^node_modules$", "^\\.cache$", "^bin$", "^obj$" },
+			-- custom = { "^\\.git$", "^node_modules$", "^\\.cache$", "^bin$", "^obj$" },
+			custom = { "^\\.git$", "^node_modules$", "^bin$", "^obj$" },
 			exclude = { ".gitignore" },
 		},
 		git = { ignore = true },
