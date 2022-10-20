@@ -34,6 +34,8 @@ function L.keybindings(s)
 		{ "n", "gr", c("LYRDLSPFindReferences") },
 		{ "n", "ga", c("LYRDLSPFindCodeActions") },
 		{ "n", "gA", c("LYRDLSPFindRangeCodeActions") },
+		{ "n", "gO", c([[call append(line('.')-1, '')]]) },
+		{ "n", "go", c([[call append(line('.'), '')]]) },
 		{ "n", [[gpi"]], [[vi""0p]] },
 		{ "n", [[gpi']], [[vi'"0p]] },
 		{ "n", "<A-PageUp>", c("LYRDLSPGotoPrevDiagnostic") },
@@ -45,8 +47,6 @@ function L.keybindings(s)
 	})
 	mappings.leader(s, {
 		{ "n", { "<Space>" }, c("noh"), "Clear search highlights" },
-		{ "n", { "[" }, "O<Esc><Down>", "Insert line before" },
-		{ "n", { "]" }, "o<Esc><Up>", "Insert line after" },
 		{ "n", { "." }, c("LYRDViewHomePage"), "Home page" },
 		{ "n", { "b" }, c("LYRDBreakLine"), "Break current line" },
 		{ "n", { "s" }, c("LYRDBufferSave"), "Save buffer content" },
@@ -54,8 +54,8 @@ function L.keybindings(s)
 		{ "n", { "C" }, c("LYRDBufferCloseAll"), "Close all buffers" },
 		{ "n", { "h" }, c("LYRDBufferSplitH"), "Horizonal split" },
 		{ "n", { "v" }, c("LYRDBufferSplitV"), "Vertical split" },
-		{ "n", { "z" }, c("LYRDBufferPrev"), "Previous buffer" },
-		{ "n", { "x" }, c("LYRDBufferNext"), "Next buffer" },
+		{ "n", { "[" }, c("LYRDBufferPrev"), "Previous buffer" },
+		{ "n", { "]" }, c("LYRDBufferNext"), "Next buffer" },
 		{ "n", { "a" }, c("LYRDLSPFindCodeActions"), "Actions" },
 		{ "n", { "A" }, c("LYRDLSPFindRangeCodeActions"), "Range Actions" },
 		{ "n", { "f" }, c("LYRDBufferFormat"), "Format document" },
