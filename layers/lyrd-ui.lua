@@ -66,6 +66,9 @@ local function devicons_setup()
 end
 
 function L.settings(s)
+	commands.implement(s, "alpha", {
+		LYRDBufferSave = [[:echo 'No saving']],
+	})
 	-- Set theme
 	require("gruvbox").setup({ contrast = "hard" })
 	vim.cmd([[colorscheme gruvbox]])

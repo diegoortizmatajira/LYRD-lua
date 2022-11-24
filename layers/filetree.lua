@@ -8,6 +8,9 @@ function L.plugins(s)
 end
 
 function L.settings(s)
+	commands.implement(s, "NvimTree", {
+		LYRDBufferSave = [[:echo 'No saving']],
+	})
 	require("nvim-tree").setup({
 		disable_netrw = false,
 		update_cwd = true,
