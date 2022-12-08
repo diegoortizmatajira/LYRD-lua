@@ -57,7 +57,7 @@ end
 function L.settings(s)
 	vim.g.copilot_no_tab_map = true
 	local luasnip = require("luasnip")
-	vim.o.completeopt = "menu,menuone,noselect"
+	vim.o.completeopt = "menu,preview,menuone,noselect"
 	local cmp = require("cmp")
 	cmp.setup({
 		mapping = {
@@ -89,10 +89,6 @@ function L.settings(s)
 					fallback()
 				end
 			end, { "i", "s" }),
-			-- ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-			-- ["<C-Space>"] = cmp.mapping(function()
-			-- 	vim.api.nvim_exec([[copilot#Accept('\<CR>')]])
-			-- end),
 		},
 		formatting = {
 			fields = { "abbr", "kind", "menu" },
@@ -116,15 +112,23 @@ function L.settings(s)
 			{ name = "path" },
 			{ name = "nvim_lsp_signature_help" },
 		}),
-		confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = true },
-		experimental = { ghost_text = true },
 	})
 
-	-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-	cmp.setup.cmdline("/", { sources = { { name = "buffer" } } })
+	cmp.setup.cmdline("/", {
+		mapping = cmp.mapping.preset.cmdline(),
+		sources = {
+			{ name = "buffer" },
+		},
+	})
 
-	-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-	cmp.setup.cmdline(":", { sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }) })
+	cmp.setup.cmdline(":", {
+		mapping = cmp.mapping.preset.cmdline(),
+		sources = cmp.config.sources({
+			{ name = "path" },
+		}, {
+			{ name = "cmdline" },
+		}),
+	})
 
 	-- Setup lspconfig.
 	lsp.plug_capabilities(function(previous_capabilities)
