@@ -76,7 +76,7 @@ function L.keybindings(s)
 end
 
 function L.complete(_)
-	lsp.enable("gopls", { settings = { gopls = { gofumpt = true } } })
+	lsp.enable("gopls", { settings = { gopls = { gofumpt = true, buildFlags = { "-tags=wireinject" } } } })
 end
 
 local function ends_with(str, ending)
