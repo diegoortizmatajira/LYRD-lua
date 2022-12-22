@@ -6,9 +6,10 @@ local function load_plugins(s, loaded_layers)
 	-- Installs Packer if not found
 	local fn = vim.fn
 	local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-	local packer_bootstrap = nil
+	local packer_bootstrap = false
 	if fn.empty(fn.glob(install_path)) > 0 then
-		packer_bootstrap = fn.system({
+		packer_bootstrap = true
+		fn.system({
 			"git",
 			"clone",
 			"--depth",
@@ -25,6 +26,7 @@ local function load_plugins(s, loaded_layers)
 	end
 	return require("packer").startup(function(use)
 		use("wbthomason/packer.nvim")
+		use("folke/neodev.nvim") -- Supports neovim lua development
 		for plugin_data, _ in pairs(s.plugins) do
 			if type(plugin_data) == "table" or type(plugin_data) == "string" then
 				use(plugin_data)

@@ -5,8 +5,20 @@ local L = { name = "Treesitter" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
-		"nvim-treesitter/playground",
+		{
+			"nvim-treesitter/nvim-treesitter",
+			run = function()
+				pcall(require("nvim-treesitter.install").update({ with_sync = true }))
+			end,
+		},
+		{ -- Additional text objects via treesitter
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			after = "nvim-treesitter",
+		},
+		{
+			"nvim-treesitter/playground",
+			after = "nvim-treesitter",
+		},
 		{
 			"ThePrimeagen/refactoring.nvim",
 			event = "VimEnter",

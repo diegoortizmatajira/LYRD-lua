@@ -4,7 +4,7 @@ local commands = require("LYRD.layers.commands")
 local L = { name = "Git" }
 
 function L.plugins(s)
-	setup.plugin(s, { "tpope/vim-fugitive", "tpope/vim-dispatch", "lewis6991/gitsigns.nvim" })
+	setup.plugin(s, { "tpope/vim-fugitive", "tpope/vim-rhubarb", "tpope/vim-dispatch", "lewis6991/gitsigns.nvim" })
 end
 
 function L.git_flow_start(what)
@@ -31,6 +31,9 @@ end
 
 function L.settings(s)
 	require("gitsigns").setup()
+	commands.implement(s, "fugitive", {
+		LYRDBufferSave = [[:echo 'No saving']],
+	})
 	commands.implement(s, "*", {
 		LYRDGitModifiedFiles = ":Git",
 		LYRDGitBranches = ":Git branch",
