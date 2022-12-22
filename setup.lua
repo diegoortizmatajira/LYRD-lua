@@ -41,6 +41,7 @@ local function load_plugins(s, loaded_layers)
 end
 
 local function load_settings(s, loaded_layers)
+    require('neodev').setup()
 	for _, layer in ipairs(loaded_layers) do
 		if layer.settings ~= nil then
 			layer.settings(s)

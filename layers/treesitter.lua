@@ -32,6 +32,7 @@ end
 
 function L.settings(s)
 	require("nvim-treesitter.configs").setup({
+		ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "typescript", "help" },
 		highlight = { enable = true },
 		incremental_selection = {
 			enable = true,
@@ -42,7 +43,7 @@ function L.settings(s)
 				node_decremental = "grm",
 			},
 		},
-		indent = { enable = true },
+        indent = { enable = true, disable = { 'python' } },
 	})
 	require("refactoring").setup({
 		-- prompt for return type
