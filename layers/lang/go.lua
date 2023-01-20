@@ -67,11 +67,11 @@ function L.keybindings(s)
 	)
 	mappings.space(
 		s,
-		{ { "n", { "p", "g", "s" }, c(':lua require("LYRD.layers.lang.go").generate_setters()'), "Generate Setters" } }
+		{ { "n", { "p", "g", "s" }, c('lua require("LYRD.layers.lang.go").generate_setters()'), "Generate Setters" } }
 	)
 	mappings.space(
 		s,
-		{ { "n", { "p", "g", "m" }, c(':lua require("LYRD.layers.lang.go").generate_mapping()'), "Generate Mapping" } }
+		{ { "n", { "p", "g", "m" }, c('lua require("LYRD.layers.lang.go").generate_mapping()'), "Generate Mapping" } }
 	)
 end
 
@@ -93,88 +93,93 @@ function L.build_go_files()
 	end
 end
 
-function L.generate_getters()
-	local receiver = vim.api.nvim_exec(
-		[[
-    let newname = input('Name for the receiver: ')
-    echo newname
-        ]],
-		true
-	)
-	local receiver_type = vim.api.nvim_exec(
-		[[
-    let newname = input('Name for the receiver type: ')
-    echo newname
-        ]],
-		true
-	)
-	vim.cmd(
-		string.format(
-			[['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) \u\1() \2 { return %s.\1 }/g]],
-			receiver,
-			receiver_type,
-			receiver
-		)
-	)
-	vim.cmd("noh")
+local function get_root(bufnr)
+	local parser = vim.treesitter.get_parser(bufnr, "go", {})
+	local tree = parser:parse()[1]
+	return tree:root()
 end
 
-function L.generate_setters()
-	local receiver = vim.api.nvim_exec(
-		[[
-    let newname = input('Name for the receiver: ')
-    echo newname
-        ]],
-		true
-	)
-	local receiver_type = vim.api.nvim_exec(
-		[[
-    let newname = input('Name for the receiver type: ')
-    echo newname
-        ]],
-		true
-	)
-	vim.cmd(
-		string.format(
-			[['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/func (%s %s) Set\u\1(value \2) { %s.\1 = value }/g]],
-			receiver,
-			receiver_type,
-			receiver
-		)
-	)
-	vim.cmd("noh")
-end
-
-function L.generate_mapping()
-	local receiver = vim.api.nvim_exec(
-		[[
-    let newname = input('Name for the target prefix: ')
-    echo newname
-        ]],
-		true
-	)
-	if receiver ~= "" then
-		receiver = receiver .. "."
+local function process_fields_from_struct(bufnr, string_generator)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
+	if vim.bo[bufnr].filetype ~= "go" then
+		vim.notify("Can only be used in Golang")
+		return
 	end
-	local source_prefix = vim.api.nvim_exec(
+	local fields = vim.treesitter.parse_query(
+		"go",
 		[[
-    let newname = input('Name for the source prefix (or empty if not required): ')
-    echo newname
-        ]],
-		true
+(type_spec .
+    (type_identifier) @struct_name
+    (struct_type
+        (field_declaration_list
+            (field_declaration
+                name: (field_identifier) @field_name
+                type: (_) @type_identifier
+            )
+        )
+    )
+)
+        ]]
 	)
+	local root = get_root(bufnr)
+	local new_lines = { "" }
+	for _, captures, _ in fields:iter_matches(root, bufnr) do
+		local struct_name = vim.treesitter.query.get_node_text(captures[1], bufnr)
+		local field_name = vim.treesitter.query.get_node_text(captures[2], bufnr)
+		local field_type = vim.treesitter.query.get_node_text(captures[3], bufnr)
+		local text = string_generator(struct_name, field_name, field_type)
+		table.insert(new_lines, text)
+	end
+	table.insert(new_lines, "")
+	local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+	vim.api.nvim_buf_set_lines(bufnr, row, row, false, new_lines)
+end
+
+function L.generate_getters(bufnr)
+	process_fields_from_struct(bufnr, function(struct_name, field_name, field_type)
+		local receiver = string.lower(string.sub(struct_name, 1, 1))
+		local getter_name = (field_name:gsub("^%l", string.upper))
+		return string.format(
+			[[func (%s %s) %s() %s { return %s.%s}]],
+			receiver,
+			struct_name,
+			getter_name,
+			field_type,
+			receiver,
+			field_name
+		)
+	end)
+end
+
+function L.generate_setters(bufnr)
+	process_fields_from_struct(bufnr, function(struct_name, field_name, field_type)
+		local receiver = string.lower(string.sub(struct_name, 1, 1))
+		local property_name = (field_name:gsub("^%l", string.upper))
+		return string.format(
+			[[func (%s %s) Set%s(value %s) { %s.%s = value }]],
+			receiver,
+			struct_name,
+			property_name,
+			field_type,
+			receiver,
+			field_name
+		)
+	end)
+end
+
+function L.generate_mapping(bufnr)
+	local target_prefix = vim.fn.input("Name for the target prefix: ")
+	if target_prefix ~= "" then
+		target_prefix = target_prefix .. "."
+	end
+	local source_prefix = vim.fn.input("Name for the source prefix (or empty if not required): ")
 	if source_prefix ~= "" then
 		source_prefix = source_prefix .. "."
 	end
-	local operator = vim.api.nvim_exec(
-		[[
-    let newname = input('Operator sign: ')
-    echo newname
-        ]],
-		true
-	)
-	vim.cmd(string.format([['<,'>s/\(\w\+\)\s\+\([a-zA-Z.0-9]\+\)/ %s\1 %s %s\1/g]], receiver, operator, source_prefix))
-	vim.cmd("noh")
+	local operator = vim.fn.input("Operator sign: ")
+	process_fields_from_struct(bufnr, function(_, field_name, _)
+		return string.format([[%s%s %s %s%s]], target_prefix, field_name, operator, source_prefix, field_name)
+	end)
 end
 
 return L
