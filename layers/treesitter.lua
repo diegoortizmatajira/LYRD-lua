@@ -25,15 +25,20 @@ function L.plugins(s)
 			config = function()
 				require("config.refactoring").setup()
 			end,
-			requires = { { "nvim-lua/plenary.nvim" }, { "nvim-treesitter/nvim-treesitter" } },
+			requires = {
+				{ "nvim-lua/plenary.nvim" },
+				{ "nvim-treesitter/nvim-treesitter" },
+			},
 		},
 	})
 end
 
 function L.settings(s)
 	require("nvim-treesitter.configs").setup({
-		ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "typescript", "help" },
-		highlight = { enable = true },
+		ensure_installed = { "query", "c", "cpp", "go", "lua", "python", "rust", "typescript", "help" },
+		highlight = {
+			enable = true,
+		},
 		incremental_selection = {
 			enable = true,
 			keymaps = {
@@ -43,7 +48,13 @@ function L.settings(s)
 				node_decremental = "grm",
 			},
 		},
-		indent = { enable = true, disable = { "python" } },
+		indent = {
+			enable = true,
+			disable = { "python" },
+		},
+		playground = {
+			enable = true,
+		},
 		textobjects = {
 			select = {
 				enable = true,
