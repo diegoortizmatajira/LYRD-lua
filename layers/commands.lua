@@ -45,9 +45,6 @@ end
 
 function L.settings(s)
 	s.commands = {}
-	_G.LYRD_Execute = function(commandName)
-		execute_command(s, commandName)
-	end
 
 	L.list_unimplemented = function()
 		show_unimplemented_commands(s)
@@ -68,7 +65,9 @@ end
 function L.register(s, commands)
 	for command, implementation in pairs(commands) do
 		register_implementation(s, "*", command, implementation)
-		vim.cmd(string.format([[command! %s lua LYRD_Execute("%s")]], command, command))
+		vim.api.nvim_create_user_command(command, function()
+			execute_command(s, command)
+		end, {})
 	end
 end
 
