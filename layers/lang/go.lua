@@ -1,8 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
-local mappings = require("LYRD.layers.mappings")
 local lsp = require("LYRD.layers.lsp")
-local c = commands.command_shortcut
 
 local L = { name = "Go language" }
 
@@ -23,6 +21,9 @@ function L.settings(s)
 		LYRDCodeImplementInterface = "GoImpl",
 		LYRDCodeFillStructure = ":GoFillStruct",
 		LYRDCodeGenerate = ":GoGenerate",
+		LYRDCodeProduceGetter = ':lua require("LYRD.layers.lang.go").generate_getters()',
+		LYRDCodeProduceSetter = ':lua require("LYRD.layers.lang.go").generate_setters()',
+		LYRDCodeProduceMapping = ':lua require("LYRD.layers.lang.go").generate_mapping()',
 	})
 	vim.g.go_list_type = "quickfix"
 	vim.g.go_fmt_command = "gopls"
@@ -57,22 +58,6 @@ function L.settings(s)
     ]])
 
 	require("dap-go").setup()
-end
-
-function L.keybindings(s)
-	mappings.space_menu(s, { { { "p", "g" }, "Golang" } })
-	mappings.space(
-		s,
-		{ { "n", { "p", "g", "g" }, c('lua require("LYRD.layers.lang.go").generate_getters()'), "Generate Getters" } }
-	)
-	mappings.space(
-		s,
-		{ { "n", { "p", "g", "s" }, c('lua require("LYRD.layers.lang.go").generate_setters()'), "Generate Setters" } }
-	)
-	mappings.space(
-		s,
-		{ { "n", { "p", "g", "m" }, c('lua require("LYRD.layers.lang.go").generate_mapping()'), "Generate Mapping" } }
-	)
 end
 
 function L.complete(_)
@@ -168,7 +153,7 @@ function L.generate_setters(bufnr)
 end
 
 function L.generate_mapping(bufnr)
-	local target_prefix = vim.fn.input("Name for the target prefix: ")
+	local target_prefix = vim.fn.input("Name for the target prefix (or empty if not required): ")
 	if target_prefix ~= "" then
 		target_prefix = target_prefix .. "."
 	end
