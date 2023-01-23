@@ -55,12 +55,24 @@ function L.settings(s)
 		LYRDGitViewLog = ":Gclog --",
 		LYRDGitBrowseOnWeb = ":Gbrowse",
 		LYRDGitFlowInit = ":Git flow init",
-		LYRDGitFlowFeatureStart = [[:lua require('LYRD.layers.git').git_flow_start('feature')]],
-		LYRDGitFlowFeatureFinish = [[:lua require('LYRD.layers.git').git_flow_finish('feature')]],
-		LYRDGitFlowReleaseStart = [[:lua require('LYRD.layers.git').git_flow_start('release')]],
-		LYRDGitFlowReleaseFinish = [[:lua require('LYRD.layers.git').git_flow_finish('release')]],
-		LYRDGitFlowHotfixStart = [[:lua require('LYRD.layers.git').git_flow_start('hotfix')]],
-		LYRDGitFlowHotfixFinish = [[:lua require('LYRD.layers.git').git_flow_finish('hotfix')]],
+		LYRDGitFlowFeatureStart = function()
+			L.git_flow_start("feature")
+		end,
+		LYRDGitFlowFeatureFinish = function()
+			L.git_flow_finish("feature")
+		end,
+		LYRDGitFlowReleaseStart = function()
+			L.git_flow_start("release")
+		end,
+		LYRDGitFlowReleaseFinish = function()
+			L.git_flow_finish("release")
+		end,
+		LYRDGitFlowHotfixStart = function()
+			L.git_flow_start("hotfix")
+		end,
+		LYRDGitFlowHotfixFinish = function()
+			L.git_flow_finish("hotfix")
+		end,
 		LYRDGitCheckoutMain = ":Git checkout main",
 		LYRDGitCheckoutDev = ":Git checkout develop",
 	})

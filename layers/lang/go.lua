@@ -10,7 +10,7 @@ end
 
 function L.settings(s)
 	commands.implement(s, "go", {
-		LYRDCodeBuild = ':lua require("LYRD.layers.lang.go").build_go_files()',
+		LYRDCodeBuild = L.build_go_files,
 		LYRDCodeRun = ":GoRun",
 		LYRDTest = ":GoTest",
 		LYRDTestCoverage = ":GoCoverageToggle",
@@ -21,9 +21,9 @@ function L.settings(s)
 		LYRDCodeImplementInterface = "GoImpl",
 		LYRDCodeFillStructure = ":GoFillStruct",
 		LYRDCodeGenerate = ":GoGenerate",
-		LYRDCodeProduceGetter = ':lua require("LYRD.layers.lang.go").generate_getters()',
-		LYRDCodeProduceSetter = ':lua require("LYRD.layers.lang.go").generate_setters()',
-		LYRDCodeProduceMapping = ':lua require("LYRD.layers.lang.go").generate_mapping()',
+		LYRDCodeProduceGetter = L.generate_getters,
+		LYRDCodeProduceSetter = L.generate_setters,
+		LYRDCodeProduceMapping = L.generate_mapping,
 	})
 	vim.g.go_list_type = "quickfix"
 	vim.g.go_fmt_command = "gopls"

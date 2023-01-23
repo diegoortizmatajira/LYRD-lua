@@ -107,7 +107,7 @@ function L.settings(s)
 		prompt_func_param_type = { go = true, cpp = true, c = true, java = true },
 	})
 	require("telescope").load_extension("refactoring")
-	commands.implement(s, "*", { LYRDCodeRefactor = ":lua require('refactoring').select_refactor()" })
+	commands.implement(s, "*", { LYRDCodeRefactor = require("refactoring").select_refactor })
 end
 
 return L

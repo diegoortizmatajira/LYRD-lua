@@ -25,13 +25,23 @@ end
 function L.keybindings(s)
 	if vim.g.neovide then
 		mappings.keys(s, {
-			{ "n", "<C-+>", ':lua require("LYRD.layers.neovide").ResizeGuiFont(1)' },
-			{ "n", "<C-->", ':lua require("LYRD.layers.neovide").ResizeGuiFont(-1)' },
+			{
+				"n",
+				"<C-+>",
+				function()
+					L.ResizeGuiFont(1)
+				end,
+			},
+			{
+				"n",
+				"<C-->",
+				function()
+					L.ResizeGuiFont(-1)
+				end,
+			},
 		})
 	end
 end
-
-function L.complete(s) end
 
 L.RefreshGuiFont = function()
 	vim.opt.guifont = string.format("%s:h%s", vim.g.gui_font_face, vim.g.gui_font_size)

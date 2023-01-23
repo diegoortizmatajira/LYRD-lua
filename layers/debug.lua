@@ -22,7 +22,7 @@ function L.settings(s)
 		LYRDDebugStepInto = ":DapStepInto",
 		LYRDDebugStepOver = ":DapStepOver",
 		LYRDDebugStop = ":DapTerminate",
-		LYRDDebugToggleUI = ":lua require'dapui'.toggle()",
+		LYRDDebugToggleUI = require("dapui").toggle,
 		LYRDDebugToggleREPL = ":DapToggleRepl",
 	})
 end

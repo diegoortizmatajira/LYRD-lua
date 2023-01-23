@@ -6,8 +6,8 @@ local L = { name = "LYRD Commands" }
 
 function L.settings(s)
 	commands.register(s, {
-		LYRDUnimplementedCommands = ':lua require("LYRD.layers.commands").list_unimplemented()',
-		LYRDImplementedCommands = ':lua require("LYRD.layers.commands").list_implemented()',
+		LYRDUnimplementedCommands = commands.list_unimplemented,
+		LYRDImplementedCommands = commands.list_implemented,
 		LYRDBufferNew = ":enew",
 		LYRDBufferSave = ":w",
 		LYRDBufferSaveAll = ":wall",

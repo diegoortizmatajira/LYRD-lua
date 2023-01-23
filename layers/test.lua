@@ -14,19 +14,22 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	require("neotest").setup({ adapters = { require("neotest-go") } })
+	local neotest = require("neotest")
+	neotest.setup({ adapters = { require("neotest-go") } })
 	commands.implement(s, "*", {
-		LYRDTest = [[:lua require('neotest').run.run(vim.fn.expand('%'))]],
-		LYRDTestSuite = [[:lua require('neotest').run.run(vim.fn.getcwd())]],
-		LYRDTestFile = [[:lua require('neotest').run.run(vim.fn.expand('%'))]],
-		LYRDTestFunc = [[:lua require("neotest").run.run()]],
-		LYRDTestLast = [[:lua require('neotest').run.run()]],
-		LYRDTestSummary = [[:lua require('neotest').summary.toggle()]],
+		LYRDTest = function()
+			neotest.run.run(vim.fn.expand("%"))
+		end,
+		LYRDTestSuite = function()
+			neotest.run.run(vim.fn.getcwd())
+		end,
+		LYRDTestFile = function()
+			neotest.run.run(vim.fn.expand("%"))
+		end,
+		LYRDTestFunc = neotest.run.run,
+		LYRDTestLast = neotest.run.run,
+		LYRDTestSummary = neotest.summary.toggle,
 	})
 end
-
-function L.keybindings(_) end
-
-function L.complete(_) end
 
 return L

@@ -10,14 +10,27 @@ local function register_implementation(s, filetype, commandName, implementation)
 end
 
 local function execute_command(s, commandName)
+	-- Provides the execution logic depending on the type
+	local execute_and_confirm = function(command_instance)
+		if type(command_instance) == "string" then
+			if command_instance ~= nil and command_instance ~= "" then
+				vim.cmd(command_instance)
+				return true
+			end
+		elseif type(command_instance) == "function" then
+			command_instance()
+			return true
+		end
+		return false
+	end
+	-- Looks for the current file type command implementation
 	local cmd = s.commands[commandName][vim.bo.filetype]
-	if cmd ~= nil and cmd ~= "" then
-		vim.cmd(cmd)
+	if execute_and_confirm(cmd) then
 		return
 	end
+	-- Looks for the generic command implementation
 	cmd = s.commands[commandName]["*"]
-	if cmd ~= nil and cmd ~= "" then
-		vim.cmd(cmd)
+	if execute_and_confirm(cmd) then
 		return
 	end
 	print(string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype))
