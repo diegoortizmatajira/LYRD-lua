@@ -16,6 +16,9 @@ end
 function L.settings(s)
 	local neotest = require("neotest")
 	neotest.setup({ adapters = { require("neotest-go") } })
+	commands.implement(s, "neotest-summary", {
+		LYRDBufferSave = [[:echo 'No saving']],
+	})
 	commands.implement(s, "*", {
 		LYRDTest = function()
 			neotest.run.run(vim.fn.expand("%"))
