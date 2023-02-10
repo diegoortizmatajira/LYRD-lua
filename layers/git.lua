@@ -8,14 +8,12 @@ function L.plugins(s)
 end
 
 function L.git_flow_start(what)
-	local name = vim.api.nvim_exec(
-		[[
-    let newname = input('Name for the new branch: ')
-    echo newname
-        ]],
-		true
-	)
-	vim.cmd(":Git flow " .. what .. " start " .. name)
+	vim.ui.input("Name for the new branch: ", function(name)
+		if not name then
+			return
+		end
+		vim.cmd(":Git flow " .. what .. " start " .. name)
+	end)
 end
 
 function L.git_flow_finish(what)
