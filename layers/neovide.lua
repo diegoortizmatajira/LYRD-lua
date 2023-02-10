@@ -25,20 +25,8 @@ end
 function L.keybindings(s)
 	if vim.g.neovide then
 		mappings.keys(s, {
-			{
-				"n",
-				"<C-+>",
-				function()
-					L.ResizeGuiFont(1)
-				end,
-			},
-			{
-				"n",
-				"<C-->",
-				function()
-					L.ResizeGuiFont(-1)
-				end,
-			},
+			{ "n", "<C-+>", ':lua require("LYRD.layers.neovide").ResizeGuiFont(1)<CR>' },
+			{ "n", "<C-->", ':lua require("LYRD.layers.neovide").ResizeGuiFont(-1)<CR>' },
 		})
 	end
 end
