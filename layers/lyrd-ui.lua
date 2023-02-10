@@ -11,6 +11,7 @@ function L.plugins(s)
 		"rktjmp/lush.nvim",
 		"junegunn/vim-peekaboo",
 		"kyazdani42/nvim-web-devicons",
+		"stevearc/dressing.nvim",
 	})
 end
 
@@ -76,6 +77,14 @@ function L.settings(s)
 	startify_setup()
 	require("lualine").setup({ options = { theme = "gruvbox" } })
 	devicons_setup()
+	require("dressing").setup({
+		input = {
+			-- Set to false to disable the vim.ui.input implementation
+			enabled = true,
+			prompt_align = "center",
+            relative = "win",
+		},
+	})
 	-- Highlight the yanked text
 	vim.cmd([[
     augroup highlight_yank

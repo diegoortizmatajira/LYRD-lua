@@ -57,7 +57,7 @@ local function select_structure(bufnr, callback)
 
 	if #struct_names == 1 then
 		callback(struct_names[1])
-        return
+		return
 	end
 
 	vim.ui.select(struct_names, { prompt = "Select a struct" }, callback)
@@ -134,19 +134,36 @@ function L.generate_mapping(bufnr)
 		if not structure_name then
 			return
 		end
-		local target_prefix = vim.fn.input("Name for the target prefix (or empty if not required): ")
-		if not target_prefix or target_prefix ~= "" then
-			target_prefix = target_prefix .. "."
-		end
-		local source_prefix = vim.fn.input("Name for the source prefix (or empty if not required): ")
-		if not source_prefix or source_prefix ~= "" then
-			source_prefix = source_prefix .. "."
-		end
-		local operator = vim.fn.input("Operator sign: ")
-		local template = function(_, field_name, _)
-			return string.format([[%s%s %s %s%s]], target_prefix, field_name, operator, source_prefix, field_name)
-		end
-		process_fields_from_struct(bufnr, structure_name, template)
+
+		vim.ui.input("Name for the target prefix (or empty if not required): ", function(target_prefix)
+			if not target_prefix then
+				return
+			end
+			if target_prefix ~= "" then
+				target_prefix = target_prefix .. "."
+			end
+			vim.ui.input("Name for the source prefix (or empty if not required): ", function(source_prefix)
+				if not source_prefix then
+					return
+				end
+				if source_prefix ~= "" then
+					source_prefix = source_prefix .. "."
+				end
+				vim.ui.input("Operator sign: ", function(operator)
+					local template = function(_, field_name, _)
+						return string.format(
+							[[%s%s %s %s%s]],
+							target_prefix,
+							field_name,
+							operator,
+							source_prefix,
+							field_name
+						)
+					end
+					process_fields_from_struct(bufnr, structure_name, template)
+				end)
+			end)
+		end)
 	end)
 end
 return L
