@@ -12,7 +12,7 @@ function L.settings(_)
 end
 
 function L.complete(_)
-	lsp.enable("sumneko_lua", {
+	lsp.enable("lua_ls", {
 		settings = {
 			Lua = {
 				runtime = {
