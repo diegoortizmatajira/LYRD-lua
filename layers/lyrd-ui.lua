@@ -82,7 +82,7 @@ function L.settings(s)
 			-- Set to false to disable the vim.ui.input implementation
 			enabled = true,
 			prompt_align = "center",
-            relative = "win",
+            relative = "editor",
 		},
 	})
 	-- Highlight the yanked text
