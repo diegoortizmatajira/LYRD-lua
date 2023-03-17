@@ -21,7 +21,7 @@ function L.keybindings(s)
 		{ "n", "<S-F2>", cmd.LYRDViewFileExplorer },
 		{ "n", "<F3>", cmd.LYRDTestSummary },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
-		{ "i", "<C-s>", "<Esc>" .. cmd.LYRDBufferSave.name },
+		{ "i", "<C-s>", "<Esc>" .. c(cmd.LYRDBufferSave.name) },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<A-Left>", cmd.LYRDBufferPrev },
 		{ "n", "<A-Right>", cmd.LYRDBufferNext },
