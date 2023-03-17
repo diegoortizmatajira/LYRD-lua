@@ -36,9 +36,6 @@ function L.settings(s)
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitModifiedFiles, ":Git" },
 		{ cmd.LYRDGitBranches, ":Git branch" },
-		{ cmd.LYRDGitCommits, "" },
-		{ cmd.LYRDGitBufferCommits, "" },
-		{ cmd.LYRDGitStash, "" },
 		{ cmd.LYRDGitStatus, ":Git" },
 		{ cmd.LYRDGitStageCurrentFile, ":Git add %" },
 		{ cmd.LYRDGitUnstageCurrentFile, ":Git reset -q %" },
