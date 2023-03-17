@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Completion" }
 
@@ -155,7 +156,7 @@ function L.settings(s)
 	})
 
 	commands.implement(s, "*", {
-		LYRDSmartCoder = ":Copilot",
+		{ cmd.LYRDSmartCoder, ":Copilot" },
 	})
 end
 

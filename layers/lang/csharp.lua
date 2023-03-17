@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local mappings = require("LYRD.layers.mappings")
 local lsp = require("LYRD.layers.lsp")
 local c = commands.command_shortcut
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "C# language" }
 
@@ -16,15 +17,14 @@ end
 
 function L.settings(s)
 	commands.implement(s, "cs", {
-		LYRDTest = ":OmniSharpRunTestsInFile",
-		LYRDTestSuite = ":OmniSharpRunTestsInFile",
-		LYRDTestFile = ":OmniSharpRunTestsInFile",
-		LYRDTestFunc = ":OmniSharpRunTest",
-		LYRDTestLast = ":OmniSharpRunTestsInFile",
-		LYRDViewDocumentation = ":OmniSharpDocumentation",
-		LYRDFixImports = ":OmniSharpFixUsings",
-		LYRDCodeGlobalCheck = ":OmniSharpGlobalCodeCheck",
-		LYRDBufferFormat = ":OmniSharpCodeFormat",
+		{ cmd.LYRDTest, ":OmniSharpRunTestsInFile" },
+		{ cmd.LYRDTestSuite, ":OmniSharpRunTestsInFile" },
+		{ cmd.LYRDTestFile, ":OmniSharpRunTestsInFile" },
+		{ cmd.LYRDTestFunc, ":OmniSharpRunTest" },
+		{ cmd.LYRDTestLast, ":OmniSharpRunTestsInFile" },
+		{ cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
+		{ cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
+		{ cmd.LYRDBufferFormat, ":OmniSharpCodeFormat" },
 	})
 	local dap = require("dap")
 	dap.adapters.coreclr = {

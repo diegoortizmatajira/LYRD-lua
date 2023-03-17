@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "File tree" }
 
@@ -9,7 +10,7 @@ end
 
 function L.settings(s)
 	commands.implement(s, "NvimTree", {
-		LYRDBufferSave = [[:echo 'No saving']],
+		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 	require("nvim-tree").setup({
 		disable_netrw = false,
@@ -37,7 +38,10 @@ function L.settings(s)
 		},
 		folder = { default = "", open = "", symlink = "" },
 	}
-	commands.implement(s, "*", { LYRDViewFileTree = ":NvimTreeFindFileToggle", LYRDViewFileExplorer = ":Ntree" })
+	commands.implement(s, "*", {
+		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
+		{ cmd.LYRDViewFileExplorer, ":Ntree" },
+	})
 end
 
 return L

@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Treesitter" }
 
@@ -108,12 +109,14 @@ function L.settings(s)
 	})
 	require("telescope").load_extension("refactoring")
 	commands.implement(s, "tsplayground", {
-		LYRDBufferSave = [[:echo 'No saving']],
+		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 	commands.implement(s, "query", {
-		LYRDBufferSave = [[:echo 'No saving']],
+		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
-	commands.implement(s, "*", { LYRDCodeRefactor = require("refactoring").select_refactor })
+	commands.implement(s, "*", {
+		{ cmd.LYRDCodeRefactor, require("refactoring").select_refactor },
+	})
 end
 
 return L

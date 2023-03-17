@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Buffer format" }
 local custom_formatters = {}
@@ -9,7 +10,9 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	commands.implement(s, "*", { LYRDBufferFormat = ":Format" })
+	commands.implement(s, "*", {
+		{ cmd.LYRDBufferFormat, ":Format" },
+	})
 	-- Default formatters
 	L.add_formatters("cs", { require("formatter.filetypes.cs").dotnetformat })
 	L.add_formatters("css", { require("formatter.filetypes.css").prettier })

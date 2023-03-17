@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Git" }
 
@@ -30,49 +31,64 @@ end
 function L.settings(s)
 	require("gitsigns").setup()
 	commands.implement(s, "fugitive", {
-		LYRDBufferSave = [[:echo 'No saving']],
+		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 	commands.implement(s, "*", {
-		LYRDGitModifiedFiles = ":Git",
-		LYRDGitBranches = ":Git branch",
-		LYRDGitCommits = "",
-		LYRDGitBufferCommits = "",
-		LYRDGitStash = "",
-		LYRDGitStatus = ":Git",
-		LYRDGitStageCurrentFile = ":Git add %",
-		LYRDGitUnstageCurrentFile = ":Git reset -q %",
-		LYRDGitCommit = ":Git commit",
-		LYRDGitWrite = ":Gwrite",
-		LYRDGitPush = ":Git push",
-		LYRDGitPull = ":Git pull",
-		LYRDGitViewDiff = ":Gvdiffsplit",
-		LYRDGitStageAll = ":Git add .",
-		LYRDGitViewBlame = ":Git_blame",
-		LYRDGitRemove = ":GRemove",
-		LYRDGitViewCurrentFileLog = ":Gclog -- %",
-		LYRDGitViewLog = ":Gclog --",
-		LYRDGitBrowseOnWeb = ":Gbrowse",
-		LYRDGitFlowInit = ":Git flow init",
-		LYRDGitFlowFeatureStart = function()
-			L.git_flow_start("feature")
-		end,
-		LYRDGitFlowFeatureFinish = function()
-			L.git_flow_finish("feature")
-		end,
-		LYRDGitFlowReleaseStart = function()
-			L.git_flow_start("release")
-		end,
-		LYRDGitFlowReleaseFinish = function()
-			L.git_flow_finish("release")
-		end,
-		LYRDGitFlowHotfixStart = function()
-			L.git_flow_start("hotfix")
-		end,
-		LYRDGitFlowHotfixFinish = function()
-			L.git_flow_finish("hotfix")
-		end,
-		LYRDGitCheckoutMain = ":Git checkout main",
-		LYRDGitCheckoutDev = ":Git checkout develop",
+		{ cmd.LYRDGitModifiedFiles, ":Git" },
+		{ cmd.LYRDGitBranches, ":Git branch" },
+		{ cmd.LYRDGitStatus, ":Git" },
+		{ cmd.LYRDGitStageCurrentFile, ":Git add %" },
+		{ cmd.LYRDGitUnstageCurrentFile, ":Git reset -q %" },
+		{ cmd.LYRDGitCommit, ":Git commit" },
+		{ cmd.LYRDGitWrite, ":Gwrite" },
+		{ cmd.LYRDGitPush, ":Git push" },
+		{ cmd.LYRDGitPull, ":Git pull" },
+		{ cmd.LYRDGitViewDiff, ":Gvdiffsplit" },
+		{ cmd.LYRDGitStageAll, ":Git add ." },
+		{ cmd.LYRDGitViewBlame, ":Git_blame" },
+		{ cmd.LYRDGitRemove, ":GRemove" },
+		{ cmd.LYRDGitViewCurrentFileLog, ":Gclog -- %" },
+		{ cmd.LYRDGitViewLog, ":Gclog --" },
+		{ cmd.LYRDGitBrowseOnWeb, ":Gbrowse" },
+		{ cmd.LYRDGitFlowInit, ":Git flow init" },
+		{
+			cmd.LYRDGitFlowFeatureStart,
+			function()
+				L.git_flow_start("feature")
+			end,
+		},
+		{
+			cmd.LYRDGitFlowFeatureFinish,
+			function()
+				L.git_flow_finish("feature")
+			end,
+		},
+		{
+			cmd.LYRDGitFlowReleaseStart,
+			function()
+				L.git_flow_start("release")
+			end,
+		},
+		{
+			cmd.LYRDGitFlowReleaseFinish,
+			function()
+				L.git_flow_finish("release")
+			end,
+		},
+		{
+			cmd.LYRDGitFlowHotfixStart,
+			function()
+				L.git_flow_start("hotfix")
+			end,
+		},
+		{
+			cmd.LYRDGitFlowHotfixFinish,
+			function()
+				L.git_flow_finish("hotfix")
+			end,
+		},
+		{ cmd.LYRDGitCheckoutMain, ":Git checkout main" },
+		{ cmd.LYRDGitCheckoutDev, ":Git checkout develop" },
 	})
 end
 

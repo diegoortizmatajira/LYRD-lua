@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Debug" }
 
@@ -17,13 +18,13 @@ function L.settings(s)
 	require("dapui").setup()
 	vim.g.dap_virtual_text = true
 	commands.implement(s, "*", {
-		LYRDDebugBreakpoint = ":DapToggleBreakpoint",
-		LYRDDebugContinue = ":DapContinue",
-		LYRDDebugStepInto = ":DapStepInto",
-		LYRDDebugStepOver = ":DapStepOver",
-		LYRDDebugStop = ":DapTerminate",
-		LYRDDebugToggleUI = require("dapui").toggle,
-		LYRDDebugToggleREPL = ":DapToggleRepl",
+		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
+		{ cmd.LYRDDebugContinue, ":DapContinue" },
+		{ cmd.LYRDDebugStepInto, ":DapStepInto" },
+		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
+		{ cmd.LYRDDebugStop, ":DapTerminate" },
+		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
+		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end
 
