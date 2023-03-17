@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "LSP" }
 
@@ -84,25 +85,25 @@ function L.settings(s)
 	require("lsp_lines").setup()
 
 	commands.implement(s, "*", {
-		LYRDLSPFindReferences = vim.lsp.buf.references,
-		LYRDLSPFindCodeActions = vim.lsp.buf.code_action,
-		LYRDLSPFindRangeCodeActions = vim.lsp.buf.range_code_action,
-		LYRDLSPFindLineDiagnostics = vim.diagnostic.show_line_diagnostics,
-		LYRDLSPFindDocumentDiagnostics = ":TroubleToggle document_diagnostics",
-		LYRDLSPFindWorkspaceDiagnostics = ":TroubleToggle workspace_diagnostics",
-		LYRDLSPFindImplementations = vim.lsp.buf.implementation,
-		LYRDLSPFindDefinitions = vim.lsp.buf.definition,
-		LYRDLSPFindDeclaration = vim.lsp.buf.declaration,
-		LYRDLSPHoverInfo = vim.lsp.buf.hover,
-		LYRDLSPSignatureHelp = vim.lsp.buf.signature_help,
-		LYRDLSPFindTypeDefinition = vim.lsp.buf.type_definition,
-		LYRDLSPRename = vim.lsp.buf.rename,
-		LYRDLSPGotoNextDiagnostic = vim.diagnostic.goto_next,
-		LYRDLSPGotoPrevDiagnostic = vim.diagnostic.goto_prev,
-		LYRDLSPShowDocumentDiagnosticLocList = ":TroubleToggle document_diagnostics",
-		LYRDLSPShowWorkspaceDiagnosticLocList = ":TroubleToggle workspace_diagnostics",
-		LYRDViewLocationList = ":TroubleToggle loclist",
-		LYRDViewQuickFixList = ":TroubleToggle quickfix",
+		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
+		{ cmd.LYRDLSPFindCodeActions, vim.lsp.buf.code_action },
+		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
+		{ cmd.LYRDLSPFindLineDiagnostics, vim.diagnostic.show_line_diagnostics },
+		{ cmd.LYRDLSPFindDocumentDiagnostics, ":TroubleToggle document_diagnostics" },
+		{ cmd.LYRDLSPFindWorkspaceDiagnostics, ":TroubleToggle workspace_diagnostics" },
+		{ cmd.LYRDLSPFindImplementations, vim.lsp.buf.implementation },
+		{ cmd.LYRDLSPFindDefinitions, vim.lsp.buf.definition },
+		{ cmd.LYRDLSPFindDeclaration, vim.lsp.buf.declaration },
+		{ cmd.LYRDLSPHoverInfo, vim.lsp.buf.hover },
+		{ cmd.LYRDLSPSignatureHelp, vim.lsp.buf.signature_help },
+		{ cmd.LYRDLSPFindTypeDefinition, vim.lsp.buf.type_definition },
+		{ cmd.LYRDLSPRename, vim.lsp.buf.rename },
+		{ cmd.LYRDLSPGotoNextDiagnostic, vim.diagnostic.goto_next },
+		{ cmd.LYRDLSPGotoPrevDiagnostic, vim.diagnostic.goto_prev },
+		{ cmd.LYRDLSPShowDocumentDiagnosticLocList, ":TroubleToggle document_diagnostics" },
+		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":TroubleToggle workspace_diagnostics" },
+		{ cmd.LYRDViewLocationList, ":TroubleToggle loclist" },
+		{ cmd.LYRDViewQuickFixList, ":TroubleToggle quickfix" },
 	})
 end
 

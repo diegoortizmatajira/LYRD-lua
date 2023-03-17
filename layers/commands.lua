@@ -10,7 +10,6 @@ local function register_implementation(s, filetype, commandName, implementation)
 end
 
 local function execute_command(s, commandName)
-    print(commandName)
 	-- Provides the execution logic depending on the type
 	local execute_and_confirm = function(command_instance)
 		if type(command_instance) == "string" then
@@ -79,7 +78,7 @@ end
 function L.register(s, commands)
 	for command_name, definition in pairs(commands) do
 		definition.name = command_name
-		register_implementation(s, "*", definition, definition.default or "")
+		register_implementation(s, "*", command_name, definition.default)
 		vim.api.nvim_create_user_command(command_name, function()
 			execute_command(s, command_name)
 		end, {})

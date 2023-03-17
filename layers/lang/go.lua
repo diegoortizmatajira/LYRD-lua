@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Go language" }
 
@@ -14,20 +15,20 @@ end
 
 function L.settings(s)
 	commands.implement(s, "go", {
-		LYRDCodeBuild = L.build_go_files,
-		LYRDCodeRun = ":GoRun",
-		LYRDTest = ":GoTest",
-		LYRDTestCoverage = ":GoCoverageToggle",
-		LYRDCodeAlternateFile = ":GoAlternate",
-		LYRDBufferFormat = ":GoFmt",
-		LYRDCodeFixImports = ":GoImports",
-		LYRDCodeGlobalCheck = ":GoMetaLinter!",
-		LYRDCodeImplementInterface = "GoImpl",
-		LYRDCodeFillStructure = ":GoFillStruct",
-		LYRDCodeGenerate = ":GoGenerate",
-		LYRDCodeProduceGetter = generator.generate_getters,
-		LYRDCodeProduceSetter = generator.generate_setters,
-		LYRDCodeProduceMapping = generator.generate_mapping,
+		{ cmd.LYRDCodeBuild, L.build_go_files },
+		{ cmd.LYRDCodeRun, ":GoRun" },
+		{ cmd.LYRDTest, ":GoTest" },
+		{ cmd.LYRDTestCoverage, ":GoCoverageToggle" },
+		{ cmd.LYRDCodeAlternateFile, ":GoAlternate" },
+		{ cmd.LYRDBufferFormat, ":GoFmt" },
+		{ cmd.LYRDCodeFixImports, ":GoImports" },
+		{ cmd.LYRDCodeGlobalCheck, ":GoMetaLinter!" },
+		{ cmd.LYRDCodeImplementInterface, "GoImpl" },
+		{ cmd.LYRDCodeFillStructure, ":GoFillStruct" },
+		{ cmd.LYRDCodeGenerate, ":GoGenerate" },
+		{ cmd.LYRDCodeProduceGetter, generator.generate_getters },
+		{ cmd.LYRDCodeProduceSetter, generator.generate_setters },
+		{ cmd.LYRDCodeProduceMapping, generator.generate_mapping },
 	})
 	vim.g.go_list_type = "quickfix"
 	vim.g.go_fmt_command = "gopls"

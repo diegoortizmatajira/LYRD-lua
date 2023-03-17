@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "LYRD UI" }
 
@@ -67,7 +68,7 @@ end
 
 function L.settings(s)
 	commands.implement(s, "alpha", {
-		LYRDBufferSave = [[:echo 'No saving']],
+		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 	-- Set theme
 	require("gruvbox").setup({ contrast = "hard" })
@@ -81,7 +82,7 @@ function L.settings(s)
 			-- Set to false to disable the vim.ui.input implementation
 			enabled = true,
 			prompt_align = "center",
-            relative = "editor",
+			relative = "editor",
 		},
 	})
 	-- Highlight the yanked text
@@ -91,7 +92,9 @@ function L.settings(s)
     au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=500}
     augroup END
     ]])
-	commands.implement(s, "*", { LYRDViewHomePage = ":Alpha" })
+	commands.implement(s, "*", {
+		{ cmd.LYRDViewHomePage, ":Alpha" },
+	})
 end
 
 return L

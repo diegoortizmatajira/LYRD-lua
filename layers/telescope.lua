@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Telescope" }
 
@@ -19,34 +20,34 @@ function L.settings(s)
 	pcall(require("telescope").load_extension, "fzf")
 
 	commands.implement(s, "*", {
-		LYRDSearchFiles = ":Telescope find_files",
-		LYRDSearchBuffers = ":Telescope buffers",
-		LYRDSearchGitFiles = ":Telescope git_files",
-		LYRDSearchRecentFiles = ":Telescope oldfiles",
-		LYRDSearchBufferLines = ":Telescope current_buffer_fuzzy_lines",
-		LYRDSearchCommandHistory = ":Telescope command_history",
-		LYRDSearchKeyMappings = ":Telescope keymaps",
-		LYRDSearchBufferTags = ":Telescope current_buffer_tags",
-		LYRDSearchLiveGrep = ":Telescope live_grep",
-		LYRDSearchFiletypes = ":Telescope filetypes",
-		LYRDSearchColorSchemes = ":Telescope colorscheme",
-		LYRDSearchQuickFixes = ":Telescope quickfix",
-		LYRDSearchRegisters = ":Telescope registers",
-		LYRDSearchHighlights = ":Telescope highlights",
-		LYRDSearchCurrentString = ":Telescope grep_string",
-		LYRDSearchCommands = ":Telescope commands",
-		LYRDGitModifiedFiles = ":Telescope git_status",
-		LYRDGitBranches = ":Telescope git_branches",
-		LYRDGitCommits = ":Telescope git_commits",
-		LYRDGitBufferCommits = ":Telescope git_bcommits",
-		LYRDGitStash = ":Telescope git_stash",
-		LYRDLSPFindReferences = ":Telescope lsp_references",
-		LYRDLSPFindDocumentSymbols = ":Telescope lsp_document_symbols",
-		LYRDLSPFindWorkspaceSymbols = ":Telescope lsp_workspace_symbols",
-		LYRDLSPFindDocumentDiagnostics = ":Telescope lsp_document_diagnostics",
-		LYRDLSPFindWorkspaceDiagnostics = ":Telescope lsp_workspace_diagnostics",
-		LYRDLSPFindImplementations = ":Telescope lsp_implementations",
-		LYRDLSPFindDefinitions = ":Telescope lsp_definitions",
+		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
+		{ cmd.LYRDSearchBuffers, ":Telescope buffers" },
+		{ cmd.LYRDSearchGitFiles, ":Telescope git_files" },
+		{ cmd.LYRDSearchRecentFiles, ":Telescope oldfiles" },
+		{ cmd.LYRDSearchBufferLines, ":Telescope current_buffer_fuzzy_lines" },
+		{ cmd.LYRDSearchCommandHistory, ":Telescope command_history" },
+		{ cmd.LYRDSearchKeyMappings, ":Telescope keymaps" },
+		{ cmd.LYRDSearchBufferTags, ":Telescope current_buffer_tags" },
+		{ cmd.LYRDSearchLiveGrep, ":Telescope live_grep" },
+		{ cmd.LYRDSearchFiletypes, ":Telescope filetypes" },
+		{ cmd.LYRDSearchColorSchemes, ":Telescope colorscheme" },
+		{ cmd.LYRDSearchQuickFixes, ":Telescope quickfix" },
+		{ cmd.LYRDSearchRegisters, ":Telescope registers" },
+		{ cmd.LYRDSearchHighlights, ":Telescope highlights" },
+		{ cmd.LYRDSearchCurrentString, ":Telescope grep_string" },
+		{ cmd.LYRDSearchCommands, ":Telescope commands" },
+		{ cmd.LYRDGitModifiedFiles, ":Telescope git_status" },
+		{ cmd.LYRDGitBranches, ":Telescope git_branches" },
+		{ cmd.LYRDGitCommits, ":Telescope git_commits" },
+		{ cmd.LYRDGitBufferCommits, ":Telescope git_bcommits" },
+		{ cmd.LYRDGitStash, ":Telescope git_stash" },
+		{ cmd.LYRDLSPFindReferences, ":Telescope lsp_references" },
+		{ cmd.LYRDLSPFindDocumentSymbols, ":Telescope lsp_document_symbols" },
+		{ cmd.LYRDLSPFindWorkspaceSymbols, ":Telescope lsp_workspace_symbols" },
+		{ cmd.LYRDLSPFindDocumentDiagnostics, ":Telescope lsp_document_diagnostics" },
+		{ cmd.LYRDLSPFindWorkspaceDiagnostics, ":Telescope lsp_workspace_diagnostics" },
+		{ cmd.LYRDLSPFindImplementations, ":Telescope lsp_implementations" },
+		{ cmd.LYRDLSPFindDefinitions, ":Telescope lsp_definitions" },
 	})
 end
 
