@@ -6,7 +6,10 @@ local generator = require("LYRD.layers.lang.go-generator")
 local L = { name = "Go language" }
 
 function L.plugins(s)
-	setup.plugin(s, { { "fatih/vim-go", run = ":GoUpdateBinaries" }, "leoluz/nvim-dap-go" })
+	setup.plugin(s, {
+		{ "fatih/vim-go", run = ":GoUpdateBinaries" },
+		"leoluz/nvim-dap-go",
+	})
 end
 
 function L.settings(s)
@@ -46,9 +49,10 @@ function L.settings(s)
 	vim.g.go_highlight_extra_types = 1
 	vim.g.go_debug_breakpoint_sign_text = ">"
 
-	vim.cmd([[
-    autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4
-    ]])
+	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+		pattern = { "*.go" },
+		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
+	})
 	vim.cmd([[
     augroup completion_preview_close
     autocmd!
@@ -71,7 +75,6 @@ function L.settings(s)
 		"gotests",
 		"impl",
 	})
-
 end
 
 function L.complete(_)
@@ -92,6 +95,5 @@ function L.build_go_files()
 		vim.fn["go#cmd#Build"](0)
 	end
 end
-
 
 return L
