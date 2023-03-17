@@ -70,16 +70,20 @@ end
 function L.complete(_) end
 
 function L.implement(s, filetype, commands)
-	for command, implementation in pairs(commands) do
-		register_implementation(s, filetype, command, implementation)
+	for _, command_info in ipairs(commands) do
+		if command_info[1] == nil then
+			error("The command to be implemented does not exist. It's implementation would be: " .. command_info[2])
+		end
+		register_implementation(s, filetype, command_info[1].name, command_info[2])
 	end
 end
 
 function L.register(s, commands)
-	for command, implementation in pairs(commands) do
-		register_implementation(s, "*", command, implementation)
-		vim.api.nvim_create_user_command(command, function()
-			execute_command(s, command)
+	for command_name, definition in pairs(commands) do
+		definition.name = command_name
+		register_implementation(s, "*", command_name, definition.default)
+		vim.api.nvim_create_user_command(command_name, function()
+			execute_command(s, command_name)
 		end, {})
 	end
 end

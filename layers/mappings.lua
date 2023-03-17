@@ -51,9 +51,15 @@ local function map_key(_, mode, lead, keys, command, documentation, options)
 		lead = ""
 	end
 	local key_str = lead .. table.concat(keys)
-    -- Adds the documentation to the native nvim keymap
-	options.desc = documentation
-	vim.keymap.set(mode, key_str, command, options)
+	-- Adds the documentation to the native nvim keymap
+	local command_str = command
+    -- If the command is a Command object, then uses the command name and description
+	if type(command) ~= "string" then
+		command_str = "<cmd>" .. command.name .. "<CR>"
+		options.desc = command.desc
+	end
+	options.desc = documentation or options.desc
+	vim.keymap.set(mode, key_str, command_str, options)
 end
 
 local function map_menu(s, lead, keys, description)
