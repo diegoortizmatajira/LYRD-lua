@@ -71,6 +71,9 @@ function L.complete(_) end
 
 function L.implement(s, filetype, commands)
 	for _, command_info in ipairs(commands) do
+		if command_info[1] == nil then
+			error("The command to be implemented does not exist. It's implementation would be: " .. command_info[2])
+		end
 		register_implementation(s, filetype, command_info[1].name, command_info[2])
 	end
 end

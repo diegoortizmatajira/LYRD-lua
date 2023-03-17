@@ -22,7 +22,7 @@ function L.settings(s)
 		{ cmd.LYRDCodeAlternateFile, ":GoAlternate" },
 		{ cmd.LYRDBufferFormat, ":GoFmt" },
 		{ cmd.LYRDCodeFixImports, ":GoImports" },
-		{ cmd.LYRDCodeGlobalCheck, ":GoMetaLinter!" },
+		{ cmd.LYRDCodeGlobalChecka, ":GoMetaLinter!" },
 		{ cmd.LYRDCodeImplementInterface, "GoImpl" },
 		{ cmd.LYRDCodeFillStructure, ":GoFillStruct" },
 		{ cmd.LYRDCodeGenerate, ":GoGenerate" },
