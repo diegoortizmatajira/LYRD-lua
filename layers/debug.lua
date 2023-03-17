@@ -24,7 +24,7 @@ function L.settings(s)
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
 		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
-		{ cmd.LYRDDebugToggleREPL, ":DapToggleRepl" },
+		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end
 

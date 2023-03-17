@@ -22,8 +22,7 @@ function L.settings(s)
 		{ cmd.LYRDTestFile, ":OmniSharpRunTestsInFile" },
 		{ cmd.LYRDTestFunc, ":OmniSharpRunTest" },
 		{ cmd.LYRDTestLast, ":OmniSharpRunTestsInFile" },
-		{ cmd.LYRDViewDocumentation, ":OmniSharpDocumentation" },
-		{ cmd.LYRDFixImports, ":OmniSharpFixUsings" },
+		{ cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
 		{ cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
 		{ cmd.LYRDBufferFormat, ":OmniSharpCodeFormat" },
 	})
