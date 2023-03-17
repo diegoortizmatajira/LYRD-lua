@@ -41,18 +41,19 @@ local function recursive_documentation(mapping_tree, keys, documentation, depth)
 	end
 end
 
-local function map_key(s, mode, lead, keys, command, documentation, options)
+local function map_key(_, mode, lead, keys, command, documentation, options)
 	if options == nil then
 		options = { noremap = true, silent = true }
 	end
 	if lead ~= nil then
-		recursive_documentation(s.mappings[lead], keys, documentation, 1)
 		lead = "<" .. lead .. ">"
 	else
 		lead = ""
 	end
 	local key_str = lead .. table.concat(keys)
-	vim.api.nvim_set_keymap(mode, key_str, command, options)
+    -- Adds the documentation to the native nvim keymap
+	options.desc = documentation
+	vim.keymap.set(mode, key_str, command, options)
 end
 
 local function map_menu(s, lead, keys, description)
@@ -127,7 +128,7 @@ function L.settings(s)
 			spacing = 3, -- spacing between columns
 			align = "center", -- align columns left, center or right
 		},
-		ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
+		-- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
 	})
 end
 

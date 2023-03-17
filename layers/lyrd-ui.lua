@@ -9,7 +9,6 @@ function L.plugins(s)
 		"ellisonleao/gruvbox.nvim",
 		{ "goolord/alpha-nvim", requires = "kyazdani42/nvim-web-devicons" },
 		"rktjmp/lush.nvim",
-		"junegunn/vim-peekaboo",
 		"kyazdani42/nvim-web-devicons",
 		"stevearc/dressing.nvim",
 	})
