@@ -4,7 +4,11 @@ local L = { name = "CMake Language" }
 
 function L.plugins(_) end
 
-function L.settings(_) end
+function L.settings(_)
+	lsp.mason_ensure({
+		"cmake-language-server",
+	})
+end
 
 function L.keybindings(_) end
 

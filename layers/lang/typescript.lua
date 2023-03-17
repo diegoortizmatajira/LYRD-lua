@@ -12,6 +12,10 @@ function L.settings(_)
 	vim.g.javascript_plugin_jsdoc = 1
 	vim.g.javascript_plugin_ngdoc = 1
 	vim.g.javascript_plugin_flow = 1
+	lsp.mason_ensure({
+        "prettier",
+        "typescript-language-server",
+    })
 	format.add_formatters("typescript", { require("formatter.filetypes.typescript").prettier })
 end
 

@@ -6,6 +6,13 @@ local L = { name = "Lua Language" }
 function L.plugins(_) end
 
 function L.settings(_)
+	lsp.mason_ensure({
+		"lua-language-server",
+		"luacheck",
+		"luaformatter",
+		"luau-lsp",
+		"stylua",
+	})
 	format.add_formatters("lua", {
 		require("formatter.filetypes.lua").stylua,
 	})

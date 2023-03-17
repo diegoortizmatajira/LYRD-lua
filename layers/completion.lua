@@ -137,7 +137,7 @@ function L.settings(s)
 	-- Setup lspconfig.
 	lsp.plug_capabilities(function(previous_capabilities)
 		return function()
-			return require("cmp_nvim_lsp").update_capabilities(previous_capabilities())
+			return require("cmp_nvim_lsp").default_capabilities(previous_capabilities())
 		end
 	end)
 

@@ -9,6 +9,11 @@ function L.plugins(s)
 end
 
 function L.settings(_)
+	lsp.mason_ensure({
+		"json-lsp",
+		"json-to-struct",
+		"prettier",
+    })
 	format.add_formatters("json", { require("formatter.filetypes.json").prettier })
 end
 

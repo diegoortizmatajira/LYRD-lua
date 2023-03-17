@@ -42,6 +42,12 @@ function L.settings(s)
 			end,
 		},
 	}
+	lsp.mason_ensure({
+		"csharp-language-server",
+		"csharpier",
+		"netcoredbg",
+		"omnisharp",
+	})
 end
 
 function L.keybindings(s)

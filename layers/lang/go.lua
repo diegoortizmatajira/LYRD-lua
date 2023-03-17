@@ -58,11 +58,25 @@ function L.settings(s)
     augroup END
     ]])
 
-	require("dap-go").setup()
+	lsp.mason_ensure({
+		"delve",
+		"go-debug-adapter",
+		"gofumpt",
+		"goimports",
+		"golangci-lint",
+		"golangci-lint-langserver",
+		"golines",
+		"gomodifytags",
+		"gopls",
+		"gotests",
+		"impl",
+	})
+
 end
 
 function L.complete(_)
 	lsp.enable("gopls", { settings = { gopls = { gofumpt = true, buildFlags = { "-tags=wireinject,integration" } } } })
+	require("dap-go").setup()
 end
 
 local function ends_with(str, ending)

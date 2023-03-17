@@ -4,6 +4,7 @@ local commands = require("LYRD.layers.commands")
 local L = { name = "LSP" }
 
 local capabilities = nil
+local mason_required = {}
 
 local plugged_capabilities = function()
 	return vim.lsp.protocol.make_client_capabilities()
@@ -114,77 +115,36 @@ function L.enable(server, options)
 	require("lspconfig")[server].setup(options)
 end
 
+function L.mason_ensure(tools)
+	for _, tool in ipairs(tools) do
+		table.insert(mason_required, tool)
+	end
+end
+
 function L.complete(_)
+	L.mason_ensure({
+		"angular-language-server",
+		"bash-language-server",
+		"clang-format",
+		"css-lsp",
+		"dockerfile-language-server",
+		"editorconfig-checker",
+		"emmet-ls",
+		"eslint-lsp",
+		"firefox-debug-adapter",
+		"markdownlint",
+		"node-debug2-adapter",
+		"sql-formatter",
+		"sqlls",
+		"sqls",
+		"vim-language-server",
+		"xmlformatter",
+		"yamlfmt",
+		"yamllint",
+		"yapf",
+	})
 	require("mason-tool-installer").setup({
-
-		-- a list of all tools you want to ensure are installed upon
-		-- start; they should be the names Mason uses for each tool
-		ensure_installed = {
-			"angular-language-server",
-			"bash-language-server",
-			"clang-format",
-			"cmake-language-server",
-			"css-lsp",
-			"debugpy",
-			"delve",
-			"dockerfile-language-server",
-			"editorconfig-checker",
-			"firefox-debug-adapter",
-			"go-debug-adapter",
-			"gofumpt",
-			"goimports",
-			"golangci-lint",
-			"golangci-lint-langserver",
-			"golines",
-			"gomodifytags",
-			"gopls",
-			"gotests",
-			"impl",
-			"json-lsp",
-			"json-to-struct",
-			"lua-language-server",
-			"luacheck",
-			"luaformatter",
-			"luau-lsp",
-			"markdownlint",
-			"netcoredbg",
-			"omnisharp",
-			"prettier",
-			"pylint",
-			"pyright",
-			"python-lsp-server",
-			"stylua",
-			"vim-language-server",
-			"yamlfmt",
-			"yamllint",
-			"yapf",
-		},
-
-		-- if set to true this will check each tool for updates. If updates
-		-- are available the tool will be updated. This setting does not
-		-- affect :MasonToolsUpdate or :MasonToolsInstall.
-		-- Default: false
-		auto_update = false,
-
-		-- automatically install / update on startup. If set to false nothing
-		-- will happen on startup. You can use :MasonToolsInstall or
-		-- :MasonToolsUpdate to install tools and check for updates.
-		-- Default: true
-		run_on_start = true,
-
-		-- set a delay (in ms) before the installation starts. This is only
-		-- effective if run_on_start is set to true.
-		-- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
-		-- Default: 0
-		start_delay = 3000, -- 3 second delay
-
-		-- Only attempt to install if 'debounce_hours' number of hours has
-		-- elapsed since the last time Neovim was started. This stores a
-		-- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
-		-- This is only relevant when you are using 'run_on_start'. It has no
-		-- effect when running manually via ':MasonToolsInstall' etc....
-		-- Default: nil
-		debounce_hours = 5, -- at least 5 hours between attempts to install/update
+		ensure_installed = mason_required,
 	})
 end
 
