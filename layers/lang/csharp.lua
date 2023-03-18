@@ -29,7 +29,7 @@ function L.settings(s)
 	local dap = require("dap")
 	dap.adapters.coreclr = {
 		type = "executable",
-		command = "/path/to/dotnet/netcoredbg/netcoredbg",
+		command = ".local/share/nvim/mason/packages/netcoredbg",
 		args = { "--interpreter=vscode" },
 	}
 	dap.configurations.cs = {
@@ -65,7 +65,7 @@ end
 function L.complete(_)
 	vim.g.OmniSharp_server_use_net6 = 1
 	local pid = vim.fn.getpid()
-	local omnisharp_bin = vim.fn.expand("~/.cache/omnisharp-vim/omnisharp-roslyn/OmniSharp")
+	local omnisharp_bin = vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp")
 	lsp.enable("omnisharp", { cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) } })
 end
 
