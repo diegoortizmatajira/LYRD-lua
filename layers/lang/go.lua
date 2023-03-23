@@ -71,7 +71,14 @@ function L.settings(s)
 end
 
 function L.complete(_)
-	lsp.enable("gopls", { settings = { gopls = { gofumpt = true, buildFlags = { "-tags=wireinject,integration" } } } })
+	lsp.enable("gopls", {
+		settings = {
+			gopls = {
+				gofumpt = true,
+				buildFlags = { "-tags=wireinject,integration" },
+			},
+		},
+	})
 	require("dap-go").setup()
 end
 
