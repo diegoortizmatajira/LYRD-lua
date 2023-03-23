@@ -25,6 +25,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.lang.csharp",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.python",
+		"LYRD.layers.lang.rust",
 		"LYRD.layers.lang.typescript",
 		"LYRD.layers.lang.json",
 		"LYRD.layers.lang.cmake",

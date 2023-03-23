@@ -106,9 +106,9 @@ function L.settings(s)
 	local ui_highlight_yank_group = vim.api.nvim_create_augroup("ui_highlight_yank_group", {})
 	vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 		group = ui_highlight_yank_group,
-		pattern = { "*" },
+		pattern = "*",
 		callback = function()
-			vim.highlight.on_yank({ higroup = "IncSearch", timeout = 500 })
+			vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
 		end,
 	})
 	commands.implement(s, "*", {
