@@ -84,29 +84,12 @@ function L.settings(_)
 	-- *****************************************************************************
 	-- Autocmd Rules
 	-- *****************************************************************************
-	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-	vim.cmd([[
-    augroup vimrc-sync-fromstart
-    autocmd!
-    autocmd BufEnter * :syntax sync maxlines=200
-    augroup END
-    ]])
-	-- Remember cursor position
-	vim.cmd([[
-    augroup vimrc-remember-cursor-position
-    autocmd!
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-    augroup END
-    ]])
-
-	-- make/cmake
-	vim.cmd([[
-    augroup vimrc-make-cmake
-    autocmd!
-    autocmd FileType make setlocal noexpandtab
-    autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
-    augroup END
-    ]])
+	local completion_preview_close_group = vim.api.nvim_create_augroup("completion_preview_close", {})
+	vim.api.nvim_create_autocmd({ "CompleteDone" }, {
+		group = completion_preview_close_group,
+		pattern = { "*" },
+		command = "if !&previewwindow && &completeopt =~ 'preview' | silent! pclose | endif",
+	})
 
 	vim.cmd([[ set autoread ]])
 

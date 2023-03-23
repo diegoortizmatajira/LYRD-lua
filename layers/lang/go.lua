@@ -54,14 +54,6 @@ function L.settings(s)
 		pattern = { "*.go" },
 		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
 	})
-	vim.cmd([[
-    augroup completion_preview_close
-    autocmd!
-    if v:version > 703 || v:version == 703 && has('patch598')
-    autocmd CompleteDone * if !&previewwindow && &completeopt =~ 'preview' | silent! pclose | endif
-    endif
-    augroup END
-    ]])
 
 	lsp.mason_ensure({
 		"delve",
