@@ -1,7 +1,5 @@
 local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Completion" }
 
@@ -51,12 +49,10 @@ function L.plugins(s)
 		"hrsh7th/cmp-nvim-lsp-signature-help",
 		{ "tzachar/cmp-tabnine", run = "./install.sh", requires = "hrsh7th/nvim-cmp" },
 		"mattn/emmet-vim",
-		"github/copilot.vim",
 	})
 end
 
 function L.settings(s)
-	vim.g.copilot_no_tab_map = true
 	local luasnip = require("luasnip")
 	vim.o.completeopt = "menu,preview,menuone,noselect"
 	local cmp = require("cmp")
@@ -155,9 +151,6 @@ function L.settings(s)
 		},
 	})
 
-	commands.implement(s, "*", {
-		{ cmd.LYRDSmartCoder, ":Copilot" },
-	})
 end
 
 return L

@@ -21,6 +21,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.snippets",
 		"LYRD.layers.completion",
 		"LYRD.layers.debug",
+		"LYRD.layers.ai",
 		"LYRD.layers.lang.go",
 		"LYRD.layers.lang.csharp",
 		"LYRD.layers.lang.lua",

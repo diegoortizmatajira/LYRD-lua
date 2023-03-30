@@ -69,13 +69,13 @@ function L.keybindings(s)
 	mappings.space_menu(s, {
 		{ { "g" }, "Git Repository" },
 		{ { "g", "f" }, "Gitflow" },
-		{ { "a" }, "Application" },
+		{ { "a" }, "Artificial Intelligence" },
 		{ { "b" }, "Buffers" },
 		{ { "c" }, "Code" },
 		{ { "c", "g" }, "Code Generation" },
 		{ { "t" }, "Test" },
 		{ { "d" }, "Debug" },
-		{ { "p" }, "Plugins" },
+		{ { "p" }, "Packages" },
 		{ { "q" }, "Quit" },
 		{ { "s" }, "Search" },
 		{ { "u" }, "User interface" },
@@ -86,6 +86,9 @@ function L.keybindings(s)
 		{ "n", { "/" }, cmd.LYRDSearchBuffers },
 		{ "n", { "," }, cmd.LYRDBufferPrev },
 		{ "n", { "." }, cmd.LYRDBufferNext },
+		-- Artificial Intelligence Menu
+		{ "n", { "a", "a" }, cmd.LYRDAIAssistant },
+		{ "n", { "a", "r" }, cmd.LYRDAIRefactor },
 		-- View Menu
 		{ "n", { "v", "." }, cmd.LYRDViewHomePage },
 		{ "n", { "v", "t" }, cmd.LYRDViewFileTree },
@@ -113,11 +116,11 @@ function L.keybindings(s)
 		{ "n", { "b", "/" }, cmd.LYRDSearchBuffers },
 		{ "n", { "b", "s" }, cmd.LYRDBufferSave },
 		{ "n", { "b", "S" }, cmd.LYRDBufferSaveAll },
-		-- Application Menu
-		{ "n", { "a", "i" }, cmd.LYRDPluginsInstall },
-		{ "n", { "a", "u" }, cmd.LYRDPluginsUpdate },
-		{ "n", { "a", "c" }, cmd.LYRDPluginsClean },
-		{ "n", { "a", "t" }, cmd.LYRDTerminal },
+		-- Packages
+		{ "n", { "p", "i" }, cmd.LYRDPluginsInstall },
+		{ "n", { "p", "u" }, cmd.LYRDPluginsUpdate },
+		{ "n", { "p", "c" }, cmd.LYRDPluginsClean },
+		{ "n", { "p", "t" }, cmd.LYRDTerminal },
 		-- Quit Menu
 		{ "n", { "q", "." }, cmd.LYRDWindowClose },
 		{ "n", { "q", "q" }, cmd.LYRDWindowForceCloseAll },

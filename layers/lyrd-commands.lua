@@ -3,6 +3,8 @@ local commands = require("LYRD.layers.commands")
 local L = {
 	name = "LYRD Commands",
 	cmd = {
+        LYRDAIAssistant = { desc = "Open AI Assistant"},
+        LYRDAIRefactor = { desc = "Open AI Refactor"},
 		LYRDBreakLine = { default = ":s/[,(]/&\r/ge|:noh|:'[,']normal==", desc = "Break current line" },
 		LYRDBufferClose = { default = ":bd", desc = "Close buffer" },
 		LYRDBufferCloseAll = { default = ":bufdo bd", desc = "Close all buffers" },
