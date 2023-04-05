@@ -137,7 +137,6 @@ function L.complete(_)
 		"node-debug2-adapter",
 		"sql-formatter",
 		"sqlls",
-		"sqls",
 		"vim-language-server",
 		"xmlformatter",
 		"yamlfmt",

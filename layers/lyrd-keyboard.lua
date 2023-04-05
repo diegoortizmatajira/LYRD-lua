@@ -89,6 +89,7 @@ function L.keybindings(s)
 		-- Artificial Intelligence Menu
 		{ "n", { "a", "a" }, cmd.LYRDAIAssistant },
 		{ "n", { "a", "r" }, cmd.LYRDAIRefactor },
+		{ "n", { "a", "s" }, cmd.LYRDAISuggestions },
 		-- View Menu
 		{ "n", { "v", "." }, cmd.LYRDViewHomePage },
 		{ "n", { "v", "t" }, cmd.LYRDViewFileTree },
