@@ -2,11 +2,10 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Artificial Intelligence" }
+local L = { name = "AI - ChatGPT" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"github/copilot.vim",
 		"jackMort/ChatGPT.nvim",
 		"MunifTanjim/nui.nvim",
 		"james1236/backseat.nvim",
@@ -14,7 +13,6 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	vim.g.copilot_no_tab_map = true
 	require("chatgpt").setup({
 		-- optional configuration
 		keymaps = {
@@ -45,7 +43,6 @@ function L.settings(s)
 		-- }
 	})
 	commands.implement(s, "*", {
-		{ cmd.LYRDSmartCoder, ":Copilot" },
 		{ cmd.LYRDAIAssistant, ":ChatGPT" },
 		{ cmd.LYRDAIRefactor, ":ChatGPTEditWithInstructions" },
 		{ cmd.LYRDAISuggestions, ":Backseat" },
