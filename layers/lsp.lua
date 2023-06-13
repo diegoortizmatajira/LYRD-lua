@@ -22,7 +22,6 @@ function L.plugins(s)
 		"neovim/nvim-lspconfig",
 		"mfussenegger/nvim-lint",
 		"folke/trouble.nvim",
-		"j-hui/fidget.nvim",
 		"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 	})
@@ -81,7 +80,6 @@ function L.settings(s)
 		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
 	require("trouble").setup()
-	require("fidget").setup()
 	require("lsp_lines").setup()
 
 	commands.implement(s, "*", {

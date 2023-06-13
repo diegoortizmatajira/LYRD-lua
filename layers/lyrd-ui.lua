@@ -7,6 +7,7 @@ local L = { name = "LYRD UI" }
 function L.plugins(s)
 	setup.plugin(s, {
 		{ "nvim-lualine/lualine.nvim", requires = "kyazdani42/nvim-web-devicons" },
+		"arkav/lualine-lsp-progress",
 		"ellisonleao/gruvbox.nvim",
 		{ "goolord/alpha-nvim", requires = "kyazdani42/nvim-web-devicons" },
 		"rktjmp/lush.nvim",
@@ -66,6 +67,31 @@ local function devicons_setup()
 	vim.g.WebDevIconsUnicodeDecorateFolderNodesExactMatches = 1
 end
 
+local function lsp_status_setup()
+	local lualine_options = {
+		options = { theme = "gruvbox" },
+		sections = {
+			lualine_c = { "filename" },
+		},
+	}
+	table.insert(lualine_options.sections.lualine_c, {
+		"lsp_progress",
+		display_components = { "lsp_client_name", { "title", "percentage", "message" } },
+		separators = {
+			component = " ",
+			progress = " | ",
+			percentage = { pre = "", post = "%% " },
+			title = { pre = "", post = ": " },
+			lsp_client_name = { pre = "[", post = "]" },
+			spinner = { pre = "", post = "" },
+			message = { pre = "(", post = ")", commenced = "In Progress", completed = "Completed" },
+		},
+		timer = { progress_enddelay = 500, spinner = 1000, lsp_client_name_enddelay = 1000 },
+		spinner_symbols = { "🌑 ", "🌒 ", "🌓 ", "🌔 ", "🌕 ", "🌖 ", "🌗 ", "🌘 " },
+	})
+	require("lualine").setup(lualine_options)
+end
+
 function L.settings(s)
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
@@ -75,8 +101,8 @@ function L.settings(s)
 	vim.cmd([[colorscheme gruvbox]])
 
 	startify_setup()
-	require("lualine").setup({ options = { theme = "gruvbox" } })
 	devicons_setup()
+	lsp_status_setup()
 	require("dressing").setup({
 		input = {
 			-- Set to false to disable the vim.ui.input implementation
