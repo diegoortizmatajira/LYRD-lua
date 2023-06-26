@@ -46,6 +46,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 	commands.implement(s, "*", {
+        { cmd.LYRDGitUI, ":LazyGit"},
 		{ cmd.LYRDGitModifiedFiles, ":Git" },
 		{ cmd.LYRDGitBranches, ":Git branch" },
 		{ cmd.LYRDGitStatus, ":Git" },

@@ -146,6 +146,7 @@ function L.keybindings(s)
 		{ "n", { "s", "s" }, cmd.LYRDSearchCurrentString },
 		{ "n", { "s", "p" }, cmd.LYRDSearchRegisters },
 		-- Git Menu
+		{ "n", { "g", "g" }, cmd.LYRDGitUI},
 		{ "n", { "g", "m" }, cmd.LYRDGitModifiedFiles },
 		{ "n", { "g", "B" }, cmd.LYRDGitBranches },
 		{ "n", { "g", "s" }, cmd.LYRDGitStatus },

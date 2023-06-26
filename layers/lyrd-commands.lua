@@ -44,6 +44,7 @@ local L = {
 		LYRDDebugStop = { desc = "Stop" },
 		LYRDDebugToggleRepl = { desc = "Toggle Debug Repl" },
 		LYRDDebugToggleUI = { desc = "Toggle Debug UI" },
+		LYRDGitUI = { desc = "Git UI" },
 		LYRDGitBranches = { desc = "Branches" },
 		LYRDGitBrowseOnWeb = { desc = "Browse line on web" },
 		LYRDGitCheckoutDev = { desc = "Checkout Develop branch" },
