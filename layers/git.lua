@@ -5,7 +5,19 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Git" }
 
 function L.plugins(s)
-	setup.plugin(s, { "tpope/vim-fugitive", "tpope/vim-rhubarb", "tpope/vim-dispatch", "lewis6991/gitsigns.nvim" })
+	setup.plugin(s, {
+		"tpope/vim-fugitive",
+		"tpope/vim-rhubarb",
+		"tpope/vim-dispatch",
+		"lewis6991/gitsigns.nvim",
+		{
+			"kdheepak/lazygit.nvim",
+			-- optional for floating window border decoration
+			requires = {
+				"nvim-lua/plenary.nvim",
+			},
+		},
+	})
 end
 
 function L.git_flow_start(what)
