@@ -68,6 +68,11 @@ function L.settings(s)
 		"gotests",
 		"impl",
 	})
+
+	local null_ls = require("null-ls")
+	lsp.null_ls_register_sources({
+		null_ls.builtins.formatting.gofumpt,
+	})
 end
 
 function L.complete(_)
