@@ -1,11 +1,10 @@
 local lsp = require("LYRD.layers.lsp")
-local format = require("LYRD.layers.format")
 
 local L = { name = "Lua Language" }
 
 function L.plugins(_) end
 
-function L.settings(_)
+function L.settings(s)
 	lsp.mason_ensure({
 		"lua-language-server",
 		"luacheck",
@@ -13,8 +12,9 @@ function L.settings(_)
 		"luau-lsp",
 		"stylua",
 	})
-	format.add_formatters("lua", {
-		require("formatter.filetypes.lua").stylua,
+	local null_ls = require("null-ls")
+	lsp.null_ls_register_sources({
+		null_ls.builtins.formatting.stylua,
 	})
 end
 
