@@ -86,6 +86,12 @@ function L.settings(s)
 	require("lsp_lines").setup()
 
 	commands.implement(s, "*", {
+		{
+			cmd.LYRDBufferFormat,
+			function()
+				vim.lsp.buf.format({ async = true, timeout_ms = 3000 })
+			end,
+		},
 		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
 		{ cmd.LYRDLSPFindCodeActions, vim.lsp.buf.code_action },
 		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
@@ -128,6 +134,7 @@ function L.null_ls_register_sources(sources)
 		table.insert(null_ls_sources, source)
 	end
 end
+
 function L.null_ls_register(custom_register)
 	table.insert(null_ls_registered, custom_register)
 end
@@ -157,13 +164,13 @@ function L.complete(_)
 		ensure_installed = mason_required,
 	})
 
-    -- Configures the null language server
+	-- Configures the null language server
 	local null_ls = require("null-ls")
 	null_ls.setup({
 		sources = null_ls_sources,
 	})
 	for _, custom_register in ipairs(null_ls_registered) do
-        null_ls.register(custom_register)
+		null_ls.register(custom_register)
 	end
 end
 

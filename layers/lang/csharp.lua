@@ -15,6 +15,29 @@ function L.plugins(s)
 	})
 end
 
+local function dotnet_format_source()
+	local h = require("null-ls.helpers")
+	local methods = require("null-ls.methods")
+
+	local FORMATTING = methods.internal.FORMATTING
+
+	return h.make_builtin({
+		name = "dotnet_format",
+		method = FORMATTING,
+		filetypes = { "cs" },
+		generator_opts = {
+			command = "dotnet",
+			args = {
+				"format",
+				"whitespace",
+				"--include",
+			},
+			to_stdin = true,
+		},
+		factory = h.formatter_factory,
+	})
+end
+
 function L.settings(s)
 	commands.implement(s, "cs", {
 		{ cmd.LYRDTest, ":OmniSharpRunTestsInFile" },
@@ -48,6 +71,9 @@ function L.settings(s)
 		"netcoredbg",
 		"omnisharp",
 	})
+	lsp.null_ls_register_sources({
+		dotnet_format_source(),
+	})
 end
 
 function L.keybindings(s)
@@ -65,8 +91,16 @@ end
 function L.complete(_)
 	vim.g.OmniSharp_server_use_net6 = 1
 	local pid = vim.fn.getpid()
-	local omnisharp_bin = vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp")
-	lsp.enable("omnisharp", { cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) } })
+	local omnisharp_bin = vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/omnisharp")
+	lsp.enable("omnisharp", {
+		cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) },
+		on_init = function(client, _)
+			if client.server_capabilities then
+				client.server_capabilities.documentFormattingProvider = false
+				client.server_capabilities.semanticTokensProvider = false -- turn off semantic tokens
+			end
+		end,
+	})
 end
 
 return L
