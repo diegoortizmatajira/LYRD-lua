@@ -6,6 +6,8 @@ local L = { name = "LSP" }
 
 local capabilities = nil
 local mason_required = {}
+local null_ls_sources = {}
+local null_ls_registered = {}
 
 local plugged_capabilities = function()
 	return vim.lsp.protocol.make_client_capabilities()
@@ -17,6 +19,7 @@ end
 
 function L.plugins(s)
 	setup.plugin(s, {
+		"jose-elias-alvarez/null-ls.nvim",
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
 		"neovim/nvim-lspconfig",
@@ -120,6 +123,15 @@ function L.mason_ensure(tools)
 	end
 end
 
+function L.null_ls_register_sources(sources)
+	for _, source in ipairs(sources) do
+		table.insert(null_ls_sources, source)
+	end
+end
+function L.null_ls_register(custom_register)
+	table.insert(null_ls_registered, custom_register)
+end
+
 function L.complete(_)
 	L.mason_ensure({
 		"angular-language-server",
@@ -144,6 +156,15 @@ function L.complete(_)
 	require("mason-tool-installer").setup({
 		ensure_installed = mason_required,
 	})
+
+    -- Configures the null language server
+	local null_ls = require("null-ls")
+	null_ls.setup({
+		sources = null_ls_sources,
+	})
+	for _, custom_register in ipairs(null_ls_registered) do
+        null_ls.register(custom_register)
+	end
 end
 
 return L
