@@ -9,13 +9,16 @@ function L.plugins(s)
 end
 
 function L.settings(_)
-	local formatter = {
-		exe = "sql-formatter",
-		stdin = 1,
+	local formatters = {
+		{
+			exe = "sqlfmt",
+			args = { "-" },
+			stdin = 1,
+		},
 	}
-	format.add_formatters("sql", { formatter })
+	format.add_formatters("sql", formatters)
 	lsp.mason_ensure({
-		"sql-formatter",
+		"sqlfmt",
 	})
 end
 
