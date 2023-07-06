@@ -31,6 +31,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.lang.typescript",
 		"LYRD.layers.lang.json",
 		"LYRD.layers.lang.cmake",
+		"LYRD.layers.lang.sql",
 	},
 }
 
