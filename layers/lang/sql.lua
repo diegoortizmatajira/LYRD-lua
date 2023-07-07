@@ -12,7 +12,6 @@ function L.settings(_)
 	local null_ls = require("null-ls")
 	local default_dialect = "tsql"
 	lsp.mason_ensure({
-		"sqlfmt",
 		"sqlfluff",
 	})
 	lsp.null_ls_register_sources({

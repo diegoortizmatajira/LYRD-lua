@@ -1,6 +1,5 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
-local format = require("LYRD.layers.format")
 
 local L = { name = "Python language" }
 
@@ -9,13 +8,16 @@ function L.plugins(s)
 end
 
 function L.settings(_)
-	format.add_formatters("python", { require("formatter.filetypes.python").yapf })
-	format.add_formatters("htmldjango", { require("formatter.filetypes.html").prettier })
 	lsp.mason_ensure({
 		"debugpy",
 		"pylint",
 		"pyright",
 		"python-lsp-server",
+		"yapf",
+	})
+	local null_ls = require("null-ls")
+	lsp.null_ls_register_sources({
+		null_ls.builtins.formatting.yapf,
 	})
 end
 

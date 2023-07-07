@@ -1,6 +1,5 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
-local format = require("LYRD.layers.format")
 
 local L = { name = "Rust Language" }
 
@@ -9,10 +8,13 @@ function L.plugins(s)
 end
 
 function L.settings(_)
-	format.add_formatters("rust", { require("formatter.filetypes.rust").rustfmt })
 	lsp.mason_ensure({
 		"rust-analyzer",
 		"rustfmt",
+	})
+	local null_ls = require("null-ls")
+	lsp.null_ls_register_sources({
+		null_ls.builtins.formatting.rustfmt,
 	})
 end
 
