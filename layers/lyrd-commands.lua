@@ -3,9 +3,9 @@ local commands = require("LYRD.layers.commands")
 local L = {
 	name = "LYRD Commands",
 	cmd = {
-        LYRDAIAssistant = { desc = "Open AI Assistant"},
-        LYRDAIRefactor = { desc = "Open AI Refactor"},
-        LYRDAISuggestions = { desc = "Open AI Suggestions"},
+		LYRDAIAssistant = { desc = "Open AI Assistant" },
+		LYRDAIRefactor = { desc = "Open AI Refactor" },
+		LYRDAISuggestions = { desc = "Open AI Suggestions" },
 		LYRDBreakLine = { default = ":s/[,(]/&\r/ge|:noh|:'[,']normal==", desc = "Break current line" },
 		LYRDBufferClose = { default = ":bd", desc = "Close buffer" },
 		LYRDBufferCloseAll = { default = ":bufdo bd", desc = "Close all buffers" },
@@ -44,6 +44,7 @@ local L = {
 		LYRDDebugStop = { desc = "Stop" },
 		LYRDDebugToggleRepl = { desc = "Toggle Debug Repl" },
 		LYRDDebugToggleUI = { desc = "Toggle Debug UI" },
+		LYRDDiagnosticLinesToggle = { desc = "Toggle diagnostic lines" },
 		LYRDGitUI = { desc = "Complete user interface" },
 		LYRDGitBrowseOnWeb = { desc = "Browse line on web" },
 		LYRDGitCheckoutDev = { desc = "Checkout Develop branch" },

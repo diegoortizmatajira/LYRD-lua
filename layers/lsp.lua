@@ -23,7 +23,6 @@ function L.plugins(s)
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
 		"neovim/nvim-lspconfig",
-		"mfussenegger/nvim-lint",
 		"folke/trouble.nvim",
 		"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -111,6 +110,7 @@ function L.settings(s)
 		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":TroubleToggle workspace_diagnostics" },
 		{ cmd.LYRDViewLocationList, ":TroubleToggle loclist" },
 		{ cmd.LYRDViewQuickFixList, ":TroubleToggle quickfix" },
+		{ cmd.LYRDDiagnosticLinesToggle, require("lsp_lines").toggle },
 	})
 end
 

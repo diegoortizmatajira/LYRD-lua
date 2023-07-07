@@ -16,6 +16,10 @@ function L.settings(_)
         "prettier",
         "typescript-language-server",
     })
+	local null_ls = require("null-ls")
+	lsp.null_ls_register_sources({
+		null_ls.builtins.formatting.gofumpt,
+	})
 	format.add_formatters("typescript", { require("formatter.filetypes.typescript").prettier })
 end
 
