@@ -52,7 +52,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings(_)
 	local luasnip = require("luasnip")
 	vim.o.completeopt = "menu,preview,menuone,noselect"
 	local cmp = require("cmp")
@@ -150,7 +150,6 @@ function L.settings(s)
 			-- lua = true
 		},
 	})
-
 end
 
 return L

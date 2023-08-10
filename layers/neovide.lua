@@ -15,9 +15,9 @@ function L.settings(_)
 		vim.g.neovide_cursor_animation_length = 0.008
 		vim.g.neovide_cursor_trail_length = 0.15
 		vim.g.neovide_cursor_vfx_mode = "railgun"
-		vim.g.gui_font_default_size = 12
+		vim.g.gui_font_default_size = 11
 		vim.g.gui_font_size = vim.g.gui_font_default_size
-		vim.g.gui_font_face = "FiraCode Nerd Font"
+		vim.g.gui_font_face = "Fira Code"
 		L.RefreshGuiFont()
 	end
 end
