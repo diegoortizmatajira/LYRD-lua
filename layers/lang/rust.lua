@@ -10,7 +10,6 @@ end
 function L.settings(_)
 	lsp.mason_ensure({
 		"rust-analyzer",
-		"rustfmt",
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
