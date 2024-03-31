@@ -6,6 +6,7 @@ local L = { name = "Test" }
 
 function L.plugins(s)
 	setup.plugin(s, {
+		"nvim-neotest/nvim-nio",
 		{
 			"nvim-neotest/neotest",
 			requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "antoinemadec/FixCursorHold.nvim" },
