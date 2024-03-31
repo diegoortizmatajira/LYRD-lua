@@ -26,7 +26,6 @@ function L.settings(_)
 		null_ls.builtins.formatting.prettier.with({ -- For most standard file types
 			extra_filetypes = { "htmldjango" },
 		}),
-		null_ls.builtins.formatting.taplo, -- For TOML files
 	})
 end
 

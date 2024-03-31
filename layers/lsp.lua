@@ -16,7 +16,6 @@ end
 local function setup_default_formatters()
 	local null_ls = require("null-ls")
 	L.null_ls_register_sources({
-		null_ls.builtins.formatting.xmlformatter,
 		null_ls.builtins.formatting.yamlfmt,
 	})
 end
@@ -27,7 +26,7 @@ end
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"jose-elias-alvarez/null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
 		"neovim/nvim-lspconfig",
@@ -159,12 +158,13 @@ function L.complete(_)
 		"emmet-ls",
 		"eslint-lsp",
 		"firefox-debug-adapter",
-		"markdownlint",
+		"marksman",
+		"taplo",
+		"lemminx",
 		"node-debug2-adapter",
 		"sql-formatter",
 		"sqlls",
 		"vim-language-server",
-		"xmlformatter",
 		"yamlfmt",
 		"yamllint",
 		"yapf",
