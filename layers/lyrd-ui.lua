@@ -13,6 +13,7 @@ function L.plugins(s)
 		"rktjmp/lush.nvim",
 		"kyazdani42/nvim-web-devicons",
 		"stevearc/dressing.nvim",
+		"tummetott/unimpaired.nvim",
 	})
 end
 
@@ -123,6 +124,7 @@ function L.settings(s)
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
+	require("unimpaired").setup()
 	-- Set theme
 	require("gruvbox").setup({ contrast = "hard" })
 	vim.cmd([[colorscheme gruvbox]])
