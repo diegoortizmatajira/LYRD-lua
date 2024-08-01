@@ -21,7 +21,7 @@ function L.plugins(s)
 end
 
 function L.git_flow_start(what)
-	vim.ui.input("Name for the new branch: ", function(name)
+	vim.ui.input({ prompt = "Name for the new branch: " }, function(name)
 		if not name then
 			return
 		end
@@ -30,12 +30,12 @@ function L.git_flow_start(what)
 end
 
 function L.git_flow_finish(what)
-	local name = vim.api.nvim_exec(
+	local name = vim.api.nvim_exec2(
 		[[
     let parts = split(FugitiveHead(),'/')
     echo parts[len(parts)-1]
         ]],
-		true
+		{ capture_output = true }
 	)
 	vim.cmd(":Git flow " .. what .. " finish " .. name)
 end
@@ -46,7 +46,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 	commands.implement(s, "*", {
-        { cmd.LYRDGitUI, ":LazyGit"},
+		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Git" },
 		{ cmd.LYRDGitCommit, ":Git commit" },
 		{ cmd.LYRDGitPush, ":Git push" },
