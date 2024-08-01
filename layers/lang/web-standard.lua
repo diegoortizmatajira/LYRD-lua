@@ -20,6 +20,7 @@ function L.settings(_)
 		"json-to-struct",
 		"prettier",
 		"typescript-language-server",
+		"vue-language-server",
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
@@ -30,7 +31,30 @@ function L.settings(_)
 end
 
 function L.complete(_)
-	lsp.enable("tsserver", {})
+	local vue_typescript_plugin = require("mason-registry").get_package("vue-language-server"):get_install_path()
+		.. "/node_modules/@vue/language-server"
+		.. "/node_modules/@vue/typescript-plugin"
+	lsp.enable("tsserver", {
+		init_options = {
+			plugins = {
+				{
+					name = "@vue/typescript-plugin",
+					location = vue_typescript_plugin,
+					languages = { "javascript", "typescript", "vue" },
+				},
+			},
+		},
+		filetypes = {
+			"javascript",
+			"javascriptreact",
+			"javascript.jsx",
+			"typescript",
+			"typescriptreact",
+			"typescript.tsx",
+			"vue",
+		},
+	})
+	lsp.enable("volar", {})
 	lsp.enable(
 		"jsonls",
 		{ settings = { json = { schemas = require("schemastore").json.schemas(), validate = { enabled = true } } } }

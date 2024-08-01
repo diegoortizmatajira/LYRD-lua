@@ -50,9 +50,10 @@ function L.settings(s)
 		{ cmd.LYRDBufferFormat, ":OmniSharpCodeFormat" },
 	})
 	local dap = require("dap")
+
 	dap.adapters.coreclr = {
 		type = "executable",
-		command = ".local/share/nvim/mason/packages/netcoredbg",
+		command = require("mason-registry").get_package("netcoredbg"):get_install_path() .. "/netcoredbg",
 		args = { "--interpreter=vscode" },
 	}
 	dap.configurations.cs = {
@@ -91,7 +92,8 @@ end
 function L.complete(_)
 	vim.g.OmniSharp_server_use_net6 = 1
 	local pid = vim.fn.getpid()
-	local omnisharp_bin = vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/omnisharp")
+	local omnisharp_bin =
+		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
 	lsp.enable("omnisharp", {
 		cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) },
 		on_init = function(client, _)
