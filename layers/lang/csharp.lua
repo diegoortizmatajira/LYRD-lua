@@ -67,7 +67,7 @@ function L.settings(s)
 		},
 	}
 	lsp.mason_ensure({
-		"csharp-language-server",
+		-- "csharp-language-server",
 		"csharpier",
 		"netcoredbg",
 		"omnisharp",
@@ -91,18 +91,9 @@ end
 
 function L.complete(_)
 	vim.g.OmniSharp_server_use_net6 = 1
-	local pid = vim.fn.getpid()
 	local omnisharp_bin =
 		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
-	lsp.enable("omnisharp", {
-		cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) },
-		on_init = function(client, _)
-			if client.server_capabilities then
-				client.server_capabilities.documentFormattingProvider = false
-				client.server_capabilities.semanticTokensProvider = false -- turn off semantic tokens
-			end
-		end,
-	})
+	lsp.enable("omnisharp", { cmd = { omnisharp_bin } })
 end
 
 return L
