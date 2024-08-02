@@ -102,21 +102,6 @@ local function lsp_status_setup()
 			lualine_c = { "filename" },
 		},
 	}
-	table.insert(lualine_options.sections.lualine_c, {
-		"lsp_progress",
-		display_components = { "lsp_client_name", { "title", "percentage", "message" } },
-		separators = {
-			component = " ",
-			progress = " | ",
-			percentage = { pre = "", post = "%% " },
-			title = { pre = "", post = ": " },
-			lsp_client_name = { pre = "[", post = "]" },
-			spinner = { pre = "", post = "" },
-			message = { pre = "(", post = ")", commenced = "In Progress", completed = "Completed" },
-		},
-		timer = { progress_enddelay = 500, spinner = 1000, lsp_client_name_enddelay = 1000 },
-		spinner_symbols = { "🌑 ", "🌒 ", "🌓 ", "🌔 ", "🌕 ", "🌖 ", "🌗 ", "🌘 " },
-	})
 	require("lualine").setup(lualine_options)
 end
 
