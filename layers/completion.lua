@@ -47,7 +47,7 @@ function L.plugins(s)
 		"saadparwaiz1/cmp_luasnip",
 		"hrsh7th/nvim-cmp",
 		"hrsh7th/cmp-nvim-lsp-signature-help",
-		{ "tzachar/cmp-tabnine", run = "./install.sh", requires = "hrsh7th/nvim-cmp" },
+		-- { "tzachar/cmp-tabnine", run = "./install.sh", requires = "hrsh7th/nvim-cmp" },
 		"mattn/emmet-vim",
 	})
 end
@@ -106,7 +106,7 @@ function L.settings(_)
 		},
 		sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
-			{ name = "cmp_tabnine" },
+			-- { name = "cmp_tabnine" },
 			{ name = "buffer" },
 			{ name = "luasnip" },
 			{ name = "path" },
@@ -138,20 +138,20 @@ function L.settings(_)
 		end
 	end)
 
-	local tabnine = require("cmp_tabnine.config")
-	tabnine:setup({
-		max_lines = 1000,
-		max_num_results = 15,
-		sort = true,
-		run_on_every_keystroke = true,
-		snippet_placeholder = "..",
-		ignored_file_types = { -- default is not to ignore
-			-- uncomment to ignore in lua:
-			-- lua = true
-		},
-		show_prediction_strength = false,
-		min_percent = 0,
-	})
+	-- local tabnine = require("cmp_tabnine.config")
+	-- tabnine:setup({
+	-- 	max_lines = 1000,
+	-- 	max_num_results = 15,
+	-- 	sort = true,
+	-- 	run_on_every_keystroke = true,
+	-- 	snippet_placeholder = "..",
+	-- 	ignored_file_types = { -- default is not to ignore
+	-- 		-- uncomment to ignore in lua:
+	-- 		-- lua = true
+	-- 	},
+	-- 	show_prediction_strength = false,
+	-- 	min_percent = 0,
+	-- })
 end
 
 return L

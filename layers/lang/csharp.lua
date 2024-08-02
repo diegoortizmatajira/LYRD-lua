@@ -75,6 +75,10 @@ function L.settings(s)
 	lsp.null_ls_register_sources({
 		dotnet_format_source(),
 	})
+	-- vim.g.OmniSharp_server_use_net6 = 1
+	vim.g.OmniSharp_server_use_mono = 0
+	vim.g.OmniSharp_server_path =
+		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
 end
 
 function L.keybindings(s)
@@ -90,10 +94,7 @@ function L.keybindings(s)
 end
 
 function L.complete(_)
-	vim.g.OmniSharp_server_use_net6 = 1
-	local omnisharp_bin =
-		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
-	lsp.enable("omnisharp", { cmd = { omnisharp_bin } })
+	lsp.enable("omnisharp", {})
 end
 
 return L
