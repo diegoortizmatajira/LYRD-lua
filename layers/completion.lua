@@ -3,11 +3,6 @@ local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Completion" }
 
-local has_words_before = function()
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
 local kind_icons = {
 	Text = "",
 	Method = "m",
@@ -36,7 +31,7 @@ local kind_icons = {
 	TypeParameter = "",
 }
 
-local menu_texts = { luasnip = "[Snippet]", buffer = "[Buffer]", path = "[Path]", cmp_tabnine = "[Tab-9]" }
+local menu_texts = { luasnip = "[Snippet]", buffer = "[Buffer]", path = "[Path]" }
 
 function L.plugins(s)
 	setup.plugin(s, {
@@ -47,15 +42,14 @@ function L.plugins(s)
 		"saadparwaiz1/cmp_luasnip",
 		"hrsh7th/nvim-cmp",
 		"hrsh7th/cmp-nvim-lsp-signature-help",
-		-- { "tzachar/cmp-tabnine", run = "./install.sh", requires = "hrsh7th/nvim-cmp" },
 		"mattn/emmet-vim",
 	})
 end
 
 function L.settings(_)
-	local luasnip = require("luasnip")
 	vim.o.completeopt = "menu,preview,menuone,noselect"
 	local cmp = require("cmp")
+	local luasnip = require("luasnip")
 	cmp.setup({
 		mapping = {
 			["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
@@ -63,32 +57,21 @@ function L.settings(_)
 			["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
 			["<C-e>"] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
 			["<C-Space>"] = cmp.mapping.complete(),
-			["<CR>"] = cmp.mapping.confirm({
-				behavior = cmp.ConfirmBehavior.Replace,
-				select = true,
-			}),
+			["<CR>"] = cmp.mapping(function(fallback)
+				if cmp.visible() then
+					if luasnip.expandable() then
+						luasnip.expand()
+					else
+						cmp.confirm({
+							select = true,
+						})
+					end
+				else
+					fallback()
+				end
+			end),
 			["<Down>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
 			["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
-			-- ["<Tab>"] = cmp.mapping(function(fallback)
-			-- 	if cmp.visible() then
-			-- 		cmp.select_next_item()
-			-- 	elseif luasnip.expand_or_jumpable() then
-			-- 		luasnip.expand_or_jump()
-			-- 	elseif has_words_before() then
-			-- 		cmp.complete()
-			-- 	else
-			-- 		fallback()
-			-- 	end
-			-- end, { "i", "s" }),
-			-- ["<S-Tab>"] = cmp.mapping(function(fallback)
-			-- 	if cmp.visible() then
-			-- 		cmp.select_prev_item()
-			-- 	elseif luasnip.jumpable(-1) then
-			-- 		luasnip.jump(-1)
-			-- 	else
-			-- 		fallback()
-			-- 	end
-			-- end, { "i", "s" }),
 		},
 		formatting = {
 			fields = { "abbr", "kind", "menu" },
@@ -106,7 +89,6 @@ function L.settings(_)
 		},
 		sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
-			-- { name = "cmp_tabnine" },
 			{ name = "buffer" },
 			{ name = "luasnip" },
 			{ name = "path" },
@@ -137,21 +119,6 @@ function L.settings(_)
 			return require("cmp_nvim_lsp").default_capabilities(previous_capabilities())
 		end
 	end)
-
-	-- local tabnine = require("cmp_tabnine.config")
-	-- tabnine:setup({
-	-- 	max_lines = 1000,
-	-- 	max_num_results = 15,
-	-- 	sort = true,
-	-- 	run_on_every_keystroke = true,
-	-- 	snippet_placeholder = "..",
-	-- 	ignored_file_types = { -- default is not to ignore
-	-- 		-- uncomment to ignore in lua:
-	-- 		-- lua = true
-	-- 	},
-	-- 	show_prediction_strength = false,
-	-- 	min_percent = 0,
-	-- })
 end
 
 return L

@@ -76,6 +76,7 @@ function L.settings(s)
 		dotnet_format_source(),
 	})
 	-- vim.g.OmniSharp_server_use_net6 = 1
+	vim.g.OmniSharp_highlighting = 0
 	vim.g.OmniSharp_server_use_mono = 0
 	vim.g.OmniSharp_server_path =
 		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")

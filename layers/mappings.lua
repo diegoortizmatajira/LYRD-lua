@@ -45,7 +45,7 @@ end
 
 -- Creates a set of keybindings
 -- @param mappings contains the mapping definition as an array of (mode, key, command, options)
-function L.keys(s, mappings, options)
+function L.keys(_, mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local opt = mapping[4]
 		if opt == nil then
@@ -57,7 +57,7 @@ end
 
 -- Creates a set of keybindings starting with <Leader>
 -- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
-function L.leader(s, mappings, options)
+function L.leader(_, mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local opt = mapping[5]
 		if opt == nil then
@@ -69,7 +69,7 @@ end
 
 -- Creates a set of keybindings starting with <Space>
 -- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
-function L.space(s, mappings, options)
+function L.space(_, mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local opt = mapping[5]
 		if opt == nil then
