@@ -20,17 +20,20 @@ local function dotnet_format_source()
 	local methods = require("null-ls.methods")
 
 	local FORMATTING = methods.internal.FORMATTING
-
 	return h.make_builtin({
-		name = "dotnet_format",
+		name = "astyle",
+		meta = {
+			url = "http://astyle.sourceforge.net/",
+			description = [[Artistic Style is a source code indenter, formatter, and beautifier for the C, C++, C++/CLI, Objective‑C, C# and Java programming languages. This formatter works well for [Arduino](https://www.arduino.cc/) project files and is the same formatter used in the Arduino IDE.]],
+		},
 		method = FORMATTING,
-		filetypes = { "cs" },
+		filetypes = { "arduino", "c", "cpp", "cs", "java" },
 		generator_opts = {
-			command = "dotnet",
+			command = "astyle",
 			args = {
-				"format",
-				"whitespace",
-				"--include",
+				"--quiet",
+				"-mode=cs",
+				"--style=break",
 			},
 			to_stdin = true,
 		},
@@ -47,7 +50,7 @@ function L.settings(s)
 		{ cmd.LYRDTestLast, ":OmniSharpRunTestsInFile" },
 		{ cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
 		{ cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
-		{ cmd.LYRDBufferFormat, ":OmniSharpCodeFormat" },
+		-- { cmd.LYRDBufferFormat, ":OmniSharpCodeFormat" },
 	})
 	local dap = require("dap")
 
@@ -71,10 +74,14 @@ function L.settings(s)
 		"csharpier",
 		"netcoredbg",
 		"omnisharp",
+		"ast_grep",
 	})
+
 	lsp.null_ls_register_sources({
+		-- null_ls.builtins.formatting.astyle,
 		dotnet_format_source(),
 	})
+
 	-- vim.g.OmniSharp_server_use_net6 = 1
 	vim.g.OmniSharp_highlighting = 0
 	vim.g.OmniSharp_server_use_mono = 0

@@ -17,6 +17,7 @@ local function setup_default_formatters()
 	local null_ls = require("null-ls")
 	L.null_ls_register_sources({
 		null_ls.builtins.formatting.yamlfmt,
+		null_ls.builtins.formatting.clang_format,
 	})
 end
 
