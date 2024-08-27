@@ -21,21 +21,20 @@ local function dotnet_format_source()
 
 	local FORMATTING = methods.internal.FORMATTING
 	return h.make_builtin({
-		name = "astyle",
+		name = "Resharper CLI",
 		meta = {
-			url = "http://astyle.sourceforge.net/",
-			description = [[Artistic Style is a source code indenter, formatter, and beautifier for the C, C++, C++/CLI, Objective‑C, C# and Java programming languages. This formatter works well for [Arduino](https://www.arduino.cc/) project files and is the same formatter used in the Arduino IDE.]],
+			url = "https://www.jetbrains.com/help/rider/ReSharper_Command_Line_Tools.html",
+			description = [[ReSharper Command Line Tools is a set of free cross-platform standalone tools that help you integrate automatic code quality procedures into your CI, version control, or any other server.]],
 		},
 		method = FORMATTING,
-		filetypes = { "arduino", "c", "cpp", "cs", "java" },
+		filetypes = { "cs" },
 		generator_opts = {
-			command = "astyle",
+			command = "jb",
 			args = {
-				"--quiet",
-				"-mode=cs",
-				"--style=break",
+				"cleanupcode",
+				'--profile="Built-in: Reformat Code"',
 			},
-			to_stdin = true,
+			to_stdin = false,
 		},
 		factory = h.formatter_factory,
 	})
