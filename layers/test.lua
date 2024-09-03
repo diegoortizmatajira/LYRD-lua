@@ -2,22 +2,29 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Test" }
+local L = { name = "Test", test_adapters = {} }
 
 function L.plugins(s)
 	setup.plugin(s, {
 		"nvim-neotest/nvim-nio",
 		{
 			"nvim-neotest/neotest",
-			requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "antoinemadec/FixCursorHold.nvim" },
+			requires = {
+				"nvim-neotest/nvim-nio",
+				"nvim-lua/plenary.nvim",
+				"antoinemadec/FixCursorHold.nvim",
+				"nvim-treesitter/nvim-treesitter",
+			},
 		},
-		"nvim-neotest/neotest-go",
 	})
+end
+
+function L.configure_adapter(adapter)
+	table.insert(L.test_adapters, adapter)
 end
 
 function L.settings(s)
 	local neotest = require("neotest")
-	neotest.setup({ adapters = { require("neotest-go") } })
 	commands.implement(s, "neotest-summary", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
@@ -40,10 +47,30 @@ function L.settings(s)
 				neotest.run.run(vim.fn.expand("%"))
 			end,
 		},
-		{ cmd.LYRDTestFunc, neotest.run.run },
-		{ cmd.LYRDTestLast, neotest.run.run },
-		{ cmd.LYRDTestSummary, neotest.summary.toggle },
+		{
+			cmd.LYRDTestFunc,
+			function()
+				neotest.run.run()
+			end,
+		},
+		{
+			cmd.LYRDTestLast,
+			function()
+				neotest.run.run()
+			end,
+		},
+		{
+			cmd.LYRDTestSummary,
+			function()
+				neotest.summary.toggle()
+			end,
+		},
 	})
+end
+
+function L.complete(_)
+	local neotest = require("neotest")
+	neotest.setup({ adapters = L.test_adapters })
 end
 
 return L

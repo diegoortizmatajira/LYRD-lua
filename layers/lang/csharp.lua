@@ -12,6 +12,7 @@ function L.plugins(s)
 		{ "OmniSharp/omnisharp-vim", requires = { "tpope/vim-dispatch" } },
 		"nickspoons/vim-sharpenup",
 		"adamclerk/vim-razor",
+		"Issafalcon/neotest-dotnet",
 	})
 end
 
@@ -86,6 +87,9 @@ function L.settings(s)
 	vim.g.OmniSharp_server_use_mono = 0
 	vim.g.OmniSharp_server_path =
 		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
+
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-dotnet"))
 end
 
 function L.keybindings(s)

@@ -10,6 +10,7 @@ function L.plugins(s)
 	setup.plugin(s, {
 		{ "fatih/vim-go", run = ":GoUpdateBinaries" },
 		"leoluz/nvim-dap-go",
+		"nvim-neotest/neotest-go",
 	})
 end
 
@@ -73,6 +74,8 @@ function L.settings(s)
 	lsp.null_ls_register_sources({
 		null_ls.builtins.formatting.gofumpt,
 	})
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-go"))
 end
 
 function L.complete(_)
