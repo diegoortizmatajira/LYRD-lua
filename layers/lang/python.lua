@@ -4,7 +4,10 @@ local setup = require("LYRD.setup")
 local L = { name = "Python language" }
 
 function L.plugins(s)
-	setup.plugin(s, { "mfussenegger/nvim-dap-python" })
+	setup.plugin(s, {
+		"mfussenegger/nvim-dap-python",
+		"nvim-neotest/neotest-python",
+	})
 end
 
 function L.settings(_)
@@ -19,6 +22,8 @@ function L.settings(_)
 	lsp.null_ls_register_sources({
 		null_ls.builtins.formatting.yapf,
 	})
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-python"))
 end
 
 function L.keybindings(_) end

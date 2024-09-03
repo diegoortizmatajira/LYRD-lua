@@ -5,7 +5,14 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "File tree" }
 
 function L.plugins(s)
-	setup.plugin(s, { "nvim-tree/nvim-web-devicons", "nvim-tree/nvim-tree.lua" })
+	setup.plugin(s, {
+		{
+			"nvim-tree/nvim-tree.lua",
+			requires = {
+				"nvim-tree/nvim-web-devicons", -- optional
+			},
+		},
+	})
 end
 
 function L.settings(s)
