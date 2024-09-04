@@ -15,12 +15,12 @@ function L.settings(_)
 		"debugpy",
 		"pylint",
 		"pyright",
-		"python-lsp-server",
 		"yapf",
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
 		null_ls.builtins.formatting.yapf,
+		null_ls.builtins.diagnostics.pylint,
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-python"))

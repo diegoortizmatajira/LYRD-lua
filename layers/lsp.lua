@@ -13,9 +13,10 @@ local plugged_capabilities = function()
 	return vim.lsp.protocol.make_client_capabilities()
 end
 
-local function setup_default_formatters()
+local function setup_default_providers()
 	local null_ls = require("null-ls")
 	L.null_ls_register_sources({
+		null_ls.builtins.code_actions.gitsigns,
 		null_ls.builtins.formatting.yamlfmt,
 		null_ls.builtins.formatting.clang_format,
 	})
@@ -120,7 +121,7 @@ function L.settings(s)
 		{ cmd.LYRDViewQuickFixList, ":Trouble qflist toggle" },
 		{ cmd.LYRDDiagnosticLinesToggle, require("lsp_lines").toggle },
 	})
-	setup_default_formatters()
+	setup_default_providers()
 end
 
 function L.enable(server, options)
