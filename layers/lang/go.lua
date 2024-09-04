@@ -73,6 +73,8 @@ function L.settings(s)
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
 		null_ls.builtins.formatting.gofumpt,
+		null_ls.builtins.code_actions.impl,
+		null_ls.builtins.code_actions.gomodifytags,
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-go"))
