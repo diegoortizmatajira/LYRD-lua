@@ -15,7 +15,7 @@ function L.settings(_)
 		"debugpy",
 		"pylint",
 		"pyright",
-		"python-lsp-server",
+		-- "python-lsp-server",
 		"yapf",
 	})
 
@@ -23,7 +23,10 @@ function L.settings(_)
 
 	lsp.null_ls_register_sources({
 		null_ls.builtins.formatting.yapf,
-		-- null_ls.builtins.diagnostics.pylint,
+		null_ls.builtins.diagnostics.pylint.with({
+			command = "python",
+			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
+		}),
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-python"))
