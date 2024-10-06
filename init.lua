@@ -21,6 +21,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.snippets",
 		"LYRD.layers.completion",
 		"LYRD.layers.debug",
+		"LYRD.layers.database",
 		"LYRD.layers.ai-tabnine",
 		-- "LYRD.layers.ai-copilot",
 		-- "LYRD.layers.ai-chat-gpt",

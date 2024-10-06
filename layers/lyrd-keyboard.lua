@@ -27,7 +27,7 @@ function L.keybindings(s)
 		{ "n", "<A-Right>", cmd.LYRDBufferNext },
 		{ "n", "<C-F4>", cmd.LYRDBufferClose },
 		{ "n", "K", cmd.LYRDLSPHoverInfo },
-		{ "n", "<C-k>", cmd.LYRDLSPSignatureHelp },
+		{ "n", "<C-S-k>", cmd.LYRDLSPSignatureHelp },
 		{ "n", "gd", cmd.LYRDLSPFindDefinitions },
 		{ "n", "gD", cmd.LYRDLSPFindDeclaration },
 		{ "n", "gt", cmd.LYRDLSPFindTypeDefinition },
@@ -75,7 +75,7 @@ function L.keybindings(s)
 		{ { "c" }, "Code" },
 		{ { "c", "g" }, "Code Generation" },
 		{ { "t" }, "Test" },
-		{ { "d" }, "Debug" },
+		{ { "D" }, "Debug" },
 		{ { "p" }, "Packages" },
 		{ { "q" }, "Quit" },
 		{ { "s" }, "Search" },
@@ -193,13 +193,13 @@ function L.keybindings(s)
 		{ "n", { "t", "v" }, cmd.LYRDTestSummary },
 
 		-- Debug Menu
-		{ "n", { "d", "c" }, cmd.LYRDDebugContinue },
-		{ "n", { "d", "i" }, cmd.LYRDDebugStepInto },
-		{ "n", { "d", "o" }, cmd.LYRDDebugStepOver },
-		{ "n", { "d", "s" }, cmd.LYRDDebugStop },
-		{ "n", { "d", "b" }, cmd.LYRDDebugBreakpoint },
-		{ "n", { "d", "u" }, cmd.LYRDDebugToggleUI },
-		{ "n", { "d", "r" }, cmd.LYRDDebugToggleRepl },
+		{ "n", { "D", "c" }, cmd.LYRDDebugContinue },
+		{ "n", { "D", "i" }, cmd.LYRDDebugStepInto },
+		{ "n", { "D", "o" }, cmd.LYRDDebugStepOver },
+		{ "n", { "D", "s" }, cmd.LYRDDebugStop },
+		{ "n", { "D", "b" }, cmd.LYRDDebugBreakpoint },
+		{ "n", { "D", "u" }, cmd.LYRDDebugToggleUI },
+		{ "n", { "D", "r" }, cmd.LYRDDebugToggleRepl },
 	})
 end
 
