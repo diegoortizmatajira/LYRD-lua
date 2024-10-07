@@ -15,7 +15,7 @@ function L.settings(_)
 		"debugpy",
 		"pylint",
 		"pyright",
-		-- "python-lsp-server",
+		"python-lsp-server",
 		"yapf",
 	})
 
@@ -35,7 +35,34 @@ end
 function L.keybindings(_) end
 
 function L.complete(_)
-	lsp.enable("pyright", { settings = { python = { analysis = { typeCheckingMode = "off" } } } })
+	lsp.enable("pylsp", {
+		settings = {
+			pylsp = {
+				plugins = {
+					pycodestyle = {
+						ignore = { "E501" },
+						maxLineLength = 100,
+					},
+				},
+			},
+		},
+	})
+	local virtual_env = os.getenv("VIRTUAL_ENV") or ""
+	lsp.enable("pyright", {
+		settings = {
+			pyright = {
+				disableOrganizeImports = false,
+			},
+			python = {
+				venvPath = virtual_env,
+				analysis = {
+					autoImportCompletions = true,
+					useLibraryCodeForTypes = true,
+					typeCheckingMode = "off",
+				},
+			},
+		},
+	})
 	require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
 end
 
