@@ -21,7 +21,7 @@ function L.plugins(s)
 end
 
 function L.settings(_)
-	require("dbee").setup({})
+	require("dbee").setup()
 end
 
 function L.keybindings(s)
