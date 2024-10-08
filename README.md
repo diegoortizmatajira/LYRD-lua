@@ -2,6 +2,12 @@
 
 ## Installation
 
+Ensure you have Packer in your system or install it if required.
+
+```bash
+git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+```
+
 Clone the repository into your Neovim config folder
 
 ```bash
