@@ -2,7 +2,6 @@ local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 
 local L = { name = "Python language" }
-local python_line_length = 120
 
 function L.plugins(s)
 	setup.plugin(s, {
@@ -16,14 +15,21 @@ function L.settings(_)
 		"debugpy",
 		"pylint",
 		"pyright",
-		-- "python-lsp-server",
 		"yapf",
 	})
 
 	local null_ls = require("null-ls")
+	local h = require("null-ls.helpers")
 
 	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.yapf,
+		-- Custom Yapf to use 120 as max line length
+		null_ls.builtins.formatting.yapf.with({
+			args = h.range_formatting_args_factory({
+				"--quiet",
+				"--style={based_on_style: google, column_limit: 120}",
+			}, "--lines", nil, { use_rows = true, delimiter = "-" }),
+		}),
+		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
 		null_ls.builtins.diagnostics.pylint.with({
 			command = "python",
 			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
@@ -36,18 +42,6 @@ end
 function L.keybindings(_) end
 
 function L.complete(_)
-	-- lsp.enable("pylsp", {
-	-- 	settings = {
-	-- 		pylsp = {
-	-- 			plugins = {
-	-- 				pycodestyle = {
-	-- 					ignore = { "E501" },
-	-- 					maxLineLength = python_line_length,
-	-- 				},
-	-- 			},
-	-- 		},
-	-- 	},
-	-- })
 	local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 	lsp.enable("pyright", {
 		settings = {
