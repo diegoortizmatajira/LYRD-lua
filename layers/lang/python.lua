@@ -1,5 +1,8 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
+local commands = require("LYRD.layers.commands")
+local c = commands.command_shortcut
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Python language" }
 
@@ -46,9 +49,11 @@ function L.settings(s)
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-python"))
-end
 
-function L.keybindings(_) end
+	commands.implement(s, "python", {
+		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
+	})
+end
 
 function L.complete(_)
 	local virtual_env = os.getenv("VIRTUAL_ENV") or ""
@@ -61,8 +66,9 @@ function L.complete(_)
 				venvPath = virtual_env,
 				analysis = {
 					autoImportCompletions = true,
+					diagnosticMode = "workspace",
+					typeCheckingMode = "standard",
 					useLibraryCodeForTypes = true,
-					typeCheckingMode = "off",
 				},
 			},
 		},
