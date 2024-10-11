@@ -3,13 +3,14 @@ local setup = require("LYRD.setup")
 _G.LYRD_setup = {
     layers = {
         "LYRD.layers.general",
-        "LYRD.layers.clipboard",
         "LYRD.layers.neovide", -- Neovide settings
         "LYRD.layers.mappings",
         "LYRD.layers.commands",
         "LYRD.layers.lyrd-commands",
         "LYRD.layers.lyrd-ui",
         "LYRD.layers.lyrd-keyboard",
+        "LYRD.layers.clipboard",
+        "LYRD.layers.tmux",
         "LYRD.layers.motions",
         "LYRD.layers.dev",
         "LYRD.layers.test",

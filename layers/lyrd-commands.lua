@@ -125,6 +125,10 @@ local L = {
 		LYRDWindowClose = { default = ":q", desc = "Close window" },
 		LYRDWindowCloseAll = { default = ":qa", desc = "Close all" },
 		LYRDWindowForceCloseAll = { default = ":qa!", desc = "Force Quit" },
+		LYRDPaneNavigateLeft = { default = "<C-w>h", desc = "Navigate to panel left" },
+		LYRDPaneNavigateDown = { default = "<C-w>j", desc = "Navigate to panel below" },
+		LYRDPaneNavigateUp = { default = "<C-w>k", desc = "Navigate to panel up" },
+		LYRDPaneNavigateRight = { default = "<C-w>l", desc = "Navigate to panel right" },
 	},
 }
 

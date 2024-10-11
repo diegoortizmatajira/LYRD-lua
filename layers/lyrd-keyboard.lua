@@ -7,10 +7,10 @@ local L = { name = "LYRD Keyboard" }
 
 function L.keybindings(s)
 	mappings.keys(s, {
-		{ "n", "<C-j>", "<C-w>j" },
-		{ "n", "<C-k>", "<C-w>k" },
-		{ "n", "<C-h>", "<C-w>h" },
-		{ "n", "<C-l>", "<C-w>l" },
+		{ "n", "<C-j>", cmd.LYRDPaneNavigateDown },
+		{ "n", "<C-k>", cmd.LYRDPaneNavigateUp },
+		{ "n", "<C-h>", cmd.LYRDPaneNavigateLeft },
+		{ "n", "<C-l>", cmd.LYRDPaneNavigateRight },
 		{ "n", "s", "<nop>" },
 		{ "n", "<F2>", cmd.LYRDViewFileTree },
 		{ "n", "<F5>", cmd.LYRDDebugContinue },
