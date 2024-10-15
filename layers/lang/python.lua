@@ -1,7 +1,6 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
-local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Python language" }
@@ -18,20 +17,12 @@ function L.settings(s)
 		"debugpy",
 		"pylint",
 		"pyright",
-		"yapf",
+		"ruff",
 	})
 
 	local null_ls = require("null-ls")
-	local h = require("null-ls.helpers")
 
 	lsp.null_ls_register_sources({
-		-- Custom Yapf to use config file from configs folder
-		null_ls.builtins.formatting.yapf.with({
-			args = h.range_formatting_args_factory({
-				"--quiet",
-				"--style='" .. setup.configs_path .. "/style.yapf'",
-			}, "--lines", nil, { use_rows = true, delimiter = "-" }),
-		}),
 		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
 		null_ls.builtins.diagnostics.pylint.with({
 			command = "python",
@@ -66,12 +57,39 @@ function L.complete(_)
 				venvPath = virtual_env,
 				analysis = {
 					autoImportCompletions = true,
-					diagnosticMode = "workspace",
 					typeCheckingMode = "standard",
 					useLibraryCodeForTypes = true,
 				},
 			},
 		},
+	})
+	lsp.enable("ruff", {
+		init_options = {
+			settings = {
+				lineLength = 120,
+				lint = {
+					enable = true,
+					preview = true,
+				},
+				format = {
+					preview = true,
+				},
+			},
+		},
+	})
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			if client == nil then
+				return
+			end
+			if client.name == "ruff" then
+				-- Disable hover in favor of Pyright
+				client.server_capabilities.hoverProvider = false
+			end
+		end,
+		desc = "LSP: Disable hover capability from Ruff",
 	})
 	require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
 end
