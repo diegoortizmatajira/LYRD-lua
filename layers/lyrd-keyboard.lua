@@ -11,6 +11,7 @@ function L.keybindings(s)
 		{ "n", "<C-k>", cmd.LYRDPaneNavigateUp },
 		{ "n", "<C-h>", cmd.LYRDPaneNavigateLeft },
 		{ "n", "<C-l>", cmd.LYRDPaneNavigateRight },
+		{ "n", "q", "<nop>" },
 		{ "n", "s", "<nop>" },
 		{ "n", "<F2>", cmd.LYRDViewFileTree },
 		{ "n", "<F5>", cmd.LYRDDebugContinue },
