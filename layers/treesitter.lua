@@ -36,7 +36,23 @@ end
 
 function L.settings(s)
 	require("nvim-treesitter.configs").setup({
-		ensure_installed = { "query", "c", "cpp", "go", "lua", "python", "rust", "typescript", "help" },
+		ensure_installed = {
+			"c",
+			"c_sharp",
+			"cpp",
+			"css",
+			"csv",
+			"go",
+			"help",
+			"json",
+			"lua",
+			"python",
+			"query",
+			"rust",
+			"typescript",
+			"vue",
+			"yaml",
+		},
 		highlight = {
 			enable = true,
 		},

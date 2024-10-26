@@ -16,31 +16,6 @@ function L.plugins(s)
 	})
 end
 
-local function dotnet_format_source()
-	local h = require("null-ls.helpers")
-	local methods = require("null-ls.methods")
-
-	local FORMATTING = methods.internal.FORMATTING
-	return h.make_builtin({
-		name = "Resharper CLI",
-		meta = {
-			url = "https://www.jetbrains.com/help/rider/ReSharper_Command_Line_Tools.html",
-			description = [[ReSharper Command Line Tools is a set of free cross-platform standalone tools that help you integrate automatic code quality procedures into your CI, version control, or any other server.]],
-		},
-		method = FORMATTING,
-		filetypes = { "cs" },
-		generator_opts = {
-			command = "jb",
-			args = {
-				"cleanupcode",
-				'--profile="Built-in: Reformat Code"',
-			},
-			to_stdin = false,
-		},
-		factory = h.formatter_factory,
-	})
-end
-
 function L.settings(s)
 	commands.implement(s, "cs", {
 		{ cmd.LYRDTest, ":OmniSharpRunTestsInFile" },
@@ -79,7 +54,6 @@ function L.settings(s)
 
 	lsp.null_ls_register_sources({
 		-- null_ls.builtins.formatting.astyle,
-		dotnet_format_source(),
 	})
 
 	-- vim.g.OmniSharp_server_use_net6 = 1
