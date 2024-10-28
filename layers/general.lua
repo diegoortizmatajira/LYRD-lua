@@ -3,6 +3,7 @@ local L = { name = "General" }
 function L.settings(_)
 	-- Map leader to ,
 	vim.g.mapleader = ","
+	vim.g.maplocalleader = "\\"
 
 	vim.o.undodir = vim.fn.expand("~/.config/nvim/undo/")
 	vim.o.undofile = true
