@@ -4,10 +4,13 @@ local L = { name = "CMake Language" }
 
 function L.plugins(_) end
 
-function L.settings(_)
+function L.preparation(_)
 	lsp.mason_ensure({
 		"cmake-language-server",
 	})
+end
+
+function L.settings(_)
 	-- make/cmake
 	local vimrc_make_cmake_group = vim.api.nvim_create_augroup("vimrc-make-cmake", {})
 	vim.api.nvim_create_autocmd({ "FileType" }, {

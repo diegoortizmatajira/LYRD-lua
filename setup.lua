@@ -33,7 +33,19 @@ local function load_plugins(s, loaded_layers)
 
 	-- Build the spec
 	local lazy_spec = {
-		"folke/neodev.nvim", -- Supports neovim lua development
+		-- "folke/neodev.nvim", -- Supports neovim lua development
+		{
+			"folke/lazydev.nvim",
+			ft = "lua", -- only load on lua files
+			opts = {
+				library = {
+					-- See the configuration section for more details
+					-- Load luvit types when the `vim.uv` word is found
+					{ path = "luvit-meta/library", words = { "vim%.uv" } },
+				},
+			},
+		},
+		{ "Bilal2453/luvit-meta", lazy = true },
 	}
 	for plugin_data, _ in pairs(s.plugins) do
 		if type(plugin_data) == "table" or type(plugin_data) == "string" then
@@ -55,7 +67,11 @@ local function load_plugins(s, loaded_layers)
 end
 
 local function load_settings(s, loaded_layers)
-	require("neodev").setup()
+	for _, layer in ipairs(loaded_layers) do
+		if layer.preparation ~= nil then
+			layer.preparation(s)
+		end
+	end
 	for _, layer in ipairs(loaded_layers) do
 		if layer.settings ~= nil then
 			layer.settings(s)

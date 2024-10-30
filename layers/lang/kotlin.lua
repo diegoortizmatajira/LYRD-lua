@@ -7,15 +7,17 @@ function L.plugins(s)
 	setup.plugin(s, {})
 end
 
-function L.settings(s)
+function L.preparation(_)
 	lsp.mason_ensure({
 		"kotlin-language-server",
 	})
 end
 
-function L.keybindings(s) end
+function L.settings(_) end
 
-function L.complete(s)
+function L.keybindings(_) end
+
+function L.complete(_)
 	lsp.enable("kotlin_language_server", {})
 end
 

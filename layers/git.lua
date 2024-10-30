@@ -9,7 +9,7 @@ function L.plugins(s)
 		"tpope/vim-fugitive",
 		"tpope/vim-rhubarb",
 		"tpope/vim-dispatch",
-		"lewis6991/gitsigns.nvim",
+		{ "lewis6991/gitsigns.nvim", opts = {} },
 		{
 			"kdheepak/lazygit.nvim",
 			-- optional for floating window border decoration
@@ -41,7 +41,6 @@ function L.git_flow_finish(what)
 end
 
 function L.settings(s)
-	require("gitsigns").setup()
 	commands.implement(s, "fugitive", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})

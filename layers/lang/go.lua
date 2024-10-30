@@ -14,6 +14,31 @@ function L.plugins(s)
 	})
 end
 
+function L.preparation(_)
+	lsp.mason_ensure({
+		"delve",
+		"go-debug-adapter",
+		"gofumpt",
+		"goimports",
+		"golangci-lint",
+		"golangci-lint-langserver",
+		"golines",
+		"gomodifytags",
+		"gopls",
+		"gotests",
+		"impl",
+	})
+
+	local null_ls = require("null-ls")
+	lsp.null_ls_register_sources({
+		null_ls.builtins.formatting.gofumpt,
+		null_ls.builtins.code_actions.impl,
+		null_ls.builtins.code_actions.gomodifytags,
+	})
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-go"))
+end
+
 function L.settings(s)
 	commands.implement(s, "go", {
 		{ cmd.LYRDCodeBuild, L.build_go_files },
@@ -55,29 +80,6 @@ function L.settings(s)
 		pattern = { "*.go" },
 		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
 	})
-
-	lsp.mason_ensure({
-		"delve",
-		"go-debug-adapter",
-		"gofumpt",
-		"goimports",
-		"golangci-lint",
-		"golangci-lint-langserver",
-		"golines",
-		"gomodifytags",
-		"gopls",
-		"gotests",
-		"impl",
-	})
-
-	local null_ls = require("null-ls")
-	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.gofumpt,
-		null_ls.builtins.code_actions.impl,
-		null_ls.builtins.code_actions.gomodifytags,
-	})
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-go"))
 end
 
 function L.complete(_)

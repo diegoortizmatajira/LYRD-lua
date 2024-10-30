@@ -4,7 +4,7 @@ local L = { name = "Lua Language" }
 
 function L.plugins(_) end
 
-function L.settings(s)
+function L.preparation(_)
 	lsp.mason_ensure({
 		"lua-language-server",
 		"luacheck",
@@ -17,6 +17,8 @@ function L.settings(s)
 		null_ls.builtins.formatting.stylua,
 	})
 end
+
+function L.settings(_) end
 
 function L.complete(_)
 	lsp.enable("lua_ls", {

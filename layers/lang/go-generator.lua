@@ -135,21 +135,21 @@ function L.generate_mapping(bufnr)
 			return
 		end
 
-		vim.ui.input("Name for the target prefix (or empty if not required): ", function(target_prefix)
+		vim.ui.input({ prompt = "Name for the target prefix (or empty if not required): " }, function(target_prefix)
 			if not target_prefix then
 				return
 			end
 			if target_prefix ~= "" then
 				target_prefix = target_prefix .. "."
 			end
-			vim.ui.input("Name for the source prefix (or empty if not required): ", function(source_prefix)
+			vim.ui.input({ prompt = "Name for the source prefix (or empty if not required): " }, function(source_prefix)
 				if not source_prefix then
 					return
 				end
 				if source_prefix ~= "" then
 					source_prefix = source_prefix .. "."
 				end
-				vim.ui.input("Operator sign: ", function(operator)
+				vim.ui.input({ prompt = "Operator sign: " }, function(operator)
 					local template = function(_, field_name, _)
 						return string.format(
 							[[%s%s %s %s%s]],
@@ -166,4 +166,5 @@ function L.generate_mapping(bufnr)
 		end)
 	end)
 end
+
 return L

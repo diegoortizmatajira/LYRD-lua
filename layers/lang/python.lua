@@ -12,7 +12,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.preparation(_)
 	lsp.mason_ensure({
 		"debugpy",
 		"pylint",
@@ -40,7 +40,9 @@ function L.settings(s)
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-python"))
+end
 
+function L.settings(s)
 	commands.implement(s, "python", {
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 	})
