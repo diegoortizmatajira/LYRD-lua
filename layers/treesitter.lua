@@ -43,7 +43,6 @@ function L.settings(s)
 			"css",
 			"csv",
 			"go",
-			"help",
 			"json",
 			"lua",
 			"python",
