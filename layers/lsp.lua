@@ -52,7 +52,7 @@ function L.plugins(s)
 				"neovim/nvim-lspconfig",
 			},
 		},
-		{ "williamboman/mason.nvim", opts = {}, lazy = false },
+		{ "williamboman/mason.nvim", opts = {}, priority = 1000 },
 		{ "neovim/nvim-lspconfig" },
 		{ "folke/trouble.nvim", opts = {} },
 		{ "https://git.sr.ht/~whynothugo/lsp_lines.nvim", opts = {} },
@@ -88,6 +88,7 @@ function L.preparation(_)
 end
 
 function L.settings(s)
+	require("mason").setup() -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
 		ensure_installed = mason_required,
 	})
