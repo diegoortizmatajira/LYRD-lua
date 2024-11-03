@@ -10,7 +10,7 @@ function L.plugins(s)
 			"kndndrj/nvim-projector",
 			requires = {
 				-- required:
-				"MunifTanjim/nui.nvim",
+				"muniftanjim/nui.nvim",
 				-- optional extensions:
 				"kndndrj/projector-neotest",
 				-- dependencies of extensions:

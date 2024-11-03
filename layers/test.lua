@@ -6,20 +6,15 @@ local L = { name = "Test", test_adapters = {} }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"nvim-neotest/nvim-nio",
+		{ "nvim-neotest/nvim-nio" },
 		{
 			"nvim-neotest/neotest",
 			dependencies = {
 				"nvim-neotest/nvim-nio",
 				"nvim-lua/plenary.nvim",
-				"antoinemadec/FixCursorHold.nvim",
+				"antoinemadec/fixcursorhold.nvim",
 				"nvim-treesitter/nvim-treesitter",
 			},
-			event = "VeryLazy",
-			opts = function()
-				print("Loading test adapters", #L.test_adapters)
-				return { adapters = L.test_adapters }
-			end,
 		},
 	})
 end
@@ -29,6 +24,7 @@ function L.configure_adapter(adapter)
 end
 
 function L.settings(s)
+	require("neotest").setup({ adapters = L.test_adapters })
 	commands.implement(s, "neotest-summary", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
@@ -71,7 +67,5 @@ function L.settings(s)
 		},
 	})
 end
-
-function L.complete(_) end
 
 return L

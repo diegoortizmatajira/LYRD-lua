@@ -31,8 +31,8 @@ function L.plugins(s)
 		{ "nvimtools/none-ls.nvim" },
 		{
 			"williamboman/mason-lspconfig.nvim",
-			opts = {},
 			config = function()
+				require("mason-lspconfig").setup()
 				require("mason-lspconfig").setup_handlers({
 					-- The first entry (without a key) will be the default handler
 					-- and will be called for each installed server that doesn't have
@@ -52,39 +52,43 @@ function L.plugins(s)
 				"neovim/nvim-lspconfig",
 			},
 		},
-		{ "williamboman/mason.nvim", opts = {}, priority = 1000 },
+		{ "williamboman/mason.nvim" },
 		{ "neovim/nvim-lspconfig" },
-		{ "folke/trouble.nvim", opts = {} },
+		{
+			"folke/trouble.nvim",
+			opts = {},
+			cmd = "Trouble",
+		},
 		{ "https://git.sr.ht/~whynothugo/lsp_lines.nvim", opts = {} },
 		{
-			"WhoIsSethDaniel/mason-tool-installer.nvim",
+			"whoissethdaniel/mason-tool-installer.nvim",
 			dependencies = { "williamboman/mason.nvim" },
 		},
 	})
 end
 
 function L.preparation(_)
-	-- L.mason_ensure({
-	-- 	"angular-language-server",
-	-- 	"bash-language-server",
-	-- 	"clang-format",
-	-- 	"css-lsp",
-	-- 	"dockerfile-language-server",
-	-- 	"editorconfig-checker",
-	-- 	"emmet-ls",
-	-- 	"eslint-lsp",
-	-- 	"firefox-debug-adapter",
-	-- 	"marksman",
-	-- 	"taplo",
-	-- 	"lemminx",
-	-- 	"node-debug2-adapter",
-	-- 	"sql-formatter",
-	-- 	"sqlls",
-	-- 	"vim-language-server",
-	-- 	"yamlfmt",
-	-- 	"yamllint",
-	-- 	"yapf",
-	-- })
+	L.mason_ensure({
+		"angular-language-server",
+		"bash-language-server",
+		"clang-format",
+		"css-lsp",
+		"dockerfile-language-server",
+		"editorconfig-checker",
+		"emmet-ls",
+		"eslint-lsp",
+		"firefox-debug-adapter",
+		"marksman",
+		"taplo",
+		"lemminx",
+		"node-debug2-adapter",
+		"sql-formatter",
+		"sqlls",
+		"vim-language-server",
+		"yamlfmt",
+		"yamllint",
+		"yapf",
+	})
 end
 
 function L.settings(s)

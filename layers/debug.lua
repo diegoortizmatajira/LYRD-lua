@@ -6,7 +6,7 @@ local L = { name = "Debug" }
 
 function L.plugins(s)
     setup.plugin(s, {
-        "Pocco81/DAPInstall.nvim",
+        "pocco81/dapinstall.nvim",
         "mfussenegger/nvim-dap",
         { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } },
         "nvim-telescope/telescope-dap.nvim",

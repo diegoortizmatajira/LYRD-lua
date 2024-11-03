@@ -125,6 +125,4 @@ function L.leader_ignore_menu(_, keys)
 	map_ignored("<Leader>", keys)
 end
 
-function L.settings(_) end
-
 return L

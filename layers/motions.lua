@@ -5,17 +5,26 @@ local c = commands.command_shortcut
 
 local L = { name = "Motions" }
 
-local hop_options = {
-	keys = "etovxqpdygfblzhckisuran",
-}
-
 function L.plugins(s)
 	setup.plugin(s, {
-		{ "smoka7/hop.nvim", version = "*", opts = hop_options, lazy = false },
+		{
+			"smoka7/hop.nvim",
+			version = "*",
+			opts = {},
+			cmd = {
+				"HopLine",
+				"HopWord",
+				"HopPattern",
+				"HopChar1",
+				"HopChar2",
+			},
+		},
 	})
 end
 
-function L.settings(_) end
+function L.settings(_)
+	require("hop").setup({})
+end
 
 function L.keybindings(s)
 	mappings.leader(s, {

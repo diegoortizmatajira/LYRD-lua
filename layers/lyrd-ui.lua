@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "LYRD UI" }
+
 local function combine_ascii_art(base, new, from_line)
 	for i = 1, #new, 1 do
 		base[from_line + i] = base[from_line + i] .. new[i]
@@ -93,7 +94,7 @@ function L.plugins(s)
 		},
 		-- { "rktjmp/lush.nvim" },
 		{
-			"kyazdani42/nvim-web-devicons",
+			"nvim-tree/nvim-web-devicons",
 			config = function()
 				vim.g.webdevicons_enable = 1
 				vim.g.webdevicons_enable_nerdtree = 1
