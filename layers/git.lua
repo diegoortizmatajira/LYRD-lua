@@ -8,17 +8,6 @@ function L.plugins(s)
 	setup.plugin(s, {
 		{
 			"tpope/vim-fugitive",
-			cmd = {
-				"Git",
-				"Gwrite",
-				"Gread",
-				"Ggrep",
-				"GDelete",
-				"GMove",
-				"Gvdiffsplit",
-				"Gdiffsplit",
-				"GBrowse",
-			},
 		},
 		{
 			"tpope/vim-rhubarb",
@@ -31,14 +20,6 @@ function L.plugins(s)
 		{ "lewis6991/gitsigns.nvim" },
 		{
 			"kdheepak/lazygit.nvim",
-			lazy = true,
-			cmd = {
-				"LazyGit",
-				"LazyGitConfig",
-				"LazyGitCurrentFile",
-				"LazyGitFilter",
-				"LazyGitFilterCurrentFile",
-			},
 			-- optional for floating window border decoration
 			dependencies = {
 				"nvim-lua/plenary.nvim",

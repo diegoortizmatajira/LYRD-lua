@@ -7,22 +7,21 @@ function L.plugins(s)
 		"muniftanjim/nui.nvim",
 		{
 			"kndndrj/nvim-dbee",
-			requires = {
+			dependencies = {
 				"muniftanjim/nui.nvim",
 			},
-			run = function()
+			build = function()
 				-- Install tries to automatically detect the install method.
 				-- if it fails, try calling it with one of these parameters:
 				--    "curl", "wget", "bitsadmin", "go"
 				require("dbee").install()
 			end,
+			opts = {},
 		},
 	})
 end
 
-function L.settings(_)
-	require("dbee").setup()
-end
+function L.settings(_) end
 
 function L.keybindings(s)
 	local commands = require("LYRD.layers.commands")

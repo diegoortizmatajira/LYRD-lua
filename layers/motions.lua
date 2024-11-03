@@ -11,19 +11,8 @@ function L.plugins(s)
 			"smoka7/hop.nvim",
 			version = "*",
 			opts = {},
-			cmd = {
-				"HopLine",
-				"HopWord",
-				"HopPattern",
-				"HopChar1",
-				"HopChar2",
-			},
 		},
 	})
-end
-
-function L.settings(_)
-	require("hop").setup({})
 end
 
 function L.keybindings(s)

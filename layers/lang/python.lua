@@ -2,13 +2,29 @@ local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 
 local L = { name = "Python language" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"mfussenegger/nvim-dap-python",
-		"nvim-neotest/neotest-python",
+		{
+			"mfussenegger/nvim-dap-python",
+			config = function()
+				require("dap-python").setup()
+				table.insert(require("dap").configurations.python, {
+					type = "python",
+					request = "launch",
+					name = "My custom launch configuration",
+					program = "${file}",
+				})
+			end,
+			ft = "python",
+		},
+		{
+			"nvim-neotest/neotest-python",
+			ft = "python",
+		},
 	})
 end
 
@@ -49,7 +65,6 @@ function L.settings(s)
 end
 
 function L.complete(_)
-	local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 	lsp.enable("pyright", {
 		settings = {
 			pyright = {
@@ -93,7 +108,6 @@ function L.complete(_)
 		end,
 		desc = "LSP: Disable hover capability from Ruff",
 	})
-	require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
 end
 
 return L

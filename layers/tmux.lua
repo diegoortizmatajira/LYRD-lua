@@ -8,13 +8,6 @@ function L.plugins(s)
 	setup.plugin(s, {
 		{
 			"christoomey/vim-tmux-navigator",
-			cmd = {
-				"TmuxNavigateLeft",
-				"TmuxNavigateDown",
-				"TmuxNavigateUp",
-				"TmuxNavigateRight",
-				"TmuxNavigatePrevious",
-			},
 		},
 	})
 end

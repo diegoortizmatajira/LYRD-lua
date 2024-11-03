@@ -43,54 +43,52 @@ local function header()
 	return combine_ascii_art(image, title, 3)
 end
 
-local gruvbox_options = { contrast = "hard" }
-
-local lualine_options = {
-	options = { theme = "gruvbox" },
-	sections = {
-		lualine_c = {
-			"filename",
-		},
-	},
-}
-local dressing_option = {
-	input = {
-		-- Set to false to disable the vim.ui.input implementation
-		enabled = true,
-		prompt_align = "center",
-		relative = "editor",
-	},
-}
-local function alpha_options()
-	local startify = require("alpha.themes.startify")
-	startify.section.header.val = header()
-	startify.section.top_buttons.val = { startify.button("e", "  New file", ":ene <BAR> startinsert <CR>") }
-	startify.section.mru.val[2].val = "Files"
-	startify.section.mru.val[4].val = function()
-		return { startify.mru(10) }
-	end
-	startify.section.mru_cwd.val[2].val = "Current Directory"
-	startify.section.mru_cwd.val[4].val = function()
-		return { startify.mru(0, vim.fn.getcwd()) }
-	end
-	startify.file_icons.provider = "devicons"
-	return startify.config
-end
-
 function L.plugins(s)
 	setup.plugin(s, {
 		{
 			"nvim-lualine/lualine.nvim",
-			dependencies = { "nvim-tree/nvim-web-devicons" },
+			opts = {
+				options = { theme = "gruvbox" },
+				sections = {
+					lualine_c = {
+						"filename",
+					},
+				},
+			},
+			dependencies = {
+				"ellisonleao/gruvbox.nvim",
+				"nvim-tree/nvim-web-devicons",
+			},
 		},
 		{
 			"ellisonleao/gruvbox.nvim",
 			priority = 1000,
-			opts = gruvbox_options,
+			config = function()
+				vim.o.background = "dark" -- or "light" for light mode
+				vim.cmd([[colorscheme gruvbox]])
+			end,
 		},
 		{
 			"goolord/alpha-nvim",
-			dependencies = { "nvim-tree/nvim-web-devicons" },
+			config = function()
+				local startify = require("alpha.themes.startify")
+				startify.section.header.val = header()
+				startify.section.top_buttons.val =
+					{ startify.button("e", "  New file", ":ene <BAR> startinsert <CR>") }
+				startify.section.mru.val[2].val = "Files"
+				startify.section.mru.val[4].val = function()
+					return { startify.mru(10) }
+				end
+				startify.section.mru_cwd.val[2].val = "Current Directory"
+				startify.section.mru_cwd.val[4].val = function()
+					return { startify.mru(0, vim.fn.getcwd()) }
+				end
+				startify.file_icons.provider = "devicons"
+				require("alpha").setup(startify.config)
+			end,
+			dependencies = {
+				"nvim-tree/nvim-web-devicons",
+			},
 		},
 		-- { "rktjmp/lush.nvim" },
 		{
@@ -119,7 +117,14 @@ function L.plugins(s)
 		},
 		{
 			"stevearc/dressing.nvim",
-			opts = dressing_option,
+			opts = {
+				input = {
+					-- Set to false to disable the vim.ui.input implementation
+					enabled = true,
+					prompt_align = "center",
+					relative = "editor",
+				},
+			},
 		},
 		{
 			"tummetott/unimpaired.nvim",
@@ -130,12 +135,6 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	vim.o.background = "dark" -- or "light" for light mode
-	vim.cmd([[colorscheme gruvbox]])
-
-	require("alpha").setup(alpha_options()) --Required as lazy load doesn't initialize it
-	require("lualine").setup(lualine_options) --Required as lazy load doesn't initialize it
-
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {

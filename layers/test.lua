@@ -9,6 +9,8 @@ function L.plugins(s)
 		{ "nvim-neotest/nvim-nio" },
 		{
 			"nvim-neotest/neotest",
+			priority = 0,
+			config = false, -- It will be called by hand
 			dependencies = {
 				"nvim-neotest/nvim-nio",
 				"nvim-lua/plenary.nvim",
@@ -24,7 +26,9 @@ function L.configure_adapter(adapter)
 end
 
 function L.settings(s)
+	-- Called only when all adapters have been collected into L.test_adapters
 	require("neotest").setup({ adapters = L.test_adapters })
+
 	commands.implement(s, "neotest-summary", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})

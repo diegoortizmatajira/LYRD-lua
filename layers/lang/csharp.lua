@@ -9,10 +9,29 @@ local L = { name = "C# language" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{ "OmniSharp/omnisharp-vim", requires = { "tpope/vim-dispatch" } },
-		"nickspoons/vim-sharpenup",
-		"adamclerk/vim-razor",
-		"Issafalcon/neotest-dotnet",
+		{
+			"OmniSharp/omnisharp-vim",
+			ft = "cs",
+			config = function()
+				vim.g.OmniSharp_highlighting = 0
+				vim.g.OmniSharp_server_use_mono = 0
+				vim.g.OmniSharp_server_path =
+					vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
+			end,
+			dependencies = { "tpope/vim-dispatch" },
+		},
+		{
+			"nickspoons/vim-sharpenup",
+			ft = "cs",
+		},
+		{
+			"adamclerk/vim-razor",
+			ft = "cs",
+		},
+		{
+			"Issafalcon/neotest-dotnet",
+			ft = "cs",
+		},
 	})
 end
 
@@ -57,11 +76,6 @@ function L.settings(s)
 			end,
 		},
 	}
-
-	vim.g.OmniSharp_highlighting = 0
-	vim.g.OmniSharp_server_use_mono = 0
-	vim.g.OmniSharp_server_path =
-		vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
 
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-dotnet"))

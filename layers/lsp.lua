@@ -28,41 +28,32 @@ end
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{ "nvimtools/none-ls.nvim" },
+		{ "neovim/nvim-lspconfig" },
+		{
+			"nvimtools/none-ls.nvim",
+			config = false,
+		},
 		{
 			"williamboman/mason-lspconfig.nvim",
-			config = function()
-				require("mason-lspconfig").setup()
-				require("mason-lspconfig").setup_handlers({
-					-- The first entry (without a key) will be the default handler
-					-- and will be called for each installed server that doesn't have
-					-- a dedicated handler.
-					function(server_name) -- default handler (optional)
-						L.enable(server_name, {})
-					end,
-					-- Next, you can provide targeted overrides for specific servers.
-					-- For example, a handler override for the `rust_analyzer`:
-					-- ["rust_analyzer"] = function()
-					--   require("rust-tools").setup{}
-					-- end
-				})
-			end,
+			config = false,
 			dependencies = {
 				"williamboman/mason.nvim",
 				"neovim/nvim-lspconfig",
 			},
 		},
-		{ "williamboman/mason.nvim" },
-		{ "neovim/nvim-lspconfig" },
 		{
-			"folke/trouble.nvim",
-			opts = {},
-			cmd = "Trouble",
+			"williamboman/mason.nvim",
+			config = false,
 		},
 		{ "https://git.sr.ht/~whynothugo/lsp_lines.nvim", opts = {} },
 		{
 			"whoissethdaniel/mason-tool-installer.nvim",
+			config = false,
 			dependencies = { "williamboman/mason.nvim" },
+		},
+		{
+			"folke/trouble.nvim",
+			opts = {},
 		},
 	})
 end
@@ -95,6 +86,20 @@ function L.settings(s)
 	require("mason").setup() -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
 		ensure_installed = mason_required,
+	})
+	require("mason-lspconfig").setup()
+	require("mason-lspconfig").setup_handlers({
+		-- The first entry (without a key) will be the default handler
+		-- and will be called for each installed server that doesn't have
+		-- a dedicated handler.
+		function(server_name) -- default handler (optional)
+			L.enable(server_name, {})
+		end,
+		-- Next, you can provide targeted overrides for specific servers.
+		-- For example, a handler override for the `rust_analyzer`:
+		-- ["rust_analyzer"] = function()
+		--   require("rust-tools").setup{}
+		-- end
 	})
 
 	-- Configures the null language server

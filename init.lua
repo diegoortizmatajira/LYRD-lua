@@ -7,7 +7,6 @@ _G.LYRD_setup = {
         "LYRD.layers.mappings",
         "LYRD.layers.commands",
         "LYRD.layers.lyrd-commands",
-        -- "LYRD.layers.plug_test",
         "LYRD.layers.lyrd-ui",
         "LYRD.layers.lyrd-keyboard",
         "LYRD.layers.clipboard",
