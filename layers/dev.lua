@@ -4,12 +4,9 @@ local L = { name = "Development" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{
-			"numtostr/comment.nvim",
-		},
-		{
-			"norcalli/nvim-colorizer.lua",
-		},
+		{ "numtostr/comment.nvim" },
+		{ "norcalli/nvim-colorizer.lua" },
+		{ "ellisonleao/dotenv.nvim", opts = {} },
 		{
 			"windwp/nvim-autopairs",
 			event = "InsertEnter",
@@ -20,6 +17,25 @@ function L.plugins(s)
 			version = "*", -- Use for stability; omit to use `main` branch for the latest features
 			event = "VeryLazy",
 			opts = {},
+		},
+		{ -- This plugin
+			"zeioth/compiler.nvim",
+			cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
+			dependencies = { "stevearc/overseer.nvim", "nvim-telescope/telescope.nvim" },
+			opts = {},
+		},
+		{ -- The task runner we use
+			"stevearc/overseer.nvim",
+			commit = "6271cab7ccc4ca840faa93f54440ffae3a3918bd",
+			opts = {
+				strategy = "toggleterm",
+				task_list = {
+					direction = "bottom",
+					min_height = 25,
+					max_height = 25,
+					default_detail = 1,
+				},
+			},
 		},
 	})
 end

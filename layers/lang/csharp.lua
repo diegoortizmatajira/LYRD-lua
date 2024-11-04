@@ -32,6 +32,11 @@ function L.plugins(s)
 			"Issafalcon/neotest-dotnet",
 			ft = "cs",
 		},
+		{
+			"MoaidHathot/dotnet.nvim",
+			cmd = "DotnetUI",
+			opts = {},
+		},
 	})
 end
 
