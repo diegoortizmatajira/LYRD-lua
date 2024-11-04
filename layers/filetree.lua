@@ -13,6 +13,12 @@ function L.plugins(s)
 				"nvim-tree/nvim-web-devicons",
 			},
 			opts = {
+				sync_root_with_cwd = true,
+				respect_buf_cwd = true,
+				update_focused_file = {
+					enable = true,
+					update_root = true,
+				},
 				disable_netrw = false,
 				update_cwd = true,
 				diagnostics = { enable = true, show_on_dirs = true },
