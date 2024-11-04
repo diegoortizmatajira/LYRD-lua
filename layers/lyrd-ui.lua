@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "LYRD UI" }
+local ext_app_term = nil -- Store the terminal object
 
 local function combine_ascii_art(base, new, from_line)
 	for i = 1, #new, 1 do
@@ -90,6 +91,7 @@ function L.plugins(s)
 				"nvim-tree/nvim-web-devicons",
 			},
 		},
+		{ "akinsho/toggleterm.nvim" },
 		-- { "rktjmp/lush.nvim" },
 		{
 			"nvim-tree/nvim-web-devicons",
@@ -167,6 +169,26 @@ function L.settings(s)
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
+end
+
+function L.toggle_external_app_terminal(external_cmd)
+	local Terminal = require("toggleterm.terminal").Terminal
+	if ext_app_term and ext_app_term:is_open() then
+		ext_app_term:close()
+		ext_app_term = nil
+	else
+		-- Create a floating terminal pane and run a custom command
+		ext_app_term = Terminal:new({
+			cmd = external_cmd,
+			direction = "float",
+			float_opts = { border = "double" },
+			on_open = function(term)
+				vim.cmd("startinsert!")
+				vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+			end,
+		})
+		return ext_app_term:toggle()
+	end
 end
 
 return L
