@@ -76,6 +76,7 @@ function L.keybindings(s)
 		{ { "c" }, "Code" },
 		{ { "c", "g" }, "Code Generation" },
 		{ { "t" }, "Test" },
+		{ { "f" }, "Services" },
 		{ { "D" }, "Debug" },
 		{ { "p" }, "Packages" },
 		{ { "q" }, "Quit" },
@@ -130,6 +131,11 @@ function L.keybindings(s)
 		{ "n", { "q", "Q" }, cmd.LYRDWindowForceCloseAll },
 		-- UI Menu
 		{ "n", { "u", "w" }, cmd.LYRDBufferToggleWrap },
+		-- Services
+		{ "n", { "f", "d" }, cmd.LYRDDatabaseUI },
+		{ "n", { "f", "c" }, cmd.LYRDContainersUI },
+		{ "n", { "f", "g" }, cmd.LYRDGitUI },
+		{ "n", { "f", "k" }, cmd.LYRDKubernetesUI },
 		-- Search Menu
 		{ "n", { "s", "." }, cmd.LYRDSearchFiles },
 		{ "n", { "s", "b" }, cmd.LYRDSearchBuffers },

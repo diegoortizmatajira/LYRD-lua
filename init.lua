@@ -23,6 +23,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.completion",
 		"LYRD.layers.debug",
 		"LYRD.layers.database",
+		"LYRD.layers.docker",
 		"LYRD.layers.projector", -- Must be after debug and database
 		"LYRD.layers.ai-tabnine",
 		-- "LYRD.layers.ai-copilot",

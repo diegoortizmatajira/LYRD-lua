@@ -1,4 +1,6 @@
 local setup = require("LYRD.setup")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Database" }
 
@@ -21,19 +23,10 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_) end
-
-function L.keybindings(s)
-	local commands = require("LYRD.layers.commands")
-	local c = commands.command_shortcut
-	local mappings = require("LYRD.layers.mappings")
-
-	mappings.space_menu(s, { { { "d" }, "Database" } })
-	mappings.space(s, {
-		{ "n", { "d", "d" }, c("Dbee"), "Dbee UI" },
+function L.settings(s)
+	commands.implement(s, "*", {
+		{ cmd.LYRDDatabaseUI, ":Dbee" },
 	})
 end
-
-function L.complete(_) end
 
 return L

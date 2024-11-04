@@ -45,7 +45,7 @@ local L = {
 		LYRDDebugToggleRepl = { desc = "Toggle Debug Repl" },
 		LYRDDebugToggleUI = { desc = "Toggle Debug UI" },
 		LYRDDiagnosticLinesToggle = { desc = "Toggle diagnostic lines" },
-		LYRDGitUI = { desc = "Complete user interface" },
+		LYRDGitUI = { desc = "Git UI" },
 		LYRDGitBrowseOnWeb = { desc = "Browse line on web" },
 		LYRDGitCheckoutDev = { desc = "Checkout Develop branch" },
 		LYRDGitCheckoutMain = { desc = "Checkout Main branch" },
@@ -129,6 +129,9 @@ local L = {
 		LYRDPaneNavigateDown = { default = "<C-w>j", desc = "Navigate to panel below" },
 		LYRDPaneNavigateUp = { default = "<C-w>k", desc = "Navigate to panel up" },
 		LYRDPaneNavigateRight = { default = "<C-w>l", desc = "Navigate to panel right" },
+		LYRDDatabaseUI = { desc = "Database UI" },
+		LYRDContainersUI = { desc = "Running containers UI" },
+		LYRDKubernetesUI = { desc = "Kubernetes UI" },
 	},
 }
 
