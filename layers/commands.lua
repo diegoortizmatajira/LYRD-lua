@@ -1,7 +1,5 @@
 local L = { name = "Commands" }
 
-function L.plugins(_) end
-
 local function register_implementation(s, filetype, commandName, implementation)
 	if s.commands[commandName] == nil then
 		s.commands[commandName] = {}
@@ -66,8 +64,6 @@ function L.settings(s)
 		show_implemented_commands(s)
 	end
 end
-
-function L.complete(_) end
 
 function L.implement(s, filetype, commands)
 	for _, command_info in ipairs(commands) do

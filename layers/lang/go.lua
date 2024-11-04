@@ -8,54 +8,45 @@ local L = { name = "Go language" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{ "fatih/vim-go", run = ":GoUpdateBinaries" },
-		"leoluz/nvim-dap-go",
-		"nvim-neotest/neotest-go",
+		{
+			"fatih/vim-go",
+			ft = "go", -- only load on go files
+			init = function()
+				vim.g.go_list_type = "quickfix"
+				vim.g.go_fmt_command = "gopls"
+				vim.g.go_gopls_gofumpt = 1
+				vim.g.go_fmt_fail_silently = 1
+				vim.g.go_def_mapping_enabled = 0
+				vim.g.go_doc_popup_window = 1
+				vim.g.go_highlight_types = 1
+				vim.g.go_highlight_fields = 1
+				vim.g.go_highlight_functions = 1
+				vim.g.go_highlight_methods = 1
+				vim.g.go_highlight_operators = 1
+				vim.g.go_highlight_build_constraints = 1
+				vim.g.go_highlight_structs = 1
+				vim.g.go_highlight_generate_tags = 1
+				vim.g.go_highlight_space_tab_error = 0
+				vim.g.go_highlight_array_whitespace_error = 0
+				vim.g.go_highlight_trailing_whitespace_error = 0
+				vim.g.go_highlight_extra_types = 1
+				vim.g.go_debug_breakpoint_sign_text = ">"
+			end,
+			build = ":GoUpdateBinaries",
+		},
+		{
+			"leoluz/nvim-dap-go",
+			ft = "go", -- only load on go files
+			opts = {},
+		},
+		{
+			"nvim-neotest/neotest-go",
+			ft = "go", -- only load on go files
+		},
 	})
 end
 
-function L.settings(s)
-	commands.implement(s, "go", {
-		{ cmd.LYRDCodeBuild, L.build_go_files },
-		{ cmd.LYRDCodeRun, ":GoRun" },
-		{ cmd.LYRDTest, ":GoTest" },
-		{ cmd.LYRDTestCoverage, ":GoCoverageToggle" },
-		{ cmd.LYRDCodeAlternateFile, ":GoAlternate" },
-		{ cmd.LYRDBufferFormat, ":GoFmt" },
-		{ cmd.LYRDCodeFixImports, ":GoImports" },
-		{ cmd.LYRDCodeGlobalCheck, ":GoMetaLinter!" },
-		{ cmd.LYRDCodeImplementInterface, "GoImpl" },
-		{ cmd.LYRDCodeFillStructure, ":GoFillStruct" },
-		{ cmd.LYRDCodeGenerate, ":GoGenerate" },
-		{ cmd.LYRDCodeProduceGetter, generator.generate_getters },
-		{ cmd.LYRDCodeProduceSetter, generator.generate_setters },
-		{ cmd.LYRDCodeProduceMapping, generator.generate_mapping },
-	})
-	vim.g.go_list_type = "quickfix"
-	vim.g.go_fmt_command = "gopls"
-	vim.g.go_gopls_gofumpt = 1
-	vim.g.go_fmt_fail_silently = 1
-	vim.g.go_def_mapping_enabled = 0
-	vim.g.go_doc_popup_window = 1
-	vim.g.go_highlight_types = 1
-	vim.g.go_highlight_fields = 1
-	vim.g.go_highlight_functions = 1
-	vim.g.go_highlight_methods = 1
-	vim.g.go_highlight_operators = 1
-	vim.g.go_highlight_build_constraints = 1
-	vim.g.go_highlight_structs = 1
-	vim.g.go_highlight_generate_tags = 1
-	vim.g.go_highlight_space_tab_error = 0
-	vim.g.go_highlight_array_whitespace_error = 0
-	vim.g.go_highlight_trailing_whitespace_error = 0
-	vim.g.go_highlight_extra_types = 1
-	vim.g.go_debug_breakpoint_sign_text = ">"
-
-	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-		pattern = { "*.go" },
-		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
-	})
-
+function L.preparation(_)
 	lsp.mason_ensure({
 		"delve",
 		"go-debug-adapter",
@@ -80,6 +71,30 @@ function L.settings(s)
 	test.configure_adapter(require("neotest-go"))
 end
 
+function L.settings(s)
+	commands.implement(s, "go", {
+		{ cmd.LYRDCodeBuild, L.build_go_files },
+		{ cmd.LYRDCodeRun, ":GoRun" },
+		{ cmd.LYRDTest, ":GoTest" },
+		{ cmd.LYRDTestCoverage, ":GoCoverageToggle" },
+		{ cmd.LYRDCodeAlternateFile, ":GoAlternate" },
+		{ cmd.LYRDBufferFormat, ":GoFmt" },
+		{ cmd.LYRDCodeFixImports, ":GoImports" },
+		{ cmd.LYRDCodeGlobalCheck, ":GoMetaLinter!" },
+		{ cmd.LYRDCodeImplementInterface, "GoImpl" },
+		{ cmd.LYRDCodeFillStructure, ":GoFillStruct" },
+		{ cmd.LYRDCodeGenerate, ":GoGenerate" },
+		{ cmd.LYRDCodeProduceGetter, generator.generate_getters },
+		{ cmd.LYRDCodeProduceSetter, generator.generate_setters },
+		{ cmd.LYRDCodeProduceMapping, generator.generate_mapping },
+	})
+
+	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+		pattern = { "*.go" },
+		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
+	})
+end
+
 function L.complete(_)
 	lsp.enable("gopls", {
 		settings = {
@@ -89,7 +104,6 @@ function L.complete(_)
 			},
 		},
 	})
-	require("dap-go").setup()
 end
 
 local function ends_with(str, ending)

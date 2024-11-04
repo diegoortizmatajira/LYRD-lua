@@ -8,17 +8,36 @@ function L.plugins(s)
 	setup.plugin(s, {
 		"nvim-lua/popup.nvim",
 		"nvim-lua/plenary.nvim",
-		{ "nvim-telescope/telescope.nvim", requires = { "nvim-lua/plenary.nvim" } },
-		{ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable("make") == 1 },
-		"nvim-telescope/telescope-ui-select.nvim",
+		{
+			"nvim-telescope/telescope-fzf-native.nvim",
+			config = function()
+				local telescope = require("telescope")
+				telescope.load_extension("fzf")
+			end,
+			build = "make",
+			dependencies = { "nvim-telescope/telescope.nvim" },
+		},
+		{
+			"nvim-telescope/telescope-ui-select.nvim",
+			config = function()
+				local telescope = require("telescope")
+				telescope.load_extension("ui-select")
+			end,
+			dependencies = { "nvim-telescope/telescope.nvim" },
+		},
+		{
+			"nvim-telescope/telescope.nvim",
+			opts = {},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-telescope/telescope-fzf-native.nvim",
+				"nvim-telescope/telescope-ui-select.nvim",
+			},
+		},
 	})
 end
 
 function L.settings(s)
-	require("telescope").setup()
-	require("telescope").load_extension("ui-select")
-	pcall(require("telescope").load_extension, "fzf")
-
 	commands.implement(s, "*", {
 		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
 		{ cmd.LYRDSearchBuffers, ":Telescope buffers" },

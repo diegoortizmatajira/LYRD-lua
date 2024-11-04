@@ -1,10 +1,4 @@
-local setup = require("LYRD.setup")
-
 local L = { name = "Clipboard" }
-
-function L.plugins(s)
-	setup.plugin(s, {})
-end
 
 function L.settings(_)
 	vim.opt.clipboard = "unnamed,unnamedplus"
@@ -35,8 +29,6 @@ function L.settings(_)
 	-- 		cache_enabled = 0,
 	-- 	}
 	-- end
-
 end
 
 return L
-

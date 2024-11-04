@@ -6,11 +6,13 @@ local c = commands.command_shortcut
 local L = { name = "Motions" }
 
 function L.plugins(s)
-	setup.plugin(s, { "phaazon/hop.nvim" })
-end
-
-function L.settings(_)
-	require("hop").setup({})
+	setup.plugin(s, {
+		{
+			"smoka7/hop.nvim",
+			version = "*",
+			opts = {},
+		},
+	})
 end
 
 function L.keybindings(s)

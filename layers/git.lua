@@ -6,14 +6,22 @@ local L = { name = "Git" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"tpope/vim-fugitive",
-		"tpope/vim-rhubarb",
+		{
+			"tpope/vim-fugitive",
+		},
+		{
+			"tpope/vim-rhubarb",
+			dependencies = {
+
+				"tpope/vim-fugitive",
+			},
+		},
 		"tpope/vim-dispatch",
-		"lewis6991/gitsigns.nvim",
+		{ "lewis6991/gitsigns.nvim" },
 		{
 			"kdheepak/lazygit.nvim",
 			-- optional for floating window border decoration
-			requires = {
+			dependencies = {
 				"nvim-lua/plenary.nvim",
 			},
 		},
@@ -41,7 +49,6 @@ function L.git_flow_finish(what)
 end
 
 function L.settings(s)
-	require("gitsigns").setup()
 	commands.implement(s, "fugitive", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})

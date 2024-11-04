@@ -3,6 +3,7 @@ local L = { name = "General" }
 function L.settings(_)
 	-- Map leader to ,
 	vim.g.mapleader = ","
+	vim.g.maplocalleader = "\\"
 
 	vim.o.undodir = vim.fn.expand("~/.config/nvim/undo/")
 	vim.o.undofile = true
@@ -16,9 +17,9 @@ function L.settings(_)
 	vim.o.foldenable = false
 
 	-- Encoding
-	vim.o.encoding = "utf-8"
-	vim.o.fileencoding = "utf-8"
-	vim.o.fileencodings = "utf-8"
+	-- vim.o.encoding = "utf-8"
+	-- vim.o.fileencoding = "utf-8"
+	-- vim.o.fileencodings = "utf-8"
 
 	-- Fix backspace indent
 	vim.o.backspace = "indent,eol,start"

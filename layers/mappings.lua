@@ -3,7 +3,33 @@ local setup = require("LYRD.setup")
 local L = { name = "Mappings" }
 
 function L.plugins(s)
-	setup.plugin(s, { "folke/which-key.nvim" })
+	setup.plugin(s, {
+		{
+			"folke/which-key.nvim",
+			event = "VeryLazy",
+			opts = {
+				icons = {
+					group = "", -- symbol prepended to a group
+				},
+				layout = {
+					height = { min = 1, max = 25 }, -- min and max height of the columns
+					width = { min = 20, max = 50 }, -- min and max width of the columns
+					spacing = 3, -- spacing between columns
+					align = "center", -- align columns left, center or right
+				},
+				-- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
+			},
+			keys = {
+				{
+					"<leader>?",
+					function()
+						require("which-key").show({ global = false })
+					end,
+					desc = "Buffer Local Keymaps (which-key)",
+				},
+			},
+		},
+	})
 end
 
 local function map_key(mode, lead, keys, command, documentation, options)
@@ -97,21 +123,6 @@ end
 -- @param keys is an array of keys to be ignored in the menu
 function L.leader_ignore_menu(_, keys)
 	map_ignored("<Leader>", keys)
-end
-
-function L.settings(_)
-	require("which-key").setup({
-		icons = {
-			group = "", -- symbol prepended to a group
-		},
-		layout = {
-			height = { min = 1, max = 25 }, -- min and max height of the columns
-			width = { min = 20, max = 50 }, -- min and max width of the columns
-			spacing = 3, -- spacing between columns
-			align = "center", -- align columns left, center or right
-		},
-		-- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
-	})
 end
 
 return L

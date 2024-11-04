@@ -7,7 +7,7 @@ function L.plugins(s)
 	setup.plugin(s, {})
 end
 
-function L.settings(_)
+function L.preparation(_)
 	-- Configures the null language server
 	local null_ls = require("null-ls")
 	local default_dialect = "tsql"
@@ -23,6 +23,8 @@ function L.settings(_)
 		}),
 	})
 end
+
+function L.settings(_) end
 
 function L.complete(_)
 	lsp.enable("sqlls")

@@ -11,10 +11,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
-	vim.g.javascript_plugin_jsdoc = 1
-	vim.g.javascript_plugin_ngdoc = 1
-	vim.g.javascript_plugin_flow = 1
+function L.preparation(_)
 	lsp.mason_ensure({
 		"json-lsp",
 		"json-to-struct",
@@ -28,6 +25,12 @@ function L.settings(_)
 			extra_filetypes = { "htmldjango" },
 		}),
 	})
+end
+
+function L.settings(_)
+	vim.g.javascript_plugin_jsdoc = 1
+	vim.g.javascript_plugin_ngdoc = 1
+	vim.g.javascript_plugin_flow = 1
 end
 
 function L.complete(_)

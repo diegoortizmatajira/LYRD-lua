@@ -7,11 +7,13 @@ function L.plugins(s)
 	setup.plugin(s, {})
 end
 
-function L.settings(_)
+function L.preparation(_)
 	lsp.mason_ensure({
 		"rust-analyzer",
 	})
 end
+
+function L.settings(_) end
 
 function L.complete(_)
 	lsp.enable("rust_analyzer", {

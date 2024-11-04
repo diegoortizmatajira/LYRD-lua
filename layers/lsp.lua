@@ -28,18 +28,65 @@ end
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"nvimtools/none-ls.nvim",
-		"williamboman/mason.nvim",
-		"williamboman/mason-lspconfig.nvim",
-		"neovim/nvim-lspconfig",
-		"folke/trouble.nvim",
-		"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		{ "neovim/nvim-lspconfig" },
+		{
+			"nvimtools/none-ls.nvim",
+			config = false,
+		},
+		{
+			"williamboman/mason-lspconfig.nvim",
+			config = false,
+			dependencies = {
+				"williamboman/mason.nvim",
+				"neovim/nvim-lspconfig",
+			},
+		},
+		{
+			"williamboman/mason.nvim",
+			config = false,
+		},
+		{ "https://git.sr.ht/~whynothugo/lsp_lines.nvim", opts = {} },
+		{
+			"whoissethdaniel/mason-tool-installer.nvim",
+			config = false,
+			dependencies = { "williamboman/mason.nvim" },
+		},
+		{
+			"folke/trouble.nvim",
+			opts = {},
+		},
+	})
+end
+
+function L.preparation(_)
+	L.mason_ensure({
+		"angular-language-server",
+		"bash-language-server",
+		"clang-format",
+		"css-lsp",
+		"dockerfile-language-server",
+		"editorconfig-checker",
+		"emmet-ls",
+		"eslint-lsp",
+		"firefox-debug-adapter",
+		"marksman",
+		"taplo",
+		"lemminx",
+		"node-debug2-adapter",
+		"sql-formatter",
+		"sqlls",
+		"vim-language-server",
+		"yamlfmt",
+		"yamllint",
+		"yapf",
 	})
 end
 
 function L.settings(s)
-	require("mason").setup()
+	require("mason").setup() -- Recommended not to lazy load
+	require("mason-tool-installer").setup({
+		ensure_installed = mason_required,
+	})
 	require("mason-lspconfig").setup()
 	require("mason-lspconfig").setup_handlers({
 		-- The first entry (without a key) will be the default handler
@@ -54,6 +101,15 @@ function L.settings(s)
 		--   require("rust-tools").setup{}
 		-- end
 	})
+
+	-- Configures the null language server
+	local null_ls = require("null-ls")
+	null_ls.setup({
+		sources = null_ls_sources,
+	})
+	for _, custom_register in ipairs(null_ls_registered) do
+		null_ls.register(custom_register)
+	end
 
 	local signs = {
 		{ name = "DiagnosticSignError", text = "" },
@@ -90,9 +146,6 @@ function L.settings(s)
 	vim.lsp.handlers["textDocument/signatureHelp"] =
 		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
-	require("trouble").setup()
-	require("lsp_lines").setup()
-
 	commands.implement(s, "*", {
 		{
 			cmd.LYRDBufferFormat,
@@ -119,7 +172,12 @@ function L.settings(s)
 		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":Trouble diagnostics toggle" },
 		{ cmd.LYRDViewLocationList, ":Trouble loclist toggle" },
 		{ cmd.LYRDViewQuickFixList, ":Trouble qflist toggle" },
-		{ cmd.LYRDDiagnosticLinesToggle, require("lsp_lines").toggle },
+		{
+			cmd.LYRDDiagnosticLinesToggle,
+			function()
+				require("lsp_lines").toggle()
+			end,
+		},
 	})
 	setup_default_providers()
 end
@@ -149,40 +207,6 @@ function L.null_ls_register(custom_register)
 	table.insert(null_ls_registered, custom_register)
 end
 
-function L.complete(_)
-	L.mason_ensure({
-		"angular-language-server",
-		"bash-language-server",
-		"clang-format",
-		"css-lsp",
-		"dockerfile-language-server",
-		"editorconfig-checker",
-		"emmet-ls",
-		"eslint-lsp",
-		"firefox-debug-adapter",
-		"marksman",
-		"taplo",
-		"lemminx",
-		"node-debug2-adapter",
-		"sql-formatter",
-		"sqlls",
-		"vim-language-server",
-		"yamlfmt",
-		"yamllint",
-		"yapf",
-	})
-	require("mason-tool-installer").setup({
-		ensure_installed = mason_required,
-	})
-
-	-- Configures the null language server
-	local null_ls = require("null-ls")
-	null_ls.setup({
-		sources = null_ls_sources,
-	})
-	for _, custom_register in ipairs(null_ls_registered) do
-		null_ls.register(custom_register)
-	end
-end
+function L.complete(_) end
 
 return L
