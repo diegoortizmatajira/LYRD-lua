@@ -4,7 +4,23 @@ local L = { name = "Development" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{ "numtostr/comment.nvim" },
+		{
+			"numtostr/comment.nvim",
+			opts = {
+				hook = function()
+					require("ts_context_commentstring").update_commentstring()
+				end,
+			},
+			dependencies = {
+				"joosepalviste/nvim-ts-context-commentstring",
+			},
+		},
+		{
+			"joosepalviste/nvim-ts-context-commentstring",
+			opts = {
+				enable_autocmd = false,
+			},
+		},
 		{ "norcalli/nvim-colorizer.lua" },
 		{ "ellisonleao/dotenv.nvim", opts = {} },
 		{
