@@ -17,7 +17,58 @@ function L.plugins(s)
 			},
 		},
 		"tpope/vim-dispatch",
-		{ "lewis6991/gitsigns.nvim" },
+		{
+			"lewis6991/gitsigns.nvim",
+			opts = {
+				signs = {
+					add = { text = "┃" },
+					change = { text = "┃" },
+					delete = { text = "_" },
+					topdelete = { text = "‾" },
+					changedelete = { text = "~" },
+					untracked = { text = "┆" },
+				},
+				signs_staged = {
+					add = { text = "┃" },
+					change = { text = "┃" },
+					delete = { text = "_" },
+					topdelete = { text = "‾" },
+					changedelete = { text = "~" },
+					untracked = { text = "┆" },
+				},
+				signs_staged_enable = true,
+				signcolumn = true,
+				numhl = false,
+				linehl = true,
+				word_diff = false,
+				watch_gitdir = {
+					interval = 1000,
+					follow_files = true,
+				},
+				auto_attach = true,
+				attach_to_untracked = false,
+				current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+				current_line_blame_opts = {
+					virt_text = true,
+					virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
+					delay = 1000,
+					ignore_whitespace = false,
+				},
+				current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
+				sign_priority = 6,
+				status_formatter = nil, -- Use default
+				update_debounce = 200,
+				max_file_length = 40000,
+				preview_config = {
+					-- Options passed to nvim_open_win
+					border = "rounded",
+					style = "minimal",
+					relative = "cursor",
+					row = 0,
+					col = 1,
+				},
+			},
+		},
 		{
 			"kdheepak/lazygit.nvim",
 			-- optional for floating window border decoration
