@@ -39,7 +39,7 @@ function L.plugins(s)
 				signs_staged_enable = true,
 				signcolumn = true,
 				numhl = false,
-				linehl = true,
+				linehl = false,
 				word_diff = false,
 				watch_gitdir = {
 					interval = 1000,
