@@ -54,6 +54,9 @@ function L.plugins(s)
 					lualine_c = {
 						"filename",
 					},
+					lualine_x = {
+						"tabnine",
+					},
 				},
 			},
 			dependencies = {

@@ -7,13 +7,73 @@ local L = { name = "Debug" }
 function L.plugins(s)
 	setup.plugin(s, {
 		"pocco81/dap-buddy.nvim",
-		"mfussenegger/nvim-dap",
+		{
+			"mfussenegger/nvim-dap",
+			config = function()
+				local dap = require("dap")
+				dap.set_log_level("info")
+			end,
+		},
 		{
 			"rcarriga/nvim-dap-ui",
 			init = function()
 				vim.g.dap_virtual_text = true
 			end,
-			opts = {},
+			opts = {
+				icons = { expanded = "", collapsed = "", circular = "" },
+				contols = {
+					enabled = true,
+					-- Display controls in this element
+					element = "repl",
+					icons = {
+						pause = "",
+						play = "",
+						step_into = "",
+						step_over = "",
+						step_out = "",
+						step_back = "",
+						run_last = "",
+						terminate = "",
+					},
+				},
+				mappings = {
+					-- Use a table to apply multiple mappings
+					expand = { "<CR>", "<2-LeftMouse>" },
+					open = "o",
+					remove = "d",
+					edit = "e",
+					repl = "r",
+					toggle = "t",
+				},
+				layouts = {
+					{
+						elements = {
+							{ id = "scopes", size = 0.33 },
+							{ id = "breakpoints", size = 0.17 },
+							{ id = "stacks", size = 0.25 },
+							{ id = "watches", size = 0.25 },
+						},
+						size = 0.33,
+						position = "right",
+					},
+					{
+						elements = {
+							{ id = "repl", size = 0.45 },
+							{ id = "console", size = 0.55 },
+						},
+						size = 0.27,
+						position = "bottom",
+					},
+				},
+				floating = {
+					max_height = 0.9,
+					max_width = 0.5, -- Floats will be treated as percentage of your screen.
+					border = "rounded",
+					mappings = {
+						close = { "q", "<Esc>" },
+					},
+				},
+			},
 			dependencies = {
 				"mfussenegger/nvim-dap",
 				"nvim-neotest/nvim-nio",
@@ -32,6 +92,25 @@ function L.plugins(s)
 end
 
 function L.settings(s)
+	vim.fn.sign_define("DapBreakpoint", {
+		text = "",
+		texthl = "DiagnosticSignError",
+		linehl = "",
+		numhl = "",
+	})
+	vim.fn.sign_define("DapBreakpointRejected", {
+		text = "",
+		texthl = "DiagnosticSignError",
+		linehl = "",
+		numhl = "",
+	})
+	vim.fn.sign_define("DapStopped", {
+		text = "",
+		texthl = "DiagnosticSignWarn",
+		linehl = "Visual",
+		numhl = "DiagnosticSignWarn",
+	})
+
 	commands.implement(s, "*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
 		{ cmd.LYRDDebugContinue, ":DapContinue" },
