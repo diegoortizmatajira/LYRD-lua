@@ -38,7 +38,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.lang.web-standard",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.sql",
-		"LYRD.layers.tab-behavior",
+		-- "LYRD.layers.tab-behavior",
 	},
 }
 
