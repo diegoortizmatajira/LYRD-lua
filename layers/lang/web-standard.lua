@@ -58,10 +58,16 @@ function L.complete(_)
 		},
 	})
 	lsp.enable("volar", {})
-	lsp.enable(
-		"jsonls",
-		{ settings = { json = { schemas = require("schemastore").json.schemas(), validate = { enabled = true } } } }
-	)
+	lsp.enable("jsonls", {
+		settings = {
+			json = {
+				schemas = require("schemastore").json.schemas(),
+				validate = {
+					enabled = true,
+				},
+			},
+		},
+	})
 end
 
 return L

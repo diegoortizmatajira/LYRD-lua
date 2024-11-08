@@ -85,7 +85,17 @@ local function add_mason_bin_to_path(append)
 end
 
 local plugged_capabilities = function()
-	return vim.lsp.protocol.make_client_capabilities()
+	local result = vim.lsp.protocol.make_client_capabilities()
+	result.textDocument.completion.completionItem.snippetSupport = true
+	result.textDocument.completion.completionItem.resolveSupport = {
+		properties = {
+			"documentation",
+			"detail",
+			"additionalTextEdits",
+		},
+	}
+
+	return result
 end
 
 local function setup_default_providers()
@@ -156,6 +166,7 @@ function L.preparation(_)
 		"yamllint",
 		"yapf",
 	})
+	setup_default_providers()
 end
 
 function L.settings(s)
@@ -222,6 +233,9 @@ function L.settings(s)
 	vim.lsp.handlers["textDocument/signatureHelp"] =
 		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
+	-- Enable rounded borders in :LspInfo window.
+	require("lspconfig.ui.windows").default_options.border = "rounded"
+
 	commands.implement(s, "*", {
 		{
 			cmd.LYRDBufferFormat,
@@ -255,7 +269,6 @@ function L.settings(s)
 			end,
 		},
 	})
-	setup_default_providers()
 end
 
 function L.enable(server, options)
