@@ -15,6 +15,48 @@ function L.plugins(s)
 			opts = {
 				sync_root_with_cwd = true,
 				respect_buf_cwd = true,
+				sort = {
+					sorter = "name",
+					folders_first = true,
+					files_first = false,
+				},
+				view = {
+					adaptive_size = false,
+					centralize_selection = true,
+					width = 60,
+					cursorline = true,
+					debounce_delay = 15,
+					side = "right",
+					preserve_window_proportions = false,
+					number = false,
+					relativenumber = false,
+					signcolumn = "yes",
+					float = {
+						enable = false,
+						quit_on_focus_loss = true,
+						open_win_config = {
+							relative = "editor",
+							border = "rounded",
+							width = 30,
+							height = 30,
+							row = 1,
+							col = 1,
+						},
+					},
+				},
+				renderer = {
+					indent_markers = {
+						enable = true,
+						inline_arrows = true,
+						icons = {
+							corner = "└",
+							edge = "│",
+							item = "│",
+							bottom = "─",
+							none = " ",
+						},
+					},
+				},
 				update_focused_file = {
 					enable = true,
 					update_root = true,
@@ -22,7 +64,6 @@ function L.plugins(s)
 				disable_netrw = false,
 				update_cwd = true,
 				diagnostics = { enable = true, show_on_dirs = true },
-				view = { width = 60, side = "right" },
 				filters = {
 					dotfiles = true,
 					-- custom = { "^\\.git$", "^node_modules$", "^\\.cache$", "^bin$", "^obj$" },
