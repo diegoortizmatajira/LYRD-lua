@@ -47,6 +47,43 @@ end
 function L.plugins(s)
 	setup.plugin(s, {
 		{
+			"akinsho/bufferline.nvim",
+			version = "*",
+			opts = {
+				highlights = {
+					background = {
+						italic = true,
+					},
+					buffer_selected = {
+						bold = true,
+						italic = false,
+					},
+				},
+				options = {
+					themable = true,
+					mode = "buffers",
+					numbers = "none",
+					show_buffer_close_icons = false,
+					separator_style = "slope",
+					offsets = {
+						{
+							filetype = "NvimTree",
+							text = "Explorer",
+							highlight = "PanelHeading",
+							padding = 1,
+						},
+						{
+							filetype = "DiffviewFiles",
+							text = "Diff View",
+							highlight = "PanelHeading",
+							padding = 1,
+						},
+					},
+				},
+			},
+			dependencies = "nvim-tree/nvim-web-devicons",
+		},
+		{
 			"nvim-lualine/lualine.nvim",
 			opts = {
 				options = { theme = "gruvbox" },
@@ -67,7 +104,12 @@ function L.plugins(s)
 		{
 			"ellisonleao/gruvbox.nvim",
 			priority = 1000,
-			config = function()
+			opts = {
+				contrast = "hard",
+				dim_inactive = true,
+			},
+			config = function(opts)
+				require("gruvbox").setup(opts)
 				vim.o.background = "dark" -- or "light" for light mode
 				vim.cmd([[colorscheme gruvbox]])
 			end,
