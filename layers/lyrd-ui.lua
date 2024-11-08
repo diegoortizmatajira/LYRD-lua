@@ -77,8 +77,10 @@ function L.plugins(s)
 			config = function()
 				local startify = require("alpha.themes.startify")
 				startify.section.header.val = header()
-				startify.section.top_buttons.val =
-					{ startify.button("e", "  New file", ":ene <BAR> startinsert <CR>") }
+				startify.section.top_buttons.val = {
+					startify.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+					startify.button("p", "  Select project", ":Telescope projects<CR>"),
+				}
 				startify.section.mru.val[2].val = "Files"
 				startify.section.mru.val[4].val = function()
 					return { startify.mru(10) }
@@ -96,6 +98,19 @@ function L.plugins(s)
 		},
 		{ "akinsho/toggleterm.nvim" },
 		-- { "rktjmp/lush.nvim" },
+		{
+			"ahmedkhalf/project.nvim",
+			opts = {
+				detection_methods = { "lsp", "pattern" },
+				patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pom.xml" },
+			},
+			config = function(opts)
+				require("project_nvim").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("ui-select")
+			end,
+			dependencies = { "nvim-telescope/telescope.nvim" },
+		},
 		{
 			"nvim-tree/nvim-web-devicons",
 			config = function()
