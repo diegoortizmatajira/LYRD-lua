@@ -57,6 +57,42 @@ function L.plugins(s)
 				},
 			},
 		},
+		{
+			"lukas-reineke/indent-blankline.nvim",
+			main = "ibl",
+			opts = {
+				enabled = true,
+				exclude = {
+					filetypes = {
+						"",
+						"NvimTree",
+						"TelescopePrompt",
+						"TelescopeResults",
+						"Trouble",
+						"checkhealth",
+						"dashboard",
+						"gitcommit",
+						"help",
+						"lazy",
+						"lspinfo",
+						"man",
+						"neogitstatus",
+						"packer",
+						"startify",
+						"text",
+					},
+					buftypes = {
+						"terminal",
+						"nofile",
+						"quickfix",
+						"prompt",
+					},
+				},
+				indent = {
+					char = "▏",
+				},
+			},
+		},
 	})
 end
 
