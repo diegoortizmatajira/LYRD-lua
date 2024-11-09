@@ -132,6 +132,7 @@ function L.keybindings(s)
 		-- UI Menu
 		{ "n", { "u", "w" }, cmd.LYRDBufferToggleWrap },
 		-- Services
+		{ "n", { "f", "f" }, cmd.LYRDViewFileExplorer },
 		{ "n", { "f", "d" }, cmd.LYRDDatabaseUI },
 		{ "n", { "f", "c" }, cmd.LYRDContainersUI },
 		{ "n", { "f", "g" }, cmd.LYRDGitUI },

@@ -115,7 +115,7 @@ local L = {
 		LYRDTestSuite = { desc = "Test suite" },
 		LYRDTestSummary = { desc = "View test summary" },
 		LYRDUnimplementedCommands = { default = commands.list_unimplemented, desc = "List unimplemented commands" },
-		LYRDViewFileExplorer = { desc = "Explore files" },
+		LYRDViewFileExplorer = { desc = "File Explorer" },
 		LYRDViewFileTree = { desc = "Toggle file tree" },
 		LYRDViewHomePage = { desc = "Home page" },
 		LYRDViewLocationList = { desc = "Location list" },

@@ -60,6 +60,7 @@ function L.settings(s)
 			"rust",
 			"typescript",
 			"vue",
+            "http",
 			"yaml",
 		},
 		highlight = {

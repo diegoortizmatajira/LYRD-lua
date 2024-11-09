@@ -93,6 +93,9 @@ function L.plugins(s)
 				},
 			},
 		},
+		{
+			"rest-nvim/rest.nvim",
+		},
 	})
 end
 
