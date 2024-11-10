@@ -25,6 +25,7 @@ function L.keybindings(s)
 		{ "i", "<C-s>", "<Esc>" .. c(cmd.LYRDBufferSave.name) },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
+		{ "n", "<C-f>", cmd.LYRDResumeLastSearch },
 		{ "n", "<A-Left>", cmd.LYRDBufferPrev },
 		{ "n", "<A-Right>", cmd.LYRDBufferNext },
 		{ "n", "<C-F4>", cmd.LYRDBufferClose },

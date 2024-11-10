@@ -62,6 +62,7 @@ function L.settings(s)
 		{ cmd.LYRDLSPFindWorkspaceDiagnostics, ":Telescope lsp_workspace_diagnostics" },
 		{ cmd.LYRDLSPFindImplementations, ":Telescope lsp_implementations" },
 		{ cmd.LYRDLSPFindDefinitions, ":Telescope lsp_definitions" },
+		{ cmd.LYRDResumeLastSearch, ":Telescope resume" },
 	})
 end
 

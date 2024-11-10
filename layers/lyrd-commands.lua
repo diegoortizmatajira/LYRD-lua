@@ -105,6 +105,7 @@ local L = {
 		LYRDSearchQuickFixes = { desc = "Quick Fixes" },
 		LYRDSearchRecentFiles = { desc = "Recent files" },
 		LYRDSearchRegisters = { desc = "Registers" },
+		LYRDResumeLastSearch = { desc = "Resume last search" },
 		LYRDSmartCoder = { desc = "Smart code generator" },
 		LYRDTerminal = { default = ":terminal", desc = "Terminal" },
 		LYRDTest = { desc = "Test everything" },
