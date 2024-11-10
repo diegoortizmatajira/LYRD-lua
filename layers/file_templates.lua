@@ -38,7 +38,7 @@ function L.settings(_)
 			-- Check if the file is empty
 			if vim.fn.line("$") == 1 and vim.fn.getline(1) == "" then
 				-- Attempt to use Spook to apply a template
-				vim.cmd("Spook")
+				vim.cmd("Spook!")
 			end
 		end,
 	})

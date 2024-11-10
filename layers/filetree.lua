@@ -127,6 +127,10 @@ function L.plugins(s)
 				},
 				git = { ignore = true },
 				actions = { open_file = { quit_on_open = true } },
+				notify = {
+					threshold = vim.log.levels.WARN,
+					absolute_path = true,
+				},
 			},
 		},
 		{
