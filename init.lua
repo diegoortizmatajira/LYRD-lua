@@ -12,6 +12,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.clipboard",
 		"LYRD.layers.tmux",
 		"LYRD.layers.motions",
+		"LYRD.layers.file_templates",
 		"LYRD.layers.dev",
 		"LYRD.layers.test",
 		"LYRD.layers.git",

@@ -1,3 +1,5 @@
+utils = require("LYRD.utils")
+
 if vim.g.LYRD_Settings == nil then
 	vim.g.LYRD_Settings = { Loaded_layers = {} }
 end
@@ -69,7 +71,7 @@ local function load_complete(s, loaded_layers)
 end
 
 return {
-	configs_path = vim.fn.stdpath("config") .. "/lua/LYRD/configs",
+	configs_path = utils.get_lyrd_path() .. "/configs",
 	load = function(s)
 		s.plugins = {
 			{

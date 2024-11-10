@@ -4,6 +4,10 @@ local uv = vim.loop
 
 local path_sep = uv.os_uname().version:match("Windows") and "\\" or "/"
 
+function M.get_lyrd_path()
+	return vim.fn.stdpath("config") .. "/lua/LYRD"
+end
+
 function M.join_paths(...)
 	local result = table.concat({ ... }, path_sep)
 	return result
