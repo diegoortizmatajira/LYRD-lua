@@ -203,6 +203,16 @@ function L.plugins(s)
 			"tummetott/unimpaired.nvim",
 			event = "VeryLazy",
 			opts = {},
+		}, -- use lazy.nvim
+		{
+			"LintaoAmons/scratch.nvim",
+			opts = {
+				use_telescope = true,
+				file_picker = "telescope",
+
+				filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
+			},
+			event = "VeryLazy",
 		},
 	})
 end
@@ -236,6 +246,9 @@ function L.settings(s)
 
 	commands.implement(s, "*", {
 		{ cmd.LYRDViewHomePage, ":Alpha" },
+		{ cmd.LYRDScratchNew, ":ScratchWithName" },
+		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
+		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
 	})
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },

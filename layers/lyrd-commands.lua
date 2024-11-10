@@ -82,7 +82,7 @@ local L = {
 		LYRDLSPGotoNextDiagnostic = { desc = "" },
 		LYRDLSPGotoPrevDiagnostic = { desc = "" },
 		LYRDLSPHoverInfo = { desc = "" },
-		LYRDLSPRename = { desc = "" },
+		LYRDLSPRename = { desc = "Rename symbol" },
 		LYRDLSPShowDocumentDiagnosticLocList = { desc = "Document diagnostics" },
 		LYRDLSPShowWorkspaceDiagnosticLocList = { desc = "Workspace diagnostics" },
 		LYRDLSPSignatureHelp = { desc = "" },
@@ -133,6 +133,9 @@ local L = {
 		LYRDDatabaseUI = { desc = "Database UI" },
 		LYRDContainersUI = { desc = "Running containers UI" },
 		LYRDKubernetesUI = { desc = "Kubernetes UI" },
+		LYRDScratchNew = { desc = "Create a new scratch" },
+		LYRDScratchOpen = { desc = "Select scratch file to open" },
+		LYRDScratchSearch = { desc = "Search inside scratches" },
 	},
 }
 
