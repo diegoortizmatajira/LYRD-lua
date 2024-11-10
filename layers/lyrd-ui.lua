@@ -121,7 +121,8 @@ function L.plugins(s)
 				startify.section.header.val = header()
 				startify.section.top_buttons.val = {
 					startify.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-					startify.button("p", "  Select project", ":Telescope projects<CR>"),
+					startify.button("p", "  Select Project", ":Telescope projects<CR>"),
+					startify.button("w", "  Select Workspaces", ":Telescope workspaces<CR>"),
 				}
 				startify.section.mru.val[2].val = "Files"
 				startify.section.mru.val[4].val = function()
@@ -140,6 +141,16 @@ function L.plugins(s)
 		},
 		{ "akinsho/toggleterm.nvim" },
 		-- { "rktjmp/lush.nvim" },
+		{
+			"natecraddock/workspaces.nvim",
+			opts = {},
+			config = function(opts)
+				require("workspaces").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("workspaces")
+			end,
+			dependencies = { "nvim-telescope/telescope.nvim" },
+		},
 		{
 			"ahmedkhalf/project.nvim",
 			opts = {
