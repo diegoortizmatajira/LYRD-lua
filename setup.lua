@@ -1,4 +1,4 @@
-utils = require("LYRD.utils")
+local utils = require("LYRD.utils")
 
 if vim.g.LYRD_Settings == nil then
 	vim.g.LYRD_Settings = { Loaded_layers = {} }
