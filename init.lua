@@ -26,7 +26,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.database",
 		"LYRD.layers.docker",
 		"LYRD.layers.kubernetes",
-		"LYRD.layers.projector", -- Must be after debug and database
+		"LYRD.layers.tasks", -- Must be after debug and database
 		"LYRD.layers.ai-tabnine",
 		-- "LYRD.layers.ai-copilot",
 		-- "LYRD.layers.ai-chat-gpt",

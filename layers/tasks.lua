@@ -2,10 +2,21 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Projector" }
+local L = { name = "Tasks" }
 
 function L.plugins(s)
 	setup.plugin(s, {
+		{ -- The task runner we use
+			"stevearc/overseer.nvim",
+			opts = {
+				task_list = {
+					direction = "bottom",
+					min_height = 25,
+					max_height = 25,
+					default_detail = 1,
+				},
+			},
+		},
 		{
 			"kndndrj/nvim-projector",
 			dependencies = {
