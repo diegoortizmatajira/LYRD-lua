@@ -45,12 +45,12 @@ function L.complete(_)
 	lsp.enable("yamlls", {
 		settings = {
 			yaml = {
+				hover = true,
+				completion = true,
+				validate = true,
 				schemaStore = {
-					-- You must disable built-in schemaStore support if you want to use
-					-- this plugin and its advanced options like `ignore`.
-					enable = false,
-					-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-					url = "",
+					enable = true,
+					url = "https://www.schemastore.org/api/json/catalog.json",
 				},
 				schemas = require("schemastore").yaml.schemas(),
 			},
