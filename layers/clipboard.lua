@@ -1,7 +1,10 @@
 local L = { name = "Clipboard" }
 
 function L.settings(_)
-	vim.opt.clipboard = "unnamed,unnamedplus"
+	if not vim.env.SSH_TTY or vim.fn.has("nvim-0.10") ~= 1 then -- only set `clipboard` if in SSH session and in neovim 0.10+
+		vim.opt.clipboard = "unnamed,unnamedplus"
+	end
+
 	-- vim.g.clipboard = {
 	-- 	name = "OSC 52",
 	-- 	copy = {
