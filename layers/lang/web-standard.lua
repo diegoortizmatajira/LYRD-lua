@@ -6,7 +6,6 @@ local L = { name = "Web Standard Languages" }
 function L.plugins(s)
 	setup.plugin(s, {
 		"pangloss/vim-javascript",
-		"leafgarland/typescript-vim",
 		"b0o/schemastore.nvim",
 	})
 end
@@ -15,9 +14,8 @@ function L.preparation(_)
 	lsp.mason_ensure({
 		"json-lsp",
 		"json-to-struct",
+		"yaml-language-server",
 		"prettier",
-		"typescript-language-server",
-		"vue-language-server",
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
@@ -34,30 +32,6 @@ function L.settings(_)
 end
 
 function L.complete(_)
-	local vue_typescript_plugin = require("mason-registry").get_package("vue-language-server"):get_install_path()
-		.. "/node_modules/@vue/language-server"
-		.. "/node_modules/@vue/typescript-plugin"
-	lsp.enable("ts_ls", {
-		init_options = {
-			plugins = {
-				{
-					name = "@vue/typescript-plugin",
-					location = vue_typescript_plugin,
-					languages = { "javascript", "typescript", "vue" },
-				},
-			},
-		},
-		filetypes = {
-			"javascript",
-			"javascriptreact",
-			"javascript.jsx",
-			"typescript",
-			"typescriptreact",
-			"typescript.tsx",
-			"vue",
-		},
-	})
-	lsp.enable("volar", {})
 	lsp.enable("jsonls", {
 		settings = {
 			json = {
@@ -65,6 +39,20 @@ function L.complete(_)
 				validate = {
 					enabled = true,
 				},
+			},
+		},
+	})
+	lsp.enable("yamlls", {
+		settings = {
+			yaml = {
+				schemaStore = {
+					-- You must disable built-in schemaStore support if you want to use
+					-- this plugin and its advanced options like `ignore`.
+					enable = false,
+					-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+					url = "",
+				},
+				schemas = require("schemastore").yaml.schemas(),
 			},
 		},
 	})

@@ -39,6 +39,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.lang.python",
 		"LYRD.layers.lang.rust",
 		"LYRD.layers.lang.sql",
+		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
 	},
 }
