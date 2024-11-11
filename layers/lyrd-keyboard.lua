@@ -49,6 +49,10 @@ function L.keybindings(s)
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 	})
+
+	mappings.leader_menu(s, {
+		{ { "s" }, "Scratches" },
+	})
 	mappings.leader(s, {
 		{ "n", { "<Space>" }, c("noh"), "Clear search highlights" },
 		{ "n", { "." }, cmd.LYRDViewHomePage },
@@ -65,9 +69,9 @@ function L.keybindings(s)
 		{ "n", { "d" }, cmd.LYRDDebugToggleUI },
 		{ "n", { "j" }, cmd.LYRDSmartCoder },
 		{ "n", { "l" }, cmd.LYRDDiagnosticLinesToggle },
-		{ "n", { "S" }, cmd.LYRDScratchNew },
-		{ "n", { "s" }, cmd.LYRDScratchOpen },
-		{ "n", { "<A-s>" }, cmd.LYRDScratchSearch },
+		{ "n", { "s", "n" }, cmd.LYRDScratchNew },
+		{ "n", { "s", "s" }, cmd.LYRDScratchOpen },
+		{ "n", { "s", "f" }, cmd.LYRDScratchSearch },
 		{ "n", { "r", "n" }, cmd.LYRDLSPRename },
 		{ "n", { "r", "f" }, cmd.LYRDCodeRefactor },
 		{ "v", { "r", "f" }, cmd.LYRDCodeRefactor },

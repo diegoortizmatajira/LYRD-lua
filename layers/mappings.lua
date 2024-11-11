@@ -105,6 +105,14 @@ function L.space(_, mappings, options)
 	end
 end
 
+-- Creates a cascading menu for a sequence of keys starting with <Leader>
+-- @param mappings contains the mapping definition as an array of ({key1, key2 ...}, description)
+function L.leader_menu(_, mappings)
+	for _, mapping in ipairs(mappings) do
+		map_menu("<Leader>", mapping[1], mapping[2])
+	end
+end
+
 -- Creates a cascading menu for a sequence of keys starting with <Space>
 -- @param mappings contains the mapping definition as an array of ({key1, key2 ...}, description)
 function L.space_menu(_, mappings)
