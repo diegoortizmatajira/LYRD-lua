@@ -298,4 +298,16 @@ end
 
 function L.complete(_) end
 
+function L.format_handler(server_name)
+	-- Returns a handler that format using the given lsp
+	return function()
+		vim.lsp.buf.format({
+			filter = function(client)
+				return client.name == server_name
+			end,
+			async = false,
+		})
+	end
+end
+
 return L
