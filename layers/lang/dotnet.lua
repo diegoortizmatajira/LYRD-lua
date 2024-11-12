@@ -7,6 +7,127 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Dotnet languages: C#, F#, Vb" }
 
+local dotnet_languages = { "cs", "vb", "fsharp" }
+
+local omnisharp_settings = {
+	msbuild = {
+		enabled = true,
+		-- ToolsVersion = nil,
+		-- VisualStudioVersion = nil,
+		-- Configuration = nil,
+		-- Platform = nil,
+		EnablePackageAutoRestore = true,
+		-- MSBuildExtensionsPath = nil,
+		-- TargetFrameworkRootPath = nil,
+		-- MSBuildSDKsPath = nil,
+		-- RoslynTargetsPath = nil,
+		-- CscToolPath = nil,
+		-- CscToolExe = nil,
+		loadProjectsOnDemand = false,
+		-- GenerateBinaryLogs = false,
+	},
+	Sdk = {
+		IncludePrereleases = true,
+	},
+	cake = {
+		enabled = true,
+		bakeryPath = nil,
+	},
+	FormattingOptions = {
+		EnableEditorConfigSupport = true,
+		OrganizeImports = true,
+		-- NewLine = "\n",
+		-- UseTabs = false,
+		-- TabSize = 4,
+		-- IndentationSize = 4,
+		-- SpacingAfterMethodDeclarationName = false,
+		-- SpaceWithinMethodDeclarationParenthesis = false,
+		-- SpaceBetweenEmptyMethodDeclarationParentheses = false,
+		-- SpaceAfterMethodCallName = false,
+		-- SpaceWithinMethodCallParentheses = false,
+		-- SpaceBetweenEmptyMethodCallParentheses = false,
+		-- SpaceAfterControlFlowStatementKeyword = true,
+		-- SpaceWithinExpressionParentheses = false,
+		-- SpaceWithinCastParentheses = false,
+		-- SpaceWithinOtherParentheses = false,
+		-- SpaceAfterCast = false,
+		-- SpacesIgnoreAroundVariableDeclaration = false,
+		-- SpaceBeforeOpenSquareBracket = false,
+		-- SpaceBetweenEmptySquareBrackets = false,
+		-- SpaceWithinSquareBrackets = false,
+		-- SpaceAfterColonInBaseTypeDeclaration = true,
+		-- SpaceAfterComma = true,
+		-- SpaceAfterDot = false,
+		-- SpaceAfterSemicolonsInForStatement = true,
+		-- SpaceBeforeColonInBaseTypeDeclaration = true,
+		-- SpaceBeforeComma = false,
+		-- SpaceBeforeDot = false,
+		-- SpaceBeforeSemicolonsInForStatement = false,
+		-- SpacingAroundBinaryOperator = "single",
+		-- IndentBraces = false,
+		-- IndentBlock = true,
+		-- IndentSwitchSection = true,
+		-- IndentSwitchCaseSection = true,
+		-- IndentSwitchCaseSectionWhenBlock = true,
+		-- LabelPositioning = "oneLess",
+		-- WrappingPreserveSingleLine = true,
+		-- WrappingKeepStatementsOnSingleLine = true,
+		-- NewLinesForBracesInTypes = true,
+		-- NewLinesForBracesInMethods = true,
+		-- NewLinesForBracesInProperties = true,
+		-- NewLinesForBracesInAccessors = true,
+		-- NewLinesForBracesInAnonymousMethods = true,
+		-- NewLinesForBracesInControlBlocks = true,
+		-- NewLinesForBracesInAnonymousTypes = true,
+		-- NewLinesForBracesInObjectCollectionArrayInitializers = true,
+		-- NewLinesForBracesInLambdaExpressionBody = true,
+		-- NewLineForElse = true,
+		-- NewLineForCatch = true,
+		-- NewLineForFinally = true,
+		-- NewLineForMembersInObjectInit = true,
+		-- NewLineForMembersInAnonymousTypes = true,
+		-- NewLineForClausesInQuery = true,
+	},
+	RoslynExtensionsOptions = {
+		AnalyzeOpenDocumentsOnly = false,
+		-- documentAnalysisTimeoutMs = 30000,
+		-- enableDecompilationSupport = true,
+		enableImportCompletion = true,
+		enableAnalyzersSupport = true,
+		-- diagnosticWorkersThreadCount = 8,
+		-- locationPaths = {
+		-- 	"//path_to/code_actions.dll",
+		-- },
+		-- inlayHintsOptions = {
+		-- 	enableForParameters = true,
+		-- 	forLiteralParameters = true,
+		-- 	forIndexerParameters = true,
+		-- 	forObjectCreationParameters = true,
+		-- 	forOtherParameters = true,
+		-- 	suppressForParametersThatDifferOnlyBySuffix = false,
+		-- 	suppressForParametersThatMatchMethodIntent = false,
+		-- 	suppressForParametersThatMatchArgumentName = false,
+		-- 	enableForTypes = true,
+		-- 	forImplicitVariableTypes = true,
+		-- 	forLambdaParameterTypes = true,
+		-- 	forImplicitObjectCreation = true,
+		-- },
+	},
+	-- fileOptions = {
+	-- 	systemExcludeSearchPatterns = {
+	-- 		"**/node_modules/**/*",
+	-- 		"**/bin/**/*",
+	-- 		"**/obj/**/*",
+	-- 	},
+	-- 	excludeSearchPatterns = {},
+	-- },
+	-- RenameOptions = {
+	-- 	RenameInComments = false,
+	-- 	RenameOverloads = false,
+	-- 	RenameInStrings = false,
+	-- },
+}
+
 local function get_secret_path(secret_guid)
 	local path = ""
 	local home_dir = vim.fn.expand("~")
@@ -22,8 +143,6 @@ local function get_secret_path(secret_guid)
 	end
 	return path
 end
-
-local dotnet_languages = { "cs", "vb", "fsharp" }
 
 function L.plugins(s)
 	setup.plugin(s, {
@@ -75,21 +194,6 @@ function L.plugins(s)
 					omnisharp = {
 						-- When set to false, csharp.nvim won't launch omnisharp automatically.
 						enable = false,
-						-- When set, csharp.nvim won't install omnisharp automatically. Instead, the omnisharp instance in the cmd_path will be used.
-						cmd_path = nil,
-						-- The default timeout when communicating with omnisharp
-						default_timeout = 1000,
-						-- Settings that'll be passed to the omnisharp server
-						enable_editor_config_support = true,
-						organize_imports = true,
-						load_projects_on_demand = false,
-						enable_analyzers_support = true,
-						enable_import_completion = true,
-						include_prerelease_sdks = true,
-						analyze_open_documents_only = false,
-						enable_package_auto_restore = true,
-						-- Launches omnisharp in debug mode
-						debug = false,
 					},
 					-- Sets if you want to use roslyn as your LSP
 					roslyn = {
@@ -175,10 +279,8 @@ end
 
 function L.preparation(_)
 	lsp.mason_ensure({
-		-- "csharp-language-server",
 		"netcoredbg",
 		"omnisharp",
-		"ast_grep",
 	})
 end
 
@@ -206,7 +308,6 @@ function L.settings(s)
 					type = "netcoredbg",
 					name = "Launch file",
 					request = "launch",
-					---@diagnostic disable-next-line: redundant-parameter
 					program = function()
 						return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/", "file")
 					end,
@@ -220,138 +321,9 @@ function L.settings(s)
 	test.configure_adapter(require("neotest-dotnet"))
 end
 
-function L.keybindings(s)
-	mappings.space_menu(s, { { { "p", "o" }, "OmniSharp" } })
-	mappings.space(s, {
-		-- { "n", { "p", "o", "l" }, c("OmniSharpOpenLog"), "Open log" },
-		-- { "n", { "p", "o", "r" }, c("OmniSharpRestartServer"), "Restart OmniSharp server" },
-		-- { "n", { "p", "o", "S" }, c("OmniSharpStatus"), "OmniSharp status" },
-		-- { "n", { "p", "o", "s" }, c("OmniSharpStartServer"), "Start OmniSharp server" },
-		-- { "n", { "p", "o", "x" }, c("OmniSharpStopServer"), "Stop OmniSharp server" },
-		-- { "n", { "p", "o", "i" }, c("OmniSharpInstall"), "Install OmniSharp" },
-	})
-end
-
 function L.complete(_)
 	lsp.enable("omnisharp", {
-		settings = {
-			msbuild = {
-				enabled = true,
-				-- ToolsVersion = nil,
-				-- VisualStudioVersion = nil,
-				-- Configuration = nil,
-				-- Platform = nil,
-				EnablePackageAutoRestore = true,
-				-- MSBuildExtensionsPath = nil,
-				-- TargetFrameworkRootPath = nil,
-				-- MSBuildSDKsPath = nil,
-				-- RoslynTargetsPath = nil,
-				-- CscToolPath = nil,
-				-- CscToolExe = nil,
-				loadProjectsOnDemand = false,
-				-- GenerateBinaryLogs = false,
-			},
-			Sdk = {
-				IncludePrereleases = true,
-			},
-			cake = {
-				enabled = true,
-				bakeryPath = nil,
-			},
-			FormattingOptions = {
-				EnableEditorConfigSupport = true,
-				OrganizeImports = true,
-				-- NewLine = "\n",
-				-- UseTabs = false,
-				-- TabSize = 4,
-				-- IndentationSize = 4,
-				-- SpacingAfterMethodDeclarationName = false,
-				-- SpaceWithinMethodDeclarationParenthesis = false,
-				-- SpaceBetweenEmptyMethodDeclarationParentheses = false,
-				-- SpaceAfterMethodCallName = false,
-				-- SpaceWithinMethodCallParentheses = false,
-				-- SpaceBetweenEmptyMethodCallParentheses = false,
-				-- SpaceAfterControlFlowStatementKeyword = true,
-				-- SpaceWithinExpressionParentheses = false,
-				-- SpaceWithinCastParentheses = false,
-				-- SpaceWithinOtherParentheses = false,
-				-- SpaceAfterCast = false,
-				-- SpacesIgnoreAroundVariableDeclaration = false,
-				-- SpaceBeforeOpenSquareBracket = false,
-				-- SpaceBetweenEmptySquareBrackets = false,
-				-- SpaceWithinSquareBrackets = false,
-				-- SpaceAfterColonInBaseTypeDeclaration = true,
-				-- SpaceAfterComma = true,
-				-- SpaceAfterDot = false,
-				-- SpaceAfterSemicolonsInForStatement = true,
-				-- SpaceBeforeColonInBaseTypeDeclaration = true,
-				-- SpaceBeforeComma = false,
-				-- SpaceBeforeDot = false,
-				-- SpaceBeforeSemicolonsInForStatement = false,
-				-- SpacingAroundBinaryOperator = "single",
-				-- IndentBraces = false,
-				-- IndentBlock = true,
-				-- IndentSwitchSection = true,
-				-- IndentSwitchCaseSection = true,
-				-- IndentSwitchCaseSectionWhenBlock = true,
-				-- LabelPositioning = "oneLess",
-				-- WrappingPreserveSingleLine = true,
-				-- WrappingKeepStatementsOnSingleLine = true,
-				-- NewLinesForBracesInTypes = true,
-				-- NewLinesForBracesInMethods = true,
-				-- NewLinesForBracesInProperties = true,
-				-- NewLinesForBracesInAccessors = true,
-				-- NewLinesForBracesInAnonymousMethods = true,
-				-- NewLinesForBracesInControlBlocks = true,
-				-- NewLinesForBracesInAnonymousTypes = true,
-				-- NewLinesForBracesInObjectCollectionArrayInitializers = true,
-				-- NewLinesForBracesInLambdaExpressionBody = true,
-				-- NewLineForElse = true,
-				-- NewLineForCatch = true,
-				-- NewLineForFinally = true,
-				-- NewLineForMembersInObjectInit = true,
-				-- NewLineForMembersInAnonymousTypes = true,
-				-- NewLineForClausesInQuery = true,
-			},
-			RoslynExtensionsOptions = {
-				AnalyzeOpenDocumentsOnly = false,
-				-- documentAnalysisTimeoutMs = 30000,
-				-- enableDecompilationSupport = true,
-				enableImportCompletion = true,
-				enableAnalyzersSupport = true,
-				-- diagnosticWorkersThreadCount = 8,
-				-- locationPaths = {
-				-- 	"//path_to/code_actions.dll",
-				-- },
-				-- inlayHintsOptions = {
-				-- 	enableForParameters = true,
-				-- 	forLiteralParameters = true,
-				-- 	forIndexerParameters = true,
-				-- 	forObjectCreationParameters = true,
-				-- 	forOtherParameters = true,
-				-- 	suppressForParametersThatDifferOnlyBySuffix = false,
-				-- 	suppressForParametersThatMatchMethodIntent = false,
-				-- 	suppressForParametersThatMatchArgumentName = false,
-				-- 	enableForTypes = true,
-				-- 	forImplicitVariableTypes = true,
-				-- 	forLambdaParameterTypes = true,
-				-- 	forImplicitObjectCreation = true,
-				-- },
-			},
-			-- fileOptions = {
-			-- 	systemExcludeSearchPatterns = {
-			-- 		"**/node_modules/**/*",
-			-- 		"**/bin/**/*",
-			-- 		"**/obj/**/*",
-			-- 	},
-			-- 	excludeSearchPatterns = {},
-			-- },
-			-- RenameOptions = {
-			-- 	RenameInComments = false,
-			-- 	RenameOverloads = false,
-			-- 	RenameInStrings = false,
-			-- },
-		},
+		settings = omnisharp_settings,
 	})
 end
 
