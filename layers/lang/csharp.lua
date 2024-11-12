@@ -103,7 +103,7 @@ function L.plugins(s)
 				},
 				---@param action "test" | "restore" | "build" | "run"
 				terminal = function(path, action)
-					local commands = {
+					local cmd_definitions = {
 						run = function()
 							return "dotnet run --project " .. path
 						end,
@@ -117,7 +117,7 @@ function L.plugins(s)
 							return "dotnet build " .. path
 						end,
 					}
-					local command = commands[action]() .. "\r"
+					local command = cmd_definitions[action]() .. "\r"
 					vim.cmd("vsplit")
 					vim.cmd("term " .. command)
 				end,
@@ -139,9 +139,6 @@ function L.preparation(_)
 		"netcoredbg",
 		"omnisharp",
 		"ast_grep",
-	})
-	lsp.null_ls_register_sources({
-		-- null_ls.builtins.formatting.astyle,
 	})
 end
 
