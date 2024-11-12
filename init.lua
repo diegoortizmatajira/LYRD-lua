@@ -31,7 +31,7 @@ _G.LYRD_setup = {
 		-- "LYRD.layers.ai-copilot",
 		-- "LYRD.layers.ai-chat-gpt",
 		"LYRD.layers.lang.cmake",
-		"LYRD.layers.lang.csharp",
+		"LYRD.layers.lang.dotnet",
 		"LYRD.layers.lang.go",
 		"LYRD.layers.lang.kotlin",
 		"LYRD.layers.lang.lua",

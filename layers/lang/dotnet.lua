@@ -5,7 +5,7 @@ local lsp = require("LYRD.layers.lsp")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "C# language" }
+local L = { name = "Dotnet languages: C#, F#, Vb" }
 
 local function get_secret_path(secret_guid)
 	local path = ""
@@ -23,48 +23,61 @@ local function get_secret_path(secret_guid)
 	return path
 end
 
+local dotnet_languages = { "cs", "vb", "fsharp" }
+
 function L.plugins(s)
 	setup.plugin(s, {
 		{
-			"OmniSharp/omnisharp-vim",
-			ft = "cs",
+			"omnisharp/omnisharp-vim",
+			ft = dotnet_languages,
 			config = function()
 				vim.g.OmniSharp_highlighting = 0
 				vim.g.OmniSharp_server_use_mono = 0
 				vim.g.OmniSharp_server_path =
 					vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
 			end,
-			dependencies = { "tpope/vim-dispatch" },
+			dependencies = {
+				"tpope/vim-dispatch",
+				"williamboman/mason.nvim",
+			},
 		},
 		{
 			"nickspoons/vim-sharpenup",
-			ft = "cs",
+			ft = dotnet_languages,
+			init = function()
+				vim.g.sharpenup_create_mappings = 0
+			end,
 		},
 		{
 			"adamclerk/vim-razor",
-			ft = "cs",
+			ft = dotnet_languages,
 		},
 		{
-			"Issafalcon/neotest-dotnet",
-			ft = "cs",
+			"issafalcon/neotest-dotnet",
+			ft = dotnet_languages,
 		},
 		{
-			"MoaidHathot/dotnet.nvim",
+			"moaidhathot/dotnet.nvim",
 			cmd = "DotnetUI",
 			opts = {},
+			ft = dotnet_languages,
 		},
+		-- {
+		-- 	"iabdelkareem/csharp.nvim",
+		-- 	dependencies = {
+		-- 		"williamboman/mason.nvim", -- Required, automatically installs omnisharp
+		-- 		"mfussenegger/nvim-dap",
+		-- 		"tastyep/structlog.nvim", -- optional, but highly recommended for debugging
+		-- 	},
+		-- 	opts = {},
+		-- 	ft = dotnet_languages,
+		-- },
 		{
-			"iabdelkareem/csharp.nvim",
+			"gustaveikaas/easy-dotnet.nvim",
 			dependencies = {
-				"williamboman/mason.nvim", -- Required, automatically installs omnisharp
-				"mfussenegger/nvim-dap",
-				"Tastyep/structlog.nvim", -- Optional, but highly recommended for debugging
+				"nvim-lua/plenary.nvim",
+				"nvim-telescope/telescope.nvim",
 			},
-			opts = {},
-		},
-		{
-			"GustavEikaas/easy-dotnet.nvim",
-			dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
 			opts = {
 				test_runner = {
 					---@type "split" | "float" | "buf"
@@ -84,22 +97,6 @@ function L.plugins(s)
 						dir = "",
 						package = "",
 					},
-					mappings = {
-						run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
-						filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
-						debug_test = { lhs = "<leader>d", desc = "debug test" },
-						go_to_file = { lhs = "g", desc = "got to file" },
-						run_all = { lhs = "<leader>R", desc = "run all tests" },
-						run = { lhs = "<leader>r", desc = "run test" },
-						peek_stacktrace = { lhs = "<leader>p", desc = "peek stacktrace of failed test" },
-						expand = { lhs = "o", desc = "expand" },
-						expand_all = { lhs = "E", desc = "expand all" },
-						collapse_all = { lhs = "W", desc = "collapse all" },
-						close = { lhs = "q", desc = "close testrunner" },
-						refresh_testrunner = { lhs = "<C-r>", desc = "refresh testrunner" },
-					},
-					--- Optional table of extra args e.g "--blame crash"
-					additional_args = {},
 				},
 				---@param action "test" | "restore" | "build" | "run"
 				terminal = function(path, action)
@@ -128,6 +125,7 @@ function L.plugins(s)
 				fsproj_mappings = true,
 				auto_bootstrap_namespace = true,
 			},
+			ft = dotnet_languages,
 		},
 	})
 end
@@ -135,7 +133,6 @@ end
 function L.preparation(_)
 	lsp.mason_ensure({
 		-- "csharp-language-server",
-		"csharpier",
 		"netcoredbg",
 		"omnisharp",
 		"ast_grep",
@@ -153,23 +150,33 @@ function L.settings(s)
 		{ cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
 		{ cmd.LYRDBufferFormat, ":OmniSharpCodeFormat" },
 	})
-	local dap = require("dap")
 
-	dap.adapters.coreclr = {
+	-- DEBUG ADAPTER
+	local dap = require("dap")
+	dap.adapters.netcoredbg = {
 		type = "executable",
 		command = require("mason-registry").get_package("netcoredbg"):get_install_path() .. "/netcoredbg",
 		args = { "--interpreter=vscode" },
-	}
-	dap.configurations.cs = {
-		{
-			type = "coreclr",
-			name = "launch - netcoredbg",
-			request = "launch",
-			program = function()
-				return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
-			end,
+		options = {
+			detached = false,
 		},
 	}
+	for _, lang in ipairs({ "cs", "fsharp", "vb" }) do
+		if not dap.configurations[lang] then
+			dap.configurations[lang] = {
+				{
+					type = "netcoredbg",
+					name = "Launch file",
+					request = "launch",
+					---@diagnostic disable-next-line: redundant-parameter
+					program = function()
+						return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/", "file")
+					end,
+					cwd = "${workspaceFolder}",
+				},
+			}
+		end
+	end
 
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-dotnet"))
