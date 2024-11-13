@@ -34,10 +34,8 @@ end
 
 local function map_key(mode, lead, keys, command, documentation, options)
 	local wk = require("which-key")
-	if options == nil then
-		options = { noremap = true, silent = true }
-	end
-	if lead ~= nil then
+	entry = options or { noremap = true, silent = true }
+	if lead then
 		lead = "<" .. lead .. ">"
 	else
 		lead = ""
@@ -45,21 +43,21 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	local key_str = lead .. table.concat(keys)
 	-- Adds the documentation to the native nvim keymap
 	local command_str = command
+	local desc_str = entry.desc
 	local icon_str = nil
 	-- If the command is a Command object, then uses the command name and description
 	if type(command) ~= "string" then
 		command_str = "<cmd>" .. command.name .. "<CR>"
-		options.desc = command.desc
+		desc_str = command.desc
 		icon_str = command.icon
 	end
-	local entry = {
-		key_str,
-		command_str,
-		desc = documentation or options.desc,
-		mode = mode,
-		icon = icon_str,
-	}
+	table.insert(entry, 1, key_str)
+	table.insert(entry, 2, command_str)
+	entry.desc = documentation or desc_str
+	entry.mode = mode
+	entry.icon = icon_str
 	wk.add({ entry })
+	-- WARN: if it doesn't work, we need to go back to standard mapping
 	-- vim.keymap.set(mode, key_str, command_str, options)
 end
 
