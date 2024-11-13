@@ -1,4 +1,5 @@
 local setup = require("LYRD.setup")
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "Mappings" }
 
@@ -49,7 +50,11 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	if type(command) ~= "string" then
 		command_str = "<cmd>" .. command.name .. "<CR>"
 		desc_str = command.desc
-		icon_str = command.icon
+		if type(command.icon) == "string" then
+			icon_str = icons.icon(command.icon)
+		else
+			icon_str = command.icon
+		end
 	end
 	table.insert(entry, 1, key_str)
 	table.insert(entry, 2, command_str)
