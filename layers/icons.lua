@@ -7,10 +7,18 @@ local L = {
 		ia = "󱜙",
 		home = "󰋜",
 		wrench = "",
+		project = "",
+		workspace = "",
 	},
 	apps = {
 		git = "󰊢",
 		browser = "󰖟",
+	},
+	diagnostic = {
+		error = "",
+		warning = "",
+		hint = "",
+		info = "",
 	},
 	action = {
 		code_action = "",
@@ -157,16 +165,19 @@ local L = {
 		double_down = "󰄼",
 	},
 	triangle = {
-		right = "",
-		left = "",
-		up = "",
-		down = "",
+		right = "▶",
+		left = "◀",
+		up = "▲",
+		down = "▼",
 	},
 	status = {
 		bookmarked = "󰆤",
 		modified = "●",
 		hidden = "󰜌",
 		busy = "",
+		checked = "󰄴",
+		unchecked = "󰄰",
+		unknown = "",
 	},
 }
 

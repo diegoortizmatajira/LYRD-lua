@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local utils = require("LYRD.utils")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "LSP" }
 
@@ -26,12 +27,11 @@ local mason_opts = {
 			cancel_installation = "<C-c>",
 			apply_language_filter = "<C-f>",
 		},
-	},
-
-	icons = {
-		package_installed = "◍",
-		package_pending = "◍",
-		package_uninstalled = "◍",
+		icons = {
+			package_installed = icons.status.checked,
+			package_pending = icons.status.unknown,
+			package_uninstalled = icons.status.unchecked,
+		},
 	},
 
 	-- NOTE: should be available in $PATH
@@ -199,10 +199,10 @@ function L.settings(s)
 	end
 
 	local signs = {
-		{ name = "DiagnosticSignError", text = "" },
-		{ name = "DiagnosticSignWarn", text = "" },
-		{ name = "DiagnosticSignHint", text = "" },
-		{ name = "DiagnosticSignInfo", text = "" },
+		{ name = "DiagnosticSignError", text = icons.diagnostic.error },
+		{ name = "DiagnosticSignWarn", text = icons.diagnostic.warning },
+		{ name = "DiagnosticSignHint", text = icons.diagnostic.hint },
+		{ name = "DiagnosticSignInfo", text = icons.diagnostic.info },
 	}
 
 	for _, sign in ipairs(signs) do

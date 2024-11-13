@@ -35,7 +35,7 @@ end
 
 local function map_key(mode, lead, keys, command, documentation, options)
 	local wk = require("which-key")
-	entry = options or { noremap = true, silent = true }
+	local entry = options or { noremap = true, silent = true }
 	if lead then
 		lead = "<" .. lead .. ">"
 	else

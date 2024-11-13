@@ -22,8 +22,8 @@ function L.plugins(s)
 			end,
 			opts = {
 				icons = {
-					expanded = icons.triangle.down,
-					collapsed = icons.triangle.right,
+					expanded = icons.chevron.down,
+					collapsed = icons.chevron.right,
 					circular = icons.status.busy,
 				},
 				controls = {

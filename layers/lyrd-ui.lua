@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "LYRD UI" }
 local ext_app_term = nil -- Store the terminal object
@@ -120,9 +121,9 @@ function L.plugins(s)
 				local startify = require("alpha.themes.startify")
 				startify.section.header.val = header()
 				startify.section.top_buttons.val = {
-					startify.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-					startify.button("p", "  Select Project", ":Telescope projects<CR>"),
-					startify.button("w", "  Select Workspaces", ":Telescope workspaces<CR>"),
+					startify.button("e", icons.file.new .. "  New file", ":ene <BAR> startinsert <CR>"),
+					startify.button("p", icons.other.project .. "  Select Project", ":Telescope projects<CR>"),
+					startify.button("w", icons.other.workspace .. "  Select Workspaces", ":Telescope workspaces<CR>"),
 				}
 				startify.section.mru.val[2].val = "Files"
 				startify.section.mru.val[4].val = function()
@@ -140,7 +141,6 @@ function L.plugins(s)
 			},
 		},
 		{ "akinsho/toggleterm.nvim" },
-		-- { "rktjmp/lush.nvim" },
 		{
 			"natecraddock/workspaces.nvim",
 			opts = {},
