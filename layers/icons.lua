@@ -2,6 +2,25 @@ local setup = require("LYRD.setup")
 
 local L = {
 	name = "Icons",
+	no_icon = " ",
+	other = {
+		ia = "󱜙",
+		wrench = "",
+	},
+	action = {
+		close = "",
+		close_many = "",
+	},
+	debug = {
+		pause = "",
+		play = "",
+		step_into = "",
+		step_over = "",
+		step_out = "",
+		step_back = "",
+		run_last = "",
+		terminate = "",
+	},
 	git = {
 		unstaged = "",
 		staged = "✓",
@@ -25,7 +44,6 @@ local L = {
 		item = "│",
 		bottom = "─",
 	},
-	no_icon = " ",
 	folder = {
 		default = "󰉋",
 		open = "󰝰",
@@ -40,12 +58,21 @@ local L = {
 	},
 	chevron = {
 		right = "󰅂",
+		left = "",
+		up = "",
 		down = "󰅀",
+	},
+	triangle = {
+		right = "",
+		left = "",
+		up = "",
+		down = "",
 	},
 	status = {
 		bookmarked = "󰆤",
 		modified = "●",
 		hidden = "󰜌",
+		busy = "",
 	},
 }
 

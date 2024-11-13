@@ -17,11 +17,14 @@ end
 
 function L.keybindings(s)
 	mappings.leader(s, {
-		{ "", { "g" }, c("HopLine"), "Go to line" },
-		{ "", { "w" }, c("HopWord"), "Go to word" },
-		{ "", { "," }, c("HopPattern"), "Go to pattern" },
+		{ { "n", "v" }, { "g" }, c("HopLine"), "Go to line" },
+		{ { "n", "v" }, { "w" }, c("HopWord"), "Go to word" },
+		{ { "n", "v" }, { "," }, c("HopPattern"), "Go to pattern" },
 	})
-	mappings.keys(s, { { "", "s", "<cmd>HopChar1<CR>" }, { "", "S", "<cmd>HopChar2<CR>" } })
+	mappings.keys(s, {
+		{ { "n", "v" }, "s", "<cmd>HopChar1<CR>" },
+		{ { "n", "v" }, "S", "<cmd>HopChar2<CR>" },
+	})
 end
 
 return L

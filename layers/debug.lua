@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "Debug" }
 
@@ -20,20 +21,24 @@ function L.plugins(s)
 				vim.g.dap_virtual_text = true
 			end,
 			opts = {
-				icons = { expanded = "", collapsed = "", circular = "" },
-				contols = {
+				icons = {
+					expanded = icons.triangle.down,
+					collapsed = icons.triangle.right,
+					circular = icons.status.busy,
+				},
+				controls = {
 					enabled = true,
 					-- Display controls in this element
 					element = "repl",
 					icons = {
-						pause = "",
-						play = "",
-						step_into = "",
-						step_over = "",
-						step_out = "",
-						step_back = "",
-						run_last = "",
-						terminate = "",
+						pause = icons.debug.pause,
+						play = icons.debug.play,
+						step_into = icons.debug.step_into,
+						step_over = icons.debug.step_over,
+						step_out = icons.debug.step_out,
+						step_back = icons.debug.step_back,
+						run_last = icons.debug.run_last,
+						terminate = icons.debug.terminate,
 					},
 				},
 				mappings = {

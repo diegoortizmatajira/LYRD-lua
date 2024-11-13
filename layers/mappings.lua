@@ -52,11 +52,15 @@ local function map_key(mode, lead, keys, command, documentation, options)
 		options.desc = command.desc
 		icon_str = command.icon
 	end
-	options.desc = documentation or options.desc
-	-- wk.add({
-	-- 	{ key_str, command_str, desc = options.desc, mode = mode, icon = icon_str },
-	-- })
-	vim.keymap.set(mode, key_str, command_str, options)
+	local entry = {
+		key_str,
+		command_str,
+		desc = documentation or options.desc,
+		mode = mode,
+		icon = icon_str,
+	}
+	wk.add({ entry })
+	-- vim.keymap.set(mode, key_str, command_str, options)
 end
 
 local function map_menu(lead, keys, description)

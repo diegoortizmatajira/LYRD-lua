@@ -1,14 +1,15 @@
 local commands = require("LYRD.layers.commands")
+local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD Commands",
 	cmd = {
-		LYRDAIAssistant = { desc = "Open AI Assistant", icon = "󱜙" },
-		LYRDAIRefactor = { desc = "Open AI Refactor", icon = "" },
-		LYRDAISuggestions = { desc = "Open AI Suggestions" },
+		LYRDAIAssistant = { desc = "Open AI Assistant", icon = icons.other.ia },
+		LYRDAIRefactor = { desc = "Open AI Refactor", icon = icons.other.wrench },
+		LYRDAISuggestions = { desc = "Open AI Suggestions", icon = icons.other.ia },
 		LYRDBreakLine = { default = ":s/[,(]/&\r/ge|:noh|:'[,']normal==", desc = "Break current line" },
-		LYRDBufferClose = { default = ":bd", desc = "Close buffer", icon = "" },
-		LYRDBufferCloseAll = { default = ":bufdo bd", desc = "Close all buffers", icon = "" },
+		LYRDBufferClose = { default = ":bd", desc = "Close buffer", icon = icons.action.close },
+		LYRDBufferCloseAll = { default = ":bufdo bd", desc = "Close all buffers", icon = icons.action.close_many },
 		LYRDBufferCopy = { default = ':normal! ggVG"+y``', desc = "Copy whole buffer to clipboard" },
 		LYRDBufferForceClose = { default = ":bd!", desc = "Force close buffer", icon = "x" },
 		LYRDBufferForceCloseAll = { default = ":bufdo bd!", desc = "Force close all buffers" },
