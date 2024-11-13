@@ -3,6 +3,7 @@ local setup = require("LYRD.setup")
 _G.LYRD_setup = {
 	layers = {
 		"LYRD.layers.general",
+		"LYRD.layers.icons",
 		"LYRD.layers.neovide", -- Neovide settings
 		"LYRD.layers.mappings",
 		"LYRD.layers.commands",

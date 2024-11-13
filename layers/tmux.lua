@@ -9,6 +9,10 @@ function L.plugins(s)
 		{
 			"christoomey/vim-tmux-navigator",
 		},
+		{
+			"mrjones2014/smart-splits.nvim",
+			opts = {},
+		},
 	})
 end
 
@@ -19,6 +23,16 @@ function L.settings(s)
 		{ cmd.LYRDPaneNavigateRight, ":TmuxNavigateRight" },
 		{ cmd.LYRDPaneNavigateUp, ":TmuxNavigateUp" },
 		{ cmd.LYRDPaneNavigateDown, ":TmuxNavigateDown" },
+
+		{ cmd.LYRDPaneResizeLeft, ":SmartResizeLeft" },
+		{ cmd.LYRDPaneResizeRight, ":SmartResizeRight" },
+		{ cmd.LYRDPaneResizeUp, ":SmartResizeUp" },
+		{ cmd.LYRDPaneResizeDown, ":SmartResizeDown" },
+
+		{ cmd.LYRDPaneSwapLeft, ":SmartSwapLeft" },
+		{ cmd.LYRDPaneSwapRight, ":SmartSwapRight" },
+		{ cmd.LYRDPaneSwapUp, ":SmartSwapUp" },
+		{ cmd.LYRDPaneSwapDown, ":SmartSwapDown" },
 	})
 end
 

@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "Git" }
 
@@ -21,20 +22,20 @@ function L.plugins(s)
 			"lewis6991/gitsigns.nvim",
 			opts = {
 				signs = {
-					add = { text = "┃" },
-					change = { text = "┃" },
-					delete = { text = "_" },
-					topdelete = { text = "‾" },
-					changedelete = { text = "~" },
-					untracked = { text = "┆" },
+					add = { text = icons.git_gutter.add },
+					change = { text = icons.git_gutter.change },
+					delete = { text = icons.git_gutter.delete },
+					topdelete = { text = icons.git_gutter.topdelete },
+					changedelete = { text = icons.git_gutter.changedelete },
+					untracked = { text = icons.git_gutter.untracked },
 				},
 				signs_staged = {
-					add = { text = "┃" },
-					change = { text = "┃" },
-					delete = { text = "_" },
-					topdelete = { text = "‾" },
-					changedelete = { text = "~" },
-					untracked = { text = "┆" },
+					add = { text = icons.git_gutter.add },
+					change = { text = icons.git_gutter.change },
+					delete = { text = icons.git_gutter.delete },
+					topdelete = { text = icons.git_gutter.topdelete },
+					changedelete = { text = icons.git_gutter.changedelete },
+					untracked = { text = icons.git_gutter.untracked },
 				},
 				signs_staged_enable = true,
 				signcolumn = true,

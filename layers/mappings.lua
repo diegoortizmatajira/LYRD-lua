@@ -33,6 +33,7 @@ function L.plugins(s)
 end
 
 local function map_key(mode, lead, keys, command, documentation, options)
+	local wk = require("which-key")
 	if options == nil then
 		options = { noremap = true, silent = true }
 	end
@@ -50,7 +51,10 @@ local function map_key(mode, lead, keys, command, documentation, options)
 		options.desc = command.desc
 	end
 	options.desc = documentation or options.desc
-	vim.keymap.set(mode, key_str, command_str, options)
+	wk.add({
+		{ key_str, command_str, desc = options.desc, mode = mode, icon = command.icon or nil },
+	})
+	-- vim.keymap.set(mode, key_str, command_str, options)
 end
 
 local function map_menu(lead, keys, description)

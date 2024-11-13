@@ -1,8 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
-local mappings = require("LYRD.layers.mappings")
 local lsp = require("LYRD.layers.lsp")
-local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Dotnet languages: C#, F#, Vb" }
