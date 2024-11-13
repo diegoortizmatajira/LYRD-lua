@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "File tree" }
 
@@ -49,11 +50,11 @@ function L.plugins(s)
 						enable = true,
 						inline_arrows = true,
 						icons = {
-							corner = "└",
-							edge = "│",
-							item = "│",
-							bottom = "─",
-							none = " ",
+							corner = icons.tree_lines.corner,
+							edge = icons.tree_lines.edge,
+							item = icons.tree_lines.item,
+							bottom = icons.tree_lines.bottom,
+							none = icons.no_icon,
 						},
 					},
 					icons = {
@@ -85,29 +86,29 @@ function L.plugins(s)
 							bookmarks = true,
 						},
 						glyphs = {
-							default = "",
-							symlink = "",
-							bookmark = "󰆤",
-							modified = "●",
-							hidden = "󰜌",
+							default = icons.file.default,
+							symlink = icons.file.symlink,
+							bookmark = icons.status.bookmarked,
+							modified = icons.status.modified,
+							hidden = icons.status.hidden,
 							folder = {
-								arrow_closed = "󰅂",
-								arrow_open = "󰅀",
-								default = "󰉋",
-								open = "󰝰",
-								empty = "󰉖",
-								empty_open = "󰷏",
-								symlink = "",
-								symlink_open = "",
+								arrow_closed = icons.chevron.right,
+								arrow_open = icons.chevron.down,
+								default = icons.folder.default,
+								open = icons.folder.open,
+								empty = icons.folder.empty,
+								empty_open = icons.folder.empty_open,
+								symlink = icons.folder.symlink,
+								symlink_open = icons.folder.symlink_open,
 							},
 							git = {
-								unstaged = "",
-								staged = "✓",
-								unmerged = "",
-								renamed = "➜",
-								untracked = "★",
-								deleted = "",
-								ignored = "◌",
+								unstaged = icons.git.unstaged,
+								staged = icons.git.staged,
+								unmerged = icons.git.unmerged,
+								renamed = icons.git.renamed,
+								untracked = icons.git.untracked,
+								deleted = icons.git.deleted,
+								ignored = icons.git.ignored,
 							},
 						},
 					},
@@ -130,60 +131,6 @@ function L.plugins(s)
 				notify = {
 					threshold = vim.log.levels.WARN,
 					absolute_path = true,
-				},
-			},
-		},
-		{
-			"nvim-tree/nvim-web-devicons",
-			opts = {
-				-- your personnal icons can go here (to override)
-				-- you can specify color or cterm_color instead of specifying both of them
-				-- DevIcon will be appended to `name`
-				override = {
-					default = "",
-					symlink = "",
-					git = {
-						unstaged = "\u{f8eb}",
-						staged = "\u{f8ec}",
-						unmerged = "\u{f5f7}",
-						renamed = "\u{f45a}",
-						untracked = "\u{f893}",
-					},
-					zsh = {
-						icon = "",
-						color = "#428850",
-						cterm_color = "65",
-						name = "Zsh",
-					},
-				},
-				-- globally enable different highlight colors per icon (default to true)
-				-- if set to false all icons will have the default icon's color
-				color_icons = true,
-				-- globally enable default icons (default to false)
-				-- will get overriden by `get_icons` option
-				default = true,
-				-- globally enable "strict" selection of icons - icon will be looked up in
-				-- different tables, first by filename, and if not found by extension; this
-				-- prevents cases when file doesn't have any extension but still gets some icon
-				-- because its name happened to match some extension (default to false)
-				strict = true,
-				-- same as `override` but specifically for overrides by filename
-				-- takes effect when `strict` is true
-				override_by_filename = {
-					[".gitignore"] = {
-						icon = "",
-						color = "#f1502f",
-						name = "Gitignore",
-					},
-				},
-				-- same as `override` but specifically for overrides by extension
-				-- takes effect when `strict` is true
-				override_by_extension = {
-					["log"] = {
-						icon = "",
-						color = "#81e043",
-						name = "Log",
-					},
 				},
 			},
 		},
