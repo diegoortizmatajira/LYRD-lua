@@ -282,158 +282,208 @@ local L = {
 		},
 		LYRDLSPFindDeclaration = {
 			desc = "",
+			icon = icons.code.navigate,
 		},
 		LYRDLSPFindDefinitions = {
 			desc = "",
+			icon = icons.code.navigate,
 		},
 		LYRDLSPFindDocumentDiagnostics = {
 			desc = "",
+			icon = icons.diagnostic.search,
 		},
 		LYRDLSPFindDocumentSymbols = {
 			desc = "",
+			icon = icons.code.symbol,
 		},
 		LYRDLSPFindImplementations = {
 			desc = "",
+			icon = icons.code.navigate,
 		},
 		LYRDLSPFindLineDiagnostics = {
 			desc = "",
+			icon = icons.diagnostic.search,
 		},
 		LYRDLSPFindRangeCodeActions = {
 			desc = "Range Actions",
+			icon = icons.action.code_action,
 		},
 		LYRDLSPFindReferences = {
 			desc = "",
+			icon = icons.code.navigate,
 		},
 		LYRDLSPFindTypeDefinition = {
 			desc = "",
+			icon = icons.code.navigate,
 		},
 		LYRDLSPFindWorkspaceDiagnostics = {
 			desc = "",
+			icon = icons.diagnostic.search,
 		},
 		LYRDLSPFindWorkspaceSymbols = {
 			desc = "",
+			icon = icons.code.symbol,
 		},
 		LYRDLSPGotoNextDiagnostic = {
 			desc = "",
+			icon = icons.diagnostic.next,
 		},
 		LYRDLSPGotoPrevDiagnostic = {
 			desc = "",
+			icon = icons.diagnostic.prev,
 		},
 		LYRDLSPHoverInfo = {
 			desc = "",
+			icon = icons.code.hint,
 		},
 		LYRDLSPRename = {
 			desc = "Rename symbol",
+			icon = icons.code.rename,
 		},
 		LYRDLSPShowDocumentDiagnosticLocList = {
 			desc = "Document diagnostics",
+			icon = icons.diagnostic.search,
 		},
 		LYRDLSPShowWorkspaceDiagnosticLocList = {
 			desc = "Workspace diagnostics",
+			icon = icons.diagnostic.search,
 		},
 		LYRDLSPSignatureHelp = {
 			desc = "",
+			icon = icons.code.hint,
 		},
 		LYRDPluginsClean = {
 			default = ":Lazy clean",
 			desc = "Clean plugins",
+			icon = icons.action.clean,
 		},
 		LYRDPluginsInstall = {
 			default = ":Lazy install",
 			desc = "Install plugins",
+			icon = icons.action.install,
 		},
 		LYRDPluginsUpdate = {
 			default = ":Lazy sync",
 			desc = "Update plugins",
+			icon = icons.action.update,
 		},
 		LYRDSearchBufferLines = {
 			desc = "Lines",
+			icon = icons.search.lines,
 		},
 		LYRDSearchBufferTags = {
 			desc = "Tags",
+			icon = icons.search.tags,
 		},
 		LYRDSearchBuffers = {
 			desc = "Search buffers",
+			icon = icons.search.buffers,
 		},
 		LYRDSearchColorSchemes = {
 			desc = "Color Schemes",
+			icon = icons.search.default,
 		},
 		LYRDSearchCommandHistory = {
 			desc = "Recent comands",
+			icon = icons.search.history,
 		},
 		LYRDSearchCommands = {
 			desc = "Commands",
+			icon = icons.search.commands,
 		},
 		LYRDSearchCurrentString = {
 			desc = "Current string in files",
+			icon = icons.search.default,
 		},
 		LYRDSearchFiles = {
 			desc = "Find files",
+			icon = icons.search.files,
 		},
 		LYRDSearchFiletypes = {
 			desc = "Filetypes",
+			icon = icons.search.default,
 		},
 		LYRDSearchGitFiles = {
 			desc = "Git Files",
+			icon = icons.search.files,
 		},
 		LYRDSearchHighlights = {
 			desc = "Highlights",
+			icon = icons.search.default,
 		},
 		LYRDSearchKeyMappings = {
 			desc = "Key Maps",
+			icon = icons.search.keys,
 		},
 		LYRDSearchLiveGrep = {
 			desc = "Live grep",
+			icon = icons.search.default,
 		},
 		LYRDSearchQuickFixes = {
 			desc = "Quick Fixes",
+			icon = icons.diagnostic.search,
 		},
 		LYRDSearchRecentFiles = {
 			desc = "Recent files",
+			icon = icons.search.history,
 		},
 		LYRDSearchRegisters = {
 			desc = "Registers",
+			icon = icons.search.default,
 		},
 		LYRDResumeLastSearch = {
 			desc = "Resume last search",
+			icon = icons.search.history,
 		},
 		LYRDSmartCoder = {
 			desc = "Smart code generator",
+			icon = icons.code.generate,
 		},
 		LYRDTerminal = {
 			default = ":terminal",
 			desc = "Terminal",
+			icon = icons.apps.terminal,
 		},
 		LYRDTest = {
 			desc = "Test everything",
+			icon = icons.code.test,
 		},
 		LYRDTestCoverage = {
 			desc = "Test Coverage",
+			icon = icons.code.test,
 		},
 		LYRDTestFile = {
 			desc = "Test current file",
+			icon = icons.code.test,
 		},
 		LYRDTestFunc = {
 			desc = "Test current function",
+			icon = icons.code.test,
 		},
 		LYRDTestLast = {
 			desc = "Repeat last test",
+			icon = icons.action.repeat_once,
 		},
 		LYRDTestSuite = {
 			desc = "Test suite",
+			icon = icons.code.test,
 		},
 		LYRDTestSummary = {
 			desc = "View test summary",
+			icon = icons.other.report,
 		},
 		LYRDUnimplementedCommands = {
 			default = commands.list_unimplemented,
 			desc = "List unimplemented commands",
+			icon = icons.search.commands,
 		},
 		LYRDViewFileExplorer = {
 			desc = "File Explorer",
+			icon = icons.apps.file_explorer,
 		},
 		LYRDViewFileTree = {
 			desc = "Toggle file tree",
+			icon = icons.action.toggle_on,
 		},
 		LYRDViewHomePage = {
 			desc = "Home page",
@@ -515,12 +565,15 @@ local L = {
 		},
 		LYRDScratchNew = {
 			desc = "Create a new scratch",
+			icon = icons.file.scratch,
 		},
 		LYRDScratchOpen = {
 			desc = "Select scratch file to open",
+			icon = icons.search.files,
 		},
 		LYRDScratchSearch = {
 			desc = "Search inside scratches",
+			icon = icons.search.lines,
 		},
 	},
 }
