@@ -89,9 +89,9 @@ local omnisharp_settings = {
 	RoslynExtensionsOptions = {
 		AnalyzeOpenDocumentsOnly = false,
 		-- documentAnalysisTimeoutMs = 30000,
-		-- enableDecompilationSupport = true,
+		enableDecompilationSupport = true,
 		enableImportCompletion = true,
-		enableAnalyzersSupport = true,
+		enableAnalyzersSupport = false,
 		-- diagnosticWorkersThreadCount = 8,
 		-- locationPaths = {
 		-- 	"//path_to/code_actions.dll",

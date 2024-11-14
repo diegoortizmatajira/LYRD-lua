@@ -74,6 +74,12 @@ function L.plugins(s)
 							padding = 1,
 						},
 						{
+							filetype = "neotest-summary",
+							text = "Tests",
+							highlight = "PanelHeading",
+							padding = 1,
+						},
+						{
 							filetype = "DiffviewFiles",
 							text = "Diff View",
 							highlight = "PanelHeading",
