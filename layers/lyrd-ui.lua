@@ -45,6 +45,19 @@ local function header()
 	return combine_ascii_art(image, title, 3)
 end
 
+local function get_listed_buffers()
+	local buffers = {}
+	local len = 0
+	for buffer = 1, vim.fn.bufnr("$") do
+		if vim.fn.buflisted(buffer) == 1 then
+			len = len + 1
+			buffers[len] = buffer
+		end
+	end
+
+	return buffers
+end
+
 function L.plugins(s)
 	setup.plugin(s, {
 		{
@@ -229,6 +242,9 @@ function L.plugins(s)
 				vim.g.fold_line_char_open_end = "╰"
 			end,
 		},
+		{
+			"famiu/bufdelete.nvim",
+		},
 	})
 end
 
@@ -259,11 +275,29 @@ function L.settings(s)
 		end,
 	})
 
+	-- Causes alpha to be opened when closing all buffers
+	vim.api.nvim_create_augroup("alpha_on_empty", { clear = true })
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "BDeletePre *",
+		group = "alpha_on_empty",
+		callback = function()
+			local bufnr = vim.api.nvim_get_current_buf()
+			local name = vim.api.nvim_buf_get_name(bufnr)
+
+			if name == "" then
+				vim.cmd([[:Alpha | bd#]])
+			end
+		end,
+	})
+
 	commands.implement(s, "*", {
 		{ cmd.LYRDViewHomePage, ":Alpha" },
 		{ cmd.LYRDScratchNew, ":ScratchWithName" },
 		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
 		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
+
+		{ cmd.LYRDBufferClose, ":Bdelete" },
+		{ cmd.LYRDBufferCloseAll, ":Bwipeout" },
 	})
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
