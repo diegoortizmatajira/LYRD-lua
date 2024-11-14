@@ -14,8 +14,8 @@ function L.plugins(s)
 				"nvim-tree/nvim-web-devicons",
 			},
 			opts = {
-				sync_root_with_cwd = true,
-				respect_buf_cwd = true,
+				sync_root_with_cwd = false,
+				respect_buf_cwd = false,
 				sort = {
 					sorter = "name",
 					folders_first = true,

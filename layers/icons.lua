@@ -205,6 +205,18 @@ local L = {
 		unchecked = "󰄰",
 		unknown = "",
 	},
+	test = {
+		passed = "",
+		skipped = "",
+		failed = "",
+		success = "",
+		reload = "",
+	},
+	dotnet = {
+		sln = "󰘐",
+		project = "󰘐",
+		package = "",
+	},
 }
 
 function L.plugins(s)

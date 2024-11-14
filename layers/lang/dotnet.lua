@@ -2,10 +2,11 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "Dotnet languages: C#, F#, Vb" }
 
-local dotnet_languages = { "cs", "vb", "fsharp" }
+local dotnet_languages = { "cs", "vb" }
 
 local omnisharp_settings = {
 	msbuild = {
@@ -144,27 +145,6 @@ end
 
 function L.plugins(s)
 	setup.plugin(s, {
-		-- {
-		-- 	"omnisharp/omnisharp-vim",
-		-- 	ft = dotnet_languages,
-		-- 	config = function()
-		-- 		vim.g.OmniSharp_highlighting = 0
-		-- 		vim.g.OmniSharp_server_use_mono = 0
-		-- 		vim.g.OmniSharp_server_path =
-		-- 			vim.fn.expand(require("mason-registry").get_package("omnisharp"):get_install_path() .. "/omnisharp")
-		-- 	end,
-		-- 	dependencies = {
-		-- 		"tpope/vim-dispatch",
-		-- 		"williamboman/mason.nvim",
-		-- 	},
-		-- },
-		-- {
-		-- 	"nickspoons/vim-sharpenup",
-		-- 	ft = dotnet_languages,
-		-- 	init = function()
-		-- 		vim.g.sharpenup_create_mappings = 0
-		-- 	end,
-		-- },
 		{
 			"adamclerk/vim-razor",
 			ft = dotnet_languages,
@@ -176,7 +156,14 @@ function L.plugins(s)
 		{
 			"moaidhathot/dotnet.nvim",
 			cmd = "DotnetUI",
-			opts = {},
+			opts = {
+				bootstrap = {
+					auto_bootstrap = true, -- Automatically call "bootstrap" when creating a new file, adding a namespace and a class to the files
+				},
+				project_selection = {
+					path_display = "filename_first", -- Determines how file paths are displayed. All of Telescope's path_display options are supported
+				},
+			},
 			ft = dotnet_languages,
 		},
 		{
@@ -231,16 +218,16 @@ function L.plugins(s)
 					noBuild = true,
 					noRestore = true,
 					icons = {
-						passed = "",
-						skipped = "",
-						failed = "",
-						success = "",
-						reload = "",
-						test = "",
-						sln = "󰘐",
-						project = "󰘐",
-						dir = "",
-						package = "",
+						passed = icons.test.passed,
+						skipped = icons.test.skipped,
+						failed = icons.test.failed,
+						success = icons.test.success,
+						reload = icons.test.reload,
+						test = icons.code.test,
+						sln = icons.dotnet.sln,
+						project = icons.dotnet.project,
+						dir = icons.folder.default,
+						package = icons.dotnet.package,
 					},
 				},
 				---@param action "test" | "restore" | "build" | "run"
