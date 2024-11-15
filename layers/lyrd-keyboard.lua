@@ -69,6 +69,7 @@ function L.keybindings(s)
 		{ "n", { "f" }, cmd.LYRDBufferFormat },
 		{ "n", { "d" }, cmd.LYRDDebugToggleUI },
 		{ "n", { "j" }, cmd.LYRDSmartCoder },
+		{ "n", { "o" }, cmd.LYRDBufferJumpToLast },
 		{ "n", { "l" }, cmd.LYRDDiagnosticLinesToggle },
 		{ "n", { "s", "n" }, cmd.LYRDScratchNew },
 		{ "n", { "s", "s" }, cmd.LYRDScratchOpen },

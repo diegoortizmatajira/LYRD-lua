@@ -113,6 +113,7 @@ function L.plugins(s)
 					},
 					lualine_x = {
 						"tabnine",
+						"filetype",
 					},
 				},
 			},
@@ -243,7 +244,16 @@ function L.plugins(s)
 			end,
 		},
 		{
-			"famiu/bufdelete.nvim",
+			"diegoortizmatajira/bufdelete.nvim",
+			opts = {
+				close_with_their_window = {
+					"NvimTree",
+					"fugitive",
+                    "gitcommit",
+					"nofile",
+					"help",
+				},
+			},
 		},
 	})
 end
@@ -278,13 +288,14 @@ function L.settings(s)
 	-- Causes alpha to be opened when closing all buffers
 	vim.api.nvim_create_augroup("alpha_on_empty", { clear = true })
 	vim.api.nvim_create_autocmd("User", {
-		pattern = "BDeletePre *",
+		pattern = "BDeletePost *",
 		group = "alpha_on_empty",
 		callback = function()
+			local windows = vim.api.nvim_list_wins()
 			local bufnr = vim.api.nvim_get_current_buf()
 			local name = vim.api.nvim_buf_get_name(bufnr)
 
-			if name == "" then
+			if vim.bo[bufnr].filetype ~= "alpha" and name == "" then
 				vim.cmd([[:Alpha | bd#]])
 			end
 		end,
@@ -297,7 +308,8 @@ function L.settings(s)
 		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
 
 		{ cmd.LYRDBufferClose, ":Bdelete" },
-		{ cmd.LYRDBufferCloseAll, ":Bwipeout" },
+		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
+		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
 	})
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
