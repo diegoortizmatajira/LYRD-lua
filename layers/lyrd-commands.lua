@@ -349,8 +349,17 @@ local L = {
 			icon = icons.diagnostic.search,
 		},
 		LYRDLSPSignatureHelp = {
-			desc = "",
+			desc = "Signature help",
 			icon = icons.code.hint,
+		},
+		LYRDToolManager = {
+			desc = "Tool Manager",
+			icon = icons.other.tools,
+		},
+		LYRDPluginManager = {
+			default = ":Lazy",
+			desc = "Plugin Manager",
+			icon = icons.other.plug,
 		},
 		LYRDPluginsClean = {
 			default = ":Lazy clean",

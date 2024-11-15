@@ -84,7 +84,7 @@ function L.keybindings(s)
 		{ { "c", "g" }, "Code Generation" },
 		{ { "d" }, "Debug" },
 		{ { "f" }, "Find" },
-		{ { "g" }, "Git Repository" },
+		{ { "g" }, "Git" },
 		{ { "g", "f" }, "Gitflow" },
 		{ { "t" }, "Test" },
 		{ { "p" }, "Packages" },
@@ -127,6 +127,8 @@ function L.keybindings(s)
 		{ "n", { "b", "s" }, cmd.LYRDBufferSave },
 		{ "n", { "b", "S" }, cmd.LYRDBufferSaveAll },
 		-- Packages
+		{ "n", { "p", "t" }, cmd.LYRDToolManager },
+		{ "n", { "p", "p" }, cmd.LYRDPluginManager },
 		{ "n", { "p", "i" }, cmd.LYRDPluginsInstall },
 		{ "n", { "p", "u" }, cmd.LYRDPluginsUpdate },
 		{ "n", { "p", "c" }, cmd.LYRDPluginsClean },

@@ -60,6 +60,8 @@ local mason_opts = {
 	registries = {
 		"lua:mason-registry.index",
 		"github:mason-org/mason-registry",
+		"github:nvim-java/mason-registry",
+		"github:crashdummyy/mason-registry",
 	},
 
 	-- The provider implementations to use for resolving supplementary package metadata (e.g., all available versions).
@@ -237,6 +239,7 @@ function L.settings(s)
 	require("lspconfig.ui.windows").default_options.border = "rounded"
 
 	commands.implement(s, "*", {
+		{ cmd.LYRDToolManager, ":Mason" },
 		{
 			cmd.LYRDBufferFormat,
 			function()
