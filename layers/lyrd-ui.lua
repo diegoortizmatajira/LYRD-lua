@@ -251,6 +251,7 @@ function L.plugins(s)
 					"fugitive",
 					"gitcommit",
 					"nofile",
+					"nowrite",
 					"help",
 				},
 			},
