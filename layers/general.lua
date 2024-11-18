@@ -11,7 +11,7 @@ function L.settings(_)
 	vim.opt.breakindent = true -- Wrap indent to match  line start.
 	vim.opt.clipboard = "unnamedplus" -- Connection to the system clipboard.
 	vim.opt.cmdheight = 0 -- Hide command line unless needed.
-	vim.opt.colorcolumn = "120" -- PEP8 like character limit vertical bar.
+	vim.opt.colorcolumn = "" -- Vertical column for visual hinting (string numeric value), default is "".
 	vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Options for insert mode completion.
 	vim.opt.copyindent = true -- Copy the previous indentation on autoindenting.
 	vim.opt.cursorline = true -- Highlight the text line of the cursor.
