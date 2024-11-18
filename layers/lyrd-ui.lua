@@ -233,11 +233,15 @@ function L.plugins(s)
 		{
 			"diegoortizmatajira/bufdelete.nvim",
 			opts = {
+				debug = false,
 				close_with_their_window = {
 					{ filetype = "NvimTree" },
+					{ filetype = "neotest-summary" },
 					{ filetype = "fugitive" },
+					{ filename = "fugitive:" },
 					{ filetype = "gitcommit" },
 					{ filetype = "help" },
+					{ filetype = "alpha" },
 				},
 			},
 		},
