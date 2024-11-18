@@ -49,7 +49,7 @@ function L.settings(_)
 	vim.opt.preserveindent = true -- Preserve indent structure as much as possible.
 	vim.opt.pumheight = 10 -- Height of the pop up menu.
 	vim.opt.relativenumber = false -- Show relative numberline.
-	vim.opt.scrolloff = 0 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
+	vim.opt.scrolloff = 3 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
 	vim.opt.selection = "old" -- Don't select the newline symbol when using <End> on visual mode.
 	vim.opt.shada = "!,'1000,<50,s10,h" -- Remember the last 1000 opened files
 	vim.opt.shell = vim.fn.expand("$SHELL")

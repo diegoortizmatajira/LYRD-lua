@@ -115,10 +115,10 @@ function L.plugins(s)
 				},
 				update_focused_file = {
 					enable = true,
-					update_root = true,
+					update_root = false,
 				},
 				disable_netrw = false,
-				update_cwd = true,
+				update_cwd = false,
 				diagnostics = { enable = true, show_on_dirs = true },
 				filters = {
 					dotfiles = true,

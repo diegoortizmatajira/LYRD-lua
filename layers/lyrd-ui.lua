@@ -281,7 +281,6 @@ function L.settings(s)
 		pattern = "BDeletePost *",
 		group = "alpha_on_empty",
 		callback = function()
-			local windows = vim.api.nvim_list_wins()
 			local bufnr = vim.api.nvim_get_current_buf()
 			local name = vim.api.nvim_buf_get_name(bufnr)
 
