@@ -45,6 +45,19 @@ local function header()
 	return combine_ascii_art(image, title, 3)
 end
 
+local function get_listed_buffers()
+	local buffers = {}
+	local len = 0
+	for buffer = 1, vim.fn.bufnr("$") do
+		if vim.fn.buflisted(buffer) == 1 then
+			len = len + 1
+			buffers[len] = buffer
+		end
+	end
+
+	return buffers
+end
+
 function L.plugins(s)
 	setup.plugin(s, {
 		{
