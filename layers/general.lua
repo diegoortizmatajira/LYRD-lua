@@ -1,87 +1,85 @@
 local L = { name = "General" }
 
 function L.settings(_)
-	-- Map leader to ,
 	vim.g.mapleader = ","
 	vim.g.maplocalleader = "\\"
+	vim.g.big_file = { size = 1024 * 5000, lines = 50000 } -- For files bigger than this, disable 'treesitter' (+5Mb).
 
-	vim.o.undodir = vim.fn.expand("~/.config/nvim/undo/")
-	vim.o.undofile = true
+	vim.opt.autochdir = true -- Use current file dir as working dir (See project.nvim).
+	vim.opt.backspace:append({ "indent", "eol", "start", "nostop" }) -- Don't stop backspace at insert.
+	vim.opt.backup = false
+	vim.opt.breakindent = true -- Wrap indent to match  line start.
+	vim.opt.clipboard = "unnamedplus" -- Connection to the system clipboard.
+	vim.opt.cmdheight = 0 -- Hide command line unless needed.
+	vim.opt.colorcolumn = "120" -- PEP8 like character limit vertical bar.
+	vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Options for insert mode completion.
+	vim.opt.copyindent = true -- Copy the previous indentation on autoindenting.
+	vim.opt.cursorline = true -- Highlight the text line of the cursor.
+	vim.opt.diffopt:append({ "algorithm:histogram", "linematch:60" }) -- Enable linematch diff algorithm
+	vim.opt.expandtab = true -- Enable the use of space in tab.
+	vim.opt.fileencoding = "utf-8" -- File content encoding for the buffer.
+	vim.opt.fileformats = "unix,dos,mac"
+	vim.opt.fillchars = { eob = " " } -- Disable `~` on nonexistent lines.
+	vim.opt.foldcolumn = "1" -- Show foldcolumn in nvim 0.9+.
+	vim.opt.foldenable = true -- Enable fold for nvim-ufo.
+	vim.opt.foldlevel = 99 -- set highest foldlevel for nvim-ufo.
+	vim.opt.foldlevelstart = 99 -- Start with all code unfolded.
+	vim.opt.gcr = "a:blinkon0"
+	vim.opt.guicursor = "n:blinkon200,i-ci-ve:ver25" -- Enable cursor blink.
+	vim.opt.hidden = true
+	vim.opt.history = 1000 -- Number of commands to remember in a history table (per buffer).
+	vim.opt.hlsearch = true
+	vim.opt.ignorecase = true -- Case insensitive searching.
+	vim.opt.incsearch = true
+	vim.opt.infercase = true -- Infer cases in keyword completion.
+	vim.opt.laststatus = 3 -- Global statusline.
+	vim.opt.linebreak = true -- Wrap lines at 'breakat'.
+	vim.opt.modeline = true
+	vim.opt.modelines = 10
 
-	vim.o.splitright = true
-	vim.o.splitbelow = true
+	local is_android = vim.fn.isdirectory("/data") == 1
+	if is_android then
+		vim.opt.mouse = "v"
+	else
+		vim.opt.mouse = "a"
+	end -- Enable scroll for android
 
-	vim.o.swapfile = false
-	vim.o.mouse = "a"
+	vim.opt.mousemodel = "popup"
+	vim.opt.mousescroll = "ver:1,hor:0" -- Disables hozirontal scroll in neovim.
+	vim.opt.number = true -- Show numberline.
+	vim.opt.preserveindent = true -- Preserve indent structure as much as possible.
+	vim.opt.pumheight = 10 -- Height of the pop up menu.
+	vim.opt.relativenumber = false -- Show relative numberline.
+	vim.opt.scrolloff = 1000 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
+	vim.opt.selection = "old" -- Don't select the newline symbol when using <End> on visual mode.
+	vim.opt.shada = "!,'1000,<50,s10,h" -- Remember the last 1000 opened files
+	vim.opt.shell = vim.fn.expand("$SHELL")
+	vim.opt.shiftwidth = 4 -- Number of space inserted for indentation.
+	vim.opt.shortmess:append({ c = true, s = true, I = true }) -- Disable startup message.
+	vim.opt.showmode = false -- Disable showing modes in command line.
+	vim.opt.showtabline = 2 -- always display tabline.
+	vim.opt.sidescrolloff = 8 -- Same but for side scrolling.
+	vim.opt.signcolumn = "yes" -- Always show the sign column.
+	vim.opt.smartcase = true -- Case sensitivie searching.
+	vim.opt.smartindent = true -- Smarter autoindentation.
+	vim.opt.softtabstop = 0
+	vim.opt.splitbelow = true -- Splitting a new window below the current one.
+	vim.opt.splitright = true -- Splitting a new window at the right of the current one.
+	vim.opt.swapfile = false -- Ask what state to recover when opening a file that was not saved.
+	vim.opt.tabstop = 4 -- Number of space in a tab.
+	vim.opt.termguicolors = true -- Enable 24-bit RGB color in the TUI.
+	vim.opt.title = true
+	vim.opt.titleold = "Terminal"
+	vim.opt.titlestring = "%F"
+	vim.opt.undodir = vim.fn.expand("~/.config/nvim/undo/")
+	vim.opt.undofile = true -- Enable persistent undo between session and reboots.
+	vim.opt.updatetime = 300 -- Length of time to wait before triggering the plugin.
+	vim.opt.viewoptions:remove("curdir") -- Disable saving current directory with views.
+	vim.opt.virtualedit = "block" -- Allow going past end of line in visual block mode.
+	vim.opt.wrap = false -- Disable wrapping of lines longer than the width of window.
+	vim.opt.writebackup = false -- Disable making a backup before overwriting a file.
 
-	vim.o.foldenable = false
-
-	-- Encoding
-	-- vim.o.encoding = "utf-8"
-	-- vim.o.fileencoding = "utf-8"
-	-- vim.o.fileencodings = "utf-8"
-
-	-- Fix backspace indent
-	vim.o.backspace = "indent,eol,start"
-
-	-- Tabs. May be overridden by autocmd rules
-	vim.o.tabstop = 4
-	vim.o.softtabstop = 0
-	vim.o.shiftwidth = 4
-	vim.o.expandtab = true
-
-	-- Enable hidden buffers
-	vim.o.hidden = true
-
-	-- Some servers have issues with backup files, see #649
-	vim.o.backup = false
-	vim.o.writebackup = false
-
-	-- Better display for messages
-	vim.o.cmdheight = 1
-
-	-- Smaller updatetime for CursorHold & CursorHoldI
-	vim.o.updatetime = 300
-
-	-- always show signcolumns
-	vim.o.signcolumn = "yes"
-
-	-- Searching
-	vim.o.hlsearch = true
-	vim.o.incsearch = true
-	vim.o.ignorecase = true
-	vim.o.smartcase = true
-
-	vim.o.fileformats = "unix,dos,mac"
-
-	vim.o.shell = vim.fn.expand("$SHELL")
-	vim.o.number = true
-	vim.o.wrap = false
-	vim.o.smartindent = true
-
-	vim.o.mousemodel = "popup"
-	vim.o.termguicolors = true
-
-	-- Disable the blinking cursor.
-	vim.o.gcr = "a:blinkon0"
-	vim.o.scrolloff = 3
-
-	-- Status bar
-	vim.o.laststatus = 2
-
-	-- Use modeline overrides
-	vim.o.modeline = true
-	vim.o.modelines = 10
-
-	vim.o.title = true
-	vim.o.titleold = "Terminal"
-	vim.o.titlestring = "%F"
-
-	vim.cmd([[command! FixWhitespace :%s/\s\+$//e]])
-
-	-- don't give |ins-completion-menu| messages.
-	vim.opt.shortmess:append("c")
-
+	vim.api.nvim_create_user_command("FixWhitespace", ":%s/\\s\\+$//e", {})
 	-- *****************************************************************************
 	-- Autocmd Rules
 	-- *****************************************************************************

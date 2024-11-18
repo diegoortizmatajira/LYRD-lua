@@ -249,7 +249,7 @@ function L.plugins(s)
 				close_with_their_window = {
 					"NvimTree",
 					"fugitive",
-                    "gitcommit",
+					"gitcommit",
 					"nofile",
 					"help",
 				},
