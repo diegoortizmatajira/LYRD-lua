@@ -36,11 +36,24 @@ local function load_plugins(s, loaded_layers)
 	-- Setup lazy.nvim
 	require("lazy").setup({
 		spec = s.plugins,
-		-- Configure any other settings here. See the documentation for more details.
-		-- colorscheme that will be used when installing plugins.
-		install = { colorscheme = { "gruvbox" } },
 		-- automatically check for plugin updates
 		checker = { enabled = true },
+		defaults = { lazy = false },
+		performance = {
+			rtp = { -- Disable unnecessary nvim features to speed up startup.
+				disabled_plugins = {
+					"tohtml",
+					"gzip",
+					"zipPlugin",
+					"netrwPlugin",
+					"tarPlugin",
+				},
+			},
+		},
+		-- Enable luarocks if installed.
+		rocks = { enabled = vim.fn.executable("luarocks") == 1 },
+		-- We don't use this, so create it in a disposable place.
+		lockfile = vim.fn.stdpath("cache") .. "/lazy-lock.json",
 	})
 end
 
