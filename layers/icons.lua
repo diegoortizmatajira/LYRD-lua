@@ -8,7 +8,7 @@ local L = {
 		home = "󰋜",
 		wrench = "",
 		tools = "",
-        plug="",
+		plug = "",
 		project = "",
 		workspace = "",
 		report = "󰃯",
@@ -60,6 +60,8 @@ local L = {
 		split_v = "",
 		wrap = "",
 		repeat_once = "󰑘",
+		replace_text = "",
+		replace_in_files = "󰬳",
 	},
 	arrow = {
 		up_left = "󱞧",
@@ -225,6 +227,27 @@ function L.plugins(s)
 	setup.plugin(s, {
 		{
 			"nvim-tree/nvim-web-devicons",
+			init = function()
+				vim.g.webdevicons_enable = 1
+				vim.g.webdevicons_enable_nerdtree = 1
+				vim.g.webdevicons_enable_unite = 1
+				vim.g.webdevicons_enable_vimfiler = 1
+				vim.g.webdevicons_enable_airline_tabline = 1
+				vim.g.webdevicons_enable_airline_statusline = 1
+				vim.g.webdevicons_enable_ctrlp = 1
+				vim.g.webdevicons_enable_flagship_statusline = 1
+				vim.g.WebDevIconsUnicodeDecorateFileNodes = 1
+				vim.g.WebDevIconsUnicodeGlyphDoubleWidth = 1
+				vim.g.webdevicons_conceal_nerdtree_brackets = 1
+				vim.g.WebDevIconsNerdTreeAfterGlyphPadding = "  "
+				vim.g.WebDevIconsNerdTreeGitPluginForceVAlign = 1
+				vim.g.webdevicons_enable_denite = 1
+				vim.g.WebDevIconsUnicodeDecorateFolderNodes = 1
+				vim.g.DevIconsEnableFoldersOpenClose = 1
+				vim.g.DevIconsEnableFolderPatternMatching = 1
+				vim.g.DevIconsEnableFolderExtensionPatternMatching = 1
+				vim.g.WebDevIconsUnicodeDecorateFolderNodesExactMatches = 1
+			end,
 			opts = {
 				-- your personnal icons can go here (to override)
 				-- you can specify color or cterm_color instead of specifying both of them

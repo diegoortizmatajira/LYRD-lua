@@ -163,6 +163,8 @@ function L.keybindings(s)
 		{ "n", { "f", "," }, cmd.LYRDSearchCommands },
 		{ "n", { "f", "s" }, cmd.LYRDSearchCurrentString },
 		{ "n", { "f", "p" }, cmd.LYRDSearchRegisters },
+		{ "n", { "f", "R" }, cmd.LYRDReplaceInFiles },
+		{ "n", { "f", "r" }, cmd.LYRDReplace },
 		-- Git Menu
 		{ "n", { "g", "g" }, cmd.LYRDGitUI },
 		{ "n", { "g", "s" }, cmd.LYRDGitStatus },

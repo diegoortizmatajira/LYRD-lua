@@ -5,6 +5,11 @@ local L = { name = "Development" }
 function L.plugins(s)
 	setup.plugin(s, {
 		{
+			"tummetott/unimpaired.nvim",
+			event = "VeryLazy",
+			opts = {},
+		}, -- use lazy.nvim
+		{
 			"numtostr/comment.nvim",
 			opts = {
 				hook = function()
@@ -23,6 +28,15 @@ function L.plugins(s)
 				-- or leave it empty to use the default settings
 				-- refer to the configuration section below
 			},
+		},
+		{
+			"gh-liu/fold_line.nvim",
+			event = "VeryLazy",
+			init = function()
+				-- change the char of the line, see the `Appearance` section
+				vim.g.fold_line_char_open_start = "╭"
+				vim.g.fold_line_char_open_end = "╰"
+			end,
 		},
 		{
 			"joosepalviste/nvim-ts-context-commentstring",

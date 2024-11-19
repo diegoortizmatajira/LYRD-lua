@@ -584,6 +584,14 @@ local L = {
 			desc = "Search inside scratches",
 			icon = icons.search.lines,
 		},
+		LYRDReplace = {
+			desc = "Search and replace in current file",
+			icon = icons.action.replace_text,
+		},
+		LYRDReplaceInFiles = {
+			desc = "Search and replace in files",
+			icon = icons.action.replace_in_files,
+		},
 	},
 }
 

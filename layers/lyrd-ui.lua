@@ -150,7 +150,12 @@ function L.plugins(s)
 		{ "akinsho/toggleterm.nvim" },
 		{
 			"natecraddock/workspaces.nvim",
-			opts = {},
+			opts = {
+				float_opts = {
+					border = "rounded",
+					highlights = { border = "Normal", background = "Normal" },
+				},
+			},
 			config = function(opts)
 				require("workspaces").setup(opts)
 				local telescope = require("telescope")
@@ -159,10 +164,31 @@ function L.plugins(s)
 			dependencies = { "nvim-telescope/telescope.nvim" },
 		},
 		{
-			"ahmedkhalf/project.nvim",
+			"zeioth/project.nvim",
 			opts = {
-				detection_methods = { "lsp", "pattern" },
-				patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pom.xml" },
+				detection_methods = {
+					"lsp",
+					"pattern",
+				},
+				patterns = {
+					".git",
+					"_darcs",
+					".hg",
+					".bzr",
+					".svn",
+					"Makefile",
+					"package.json",
+					"pom.xml",
+					".solution",
+					".solution.toml",
+				},
+				exclude_dirs = {
+					"~/",
+				},
+				exclude_chdir = {
+					filetype = { "", "OverseerList", "alpha" },
+					buftype = { "nofile", "terminal" },
+				},
 			},
 			config = function(opts)
 				require("project_nvim").setup(opts)
@@ -170,30 +196,6 @@ function L.plugins(s)
 				telescope.load_extension("ui-select")
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
-		},
-		{
-			"nvim-tree/nvim-web-devicons",
-			config = function()
-				vim.g.webdevicons_enable = 1
-				vim.g.webdevicons_enable_nerdtree = 1
-				vim.g.webdevicons_enable_unite = 1
-				vim.g.webdevicons_enable_vimfiler = 1
-				vim.g.webdevicons_enable_airline_tabline = 1
-				vim.g.webdevicons_enable_airline_statusline = 1
-				vim.g.webdevicons_enable_ctrlp = 1
-				vim.g.webdevicons_enable_flagship_statusline = 1
-				vim.g.WebDevIconsUnicodeDecorateFileNodes = 1
-				vim.g.WebDevIconsUnicodeGlyphDoubleWidth = 1
-				vim.g.webdevicons_conceal_nerdtree_brackets = 1
-				vim.g.WebDevIconsNerdTreeAfterGlyphPadding = "  "
-				vim.g.WebDevIconsNerdTreeGitPluginForceVAlign = 1
-				vim.g.webdevicons_enable_denite = 1
-				vim.g.WebDevIconsUnicodeDecorateFolderNodes = 1
-				vim.g.DevIconsEnableFoldersOpenClose = 1
-				vim.g.DevIconsEnableFolderPatternMatching = 1
-				vim.g.DevIconsEnableFolderExtensionPatternMatching = 1
-				vim.g.WebDevIconsUnicodeDecorateFolderNodesExactMatches = 1
-			end,
 		},
 		{
 			"stevearc/dressing.nvim",
@@ -207,11 +209,6 @@ function L.plugins(s)
 			},
 		},
 		{
-			"tummetott/unimpaired.nvim",
-			event = "VeryLazy",
-			opts = {},
-		}, -- use lazy.nvim
-		{
 			"LintaoAmons/scratch.nvim",
 			opts = {
 				use_telescope = true,
@@ -220,15 +217,6 @@ function L.plugins(s)
 				filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
 			},
 			event = "VeryLazy",
-		},
-		{
-			"gh-liu/fold_line.nvim",
-			event = "VeryLazy",
-			init = function()
-				-- change the char of the line, see the `Appearance` section
-				vim.g.fold_line_char_open_start = "╭"
-				vim.g.fold_line_char_open_end = "╰"
-			end,
 		},
 		{
 			"diegoortizmatajira/bufdelete.nvim",
@@ -243,6 +231,13 @@ function L.plugins(s)
 					{ filetype = "help" },
 					{ filetype = "alpha" },
 				},
+			},
+		},
+		{
+			"nvim-pack/nvim-spectre",
+			opts = {},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
 			},
 		},
 	})
@@ -299,6 +294,19 @@ function L.settings(s)
 		{ cmd.LYRDBufferClose, ":Bdelete" },
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
+
+		{
+			cmd.LYRDReplace,
+			function()
+				require("spectre").open_file_search({ select_word = true })
+			end,
+		},
+		{
+			cmd.LYRDReplaceInFiles,
+			function()
+				require("spectre").toggle()
+			end,
+		},
 	})
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
