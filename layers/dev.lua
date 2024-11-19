@@ -1,4 +1,5 @@
 local setup = require("LYRD.setup")
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "Development" }
 
@@ -50,6 +51,9 @@ function L.plugins(s)
 			"windwp/nvim-autopairs",
 			event = "InsertEnter",
 			config = true,
+			dependencies = {
+				"hrsh7th/nvim-cmp",
+			},
 		},
 		{
 			"kylechui/nvim-surround",
@@ -101,7 +105,7 @@ function L.plugins(s)
 					},
 				},
 				indent = {
-					char = "▏",
+					char = icons.tree_lines.thin_left,
 				},
 			},
 		},
@@ -111,15 +115,17 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
-	-- TODO: Include on CMP
-	-- -- If you want insert `(` after select function or method item
-	-- local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-	-- local cmp = require('cmp')
-	-- cmp.event:on(
-	--   'confirm_done',
-	--   cmp_autopairs.on_confirm_done()
-	-- )
+function L.complete(_)
+	-- If you want insert `(` after select function or method item
+	local is_cmp_loaded, cmp = pcall(require, "cmp")
+	if is_cmp_loaded then
+		cmp.event:on(
+			"confirm_done",
+			require("nvim-autopairs.completion.cmp").on_confirm_done({
+				tex = false,
+			})
+		)
+	end
 end
 
 return L

@@ -167,6 +167,7 @@ local L = {
 		edge = "│",
 		item = "│",
 		bottom = "─",
+		thin_left = "▏",
 	},
 	folder = {
 		new = "",

@@ -96,6 +96,10 @@ local plugged_capabilities = function()
 			"additionalTextEdits",
 		},
 	}
+	result.textDocument.foldingRange = {
+		dynamicRegistration = false,
+		lineFoldingOnly = true,
+	}
 
 	return result
 end
