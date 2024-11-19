@@ -7,6 +7,15 @@ function L.plugins(s)
 	setup.plugin(s, {
 		"pangloss/vim-javascript",
 		"b0o/schemastore.nvim",
+		{
+			"windwp/nvim-ts-autotag",
+			event = "InsertEnter",
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				"windwp/nvim-autopairs",
+			},
+			opts = {},
+		},
 	})
 end
 
