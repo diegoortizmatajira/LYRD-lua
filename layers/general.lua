@@ -5,7 +5,7 @@ function L.settings(_)
 	vim.g.maplocalleader = "\\"
 	vim.g.big_file = { size = 1024 * 5000, lines = 50000 } -- For files bigger than this, disable 'treesitter' (+5Mb).
 
-	vim.opt.autochdir = true -- Use current file dir as working dir (See project.nvim).
+	vim.opt.autochdir = false -- Use current file dir as working dir (See project.nvim).
 	vim.opt.backspace:append({ "indent", "eol", "start", "nostop" }) -- Don't stop backspace at insert.
 	vim.opt.backup = false
 	vim.opt.breakindent = true -- Wrap indent to match  line start.
