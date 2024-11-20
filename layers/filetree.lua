@@ -137,12 +137,12 @@ function L.plugins(s)
 				filters = {
 					enable = true,
 					git_ignored = true,
-					dotfiles = false,
+					dotfiles = true,
 					git_clean = false,
 					no_buffer = false,
 					no_bookmark = false,
 					custom = { "^\\.git$", "^node_modules$", "^bin$", "^obj$" },
-					exclude = { ".gitignore" },
+					exclude = { ".gitignore", ".env" },
 				},
 				actions = {
 					open_file = {
