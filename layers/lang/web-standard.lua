@@ -16,6 +16,13 @@ function L.plugins(s)
 			},
 			opts = {},
 		},
+		{
+			"heilgar/nvim-http-client",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+			},
+			opts = {},
+		},
 	})
 end
 
