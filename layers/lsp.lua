@@ -137,16 +137,13 @@ function L.plugins(s)
 			config = false,
 		},
 		{
-			"zeioth/none-ls-autoload.nvim",
+			"jay-babu/mason-null-ls.nvim",
+			event = { "BufReadPre", "BufNewFile" },
 			dependencies = {
-				"nvimtools/none-ls.nvim",
 				"williamboman/mason.nvim",
-				"zeioth/none-ls-external-sources.nvim",
+				"nvimtools/none-ls.nvim",
 			},
-			opts = {
-				-- Here you can add support for sources not oficially supported by none-ls.
-				external_sources = {},
-			},
+			config = false,
 		},
 		{
 			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
@@ -219,6 +216,10 @@ function L.settings(s)
 		null_ls.register(custom_register)
 	end
 
+	require("mason-null-ls").setup({
+		ensure_installed = nil,
+		automatic_installation = true,
+	})
 	local signs = {
 		{ name = "DiagnosticSignError", text = icons.diagnostic.error },
 		{ name = "DiagnosticSignWarn", text = icons.diagnostic.warning },
