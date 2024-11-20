@@ -22,6 +22,10 @@ function L.plugins(s)
 				"nvim-lua/plenary.nvim",
 			},
 			opts = {},
+			config = function(opts)
+				require("http_client").setup(opts)
+				require("telescope").load_extension("http_client")
+			end,
 		},
 	})
 end
