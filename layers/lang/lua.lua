@@ -1,8 +1,24 @@
 local lsp = require("LYRD.layers.lsp")
+local setup = require("LYRD.setup")
 
 local L = { name = "Lua Language" }
 
-function L.plugins(_) end
+function L.plugins(s)
+	setup.plugin(s, {
+		{
+			"folke/lazydev.nvim",
+			ft = "lua", -- only load on lua files
+			opts = {
+				library = {
+					-- See the configuration section for more details
+					-- Load luvit types when the `vim.uv` word is found
+					{ path = "luvit-meta/library", words = { "vim%.uv" } },
+				},
+			},
+		},
+		{ "Bilal2453/luvit-meta", lazy = true },
+	})
+end
 
 function L.preparation(_)
 	lsp.mason_ensure({

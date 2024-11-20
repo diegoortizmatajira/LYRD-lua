@@ -121,7 +121,7 @@ function L.plugins(s)
 	setup.plugin(s, {
 		{ "neovim/nvim-lspconfig" },
 		{
-			"nvimtools/none-ls.nvim",
+			"williamboman/mason.nvim",
 			config = false,
 		},
 		{
@@ -133,10 +133,25 @@ function L.plugins(s)
 			},
 		},
 		{
-			"williamboman/mason.nvim",
+			"nvimtools/none-ls.nvim",
 			config = false,
 		},
-		{ "https://git.sr.ht/~whynothugo/lsp_lines.nvim", opts = {} },
+		{
+			"zeioth/none-ls-autoload.nvim",
+			dependencies = {
+				"nvimtools/none-ls.nvim",
+				"williamboman/mason.nvim",
+				"zeioth/none-ls-external-sources.nvim",
+			},
+			opts = {
+				-- Here you can add support for sources not oficially supported by none-ls.
+				external_sources = {},
+			},
+		},
+		{
+			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+			opts = {},
+		},
 		{
 			"whoissethdaniel/mason-tool-installer.nvim",
 			config = false,
