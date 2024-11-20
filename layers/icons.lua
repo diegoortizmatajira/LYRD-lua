@@ -12,6 +12,7 @@ local L = {
 		project = "",
 		workspace = "",
 		report = "󰃯",
+		lightbulb = "󰌵",
 	},
 	apps = {
 		git = "󰊢",

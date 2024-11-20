@@ -113,21 +113,47 @@ function L.plugins(s)
 						},
 					},
 				},
-				update_focused_file = {
-					enable = true,
-					update_root = false,
-				},
 				disable_netrw = false,
-				update_cwd = false,
-				diagnostics = { enable = true, show_on_dirs = true },
+				hijack_directories = {
+					enable = true,
+					auto_open = true,
+				},
+				update_focused_file = {
+					enable = false,
+					update_root = {
+						enable = false,
+						ignore_list = {},
+					},
+					exclude = false,
+				},
+				diagnostics = {
+					icons = {
+						hint = icons.diagnostic.hint,
+						info = icons.diagnostic.info,
+						warning = icons.diagnostic.warning,
+						error = icons.diagnostic.error,
+					},
+				},
 				filters = {
-					dotfiles = true,
-					-- custom = { "^\\.git$", "^node_modules$", "^\\.cache$", "^bin$", "^obj$" },
+					enable = true,
+					git_ignored = true,
+					dotfiles = false,
+					git_clean = false,
+					no_buffer = false,
+					no_bookmark = false,
 					custom = { "^\\.git$", "^node_modules$", "^bin$", "^obj$" },
 					exclude = { ".gitignore" },
 				},
-				git = { ignore = true },
-				actions = { open_file = { quit_on_open = true } },
+				actions = {
+					open_file = {
+						quit_on_open = true,
+					},
+					change_dir = {
+						enable = true,
+						global = false,
+						restrict_above_cwd = false,
+					},
+				},
 				notify = {
 					threshold = vim.log.levels.WARN,
 					absolute_path = true,

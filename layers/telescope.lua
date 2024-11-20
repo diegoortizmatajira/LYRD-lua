@@ -26,6 +26,14 @@ function L.plugins(s)
 			dependencies = { "nvim-telescope/telescope.nvim" },
 		},
 		{
+			"benfowler/telescope-luasnip.nvim",
+			config = function()
+				local telescope = require("telescope")
+				telescope.load_extension("luasnip")
+			end,
+			dependencies = { "nvim-telescope/telescope.nvim" },
+		},
+		{
 			"nvim-telescope/telescope.nvim",
 			opts = {},
 			dependencies = {
@@ -63,6 +71,7 @@ function L.settings(s)
 		{ cmd.LYRDLSPFindImplementations, ":Telescope lsp_implementations" },
 		{ cmd.LYRDLSPFindDefinitions, ":Telescope lsp_definitions" },
 		{ cmd.LYRDResumeLastSearch, ":Telescope resume" },
+		{ cmd.LYRDCodeInsertSnippet, "Telescope luasnip" },
 	})
 end
 

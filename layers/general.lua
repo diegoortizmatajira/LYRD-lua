@@ -17,7 +17,6 @@ function L.settings(_)
 	vim.opt.cursorline = true -- Highlight the text line of the cursor.
 	vim.opt.diffopt:append({ "algorithm:histogram", "linematch:60" }) -- Enable linematch diff algorithm
 	vim.opt.expandtab = true -- Enable the use of space in tab.
-	vim.opt.fileencoding = "utf-8" -- File content encoding for the buffer.
 	vim.opt.fileformats = "unix,dos,mac"
 	vim.opt.fillchars = { eob = " " } -- Disable `~` on nonexistent lines.
 	vim.opt.foldcolumn = "1" -- Show foldcolumn in nvim 0.9+.
