@@ -14,13 +14,9 @@ function L.plugins(s)
 				"nvim-tree/nvim-web-devicons",
 			},
 			opts = {
-				sync_root_with_cwd = false,
-				respect_buf_cwd = false,
-				sort = {
-					sorter = "name",
-					folders_first = true,
-					files_first = false,
-				},
+				disable_netrw = false,
+				update_cwd = true,
+				git = { ignore = true },
 				view = {
 					adaptive_size = false,
 					centralize_selection = true,
@@ -113,7 +109,6 @@ function L.plugins(s)
 						},
 					},
 				},
-				disable_netrw = false,
 				hijack_directories = {
 					enable = true,
 					auto_open = true,
@@ -127,6 +122,8 @@ function L.plugins(s)
 					exclude = false,
 				},
 				diagnostics = {
+					enable = true,
+					show_on_dirs = true,
 					icons = {
 						hint = icons.diagnostic.hint,
 						info = icons.diagnostic.info,

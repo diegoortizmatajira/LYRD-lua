@@ -243,8 +243,9 @@ function L.plugins(s)
 					},
 					sources = cmp.config.sources({
 						{ name = "nvim_lsp" },
-						{ name = "buffer" },
+						{ name = "lazydev" },
 						{ name = "luasnip" },
+						{ name = "buffer" },
 						{ name = "cmp_tabnine" },
 						{ name = "path" },
 						{ name = "nvim_lsp_signature_help" },
