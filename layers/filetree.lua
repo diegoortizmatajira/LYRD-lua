@@ -16,7 +16,10 @@ function L.plugins(s)
 			opts = {
 				disable_netrw = false,
 				update_cwd = true,
-				git = { ignore = true },
+				git = {
+					enable = true,
+					ignore = true,
+				},
 				view = {
 					adaptive_size = false,
 					centralize_selection = true,
@@ -138,8 +141,17 @@ function L.plugins(s)
 					git_clean = false,
 					no_buffer = false,
 					no_bookmark = false,
-					custom = { "^\\.git$", "^node_modules$", "^bin$", "^obj$" },
-					exclude = { ".gitignore", ".env" },
+					custom = {
+						"^\\.git$",
+						"^node_modules$",
+						"^bin$",
+						"^obj$",
+					},
+					exclude = {
+						".gitignore",
+						".env",
+						".dockerignore",
+					},
 				},
 				actions = {
 					open_file = {
