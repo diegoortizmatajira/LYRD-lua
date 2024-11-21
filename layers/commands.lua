@@ -12,7 +12,10 @@ local function execute_command(s, commandName)
 	local execute_and_confirm = function(command_instance)
 		if type(command_instance) == "string" then
 			if command_instance ~= nil and command_instance ~= "" then
-				vim.cmd(command_instance)
+				local ok, res = pcall(vim.cmd, command_instance)
+				if not ok then
+					vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
+				end
 				return true
 			end
 		elseif type(command_instance) == "function" then
