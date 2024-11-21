@@ -230,6 +230,7 @@ function L.plugins(s)
 					{ filetype = "gitcommit" },
 					{ filetype = "help" },
 					{ filetype = "alpha" },
+					{ filetype = "http_response" },
 				},
 			},
 		},
