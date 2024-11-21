@@ -247,6 +247,7 @@ function L.plugins(s)
 						{ name = "luasnip" },
 						{ name = "buffer" },
 						{ name = "cmp_tabnine" },
+						{ name = "codeium" },
 						{ name = "path" },
 						{ name = "nvim_lsp_signature_help" },
 						{ name = "cmp-dbee" },
