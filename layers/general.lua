@@ -10,7 +10,7 @@ function L.settings(_)
 	vim.opt.backup = false
 	vim.opt.breakindent = true -- Wrap indent to match  line start.
 	vim.opt.clipboard = "unnamedplus" -- Connection to the system clipboard.
-	vim.opt.cmdheight = 0 -- Hide command line unless needed.
+	vim.opt.cmdheight = 1 -- Hide command line unless needed.
 	vim.opt.colorcolumn = "" -- Vertical column for visual hinting (string numeric value), default is "".
 	vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Options for insert mode completion.
 	vim.opt.copyindent = true -- Copy the previous indentation on autoindenting.
