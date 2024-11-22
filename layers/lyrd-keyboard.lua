@@ -64,6 +64,7 @@ function L.keybindings(s)
 		{ "n", { "h" }, cmd.LYRDBufferSplitH },
 		{ "n", { "v" }, cmd.LYRDBufferSplitV },
 		{ "n", { "z" }, cmd.LYRDBufferPrev },
+		{ "n", { "<Enter>" }, cmd.LYRDWindowZoom },
 		{ "n", { "x" }, cmd.LYRDBufferNext },
 		{ "n", { "a" }, cmd.LYRDLSPFindCodeActions },
 		{ "n", { "f" }, cmd.LYRDBufferFormat },

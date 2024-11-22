@@ -592,6 +592,9 @@ local L = {
 			desc = "Search and replace in files",
 			icon = icons.action.replace_in_files,
 		},
+		LYRDWindowZoom = {
+			desc = "Toggles zoom in the selected window",
+		},
 	},
 }
 

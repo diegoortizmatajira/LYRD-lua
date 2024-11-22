@@ -242,6 +242,12 @@ function L.plugins(s)
 				"nvim-lua/plenary.nvim",
 			},
 		},
+		{
+			"fasterius/simple-zoom.nvim",
+			opts = {
+				hide_tabline = false,
+			},
+		},
 	})
 end
 
@@ -296,6 +302,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferClose, ":Bdelete" },
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
+		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
 
 		{
 			cmd.LYRDReplace,
