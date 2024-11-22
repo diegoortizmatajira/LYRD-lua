@@ -33,17 +33,17 @@ function L.plugins(s)
 					-- Key bindings for managing completions in virtual text mode.
 					key_bindings = {
 						-- Accept the current completion.
-						accept = "<Right>",
+						accept = "<S-Right>",
 						-- Accept the next word.
-						accept_word = false,
+						accept_word = "<S-Left>",
 						-- Accept the next line.
-						accept_line = false,
+						accept_line =  "<S-End>",
 						-- Clear the virtual text.
-						clear = "<C-]>",
+						clear = "<S-Del>",
 						-- Cycle to the next completion.
-						next = "<M-]>",
+						next = "<S-Up>",
 						-- Cycle to the previous completion.
-						prev = "<M-[>",
+						prev = "<S-Down>",
 					},
 				},
 			},
