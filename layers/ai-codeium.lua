@@ -1,4 +1,5 @@
 local setup = require("LYRD.setup")
+local keyboard = require("LYRD.layers.lyrd-keyboard")
 
 local L = { name = "Codeium AI" }
 
@@ -33,17 +34,17 @@ function L.plugins(s)
 					-- Key bindings for managing completions in virtual text mode.
 					key_bindings = {
 						-- Accept the current completion.
-						accept = "<S-Right>",
+						accept = keyboard.ai_keys.accept,
 						-- Accept the next word.
-						accept_word = "<S-Left>",
+						accept_word = keyboard.ai_keys.accept_word,
 						-- Accept the next line.
-						accept_line =  "<S-End>",
+						accept_line = keyboard.ai_keys.accept_line,
 						-- Clear the virtual text.
-						clear = "<S-Del>",
+						clear = keyboard.ai_keys.clear,
 						-- Cycle to the next completion.
-						next = "<S-Up>",
+						next = keyboard.ai_keys.next,
 						-- Cycle to the previous completion.
-						prev = "<S-Down>",
+						prev = keyboard.ai_keys.prev,
 					},
 				},
 			},

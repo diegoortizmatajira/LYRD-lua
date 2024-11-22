@@ -1,4 +1,5 @@
 local setup = require("LYRD.setup")
+local keyboard = require("LYRD.layers.lyrd-keyboard")
 
 local L = { name = "TabNine" }
 
@@ -8,8 +9,8 @@ function L.plugins(s)
 			"codota/tabnine-nvim",
 			opts = {
 				disable_auto_comment = true,
-				accept_keymap = "<Right>",
-				dismiss_keymap = "<C-]>",
+				accept_keymap = keyboard.ai_keys.accept,
+				dismiss_keymap = keyboard.ai_keys.clear,
 				debounce_ms = 800,
 				suggestion_color = { gui = "#808080", cterm = 244 },
 				exclude_filetypes = { "TelescopePrompt", "NvimTree" },

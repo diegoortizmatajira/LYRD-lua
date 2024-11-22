@@ -3,7 +3,23 @@ local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "LYRD Keyboard" }
+local L = {
+	name = "LYRD Keyboard",
+	ai_keys = {
+		-- Accept the current completion.
+		accept = "<S-Right>",
+		-- Accept the next word.
+		accept_word = "<S-Left>",
+		-- Accept the next line.
+		accept_line = "<S-End>",
+		-- Clear the virtual text.
+		clear = "<S-Del>",
+		-- Cycle to the next completion.
+		next = "<S-Up>",
+		-- Cycle to the previous completion.
+		prev = "<S-Down>",
+	},
+}
 
 function L.keybindings(s)
 	mappings.keys(s, {
