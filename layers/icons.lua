@@ -13,6 +13,7 @@ local L = {
 		workspace = "",
 		report = "󰃯",
 		lightbulb = "󰌵",
+		zoom = "",
 	},
 	apps = {
 		git = "󰊢",

@@ -594,6 +594,7 @@ local L = {
 		},
 		LYRDWindowZoom = {
 			desc = "Toggles zoom in the selected window",
+			icon = icons.other.zoom,
 		},
 	},
 }
