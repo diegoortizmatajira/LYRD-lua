@@ -117,6 +117,20 @@ function L.plug_capabilities(plug_handler)
 	plugged_capabilities = plug_handler(plugged_capabilities)
 end
 
+function exclude_lsp_lines_from_filetypes(filetypes)
+	for _, filetype in ipairs(filetypes) do
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = filetype,
+			callback = function()
+				local previous = not require("lsp_lines").toggle()
+				if not previous then
+					require("lsp_lines").toggle()
+				end
+			end,
+		})
+	end
+end
+
 function L.plugins(s)
 	setup.plugin(s, {
 		{ "neovim/nvim-lspconfig" },
@@ -147,6 +161,10 @@ function L.plugins(s)
 		},
 		{
 			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+			config = function()
+				vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
+				exclude_lsp_lines_from_filetypes({ "lazy" })
+			end,
 			opts = {},
 		},
 		{
