@@ -45,6 +45,28 @@ function L.plugins(s)
 	})
 end
 
+function L.select_file_and_execute(callback, title, filter, working_directory)
+	local actions = require("telescope.actions")
+	local action_state = require("telescope.actions.state")
+	local builtin = require("telescope.builtin")
+	builtin.find_files({
+		prompt_title = title or "Select a file",
+		cwd = working_directory or vim.fn.getcwd(), -- Set the current working directory
+		find_command = { "find", ".", "-type", "f", "-name", filter or "*.*" },
+		attach_mappings = function(prompt_bufnr, map)
+			local function on_select()
+				local selected_entry = action_state.get_selected_entry()
+				local file_path = selected_entry.path or selected_entry.filename
+				actions.close(prompt_bufnr)
+				callback(file_path) -- Call the callback function with the selected file path
+			end
+			map("i", "<CR>", on_select)
+			map("n", "<CR>", on_select)
+			return true
+		end,
+	})
+end
+
 function L.settings(s)
 	commands.implement(s, "*", {
 		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
