@@ -127,6 +127,10 @@ local L = {
 		value = " ",
 		variable = " ",
 	},
+	http = {
+		send = "󱅡",
+		environment = "󰟭",
+	},
 	git = {
 		-- Actions
 		branch = "",

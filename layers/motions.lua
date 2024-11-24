@@ -19,7 +19,7 @@ function L.keybindings(s)
 	mappings.leader(s, {
 		{ { "n", "v" }, { "g" }, c("HopLine"), "Go to line" },
 		{ { "n", "v" }, { "w" }, c("HopWord"), "Go to word" },
-		{ { "n", "v" }, { "," }, c("HopPattern"), "Go to pattern" },
+		{ { "n", "v" }, { "/" }, c("HopPattern"), "Go to pattern" },
 	})
 	mappings.keys(s, {
 		{ { "n", "v" }, "s", "<cmd>HopChar1<CR>" },

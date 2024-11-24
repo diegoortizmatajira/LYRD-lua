@@ -596,6 +596,22 @@ local L = {
 			desc = "Toggles zoom in the selected window",
 			icon = icons.other.zoom,
 		},
+		LYRDHttpEnvironmentFileSelect = {
+			desc = "Select the http environment file",
+			icon = icons.http.environment,
+		},
+		LYRDHttpEnvironmentSelect = {
+			desc = "Select the http environment",
+			icon = icons.http.environment,
+		},
+		LYRDHttpSendRequest = {
+			desc = "Send http request",
+			icon = icons.http.send,
+		},
+		LYRDHttpSendAllRequests = {
+			desc = "Send all http request",
+			icon = icons.http.send,
+		},
 	},
 }
 

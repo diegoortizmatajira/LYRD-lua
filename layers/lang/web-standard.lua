@@ -1,11 +1,20 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Web Standard Languages" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"pangloss/vim-javascript",
+		{
+			"pangloss/vim-javascript",
+			init = function()
+				vim.g.javascript_plugin_jsdoc = 1
+				vim.g.javascript_plugin_ngdoc = 1
+				vim.g.javascript_plugin_flow = 1
+			end,
+		},
 		"b0o/schemastore.nvim",
 		{
 			"windwp/nvim-ts-autotag",
@@ -45,10 +54,15 @@ function L.preparation(_)
 	})
 end
 
-function L.settings(_)
-	vim.g.javascript_plugin_jsdoc = 1
-	vim.g.javascript_plugin_ngdoc = 1
-	vim.g.javascript_plugin_flow = 1
+function L.settings(s)
+	commands.implement(s, "*", {
+		{ cmd.LYRDHttpEnvironmentFileSelect, ":Telescope http_client http_env_files" },
+		{ cmd.LYRDHttpEnvironmentSelect, ":Telescope http_client http_envs" },
+	})
+	commands.implement(s, "http", {
+		{ cmd.LYRDHttpSendRequest, ":HttpRun" },
+		{ cmd.LYRDHttpSendAllRequests, ":HttpRunAll" },
+	})
 end
 
 function L.complete(_)

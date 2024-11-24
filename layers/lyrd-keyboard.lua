@@ -31,10 +31,6 @@ function L.keybindings(s)
 		{ "n", "<C-A-k>", cmd.LYRDPaneResizeUp },
 		{ "n", "<C-A-h>", cmd.LYRDPaneResizeLeft },
 		{ "n", "<C-A-l>", cmd.LYRDPaneResizeRight },
-		{ "n", "<Leader><Leader>j", cmd.LYRDPaneSwapDown },
-		{ "n", "<Leader><Leader>k", cmd.LYRDPaneSwapUp },
-		{ "n", "<Leader><Leader>h", cmd.LYRDPaneSwapLeft },
-		{ "n", "<Leader><Leader>l", cmd.LYRDPaneSwapRight },
 		{ "n", "q", "<nop>" },
 		{ "n", "s", "<nop>" },
 		{ "n", "<F2>", cmd.LYRDViewFileTree },
@@ -69,16 +65,16 @@ function L.keybindings(s)
 	})
 
 	mappings.leader_menu(s, {
+		{ { "h" }, "Http Requests" },
 		{ { "s" }, "Scratches" },
-		{ { "<Leader>" }, "Quick Combos" },
+		{ { "r" }, "Refactors" },
+		{ { "<Leader>" }, "Panels" },
 	})
 	mappings.leader(s, {
 		{ "n", { "<Space>" }, c("noh"), "Clear search highlights" },
 		{ "n", { "." }, cmd.LYRDViewHomePage },
 		{ "n", { "b" }, cmd.LYRDBreakLine },
 		{ "n", { "c" }, cmd.LYRDBufferClose },
-		{ "n", { "h" }, cmd.LYRDBufferSplitH },
-		{ "n", { "v" }, cmd.LYRDBufferSplitV },
 		{ "n", { "z" }, cmd.LYRDBufferPrev },
 		{ "n", { "<Enter>" }, cmd.LYRDWindowZoom },
 		{ "n", { "x" }, cmd.LYRDBufferNext },
@@ -94,6 +90,16 @@ function L.keybindings(s)
 		{ "n", { "r", "n" }, cmd.LYRDLSPRename },
 		{ "n", { "r", "f" }, cmd.LYRDCodeRefactor },
 		{ "v", { "r", "f" }, cmd.LYRDCodeRefactor },
+		{ "n", { "h", "h" }, cmd.LYRDHttpSendRequest },
+		{ "n", { "h", "a" }, cmd.LYRDHttpSendAllRequests },
+		{ "n", { "h", "e" }, cmd.LYRDHttpEnvironmentFileSelect },
+		{ "n", { "<Leader>", "j" }, cmd.LYRDPaneSwapDown },
+		{ "n", { "<Leader>", "k" }, cmd.LYRDPaneSwapUp },
+		{ "n", { "<Leader>", "h" }, cmd.LYRDPaneSwapLeft },
+		{ "n", { "<Leader>", "l" }, cmd.LYRDPaneSwapRight },
+		{ "n", { "<Leader>", "h" }, cmd.LYRDPaneSwapLeft },
+		{ "n", { "<Leader>", "r" }, cmd.LYRDBufferSplitH },
+		{ "n", { "<Leader>", "v" }, cmd.LYRDBufferSplitV },
 	})
 	mappings.space_menu(s, {
 		{ { "a" }, "Artificial Intelligence" },
@@ -107,6 +113,8 @@ function L.keybindings(s)
 		{ { "t" }, "Test" },
 		{ { "p" }, "Packages" },
 		{ { "q" }, "Quit" },
+		{ { "r" }, "Run" },
+		{ { "r", "h" }, "Http request" },
 		{ { "s" }, "Services" },
 		{ { "u" }, "User interface" },
 		{ { "v" }, "View" },
@@ -154,6 +162,11 @@ function L.keybindings(s)
 		{ "n", { "q", "." }, cmd.LYRDWindowClose },
 		{ "n", { "q", "q" }, cmd.LYRDWindowForceCloseAll },
 		{ "n", { "q", "Q" }, cmd.LYRDWindowForceCloseAll },
+		-- Run Menu
+		{ "n", { "r", "h", "f" }, cmd.LYRDHttpEnvironmentFileSelect },
+		{ "n", { "r", "h", "e" }, cmd.LYRDHttpEnvironmentSelect },
+		{ "n", { "r", "h", "s" }, cmd.LYRDHttpSendRequest },
+		{ "n", { "r", "h", "a" }, cmd.LYRDHttpSendAllRequests },
 		-- UI Menu
 		{ "n", { "u", "w" }, cmd.LYRDBufferToggleWrap },
 		-- Services
