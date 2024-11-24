@@ -161,8 +161,8 @@ function L.plugins(s)
 		},
 		{
 			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-			config = function()
-				vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
+			config = function(opts)
+				require("lsp_lines").setup(opts)
 				exclude_lsp_lines_from_filetypes({ "lazy" })
 			end,
 			opts = {},
