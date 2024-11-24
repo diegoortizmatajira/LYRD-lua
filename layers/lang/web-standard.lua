@@ -26,12 +26,16 @@ function L.plugins(s)
 			opts = {},
 		},
 		{
-			"heilgar/nvim-http-client",
+			"diegoortizmatajira/nvim-http-client",
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 			},
-			opts = {},
-			config = function(opts)
+			opts = {
+				default_env_file = ".env.json",
+				request_timeout = 30000, -- 30 seconds
+				create_keybindings = false,
+			},
+			config = function(_, opts)
 				require("http_client").setup(opts)
 				require("telescope").load_extension("http_client")
 			end,
