@@ -1,0 +1,13 @@
+services:
+  lyrd-nvim:
+    container_name: lyrd-nvim
+    build: .
+    volumes:
+      - nvim_config:/root/.config/nvim
+      - nvim_share:/root/.local/share/nvim
+      - ~/:/root/local/
+    stdin_open: true
+    tty: true
+volumes:
+  nvim_config:
+  nvim_share:
