@@ -30,6 +30,10 @@ function L.plugins(s)
 				},
 			},
 		},
+		{
+			"pogyomo/submode.nvim",
+			lazy = true,
+		},
 	})
 end
 

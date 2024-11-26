@@ -22,15 +22,35 @@ local L = {
 }
 
 function L.keybindings(s)
+	local submode = require("submode")
+
+	submode.create("PanelResize", {
+		mode = "n",
+		enter = "<Leader><Leader>r",
+		leave = { "q", "<ESC>" },
+		default = function(register)
+			register("j", c("LYRDPaneResizeDown"))
+			register("k", c("LYRDPaneResizeUp"))
+			register("h", c("LYRDPaneResizeLeft"))
+			register("l", c("LYRDPaneResizeRight"))
+		end,
+	})
+	submode.create("PanelSwap", {
+		mode = "n",
+		enter = "<Leader><Leader>s",
+		leave = { "q", "<ESC>" },
+		default = function(register)
+			register("j", c("LYRDPaneSwapDown"))
+			register("k", c("LYRDPaneSwapUp"))
+			register("h", c("LYRDPaneSwapLeft"))
+			register("l", c("LYRDPaneSwapRight"))
+		end,
+	})
 	mappings.keys(s, {
 		{ "n", "<C-j>", cmd.LYRDPaneNavigateDown },
 		{ "n", "<C-k>", cmd.LYRDPaneNavigateUp },
 		{ "n", "<C-h>", cmd.LYRDPaneNavigateLeft },
 		{ "n", "<C-l>", cmd.LYRDPaneNavigateRight },
-		{ "n", "<C-A-j>", cmd.LYRDPaneResizeDown },
-		{ "n", "<C-A-k>", cmd.LYRDPaneResizeUp },
-		{ "n", "<C-A-h>", cmd.LYRDPaneResizeLeft },
-		{ "n", "<C-A-l>", cmd.LYRDPaneResizeRight },
 		{ "n", "q", "<nop>" },
 		{ "n", "s", "<nop>" },
 		{ "n", "<F2>", cmd.LYRDViewFileTree },
@@ -69,6 +89,8 @@ function L.keybindings(s)
 		{ { "s" }, "Scratches" },
 		{ { "r" }, "Refactors" },
 		{ { "<Leader>" }, "Panels" },
+		{ { "<Leader>", "r" }, "Resize" },
+		{ { "<Leader>", "s" }, "Swap" },
 	})
 	mappings.leader(s, {
 		{ "n", { "<Space>" }, c("noh"), "Clear search highlights" },
@@ -93,16 +115,7 @@ function L.keybindings(s)
 		{ "n", { "h", "h" }, cmd.LYRDHttpSendRequest },
 		{ "n", { "h", "a" }, cmd.LYRDHttpSendAllRequests },
 		{ "n", { "h", "e" }, cmd.LYRDHttpEnvironmentFileSelect },
-		{ "n", { "<Leader>", "j" }, cmd.LYRDPaneSwapDown },
-		{ "n", { "<Leader>", "k" }, cmd.LYRDPaneSwapUp },
-		{ "n", { "<Leader>", "h" }, cmd.LYRDPaneSwapLeft },
-		{ "n", { "<Leader>", "l" }, cmd.LYRDPaneSwapRight },
-		{ "n", { "<Leader>", "h" }, cmd.LYRDPaneSwapLeft },
-		{ "n", { "<Leader>", "u" }, cmd.LYRDPaneResizeDown },
-		{ "n", { "<Leader>", "i" }, cmd.LYRDPaneResizeUp },
-		{ "n", { "<Leader>", "y" }, cmd.LYRDPaneResizeLeft },
-		{ "n", { "<Leader>", "o" }, cmd.LYRDPaneResizeRight },
-		{ "n", { "<Leader>", "r" }, cmd.LYRDBufferSplitH },
+		{ "n", { "<Leader>", "h" }, cmd.LYRDBufferSplitH },
 		{ "n", { "<Leader>", "v" }, cmd.LYRDBufferSplitV },
 	})
 	mappings.space_menu(s, {
