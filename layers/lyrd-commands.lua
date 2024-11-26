@@ -526,51 +526,66 @@ local L = {
 		LYRDPaneNavigateLeft = {
 			default = "<C-w>h",
 			desc = "Navigate to panel left",
+			icon = icons.arrow.left,
 		},
 		LYRDPaneNavigateDown = {
 			default = "<C-w>j",
 			desc = "Navigate to panel below",
+			icon = icons.arrow.down,
 		},
 		LYRDPaneNavigateUp = {
 			default = "<C-w>k",
 			desc = "Navigate to panel up",
+			icon = icons.arrow.up,
 		},
 		LYRDPaneNavigateRight = {
 			default = "<C-w>l",
 			desc = "Navigate to panel right",
+			icon = icons.arrow.right,
 		},
 		LYRDPaneResizeLeft = {
 			desc = "Resize to panel left",
+			icon = icons.arrow.collapse_left,
 		},
 		LYRDPaneResizeDown = {
 			desc = "Resize to panel below",
+			icon = icons.arrow.collapse_down,
 		},
 		LYRDPaneResizeUp = {
 			desc = "Resize to panel up",
+			icon = icons.arrow.collapse_up,
 		},
 		LYRDPaneResizeRight = {
 			desc = "Resize to panel right",
+			icon = icons.arrow.collapse_right,
 		},
 		LYRDPaneSwapLeft = {
 			desc = "Swap to panel left",
+			icon = icons.arrow.expand_left,
 		},
 		LYRDPaneSwapDown = {
 			desc = "Swap to panel below",
+			icon = icons.arrow.expand_down,
 		},
 		LYRDPaneSwapUp = {
 			desc = "Swap to panel up",
+			icon = icons.arrow.expand_up,
 		},
 		LYRDPaneSwapRight = {
 			desc = "Swap to panel right",
+			icon = icons.arrow.expand_right,
 		},
 		LYRDDatabaseUI = {
 			desc = "Database UI",
+			icon = icons.other.database,
 		},
 		LYRDContainersUI = {
 			desc = "Running containers UI",
+			icon = icons.other.docker,
 		},
 		LYRDKubernetesUI = {
 			desc = "Kubernetes UI",
+			icon = icons.other.kubernetes,
 		},
 		LYRDScratchNew = {
 			desc = "Create a new scratch",
@@ -594,7 +609,7 @@ local L = {
 		},
 		LYRDWindowZoom = {
 			desc = "Toggles zoom in the selected window",
-			icon = icons.other.zoom,
+			icon = icons.other.expand,
 		},
 		LYRDHttpEnvironmentFileSelect = {
 			desc = "Select the http environment file",

@@ -98,6 +98,10 @@ function L.keybindings(s)
 		{ "n", { "<Leader>", "h" }, cmd.LYRDPaneSwapLeft },
 		{ "n", { "<Leader>", "l" }, cmd.LYRDPaneSwapRight },
 		{ "n", { "<Leader>", "h" }, cmd.LYRDPaneSwapLeft },
+		{ "n", { "<Leader>", "u" }, cmd.LYRDPaneResizeDown },
+		{ "n", { "<Leader>", "i" }, cmd.LYRDPaneResizeUp },
+		{ "n", { "<Leader>", "y" }, cmd.LYRDPaneResizeLeft },
+		{ "n", { "<Leader>", "o" }, cmd.LYRDPaneResizeRight },
 		{ "n", { "<Leader>", "r" }, cmd.LYRDBufferSplitH },
 		{ "n", { "<Leader>", "v" }, cmd.LYRDBufferSplitV },
 	})
