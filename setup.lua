@@ -1,5 +1,10 @@
 local utils = require("LYRD.utils")
 
+local setup = {
+	configs_path = utils.get_lyrd_path() .. "/configs",
+	runtime_path = utils.get_lyrd_path() .. "/runtime",
+}
+
 if vim.g.LYRD_Settings == nil then
 	vim.g.LYRD_Settings = { Loaded_layers = {} }
 end
@@ -41,6 +46,10 @@ local function load_plugins(s, loaded_layers)
 		defaults = { lazy = false },
 		performance = {
 			rtp = { -- Disable unnecessary nvim features to speed up startup.
+
+				paths = {
+					setup.runtime_path, -- Add LYRD runtime path
+				},
 				disabled_plugins = {
 					"tohtml",
 					"gzip",
@@ -83,32 +92,31 @@ local function load_complete(s, loaded_layers)
 	end
 end
 
-return {
-	configs_path = utils.get_lyrd_path() .. "/configs",
-	load = function(s)
-		s.plugins = {
-		}
-		local loaded_layers = {}
-		local vim_layers = {}
-		for _, layer in ipairs(s.layers) do
-			local L = require(layer)
-			table.insert(loaded_layers, L)
-			table.insert(vim_layers, L.name)
-		end
-		-- Updates LYRD_Settings in vim global
-		local g_var = vim.g.LYRD_Settings
-		g_var.Loaded_layers = vim_layers
-		vim.g.LYRD_Settings = g_var
-		-- Process each layer
-		load_plugins(s, loaded_layers)
-		load_settings(s, loaded_layers)
-		load_complete(s, loaded_layers)
-	end,
+function setup.load(s)
+	s.plugins = {}
+	local loaded_layers = {}
+	local vim_layers = {}
+	for _, layer in ipairs(s.layers) do
+		local L = require(layer)
+		table.insert(loaded_layers, L)
+		table.insert(vim_layers, L.name)
+	end
+	-- Updates LYRD_Settings in vim global
+	local g_var = vim.g.LYRD_Settings
+	g_var.Loaded_layers = vim_layers
+	vim.g.LYRD_Settings = g_var
 
-	-- Enables a plugin with its name and options
-	plugin = function(s, plugin_list)
-		for _, p in ipairs(plugin_list) do
-			table.insert(s.plugins, p)
-		end
-	end,
-}
+	-- Process each layer
+	load_plugins(s, loaded_layers)
+	load_settings(s, loaded_layers)
+	load_complete(s, loaded_layers)
+end
+
+-- Enables a plugin with its name and options
+function setup.plugin(s, plugin_list)
+	for _, p in ipairs(plugin_list) do
+		table.insert(s.plugins, p)
+	end
+end
+
+return setup
