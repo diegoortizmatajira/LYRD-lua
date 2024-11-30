@@ -232,6 +232,7 @@ function L.plugins(s)
 					{ filetype = "http_response" },
 					{ filetype = "lazy" },
 					{ filetype = "neotest-summary" },
+					{ filetype = "trouble" },
 				},
 			},
 		},
