@@ -337,6 +337,17 @@ function L.null_ls_register(custom_register)
 	table.insert(null_ls_registered, custom_register)
 end
 
+function L.register_code_actions(filetypes, fn)
+	local null_ls = require("null-ls")
+	L.null_ls_register({
+		method = null_ls.methods.CODE_ACTION,
+		filetypes = filetypes,
+		generator = {
+			fn = fn,
+		},
+	})
+end
+
 function L.complete(_) end
 
 function L.format_handler(server_name)
