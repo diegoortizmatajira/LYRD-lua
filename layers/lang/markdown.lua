@@ -59,19 +59,31 @@ function L.preparation(_)
 	-- Registers code actions in NULL LS
 	local lsp = require("LYRD.layers.lsp")
 	lsp.register_code_actions({ "markdown" }, function(_)
+		local result = {}
+		-- Checks if the cursor is in a table
+		local node = vim.treesitter.get_node()
+		local is_table = node ~= nil and node:type():match("^pipe_table")
 		local edit = require("table-nvim.edit")
-		return {
-			{ title = "Insert table", action = edit.insert_table },
-			{ title = "Insert row up", action = edit.insert_row_up },
-			{ title = "Insert row down", action = edit.insert_row_down },
-			{ title = "Insert column left", action = edit.insert_column_left },
-			{ title = "Insert column right", action = edit.insert_column_right },
-			{ title = "Move row up", action = edit.move_row_up },
-			{ title = "Move row down", action = edit.move_row_down },
-			{ title = "Move column left", action = edit.move_column_left },
-			{ title = "Move column right", action = edit.move_column_right },
-			{ title = "Delete current column", action = edit.delete_current_column },
-		}
+		if is_table then
+			local table_actions = {
+				{ title = "Insert row up", action = edit.insert_row_up },
+				{ title = "Insert row down", action = edit.insert_row_down },
+				{ title = "Insert column left", action = edit.insert_column_left },
+				{ title = "Insert column right", action = edit.insert_column_right },
+				{ title = "Move row up", action = edit.move_row_up },
+				{ title = "Move row down", action = edit.move_row_down },
+				{ title = "Move column left", action = edit.move_column_left },
+				{ title = "Move column right", action = edit.move_column_right },
+				{ title = "Delete current column", action = edit.delete_current_column },
+			}
+			for _, value in ipairs(table_actions) do
+				table.insert(result, value)
+			end
+		else
+			table.insert(result, { title = "Insert table", action = edit.insert_table })
+		end
+
+		return result
 	end)
 end
 
