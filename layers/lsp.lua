@@ -176,6 +176,29 @@ function L.plugins(s)
 			"folke/trouble.nvim",
 			opts = {},
 		},
+		{
+			"kosayoda/nvim-lightbulb",
+			opts = {
+				action_kinds = { -- show only for relevant code actions.
+					"quickfix",
+				},
+				ignore = {
+					ft = { "lua", "markdown" }, -- ignore filetypes with bad code actions.
+				},
+				autocmd = {
+					enabled = true,
+					updatetime = 100,
+				},
+				sign = { enabled = true },
+				virtual_text = {
+					enabled = false,
+					text = icons.other.lightbulb,
+				},
+			},
+			config = function(_, opts)
+				require("nvim-lightbulb").setup(opts)
+			end,
+		},
 	})
 end
 
