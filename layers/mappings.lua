@@ -45,7 +45,12 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	else
 		lead = ""
 	end
-	local key_str = lead .. table.concat(keys)
+	local key_str = lead
+	if type(keys) == "string" then
+		key_str = key_str .. keys
+	else
+		key_str = key_str .. table.concat(keys)
+	end
 	-- Adds the documentation to the native nvim keymap
 	local command_str = command
 	local desc_str = entry.desc
@@ -72,7 +77,12 @@ end
 
 local function map_menu(lead, keys, description)
 	local wk = require("which-key")
-	local key_str = lead .. table.concat(keys, "")
+	local key_str = lead
+	if type(keys) == "string" then
+		key_str = key_str .. keys
+	else
+		key_str = key_str .. table.concat(keys)
+	end
 	wk.add({
 		{ key_str, group = "[" .. description .. "]" },
 	})
@@ -80,7 +90,12 @@ end
 
 local function map_ignored(lead, keys)
 	local wk = require("which-key")
-	local key_str = lead .. table.concat(keys, "")
+	local key_str = lead
+	if type(keys) == "string" then
+		key_str = key_str .. keys
+	else
+		key_str = key_str .. table.concat(keys)
+	end
 	wk.add({
 		{ key_str, hidden = true },
 	})
@@ -122,14 +137,6 @@ function L.space(_, mappings, options)
 	end
 end
 
--- Creates a cascading menu for a sequence of keys starting with <Leader>
--- @param mappings contains the mapping definition as an array of ({key1, key2 ...}, description)
-function L.leader_menu(_, mappings)
-	for _, mapping in ipairs(mappings) do
-		map_menu("<Leader>", mapping[1], mapping[2])
-	end
-end
-
 -- Creates a cascading menu for a sequence of keys starting with <Space>
 -- @param mappings contains the mapping definition as an array of ({key1, key2 ...}, description)
 function L.space_menu(_, mappings)
@@ -148,6 +155,50 @@ end
 -- @param keys is an array of keys to be ignored in the menu
 function L.leader_ignore_menu(_, keys)
 	map_ignored("<Leader>", keys)
+end
+
+function L.create_menu(prefix, items)
+	for _, item in ipairs(items) do
+		if #item == 4 and item[4] == "header" then
+			-- Map a menu header and its child items
+			local key, title, sub_items, _ = unpack(item)
+			map_menu(prefix, key, title)
+			L.create_menu(prefix .. key, sub_items)
+		elseif #item == 4 and item[4] == "submode" then
+			-- Creates a submode
+			local key, title, sub_items, _ = unpack(item)
+			map_menu(prefix, key, title)
+			local submode = require("submode")
+			local c = require("LYRD.layers.commands").command_shortcut
+			submode.create("submode_" .. prefix .. key, {
+				mode = "n",
+				enter = prefix .. key,
+				leave = { "q", "<ESC>" },
+				default = function(register)
+					for _, mode_item in ipairs(sub_items) do
+						local submode_key, command = unpack(mode_item)
+						if type(command) == "string" then
+							register(submode_key, command)
+						else
+							register(submode_key, c(command.name))
+						end
+					end
+				end,
+			})
+		elseif #item == 2 then
+			-- Map a menu item with its sequence of keys
+			local key, command = unpack(item)
+			map_key("n", nil, prefix .. key, command)
+		end
+	end
+end
+
+function L.menu_header(key, title, items)
+	return { key, title, items, "header" }
+end
+
+function L.submode_header(key, title, items)
+	return { key, title, items, "submode" }
 end
 
 return L

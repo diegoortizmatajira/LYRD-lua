@@ -635,6 +635,11 @@ local L = {
 			desc = "Apply next favorite theme",
 			icon = icons.other.palette,
 		},
+		LYRDClearSearchHighlights = {
+			default = ":noh",
+			desc = "Clear search highlights",
+			icon = icons.other.palette,
+		},
 	},
 }
 
