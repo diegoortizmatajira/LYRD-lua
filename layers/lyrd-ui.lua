@@ -93,7 +93,6 @@ function L.plugins(s)
 		{
 			"nvim-lualine/lualine.nvim",
 			opts = {
-				options = { theme = "gruvbox" },
 				sections = {
 					lualine_c = {
 						"filename",
@@ -105,7 +104,6 @@ function L.plugins(s)
 				},
 			},
 			dependencies = {
-				"ellisonleao/gruvbox.nvim",
 				"nvim-tree/nvim-web-devicons",
 			},
 		},
@@ -116,11 +114,17 @@ function L.plugins(s)
 				contrast = "hard",
 				dim_inactive = true,
 			},
-			config = function(opts)
-				require("gruvbox").setup(opts)
-				vim.o.background = "dark" -- or "light" for light mode
-				vim.cmd([[colorscheme gruvbox]])
-			end,
+		},
+		{
+			"rebelot/kanagawa.nvim",
+			priority = 1000,
+			opts = {},
+		},
+		{
+			"catppuccin/nvim",
+			name = "catppuccin",
+			priority = 1000,
+			opts = {},
 		},
 		{
 			"goolord/alpha-nvim",
@@ -253,6 +257,8 @@ function L.plugins(s)
 end
 
 function L.settings(s)
+	-- vim.cmd.colorscheme("gruvbox")
+	vim.cmd.colorscheme("catppuccin")
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {

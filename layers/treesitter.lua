@@ -37,7 +37,7 @@ function L.plugins(s)
 				-- prompt for function parameters
 				prompt_func_param_type = { go = true, cpp = true, c = true, java = true },
 			},
-			config = function(opts)
+			config = function(_,opts)
 				require("refactoring").setup(opts)
 				require("telescope").load_extension("refactoring")
 			end,

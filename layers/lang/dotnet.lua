@@ -36,7 +36,6 @@ function L.plugins(s)
 			"seblj/roslyn.nvim",
 			ft = "cs",
 			opts = {
-				["csharp|background_analysis"] = {},
 				-- your configuration comes here; leave empty for default settings
 			},
 		},
@@ -53,44 +52,49 @@ function L.plugins(s)
 		-- 	},
 		-- 	ft = dotnet_languages,
 		-- },
-		-- {
-		-- 	"iabdelkareem/csharp.nvim",
-		-- 	dependencies = {
-		-- 		"williamboman/mason.nvim", -- Required, automatically installs omnisharp
-		-- 		"mfussenegger/nvim-dap",
-		-- 		"tastyep/structlog.nvim", -- optional, but highly recommended for debugging
-		-- 	},
-		-- 	opts = {
-		-- 		lsp = {
-		-- 			-- Sets if you want to use omnisharp as your LSP
-		-- 			omnisharp = {
-		-- 				-- When set to false, csharp.nvim won't launch omnisharp automatically.
-		-- 				enable = false,
-		-- 			},
-		-- 			-- Sets if you want to use roslyn as your LSP
-		-- 			roslyn = {
-		-- 				-- When set to true, csharp.nvim will launch roslyn automatically.
-		-- 				enable = false,
-		-- 				-- Path to the roslyn LSP see 'Roslyn LSP Specific Prerequisites' above.
-		-- 				cmd_path = nil,
-		-- 			},
-		-- 			-- The capabilities to pass to the omnisharp server
-		-- 			capabilities = nil,
-		-- 			-- on_attach function that'll be called when the LSP is attached to a buffer
-		-- 			on_attach = nil,
-		-- 		},
-		-- 		logging = {
-		-- 			-- The minimum log level.
-		-- 			level = "INFO",
-		-- 		},
-		-- 		dap = {
-		-- 			-- When set, csharp.nvim won't launch install and debugger automatically. Instead, it'll use the debug adapter specified.
-		-- 			--- @type string?
-		-- 			adapter_name = nil,
-		-- 		},
-		-- 	},
-		-- 	ft = dotnet_languages,
-		-- },
+		{
+			"iabdelkareem/csharp.nvim",
+			dependencies = {
+				"williamboman/mason.nvim", -- Required, automatically installs omnisharp
+				"mfussenegger/nvim-dap",
+				"tastyep/structlog.nvim", -- optional, but highly recommended for debugging
+			},
+			opts = {
+				lsp = {
+					-- Sets if you want to use omnisharp as your LSP
+					omnisharp = {
+						-- When set to false, csharp.nvim won't launch omnisharp automatically.
+						enable = false,
+					},
+					-- Sets if you want to use roslyn as your LSP
+					roslyn = {
+						-- When set to true, csharp.nvim will launch roslyn automatically.
+						enable = true,
+						-- Path to the roslyn LSP see 'Roslyn LSP Specific Prerequisites' above.
+						cmd_path = nil,
+					},
+					-- The capabilities to pass to the omnisharp server
+					capabilities = nil,
+					-- on_attach function that'll be called when the LSP is attached to a buffer
+					on_attach = nil,
+				},
+				logging = {
+					-- The minimum log level.
+					level = "INFO",
+				},
+				dap = {
+					-- When set, csharp.nvim won't launch install and debugger automatically. Instead, it'll use the debug adapter specified.
+					--- @type string?
+					adapter_name = nil,
+				},
+			},
+			config = function(_, opts)
+				opts.lsp.roslyn.cmd_path = require("mason-registry").get_package("roslyn"):get_install_path()
+					.. "/roslyn"
+				require("csharp").setup(opts)
+			end,
+			ft = dotnet_languages,
+		},
 		-- {
 		-- 	"gustaveikaas/easy-dotnet.nvim",
 		-- 	dependencies = {
