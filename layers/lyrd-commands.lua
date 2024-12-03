@@ -627,6 +627,14 @@ local L = {
 			desc = "Send all http request",
 			icon = icons.http.send,
 		},
+		LYRDApplyCurrentTheme = {
+			desc = "Apply current theme",
+			icon = icons.other.palette,
+		},
+		LYRDApplyNextTheme = {
+			desc = "Apply next favorite theme",
+			icon = icons.other.palette,
+		},
 	},
 }
 

@@ -3,7 +3,16 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
-local L = { name = "LYRD UI" }
+local L = {
+	name = "LYRD UI",
+	favorite_themes = {
+		"gruvbox",
+		"catppuccin",
+		"duskfox",
+	},
+	selected_theme = 1,
+}
+
 local ext_app_term = nil -- Store the terminal object
 
 local function combine_ascii_art(base, new, from_line)
@@ -43,6 +52,20 @@ local function header()
 		[[   ░   ░      ░     ░ ░   ░       ░ ░ ░ ▒  ░      ░       ░  ]],
 	}
 	return combine_ascii_art(image, title, 3)
+end
+
+function L.apply_theme()
+	local theme = L.favorite_themes[L.selected_theme]
+	vim.cmd.colorscheme(theme)
+end
+
+-- Rotates through favorite themes
+function L.next_theme()
+	L.selected_theme = L.selected_theme + 1
+	if L.selected_theme > #L.favorite_themes then
+		L.selected_theme = 1
+	end
+	L.apply_theme()
 end
 
 function L.plugins(s)
@@ -123,6 +146,11 @@ function L.plugins(s)
 		{
 			"catppuccin/nvim",
 			name = "catppuccin",
+			priority = 1000,
+			opts = {},
+		},
+		{
+			"EdenEast/nightfox.nvim",
 			priority = 1000,
 			opts = {},
 		},
@@ -257,8 +285,8 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	-- vim.cmd.colorscheme("gruvbox")
-	vim.cmd.colorscheme("catppuccin")
+	L.apply_theme()
+
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {
@@ -323,6 +351,8 @@ function L.settings(s)
 				require("spectre").toggle()
 			end,
 		},
+		{ cmd.LYRDApplyCurrentTheme, L.apply_theme },
+		{ cmd.LYRDApplyNextTheme, L.next_theme },
 	})
 	commands.implement(s, "alpha", {
 		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },

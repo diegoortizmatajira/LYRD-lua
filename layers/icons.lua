@@ -18,6 +18,7 @@ local L = {
 		docker = "󰡨",
 		kubernetes = "󱃾",
 		database = "",
+		palette = " ",
 	},
 	apps = {
 		git = "󰊢",

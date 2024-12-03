@@ -186,6 +186,8 @@ function L.keybindings(s)
 		{ "n", { "r", "h", "a" }, cmd.LYRDHttpSendAllRequests },
 		-- UI Menu
 		{ "n", { "u", "w" }, cmd.LYRDBufferToggleWrap },
+		{ "n", { "u", "T" }, cmd.LYRDApplyCurrentTheme },
+		{ "n", { "u", "t" }, cmd.LYRDApplyNextTheme },
 		-- Services
 		{ "n", { "s", "f" }, cmd.LYRDViewFileExplorer },
 		{ "n", { "s", "d" }, cmd.LYRDDatabaseUI },
