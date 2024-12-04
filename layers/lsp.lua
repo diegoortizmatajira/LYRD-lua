@@ -117,7 +117,7 @@ function L.plug_capabilities(plug_handler)
 	plugged_capabilities = plug_handler(plugged_capabilities)
 end
 
-function exclude_lsp_lines_from_filetypes(filetypes)
+local function exclude_lsp_lines_from_filetypes(filetypes)
 	for _, filetype in ipairs(filetypes) do
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = filetype,
