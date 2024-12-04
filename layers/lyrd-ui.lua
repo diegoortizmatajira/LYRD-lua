@@ -9,6 +9,7 @@ local L = {
 		"gruvbox",
 		"catppuccin",
 		"duskfox",
+		"bamboo",
 	},
 	selected_theme = 1,
 }
@@ -151,6 +152,11 @@ function L.plugins(s)
 		},
 		{
 			"EdenEast/nightfox.nvim",
+			priority = 1000,
+			opts = {},
+		},
+		{
+			"ribru17/bamboo.nvim",
 			priority = 1000,
 			opts = {},
 		},
