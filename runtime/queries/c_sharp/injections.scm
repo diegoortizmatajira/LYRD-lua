@@ -1,6 +1,4 @@
-((comment) @injection.content
-  (#set! injection.language "comment"))
-
+;; extends
 
 (attribute
     name: (identifier) @constant
