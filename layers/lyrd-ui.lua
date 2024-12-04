@@ -142,7 +142,7 @@ function L.plugins(s)
 			priority = 1000,
 			opts = {
 				contrast = "hard",
-				dim_inactive = true,
+				dim_inactive = false,
 			},
 		},
 		{
@@ -277,6 +277,7 @@ function L.plugins(s)
 					{ filetype = "http_response" },
 					{ filetype = "lazy" },
 					{ filetype = "neotest-summary" },
+					{ filetype = "tsplayground" },
 					{ filetype = "trouble" },
 				},
 			},

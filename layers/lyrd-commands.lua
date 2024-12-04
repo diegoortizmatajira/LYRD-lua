@@ -644,6 +644,10 @@ local L = {
 			desc = "View code outline",
 			icon = icons.code.outline,
 		},
+		LYRDViewTreeSitterPlayground = {
+			desc = "TreeSitter playground",
+			icon = icons.code.outline,
+		},
 	},
 }
 
