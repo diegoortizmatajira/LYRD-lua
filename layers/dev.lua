@@ -1,5 +1,7 @@
 local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Development" }
 
@@ -43,6 +45,17 @@ function L.plugins(s)
 			"joosepalviste/nvim-ts-context-commentstring",
 			opts = {
 				enable_autocmd = false,
+			},
+		},
+		{
+			"stevearc/aerial.nvim",
+			opts = {
+				close_on_select = true,
+			},
+			-- Optional dependencies
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				"nvim-tree/nvim-web-devicons",
 			},
 		},
 		{ "norcalli/nvim-colorizer.lua" },
@@ -112,6 +125,13 @@ function L.plugins(s)
 		{
 			"rest-nvim/rest.nvim",
 		},
+	})
+end
+
+function L.settings(s)
+	commands.implement(s, "*", {
+		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
+		{ cmd.LYRDViewFileExplorer, require("tfm").open },
 	})
 end
 

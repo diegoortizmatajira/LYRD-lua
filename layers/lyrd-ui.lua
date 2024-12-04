@@ -104,6 +104,12 @@ function L.plugins(s)
 							padding = 1,
 						},
 						{
+							filetype = "aerial",
+							text = "Outline",
+							highlight = "PanelHeading",
+							padding = 1,
+						},
+						{
 							filetype = "DiffviewFiles",
 							text = "Diff View",
 							highlight = "PanelHeading",
@@ -263,6 +269,7 @@ function L.plugins(s)
 				close_with_their_window = {
 					{ filename = "fugitive:" },
 					{ filetype = "NvimTree" },
+					{ filetype = "alpha" },
 					{ filetype = "alpha" },
 					{ filetype = "fugitive" },
 					{ filetype = "gitcommit" },

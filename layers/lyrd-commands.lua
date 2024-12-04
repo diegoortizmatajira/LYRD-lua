@@ -640,6 +640,10 @@ local L = {
 			desc = "Clear search highlights",
 			icon = icons.other.palette,
 		},
+		LYRDViewCodeOutline = {
+			desc = "View code outline",
+			icon = icons.code.outline,
+		},
 	},
 }
 
