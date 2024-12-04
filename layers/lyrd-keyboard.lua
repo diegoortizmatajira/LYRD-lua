@@ -95,7 +95,6 @@ function L.keybindings(s)
 			{ "h", cmd.LYRDBufferSplitH },
 			{ "v", cmd.LYRDBufferSplitV },
 			{ "o", cmd.LYRDViewCodeOutline },
-
 			{ "f", cmd.LYRDViewFileTree },
 			{ "e", cmd.LYRDViewFileExplorer },
 			{ "l", cmd.LYRDViewLocationList },
