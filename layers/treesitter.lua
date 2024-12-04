@@ -66,6 +66,7 @@ function L.settings(s)
 			"gomod",
 			"gosum",
 			"gotmpl",
+			"regex"
 		},
 		highlight = {
 			enable = true,
