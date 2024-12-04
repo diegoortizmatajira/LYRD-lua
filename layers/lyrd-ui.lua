@@ -104,6 +104,12 @@ function L.plugins(s)
 							padding = 1,
 						},
 						{
+							filetype = "tsplayground",
+							text = "Treesitter Playground",
+							highlight = "PanelHeading",
+							padding = 1,
+						},
+						{
 							filetype = "aerial",
 							text = "Outline",
 							highlight = "PanelHeading",

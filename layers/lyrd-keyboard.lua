@@ -99,7 +99,7 @@ function L.keybindings(s)
 			{ "f", cmd.LYRDViewFileTree },
 			{ "e", cmd.LYRDViewFileExplorer },
 			{ "l", cmd.LYRDViewLocationList },
-			{ "r", cmd.LYRDViewRegisters },
+			{ "c", cmd.LYRDViewRegisters },
 			{ "y", cmd.LYRDViewYankList },
 			{ "p", cmd.LYRDViewTreeSitterPlayground },
 			{ "q", cmd.LYRDViewQuickFixList },
