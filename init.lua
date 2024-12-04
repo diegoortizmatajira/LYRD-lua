@@ -5,8 +5,8 @@ _G.LYRD_setup = {
 		"LYRD.layers.general",
 		"LYRD.layers.neovide", -- Neovide settings
 		"LYRD.layers.icons",
-		"LYRD.layers.mappings",
 		"LYRD.layers.commands",
+		"LYRD.layers.mappings",
 		"LYRD.layers.lyrd-commands",
 		"LYRD.layers.lyrd-ui",
 		"LYRD.layers.lyrd-keyboard",

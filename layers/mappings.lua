@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
+local c = require("LYRD.layers.commands").command_shortcut
 
 local L = { name = "Mappings" }
 
@@ -57,7 +58,7 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	local icon_str = nil
 	-- If the command is a Command object, then uses the command name and description
 	if type(command) ~= "string" then
-		command_str = "<cmd>" .. command.name .. "<CR>"
+		command_str = c(command.name)
 		desc_str = command.desc
 		if type(command.icon) == "string" then
 			icon_str = icons.icon(command.icon)
@@ -126,7 +127,6 @@ function L.create_menu(prefix, items)
 			local key, title, sub_items, _ = unpack(item)
 			map_menu(prefix .. key, title)
 			local submode = require("submode")
-			local c = require("LYRD.layers.commands").command_shortcut
 			submode.create("submode_" .. prefix .. key, {
 				mode = "n",
 				enter = prefix .. key,
