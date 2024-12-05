@@ -39,62 +39,6 @@ function L.plugins(s)
                 -- your configuration comes here; leave empty for default settings
             },
         },
-        -- {
-        -- 	"moaidhathot/dotnet.nvim",
-        -- 	cmd = "DotnetUI",
-        -- 	opts = {
-        -- 		bootstrap = {
-        -- 			auto_bootstrap = true, -- Automatically call "bootstrap" when creating a new file, adding a namespace and a class to the files
-        -- 		},
-        -- 		project_selection = {
-        -- 			path_display = "filename_first", -- Determines how file paths are displayed. All of Telescope's path_display options are supported
-        -- 		},
-        -- 	},
-        -- 	ft = dotnet_languages,
-        -- },
-        -- {
-        --     "iabdelkareem/csharp.nvim",
-        --     dependencies = {
-        --         "williamboman/mason.nvim", -- Required, automatically installs omnisharp
-        --         "mfussenegger/nvim-dap",
-        --         "tastyep/structlog.nvim", -- optional, but highly recommended for debugging
-        --     },
-        --     opts = {
-        --         lsp = {
-        --             -- Sets if you want to use omnisharp as your LSP
-        --             omnisharp = {
-        --                 -- When set to false, csharp.nvim won't launch omnisharp automatically.
-        --                 enable = false,
-        --             },
-        --             -- Sets if you want to use roslyn as your LSP
-        --             roslyn = {
-        --                 -- When set to true, csharp.nvim will launch roslyn automatically.
-        --                 enable = true,
-        --                 -- Path to the roslyn LSP see 'Roslyn LSP Specific Prerequisites' above.
-        --                 cmd_path = nil,
-        --             },
-        --             -- The capabilities to pass to the omnisharp server
-        --             capabilities = nil,
-        --             -- on_attach function that'll be called when the LSP is attached to a buffer
-        --             on_attach = nil,
-        --         },
-        --         logging = {
-        --             -- The minimum log level.
-        --             level = "INFO",
-        --         },
-        --         dap = {
-        --             -- When set, csharp.nvim won't launch install and debugger automatically. Instead, it'll use the debug adapter specified.
-        --             --- @type string?
-        --             adapter_name = nil,
-        --         },
-        --     },
-        --     config = function(_, opts)
-        --         opts.lsp.roslyn.cmd_path = require("mason-registry").get_package("roslyn"):get_install_path()
-        --             .. "/roslyn"
-        --         require("csharp").setup(opts)
-        --     end,
-        --     ft = dotnet_languages,
-        -- },
         {
             "gustaveikaas/easy-dotnet.nvim",
             dependencies = {
@@ -121,9 +65,8 @@ function L.plugins(s)
                         package = icons.dotnet.package,
                     },
                 },
-                ---@param action "test" | "restore" | "build" | "run"
                 terminal = function(path, action)
-                    local cmd_definitions = {
+                    local dotnet_commands = {
                         run = function()
                             return "dotnet run --project " .. path
                         end,
@@ -131,15 +74,61 @@ function L.plugins(s)
                             return "dotnet test " .. path
                         end,
                         restore = function()
-                            return "dotnet restore " .. path
+                            return "dotnet restore --configfile " .. os.getenv("NUGET_CONFIG") .. " " .. path
                         end,
                         build = function()
-                            return "dotnet build " .. path
+                            return "dotnet build  " .. path
                         end,
                     }
-                    local command = cmd_definitions[action]() .. "\r"
-                    vim.cmd("vsplit")
-                    vim.cmd("term " .. command)
+
+                    local function filter_warnings(line)
+                        if not line:find("warning") then
+                            return line:match("^(.+)%((%d+),(%d+)%)%: (.+)$")
+                        end
+                    end
+
+                    local overseer_components = {
+                        {
+                            "on_complete_dispose",
+                            timeout = 30,
+                        },
+                        "default",
+                        {
+                            "unique",
+                            replace = true,
+                        },
+                        {
+                            "on_output_parse",
+                            parser = {
+                                diagnostics = {
+                                    { "extract", filter_warnings, "filename", "lnum", "col", "text" },
+                                },
+                            },
+                        },
+                        {
+                            "on_result_diagnostics_quickfix",
+                            open = true,
+                            close = true,
+                        },
+                    }
+
+                    if action == "run" or action == "test" then
+                        table.insert(overseer_components, { "restart_on_save" })
+                    end
+
+                    local command = dotnet_commands[action]()
+                    local task = require("overseer").new_task({
+                        strategy = {
+                            "toggleterm",
+                            use_shell = false,
+                            direction = "horizontal",
+                            open_on_start = true,
+                        },
+                        name = action,
+                        cmd = command,
+                        components = overseer_components,
+                    })
+                    task:start()
                 end,
                 secrets = {
                     path = get_secret_path,
@@ -170,12 +159,7 @@ function L.settings(s)
         -- { cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
         -- { cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
         { cmd.LYRDBufferFormat, lsp.format_handler("roslyn") },
-        {
-            cmd.LYRDCodeBuild,
-            function()
-                require("csharp").run_project()
-            end,
-        },
+        { cmd.LYRDCodeBuild,    "Dotnet build" },
     })
 
     -- DEBUG ADAPTER

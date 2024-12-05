@@ -16,6 +16,24 @@ local L = {
         "tokyonight-storm",
     },
     selected_theme = 1,
+    special_filetypes = {
+        -- You can add entries here to mark special filetypes that have a header in their
+        -- sidebar or that should close with their window (unless the value true is provided)
+        --{ filetype = "",   title = "" , keep_window = true },
+        { filetype = "DiffviewFiles",   title = "Diff View" },
+        { filetype = "NvimTree",        title = "Explorer" },
+        { filetype = "aerial",          title = "Outline" },
+        { filetype = "alpha" },
+        { filetype = "fugitive" },
+        { filetype = "gitcommit" },
+        { filetype = "help" },
+        { filetype = "http_response" },
+        { filetype = "lazy" },
+        { filetype = "neotest-summary", title = "Tests" },
+        { filetype = "toggleterm" },
+        { filetype = "trouble" },
+        { filetype = "tsplayground",    title = "Treesitter Playground" },
+    },
 }
 
 local ext_app_term = nil -- Store the terminal object
@@ -83,6 +101,35 @@ function L.notify(message, level, options)
     notify(message, level, options)
 end
 
+-- Gets the list of buffers that will have a title in their sidebar
+local function get_buffer_offsets()
+    local result = {}
+    for _, value in pairs(L.special_filetypes) do
+        if value.title then
+            table.insert(result, {
+                filetype = value.filetype,
+                text = value.title,
+                highlight = "PanelHeading",
+                padding = 1,
+            })
+        end
+    end
+    return result
+end
+
+-- Gets the list of buffers that will be closed when the buffer is closed
+local function get_buffers_that_close_with_their_window()
+    local result = {
+        { filename = "fugitive:" },
+    }
+    for _, value in pairs(L.special_filetypes) do
+        if not value.keep_window then
+            table.insert(result, { filetype = value.filetype })
+        end
+    end
+    return result
+end
+
 function L.plugins(s)
     setup.plugin(s, {
         {
@@ -110,38 +157,7 @@ function L.plugins(s)
                     numbers = "none",
                     show_buffer_close_icons = false,
                     separator_style = "slope",
-                    offsets = {
-                        {
-                            filetype = "NvimTree",
-                            text = "Explorer",
-                            highlight = "PanelHeading",
-                            padding = 1,
-                        },
-                        {
-                            filetype = "neotest-summary",
-                            text = "Tests",
-                            highlight = "PanelHeading",
-                            padding = 1,
-                        },
-                        {
-                            filetype = "tsplayground",
-                            text = "Treesitter Playground",
-                            highlight = "PanelHeading",
-                            padding = 1,
-                        },
-                        {
-                            filetype = "aerial",
-                            text = "Outline",
-                            highlight = "PanelHeading",
-                            padding = 1,
-                        },
-                        {
-                            filetype = "DiffviewFiles",
-                            text = "Diff View",
-                            highlight = "PanelHeading",
-                            padding = 1,
-                        },
-                    },
+                    offsets = get_buffer_offsets(),
                 },
             },
             dependencies = "nvim-tree/nvim-web-devicons",
@@ -288,7 +304,6 @@ function L.plugins(s)
             opts = {
                 use_telescope = true,
                 file_picker = "telescope",
-
                 filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
             },
             event = "VeryLazy",
@@ -297,20 +312,7 @@ function L.plugins(s)
             "diegoortizmatajira/bufdelete.nvim",
             opts = {
                 debug = false,
-                close_with_their_window = {
-                    { filename = "fugitive:" },
-                    { filetype = "NvimTree" },
-                    { filetype = "alpha" },
-                    { filetype = "alpha" },
-                    { filetype = "fugitive" },
-                    { filetype = "gitcommit" },
-                    { filetype = "help" },
-                    { filetype = "http_response" },
-                    { filetype = "lazy" },
-                    { filetype = "neotest-summary" },
-                    { filetype = "tsplayground" },
-                    { filetype = "trouble" },
-                },
+                close_with_their_window = get_buffers_that_close_with_their_window(),
             },
         },
         {
