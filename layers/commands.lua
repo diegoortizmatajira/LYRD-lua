@@ -25,10 +25,13 @@ end
 ---@param s LYRD.command_settings
 ---@param commandName string
 local function execute_command(s, commandName)
+	local function safe_cmd(command)
+		return vim.cmd(command)
+	end
 	local execute_and_confirm = function(command_instance)
 		if type(command_instance) == "string" then
 			if command_instance ~= nil and command_instance ~= "" then
-				local ok, res = pcall(vim.cmd, command_instance)
+				local ok, res = pcall(safe_cmd, command_instance)
 				if not ok then
 					vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
 				end
