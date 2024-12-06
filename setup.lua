@@ -1,23 +1,29 @@
 local utils = require("LYRD.utils")
 
----@alias LYRD.setup.Settings { layers:string[], plugins?:string[]}
+---@class LYRD.setup.Settings
+---@field layers string[] contains the list of layers provided in init script
+---@field loaded_layers string[] contains the list of names of the loaded layers
+---@field plugins LazySpec contains the list of plugins loaded
+---@field commands table<string, table<string, string|function>> contains the list of implemented commands
 
 ---@class LYRD.setup.Module
 ---@field name string
----@field plugins? nil|fun(s):nil
----@field preparation? nil|fun(s):nil
----@field settings? nil|fun(s):nil
----@field keybindings? nil|fun(s):nil
----@field complete? nil|fun(s):nil
+---@field plugins? nil|fun(s: LYRD.setup.Settings):nil
+---@field preparation? nil|fun(s: LYRD.setup.Settings):nil
+---@field settings? nil|fun(s: LYRD.setup.Settings):nil
+---@field keybindings? nil|fun(s: LYRD.setup.Settings):nil
+---@field complete? nil|fun(s: LYRD.setup.Settings):nil
 
 local setup = {
 	configs_path = utils.get_lyrd_path() .. "/configs",
 	runtime_path = utils.get_lyrd_path() .. "/runtime",
+	---@type LYRD.setup.Settings
+	config = {
+		commands = {},
+		plugins = {},
+		loaded_layers = {},
+	},
 }
-
-if vim.g.LYRD_Settings == nil then
-	vim.g.LYRD_Settings = { Loaded_layers = {} }
-end
 
 local function bootstrap_lazy()
 	-- Bootstrap lazy.nvim
@@ -114,27 +120,24 @@ end
 --- Calls the sequence of methods to initialize for each layer
 --- @param s LYRD.setup.Settings settings object
 function setup.load(s)
-	s.plugins = {}
+	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
 	---@type LYRD.setup.Module[]
-	local loaded_layers = {}
-	local vim_layers = {}
-	for _, layer in ipairs(s.layers) do
+	local loaded_modules = {}
+	for _, layer in ipairs(setup.config.layers) do
 		local L = require(layer)
-		table.insert(loaded_layers, L)
-		table.insert(vim_layers, L.name)
+		table.insert(loaded_modules, L)
+		table.insert(setup.config.loaded_layers, L.name)
 	end
-	-- Updates LYRD_Settings in vim global
-	local g_var = vim.g.LYRD_Settings
-	g_var.Loaded_layers = vim_layers
-	vim.g.LYRD_Settings = g_var
 
 	-- Process each layer
-	load_plugins(s, loaded_layers)
-	load_settings(s, loaded_layers)
-	load_complete(s, loaded_layers)
+	load_plugins(setup.config, loaded_modules)
+	load_settings(setup.config, loaded_modules)
+	load_complete(setup.config, loaded_modules)
 end
 
 -- Enables a plugin with its name and options
+--- @param s LYRD.setup.Settings settings object
+--- @param plugin_list LazySpec[]
 function setup.plugin(s, plugin_list)
 	for _, p in ipairs(plugin_list) do
 		table.insert(s.plugins, p)

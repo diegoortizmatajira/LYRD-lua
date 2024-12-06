@@ -1,5 +1,7 @@
 local L = { name = "Commands" }
 
+local setup = require("LYRD.setup")
+
 ---@class LYRD.commands.command
 ---@field name? string|nil
 ---@field desc string
@@ -22,7 +24,7 @@ local function register_implementation(s, filetype, commandName, implementation)
 	if s.commands[commandName] == nil then
 		s.commands[commandName] = {}
 	end
-	LYRD_setup.commands[commandName][filetype] = implementation
+	setup.config.commands[commandName][filetype] = implementation
 end
 
 ---Executes a command depending on the type
