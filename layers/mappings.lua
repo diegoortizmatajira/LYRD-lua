@@ -7,16 +7,18 @@ local c = require("LYRD.layers.commands").command_shortcut
 
 local L = { name = "Mappings" }
 
----@class LYRD.KB.standardMapping
+---@class LYRD.mappings.standard_mapping
 ---@field [1] string contains the key
----@field [2] LYRD.command contains the command
+---@field [2] LYRD.commands.command contains the command
 
----@class LYRD.KB.headerMapping
+---@class LYRD.mappings.header_mapping
 ---@field [1] string contains the key
 ---@field [2] string title for the menu
----@field [3] table<LYRD.KB.headerMapping|LYRD.KB.standardMapping>
+---@field [3] LYRD.mappings.mapping[]
 ---@field [4] "header" | "submode" type of header
 
+---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
+---
 function L.plugins(s)
 	setup.plugin(s, {
 		{
@@ -55,7 +57,7 @@ end
 ---@param mode string
 ---@param lead string|nil
 ---@param keys string|table
----@param command string|LYRD.command
+---@param command string|LYRD.commands.command
 ---@param documentation? string
 ---@param options? table
 local function map_key(mode, lead, keys, command, documentation, options)
@@ -103,7 +105,7 @@ local function map_menu(keys, title)
 end
 
 ---Creates a set of keybindings
----@param mappings table<{[1]: string, [2]:string, [3]:string|function, [4]: table}> contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {[1]: string, [2]:string, [3]:string|function, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(_, mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
@@ -140,7 +142,7 @@ end
 
 --- Creates a menu
 --- @param prefix string
---- @param items table<LYRD.KB.standardMapping|LYRD.KB.headerMapping>
+--- @param items LYRD.mappings.mapping[]
 function L.create_menu(prefix, items)
 	for _, item in ipairs(items) do
 		if #item == 4 and item[4] == "header" then
@@ -195,8 +197,8 @@ end
 --- Creates a menu header
 --- @param key string
 --- @param title string
---- @param items table<LYRD.KB.standardMapping|LYRD.KB.headerMapping>
---- @return LYRD.KB.headerMapping
+--- @param items LYRD.mappings.mapping[]
+--- @return LYRD.mappings.header_mapping
 function L.menu_header(key, title, items)
 	return { key, title, items, "header" }
 end
@@ -204,8 +206,8 @@ end
 --- Creates a submode header
 --- @param key string
 --- @param title string
---- @param items table<LYRD.KB.standardMapping>
---- @return LYRD.KB.headerMapping
+--- @param items LYRD.mappings.mapping[]
+--- @return LYRD.mappings.header_mapping
 function L.submode_header(key, title, items)
 	return { key, title, items, "submode" }
 end

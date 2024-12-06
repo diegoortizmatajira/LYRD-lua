@@ -106,9 +106,6 @@ function L.git_flow_finish(what)
 end
 
 function L.settings(s)
-	commands.implement(s, "fugitive", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Git" },

@@ -1,16 +1,20 @@
 local L = { name = "Commands" }
 
----@class LYRD.command
+---@class LYRD.commands.command
 ---@field name? string|nil
 ---@field desc string
 ---@field default? string|function|nil
 ---@field icon string|nil
 
----@class LYRD.command_settings
+---@class LYRD.commands.settings
 ---@field commands table<string, table<string, string|function>>
 
+---@class LYRD.commands.implementation
+---@field [1] LYRD.commands.command
+---@field [2] string|function
+
 ---Registers a command implementation for an specific filetype
----@param s LYRD.command_settings
+---@param s LYRD.commands.settings
 ---@param filetype string
 ---@param commandName string
 ---@param implementation string|function
@@ -22,16 +26,22 @@ local function register_implementation(s, filetype, commandName, implementation)
 end
 
 ---Executes a command depending on the type
----@param s LYRD.command_settings
+---@param s LYRD.commands.settings
 ---@param commandName string
 local function execute_command(s, commandName)
+	---Executes a command
+	---@param command string
 	local function safe_cmd(command)
 		return vim.cmd(command)
 	end
+
+	---Executes a command instance
+	---@param command_instance string|function
+	---@return boolean
 	local execute_and_confirm = function(command_instance)
 		if type(command_instance) == "string" then
 			if command_instance ~= nil and command_instance ~= "" then
-				local ok, res = pcall(safe_cmd, command_instance)
+				local ok, _ = pcall(safe_cmd, command_instance)
 				if not ok then
 					vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
 				end
@@ -43,6 +53,7 @@ local function execute_command(s, commandName)
 		end
 		return false
 	end
+
 	-- Looks for the current file type command implementation
 	local cmd = s.commands[commandName][vim.bo.filetype]
 	if execute_and_confirm(cmd) then
@@ -53,7 +64,10 @@ local function execute_command(s, commandName)
 	if execute_and_confirm(cmd) then
 		return
 	end
-	print(string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype))
+	require("LYRD.layers.lyrd-ui").notify(
+		string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype),
+		"warning"
+	)
 end
 
 local function show_unimplemented_commands(s)
@@ -88,9 +102,9 @@ function L.settings(s)
 end
 
 ---Registers a set of commands for a specific filetype
----@param s LYRD.command_settings
+---@param s LYRD.commands.settings
 ---@param filetype string
----@param commands table<{[1]: LYRD.command, [2]:string|function}>
+---@param commands LYRD.commands.implementation[]
 function L.implement(s, filetype, commands)
 	for _, command_info in ipairs(commands) do
 		local cmd, implementation = unpack(command_info)
@@ -102,7 +116,7 @@ function L.implement(s, filetype, commands)
 end
 
 ---Registers a set of commands
----@param commands table<string, LYRD.command>
+---@param commands table<string, LYRD.commands.command>
 function L.register(s, commands)
 	for command_name, definition in pairs(commands) do
 		definition.name = command_name

@@ -132,12 +132,6 @@ function L.settings(s)
 			},
 		},
 	})
-	commands.implement(s, "tsplayground", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
-	commands.implement(s, "query", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
 	commands.implement(s, "*", {
 		{ cmd.LYRDCodeRefactor, require("refactoring").select_refactor },
 		{ cmd.LYRDViewTreeSitterPlayground, ":TSPlaygroundToggle" },

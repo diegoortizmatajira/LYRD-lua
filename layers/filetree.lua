@@ -210,9 +210,6 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	commands.implement(s, "NvimTree", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
 	commands.implement(s, "*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },

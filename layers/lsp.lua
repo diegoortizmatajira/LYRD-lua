@@ -161,8 +161,8 @@ function L.plugins(s)
 		},
 		{
 			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-			config = function(opts)
-				require("lsp_lines").setup(opts)
+			config = function()
+				require("lsp_lines").setup()
 				exclude_lsp_lines_from_filetypes({ "lazy" })
 			end,
 			opts = {},
@@ -258,7 +258,7 @@ function L.settings(s)
 	end
 
 	require("mason-null-ls").setup({
-		ensure_installed = nil,
+		ensure_installed = {},
 		automatic_installation = true,
 	})
 	local signs = {
