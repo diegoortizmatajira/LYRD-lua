@@ -38,6 +38,13 @@ function L.plugins(s)
 	})
 end
 
+---Creates a keybinding
+---@param mode string
+---@param lead string
+---@param keys string|table
+---@param command string|table
+---@param documentation? string
+---@param options? table
 local function map_key(mode, lead, keys, command, documentation, options)
 	local wk = require("which-key")
 	local entry = options or { noremap = true, silent = true }
@@ -148,6 +155,22 @@ function L.create_menu(prefix, items)
 			map_key("n", nil, prefix .. key, command)
 		end
 	end
+end
+
+function L.create_filetype_menu()
+	-- Create an autocommand group
+	local group = vim.api.nvim_create_augroup("PythonMappings", { clear = true })
+	-- Define the autocommand
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "python",
+		group = group,
+		callback = function()
+			-- Set key mappings for the buffer
+			local opts = { noremap = true, silent = true }
+			vim.api.nvim_buf_set_keymap(0, "n", "<leader>r", ":!python3 %<CR>", opts)
+			vim.api.nvim_buf_set_keymap(0, "n", "<leader>t", ":!pytest %<CR>", opts)
+		end,
+	})
 end
 
 function L.menu_header(key, title, items)

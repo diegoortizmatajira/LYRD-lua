@@ -4,16 +4,22 @@ local setup = require("LYRD.setup")
 local L = { name = "Lua Language" }
 
 function L.plugins(s)
+	local library_list = {
+		-- See the configuration section for more details
+		-- Load luvit types when the `vim.uv` word is found
+		{ path = "luvit-meta/library", words = { "vim%.uv" } },
+	}
+	-- Adds all the loaded layers
+	for _, lib in ipairs(s.layers) do
+		table.insert(library_list, lib)
+	end
+
 	setup.plugin(s, {
 		{
 			"folke/lazydev.nvim",
 			ft = "lua", -- only load on lua files
 			opts = {
-				library = {
-					-- See the configuration section for more details
-					-- Load luvit types when the `vim.uv` word is found
-					{ path = "luvit-meta/library", words = { "vim%.uv" } },
-				},
+				library = library_list,
 			},
 		},
 		{ "Bilal2453/luvit-meta", lazy = true },

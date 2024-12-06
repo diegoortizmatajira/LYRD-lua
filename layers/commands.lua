@@ -1,5 +1,19 @@
 local L = { name = "Commands" }
 
+---@class LYRD.command
+---@field name? string|nil
+---@field desc string
+---@field default? string|function|nil
+---@field icon string|nil
+
+---@class LYRD.command_settings
+---@field commands table<string, table<string, string|function>>
+
+---Registers a command implementation for an specific filetype
+---@param s LYRD.command_settings
+---@param filetype string
+---@param commandName string
+---@param implementation string|function
 local function register_implementation(s, filetype, commandName, implementation)
 	if s.commands[commandName] == nil then
 		s.commands[commandName] = {}
@@ -7,8 +21,10 @@ local function register_implementation(s, filetype, commandName, implementation)
 	LYRD_setup.commands[commandName][filetype] = implementation
 end
 
+---Executes a command depending on the type
+---@param s LYRD.command_settings
+---@param commandName string
 local function execute_command(s, commandName)
-	-- Provides the execution logic depending on the type
 	local execute_and_confirm = function(command_instance)
 		if type(command_instance) == "string" then
 			if command_instance ~= nil and command_instance ~= "" then
@@ -68,15 +84,22 @@ function L.settings(s)
 	end
 end
 
+---Registers a set of commands for a specific filetype
+---@param s LYRD.command_settings
+---@param filetype string
+---@param commands table<{[1]: LYRD.command, [2]:string|function}>
 function L.implement(s, filetype, commands)
 	for _, command_info in ipairs(commands) do
-		if command_info[1] == nil then
-			error("The command to be implemented does not exist. It's implementation would be: " .. command_info[2])
+		local cmd, implementation = unpack(command_info)
+		if cmd == nil then
+			error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
 		end
-		register_implementation(s, filetype, command_info[1].name, command_info[2])
+		register_implementation(s, filetype, cmd.name, implementation)
 	end
 end
 
+---Registers a set of commands
+---@param commands table<string, LYRD.command>
 function L.register(s, commands)
 	for command_name, definition in pairs(commands) do
 		definition.name = command_name

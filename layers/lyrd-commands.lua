@@ -3,6 +3,8 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD Commands",
+
+	---@type table<string, LYRD.command>
 	cmd = {
 		LYRDAIAssistant = {
 			desc = "Open AI Assistant",
