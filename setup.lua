@@ -1,5 +1,15 @@
 local utils = require("LYRD.utils")
 
+---@alias LYRD.setup.Settings { layers:string[], plugins?:string[]}
+
+---@class LYRD.setup.Module
+---@field name string
+---@field plugins? nil|fun(s):nil
+---@field preparation? nil|fun(s):nil
+---@field settings? nil|fun(s):nil
+---@field keybindings? nil|fun(s):nil
+---@field complete? nil|fun(s):nil
+
 local setup = {
 	configs_path = utils.get_lyrd_path() .. "/configs",
 	runtime_path = utils.get_lyrd_path() .. "/runtime",
@@ -28,12 +38,15 @@ local function bootstrap_lazy()
 	vim.opt.rtp:prepend(lazypath)
 end
 
+--- Calls the plugin method for each layer
+---@param s LYRD.setup.Settings settings object
+---@param loaded_layers  LYRD.setup.Module[]
 local function load_plugins(s, loaded_layers)
 	bootstrap_lazy()
 
 	-- Calls the plugin method for each layer
 	for _, layer in ipairs(loaded_layers) do
-		if layer.plugins ~= nil then
+		if layer.plugins then
 			layer.plugins(s)
 		end
 	end
@@ -66,6 +79,9 @@ local function load_plugins(s, loaded_layers)
 	})
 end
 
+--- Calls the sequence of methods to initialize for each layer
+---@param s LYRD.setup.Settings settings object
+---@param loaded_layers  LYRD.setup.Module[]
 local function load_settings(s, loaded_layers)
 	for _, layer in ipairs(loaded_layers) do
 		if layer.preparation ~= nil then
@@ -84,6 +100,9 @@ local function load_settings(s, loaded_layers)
 	end
 end
 
+---Calls the complete method for each layer
+---@param s LYRD.setup.Settings settings object
+---@param loaded_layers  LYRD.setup.Module[]
 local function load_complete(s, loaded_layers)
 	for _, layer in ipairs(loaded_layers) do
 		if layer.complete ~= nil then
@@ -92,8 +111,11 @@ local function load_complete(s, loaded_layers)
 	end
 end
 
+--- Calls the sequence of methods to initialize for each layer
+--- @param s LYRD.setup.Settings settings object
 function setup.load(s)
 	s.plugins = {}
+	---@type LYRD.setup.Module[]
 	local loaded_layers = {}
 	local vim_layers = {}
 	for _, layer in ipairs(s.layers) do

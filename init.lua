@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 
+---@type LYRD.setup.Settings
 _G.LYRD_setup = {
     layers = {
         "LYRD.layers.general",
