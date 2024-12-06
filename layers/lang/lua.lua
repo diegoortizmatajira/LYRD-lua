@@ -3,29 +3,14 @@ local setup = require("LYRD.setup")
 
 local L = {
 	name = "Lua Language",
-	library_list = {
-		-- See the configuration section for more details
-		-- Load luvit types when the `vim.uv` word is found
-		{ path = "luvit-meta/library", words = { "vim%.uv" } },
-		vim.fn.expand("$VIMRUNTIME/lua"),
-		vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
-		"layers",
-		"layers/lang",
-	},
 }
 
 function L.plugins(s)
-	-- -- Adds all the loaded layers
-	-- for _, lib in ipairs(s.layers) do
-	-- 	table.insert(library_list, lib)
-	-- end
 	setup.plugin(s, {
 		{
 			"folke/lazydev.nvim",
 			ft = "lua", -- only load on lua files
-			opts = {
-				library = L.library_list,
-			},
+			opts = {},
 			init = function()
 				vim.g.lazydev_enabled = true
 			end,
@@ -63,10 +48,6 @@ function L.complete(_)
 				diagnostics = {
 					-- Get the language server to recognize the `vim` global
 					globals = { "vim", "awesome", "client", "mouse" },
-				},
-				workspace = {
-					-- Make the server aware of Neovim runtime files
-					library = L.library_list,
 				},
 				-- Do not send telemetry data containing a randomized but unique identifier
 				telemetry = { enable = false },
