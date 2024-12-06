@@ -1,26 +1,34 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 
-local L = { name = "Lua Language" }
-
-function L.plugins(s)
-	local library_list = {
+local L = {
+	name = "Lua Language",
+	library_list = {
 		-- See the configuration section for more details
 		-- Load luvit types when the `vim.uv` word is found
 		{ path = "luvit-meta/library", words = { "vim%.uv" } },
-	}
-	-- Adds all the loaded layers
-	for _, lib in ipairs(s.layers) do
-		table.insert(library_list, lib)
-	end
+		vim.fn.expand("$VIMRUNTIME/lua"),
+		vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
+		"layers",
+		"layers/lang",
+	},
+}
 
+function L.plugins(s)
+	-- -- Adds all the loaded layers
+	-- for _, lib in ipairs(s.layers) do
+	-- 	table.insert(library_list, lib)
+	-- end
 	setup.plugin(s, {
 		{
 			"folke/lazydev.nvim",
 			ft = "lua", -- only load on lua files
 			opts = {
-				library = library_list,
+				library = L.library_list,
 			},
+			init = function()
+				vim.g.lazydev_enabled = true
+			end,
 		},
 		{ "Bilal2453/luvit-meta", lazy = true },
 	})
@@ -58,10 +66,7 @@ function L.complete(_)
 				},
 				workspace = {
 					-- Make the server aware of Neovim runtime files
-					library = {
-						[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-						[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-					},
+					library = L.library_list,
 				},
 				-- Do not send telemetry data containing a randomized but unique identifier
 				telemetry = { enable = false },
