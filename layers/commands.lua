@@ -66,9 +66,9 @@ local function execute_command(s, commandName)
 	if execute_and_confirm(cmd) then
 		return
 	end
-	require("LYRD.layers.lyrd-ui").notify(
+	vim.notify(
 		string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype),
-		"warning"
+		vim.log.levels.WARN
 	)
 end
 

@@ -22,6 +22,7 @@ local setup = {
 		commands = {},
 		plugins = {},
 		loaded_layers = {},
+		layers = {},
 	},
 }
 

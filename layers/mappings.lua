@@ -18,7 +18,7 @@ local L = { name = "Mappings" }
 ---@field [4] "header" | "submode" type of header
 
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
----
+
 function L.plugins(s)
 	setup.plugin(s, {
 		{
@@ -200,6 +200,7 @@ end
 --- @param items LYRD.mappings.mapping[]
 --- @return LYRD.mappings.header_mapping
 function L.menu_header(key, title, items)
+	---@type LYRD.mappings.header_mapping
 	return { key, title, items, "header" }
 end
 
@@ -209,6 +210,7 @@ end
 --- @param items LYRD.mappings.mapping[]
 --- @return LYRD.mappings.header_mapping
 function L.submode_header(key, title, items)
+	---@type LYRD.mappings.header_mapping
 	return { key, title, items, "submode" }
 end
 
