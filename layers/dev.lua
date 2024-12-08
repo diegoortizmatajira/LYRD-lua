@@ -15,9 +15,7 @@ function L.plugins(s)
 		{
 			"numtostr/comment.nvim",
 			opts = {
-				hook = function()
-					require("ts_context_commentstring").update_commentstring()
-				end,
+				pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
 			},
 			dependencies = {
 				"joosepalviste/nvim-ts-context-commentstring",
