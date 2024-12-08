@@ -171,6 +171,11 @@ function L.plugins(s)
 					lsp_doc_border = false, -- add a border to hover docs and signature help
 				},
 			},
+			config = function(_, opts)
+				require("noice").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("noice")
+			end,
 			dependencies = {
 				-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 				"MunifTanjim/nui.nvim",
@@ -297,7 +302,7 @@ function L.plugins(s)
 					highlights = { border = "Normal", background = "Normal" },
 				},
 			},
-			config = function(opts)
+			config = function(_, opts)
 				require("workspaces").setup(opts)
 				local telescope = require("telescope")
 				telescope.load_extension("workspaces")
@@ -331,7 +336,7 @@ function L.plugins(s)
 					buftype = { "nofile", "terminal" },
 				},
 			},
-			config = function(opts)
+			config = function(_, opts)
 				require("project_nvim").setup(opts)
 				local telescope = require("telescope")
 				telescope.load_extension("ui-select")
