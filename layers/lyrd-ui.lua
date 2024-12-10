@@ -156,6 +156,10 @@ function L.plugins(s)
 					},
 				},
 				lsp = {
+					progress = {
+						enabled = false, -- disables a lot of distracting text from popping up when done
+						format_done = "",
+					},
 					-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
 					override = {
 						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
