@@ -31,6 +31,7 @@ local L = {
 		{ filetype = "aerial", title = "Outline" },
 		{ filetype = "alpha" },
 		{ filetype = "fugitive" },
+		{ filetype = "qf" },
 		{ filetype = "gitcommit" },
 		{ filetype = "help" },
 		{ filetype = "http_response" },

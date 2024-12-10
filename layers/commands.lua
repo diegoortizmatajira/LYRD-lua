@@ -133,4 +133,11 @@ function L.command_shortcut(commandName)
 	return "<cmd>" .. commandName .. "<CR>"
 end
 
+function L.handler(callback, ...)
+	local params = { ... }
+	return function()
+		callback(unpack(params))
+	end
+end
+
 return L

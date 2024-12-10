@@ -23,6 +23,7 @@ local L = {
         workspace = " ",
         wrench = " ",
         zoom = " ",
+        secret=" "
     },
     apps = {
         git = "󰊢 ",
@@ -121,6 +122,7 @@ local L = {
         rename = " ",
         test = "󰙨 ",
         -- Code elements
+        package=" ",
         symbol = " ",
         class = " ",
         color = " ",

@@ -114,6 +114,10 @@ local L = {
 			desc = "Build",
 			icon = icons.code.build,
 		},
+		LYRDCodeBuildAll = {
+			desc = "Build all",
+			icon = icons.code.build,
+		},
 		LYRDCodeFillStructure = {
 			desc = "Fill structure",
 			icon = icons.code.outline,
@@ -150,6 +154,10 @@ local L = {
 			desc = "Generate setters code",
 			icon = icons.code.generate,
 		},
+		LYRDCodeRestorePackages = {
+			desc = "Restore packages",
+			icon = icons.code.package,
+		},
 		LYRDCodeRefactor = {
 			desc = "Refactor",
 			icon = icons.code.refactor,
@@ -157,6 +165,10 @@ local L = {
 		LYRDCodeRun = {
 			desc = "Run",
 			icon = icons.code.run,
+		},
+		LYRDCodeSecrets = {
+			desc = "Edit Secrets",
+			icon = icons.other.secret,
 		},
 		LYRDDebugBreakpoint = {
 			desc = "Toggle breakpoint",
