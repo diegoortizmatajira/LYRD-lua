@@ -166,6 +166,10 @@ local L = {
 			desc = "Run",
 			icon = icons.code.run,
 		},
+		LYRDCodeSelectEnvironment = {
+			desc = "Select environment",
+			icon = icons.other.environment,
+		},
 		LYRDCodeSecrets = {
 			desc = "Edit Secrets",
 			icon = icons.other.secret,

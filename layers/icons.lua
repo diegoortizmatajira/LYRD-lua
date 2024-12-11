@@ -27,6 +27,7 @@ local L = {
 		wrench = " ",
 		zoom = " ",
 		secret = " ",
+		environment = " ",
 	},
 	apps = {
 		git = "󰊢 ",

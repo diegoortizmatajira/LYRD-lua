@@ -157,6 +157,7 @@ function L.keybindings(s)
 			{ "a", cmd.LYRDLSPFindCodeActions },
 			{ "b", cmd.LYRDCodeBuild },
 			{ "c", cmd.LYRDCodeGlobalCheck },
+			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },
 			{ "i", cmd.LYRDCodeFixImports },
 			{ "l", cmd.LYRDDiagnosticLinesToggle },
