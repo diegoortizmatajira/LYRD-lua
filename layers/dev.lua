@@ -126,6 +126,11 @@ function L.plugins(s)
 		{
 			"rest-nvim/rest.nvim",
 		},
+		{
+		    -- Splits/Joins arguments in functions with gS
+			"echasnovski/mini.splitjoin",
+			opts = {},
+		},
 	})
 end
 
