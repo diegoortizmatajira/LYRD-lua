@@ -275,6 +275,7 @@ function L.plugins(s)
 			"goolord/alpha-nvim",
 			config = function()
 				local startify = require("alpha.themes.startify")
+
 				startify.section.header.val = header()
 				startify.section.top_buttons.val = {
 					startify.button("e", icons.file.new .. "  New file", ":ene <BAR> startinsert <CR>"),
