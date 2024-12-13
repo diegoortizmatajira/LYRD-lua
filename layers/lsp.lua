@@ -273,7 +273,6 @@ function L.settings(s)
 	end
 
 	local config = {
-		virtual_text = false,
 		-- show signs
 		signs = { active = signs },
 		update_in_insert = true,
@@ -282,6 +281,8 @@ function L.settings(s)
 	}
 
 	vim.diagnostic.config(config)
+	-- Repeated just to ensure it takes the settings
+	vim.diagnostic.config({ virtual_text = false })
 
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 
