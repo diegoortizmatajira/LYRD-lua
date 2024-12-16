@@ -177,6 +177,10 @@ function L.plugins(s)
 			opts = {},
 		},
 		{
+			"VidocqH/lsp-lens.nvim",
+			opts = {},
+		},
+		{
 			"kosayoda/nvim-lightbulb",
 			opts = {
 				action_kinds = { -- show only for relevant code actions.
