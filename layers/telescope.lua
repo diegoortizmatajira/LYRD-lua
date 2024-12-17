@@ -79,7 +79,6 @@ function L.settings(s)
 		{ cmd.LYRDSearchBufferTags, ":Telescope current_buffer_tags" },
 		{ cmd.LYRDSearchLiveGrep, ":Telescope live_grep" },
 		{ cmd.LYRDSearchFiletypes, ":Telescope filetypes" },
-		{ cmd.LYRDSearchColorSchemes, ":Telescope colorscheme" },
 		{ cmd.LYRDSearchQuickFixes, ":Telescope quickfix" },
 		{ cmd.LYRDSearchRegisters, ":Telescope registers" },
 		{ cmd.LYRDSearchHighlights, ":Telescope highlights" },

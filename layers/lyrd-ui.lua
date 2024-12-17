@@ -13,13 +13,23 @@ local L = {
 	name = "LYRD UI",
 	favorite_themes = {
 		"gruvbox",
+		"catppuccin-mocha",
+		"catppuccin-frappe",
+		"catppuccin-macchiato",
 		"catppuccin",
-		"duskfox",
+		"carbonfox",
 		"nightfox",
-		"nordfox",
 		"terafox",
+		"duskfox",
+		"nordfox",
+		"kanagawa-dragon",
+		"kanagawa-wave",
 		"bamboo-multiplex",
+		"bamboo-vulgaris",
 		"tokyonight-storm",
+		"tokyonight-night",
+		"tokyonight-moon",
+		"jellybeans",
 	},
 	selected_theme = 1,
 	---@type LYRD.ui.special_filetype[]
@@ -87,7 +97,8 @@ end
 --Applies the currently selected_theme
 function L.apply_theme(skip_notification)
 	local theme = L.favorite_themes[L.selected_theme]
-	vim.cmd.colorscheme(theme)
+	require("themery").setThemeByName(theme, true)
+	-- vim.cmd.colorscheme(theme)
 	if skip_notification then
 		return
 	end
@@ -139,7 +150,10 @@ end
 
 function L.plugins(s)
 	setup.plugin(s, {
-		-- lazy.nvim
+		{
+			"mcauley-penney/visual-whitespace.nvim",
+			config = true,
+		},
 		{
 			"folke/noice.nvim",
 			event = "VeryLazy",
@@ -238,6 +252,11 @@ function L.plugins(s)
 			},
 		},
 		{
+			"WTFox/jellybeans.nvim",
+			priority = 1000,
+			opts = {},
+		},
+		{
 			"folke/tokyonight.nvim",
 			priority = 1000,
 			opts = {},
@@ -270,6 +289,13 @@ function L.plugins(s)
 			"ribru17/bamboo.nvim",
 			priority = 1000,
 			opts = {},
+		},
+		{
+			"zaldih/themery.nvim",
+			opts = {
+				themes = L.favorite_themes,
+				livePreview = true,
+			},
 		},
 		{
 			"goolord/alpha-nvim",
@@ -393,9 +419,6 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	-- Sets the theme but skips the notification
-	L.apply_theme(true)
-
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {
@@ -442,6 +465,7 @@ function L.settings(s)
 		{ cmd.LYRDScratchNew, ":ScratchWithName" },
 		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
 		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
+		{ cmd.LYRDSearchColorSchemes, ":Themery" },
 
 		{ cmd.LYRDBufferClose, ":Bdelete" },
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
