@@ -2,9 +2,9 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.setup.Settings
 ---@field layers string[] contains the list of layers provided in init script
----@field loaded_layers string[] contains the list of names of the loaded layers
----@field plugins LazySpec contains the list of plugins loaded
----@field commands table<string, table<string, string|function>> contains the list of implemented commands
+---@field loaded_layers? string[] contains the list of names of the loaded layers
+---@field plugins? LazySpec contains the list of plugins loaded
+---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
 
 ---@class LYRD.setup.Module
 ---@field name string

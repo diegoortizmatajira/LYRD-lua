@@ -11,27 +11,6 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD UI",
-	favorite_themes = {
-		"gruvbox",
-		"catppuccin-mocha",
-		"catppuccin-frappe",
-		"catppuccin-macchiato",
-		"catppuccin",
-		"carbonfox",
-		"nightfox",
-		"terafox",
-		"duskfox",
-		"nordfox",
-		"kanagawa-dragon",
-		"kanagawa-wave",
-		"bamboo-multiplex",
-		"bamboo-vulgaris",
-		"tokyonight-storm",
-		"tokyonight-night",
-		"tokyonight-moon",
-		"jellybeans",
-	},
-	selected_theme = 1,
 	---@type LYRD.ui.special_filetype[]
 	special_filetypes = {
 		-- You can add entries here to mark special filetypes that have a header in their
@@ -94,25 +73,6 @@ local function header()
 	return combine_ascii_art(image, title, 3)
 end
 
---Applies the currently selected_theme
-function L.apply_theme(skip_notification)
-	local theme = L.favorite_themes[L.selected_theme]
-	require("themery").setThemeByName(theme, true)
-	-- vim.cmd.colorscheme(theme)
-	if skip_notification then
-		return
-	end
-	L.notify("Theme changed to " .. theme, "info", { title = "UI" })
-end
-
--- Rotates through favorite themes
-function L.next_theme()
-	L.selected_theme = L.selected_theme + 1
-	if L.selected_theme > #L.favorite_themes then
-		L.selected_theme = 1
-	end
-	L.apply_theme()
-end
 
 function L.notify(message, level, options)
 	local notify = require("notify")
@@ -249,52 +209,6 @@ function L.plugins(s)
 			},
 			dependencies = {
 				"nvim-tree/nvim-web-devicons",
-			},
-		},
-		{
-			"WTFox/jellybeans.nvim",
-			priority = 1000,
-			opts = {},
-		},
-		{
-			"folke/tokyonight.nvim",
-			priority = 1000,
-			opts = {},
-		},
-		{
-			"ellisonleao/gruvbox.nvim",
-			priority = 1000,
-			opts = {
-				contrast = "hard",
-				dim_inactive = false,
-			},
-		},
-		{
-			"rebelot/kanagawa.nvim",
-			priority = 1000,
-			opts = {},
-		},
-		{
-			"catppuccin/nvim",
-			name = "catppuccin",
-			priority = 1000,
-			opts = {},
-		},
-		{
-			"EdenEast/nightfox.nvim",
-			priority = 1000,
-			opts = {},
-		},
-		{
-			"ribru17/bamboo.nvim",
-			priority = 1000,
-			opts = {},
-		},
-		{
-			"zaldih/themery.nvim",
-			opts = {
-				themes = L.favorite_themes,
-				livePreview = true,
 			},
 		},
 		{
@@ -465,8 +379,6 @@ function L.settings(s)
 		{ cmd.LYRDScratchNew, ":ScratchWithName" },
 		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
 		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
-		{ cmd.LYRDSearchColorSchemes, ":Themery" },
-
 		{ cmd.LYRDBufferClose, ":Bdelete" },
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
@@ -484,8 +396,6 @@ function L.settings(s)
 				require("spectre").toggle()
 			end,
 		},
-		{ cmd.LYRDApplyCurrentTheme, L.apply_theme },
-		{ cmd.LYRDApplyNextTheme, L.next_theme },
 	})
 
 	-- Disable saving for special filetypes

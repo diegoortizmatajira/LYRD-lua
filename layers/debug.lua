@@ -7,7 +7,9 @@ local L = { name = "Debug" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"pocco81/dap-buddy.nvim",
+		{
+			"pocco81/dap-buddy.nvim",
+		},
 		{
 			"mfussenegger/nvim-dap",
 			config = function()
@@ -92,7 +94,13 @@ function L.plugins(s)
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
 		},
-		"theHamsta/nvim-dap-virtual-text",
+		{
+			"theHamsta/nvim-dap-virtual-text",
+		},
+		-- {
+		-- 	--TODO: Add configuration https://github.com/niuiic/dap-utils.nvim
+		-- 	"niuiic/dap-utils.nvim",
+		-- },
 	})
 end
 
@@ -118,7 +126,12 @@ function L.settings(s)
 
 	commands.implement(s, "*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
-		{ cmd.LYRDDebugContinue, ":DapContinue" },
+		{
+			cmd.LYRDDebugContinue,
+			function()
+				require("dap-utils").continue()
+			end,
+		},
 		{ cmd.LYRDDebugStepInto, ":DapStepInto" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },

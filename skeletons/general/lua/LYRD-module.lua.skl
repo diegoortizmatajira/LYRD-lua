@@ -1,0 +1,24 @@
+local setup = require("LYRD.setup")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
+
+local L = { name = "General" }
+
+function L.plugins(s)
+	setup.plugin(s, {})
+end
+
+function L.preparation(s) end
+
+function L.settings(s)
+	commands.implement(s, "*", {
+		-- { cmd.LYRDXXXX, ":XXXXX" },
+	})
+end
+
+function L.keybindings(s) end
+
+function L.complete(s) end
+
+return L
