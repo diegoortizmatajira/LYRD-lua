@@ -81,7 +81,7 @@ function L.plugins(s)
 			dependencies = { "stevearc/overseer.nvim", "nvim-telescope/telescope.nvim" },
 			opts = {},
 		},
-		{ -- This plugin
+		{ -- TODO: Add commands to LYRD
 			"Zeioth/makeit.nvim",
 			cmd = { "MakeitOpen", "MakeitToggleResults", "MakeitRedo" },
 			dependencies = { "stevearc/overseer.nvim" },
@@ -127,7 +127,7 @@ function L.plugins(s)
 			"rest-nvim/rest.nvim",
 		},
 		{
-		    -- Splits/Joins arguments in functions with gS
+			-- Splits/Joins arguments in functions with gS
 			"echasnovski/mini.splitjoin",
 			opts = {},
 		},
@@ -138,6 +138,7 @@ function L.settings(s)
 	commands.implement(s, "*", {
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
+		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
 	})
 end
 

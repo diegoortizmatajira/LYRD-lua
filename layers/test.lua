@@ -10,13 +10,17 @@ function L.plugins(s)
 		{
 			"nvim-neotest/neotest",
 			priority = 0,
-			config = false, -- It will be called by hand
 			dependencies = {
 				"nvim-neotest/nvim-nio",
 				"nvim-lua/plenary.nvim",
 				"antoinemadec/fixcursorhold.nvim",
 				"nvim-treesitter/nvim-treesitter",
 			},
+		},
+		{
+			"andythigpen/nvim-coverage",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			opts = {},
 		},
 	})
 end
@@ -69,6 +73,8 @@ function L.settings(s)
 				require("neotest").summary.toggle()
 			end,
 		},
+		{ cmd.LYRDTestCoverageSummary, ":CoverageSummary" },
+		{ cmd.LYRDTestCoverage, ":CoverageToggle" },
 	})
 
 	-- Creates an autocommand to enable q to close test panels

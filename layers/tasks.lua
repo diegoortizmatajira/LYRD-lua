@@ -6,7 +6,8 @@ local L = { name = "Tasks" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{ -- The task runner we use
+		{
+			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
 			opts = {
 				task_list = {
@@ -50,8 +51,12 @@ function L.plugins(s)
 				"nvim-neotest/neotest",
 			},
 		},
-		"kndndrj/projector-vscode",
-		"kndndrj/projector-dbee",
+		{
+			"kndndrj/projector-vscode",
+		},
+		{
+			"kndndrj/projector-dbee",
+		},
 	})
 end
 

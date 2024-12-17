@@ -110,6 +110,10 @@ local L = {
 			desc = "Toggle alternate file",
 			icon = icons.file.swap,
 		},
+		LYRDCodeMakeTasks = {
+			desc = "Make tasks",
+			icon = icons.code.make,
+		},
 		LYRDCodeBuild = {
 			desc = "Build",
 			icon = icons.code.build,
@@ -474,8 +478,12 @@ local L = {
 			desc = "Test everything",
 			icon = icons.code.test,
 		},
+		LYRDTestCoverageSummary = {
+			desc = "View Test Coverage Summary",
+			icon = icons.code.test,
+		},
 		LYRDTestCoverage = {
-			desc = "Test Coverage",
+			desc = "Toggle Test Coverage",
 			icon = icons.code.test,
 		},
 		LYRDTestFile = {

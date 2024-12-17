@@ -27,6 +27,7 @@ local L = {
 		{ filetype = "lazy" },
 		{ filetype = "neotest-summary", title = "Tests" },
 		{ filetype = "toggleterm" },
+		{ filetype = "OverseerList" },
 		{ filetype = "trouble" },
 		{ filetype = "tsplayground", title = "Treesitter Playground" },
 	},
