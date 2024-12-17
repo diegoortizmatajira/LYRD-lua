@@ -17,7 +17,9 @@ function L.plugins(s)
 				"tpope/vim-fugitive",
 			},
 		},
-		"tpope/vim-dispatch",
+		{
+			"tpope/vim-dispatch",
+		},
 		{
 			"lewis6991/gitsigns.nvim",
 			opts = {
@@ -82,6 +84,20 @@ function L.plugins(s)
 			version = "*",
 			opts = {},
 		},
+		{
+			"isak102/telescope-git-file-history.nvim",
+			opts = {},
+			config = function(_, opts)
+				require("telescope").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("git_file_history")
+			end,
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-telescope/telescope.nvim",
+				"tpope/vim-fugitive",
+			},
+		},
 	})
 end
 
@@ -115,7 +131,7 @@ function L.settings(s)
 		{ cmd.LYRDGitViewDiff, ":Gvdiffsplit" },
 		{ cmd.LYRDGitStageAll, ":Git add ." },
 		{ cmd.LYRDGitViewBlame, ":Git_blame" },
-		{ cmd.LYRDGitViewCurrentFileLog, ":LazyGitFilterCurrentFile" },
+		{ cmd.LYRDGitViewCurrentFileLog, ":Telescope git_file_history" },
 		{ cmd.LYRDGitBrowseOnWeb, ":GBrowse" },
 		{ cmd.LYRDGitFlowInit, ":Git flow init" },
 		{
