@@ -285,8 +285,6 @@ function L.settings(s)
 	}
 
 	vim.diagnostic.config(config)
-	-- Repeated just to ensure it takes the settings
-	vim.diagnostic.config({ virtual_text = false })
 
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 
@@ -368,7 +366,10 @@ function L.register_code_actions(filetypes, fn)
 	})
 end
 
-function L.complete(_) end
+function L.complete(_)
+	-- Added here to be executed after every plugin code has been initialized.
+	vim.diagnostic.config({ virtual_text = false })
+end
 
 function L.format_handler(server_name)
 	-- Returns a handler that format using the given lsp
