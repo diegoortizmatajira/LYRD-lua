@@ -105,7 +105,7 @@ local function map_menu(keys, title)
 end
 
 ---Creates a set of keybindings
----@param mappings {[1]: string, [2]:string, [3]:string|function|LYRD.commands.command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {[1]: string[], [2]:string, [3]:string|function|LYRD.commands.command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(_, mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
