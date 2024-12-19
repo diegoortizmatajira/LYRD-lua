@@ -8,7 +8,7 @@ local L = { name = "Python language" }
 
 -- Opens the .env file in the current directory
 function L.open_dotenv()
-    vim.cmd("e .env")
+	vim.cmd("e .env")
 end
 
 function L.plugins(s)
@@ -40,7 +40,9 @@ function L.plugins(s)
 			},
 			lazy = false,
 			branch = "regexp", -- This is the regexp branch, use this for the new version
-			opts = {},
+			opts = {
+				name = { "venv", ".venv" },
+			},
 			ft = "python",
 		},
 	})
