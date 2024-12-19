@@ -165,7 +165,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferFormat, lsp.format_handler("roslyn") },
 		{ cmd.LYRDCodeBuild, commands.handler(dotnet.build_quickfix) },
 		{ cmd.LYRDCodeBuildAll, commands.handler(dotnet.build_solution) },
-		{ cmd.LYRDCodeRun, commands.handler(dotnet.run_project, {}) },
+		{ cmd.LYRDCodeRun, commands.handler(dotnet.run, {}) },
 		{ cmd.LYRDCodeRestorePackages, commands.handler(dotnet.restore) },
 		{ cmd.LYRDCodeSecrets, commands.handler(dotnet.secrets) },
 	})

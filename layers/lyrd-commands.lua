@@ -469,6 +469,10 @@ local L = {
 			desc = "Smart code generator",
 			icon = icons.code.generate,
 		},
+		LYRDTerminalList = {
+			desc = "View terminal list",
+			icon = icons.search.layers,
+		},
 		LYRDTerminal = {
 			default = ":terminal",
 			desc = "Terminal",

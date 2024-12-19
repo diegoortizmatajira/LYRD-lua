@@ -81,7 +81,7 @@ function L.plugins(s)
 			dependencies = { "stevearc/overseer.nvim", "nvim-telescope/telescope.nvim" },
 			opts = {},
 		},
-		{ -- TODO: Add commands to LYRD
+		{
 			"Zeioth/makeit.nvim",
 			cmd = { "MakeitOpen", "MakeitToggleResults", "MakeitRedo" },
 			dependencies = { "stevearc/overseer.nvim" },

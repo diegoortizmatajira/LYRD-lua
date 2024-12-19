@@ -386,7 +386,8 @@ function L.settings(s)
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
 		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
-		{ cmd.LYRDTerminal, ":ToggleTerm"},
+		{ cmd.LYRDTerminal, ":ToggleTerm" },
+		{ cmd.LYRDTerminalList, ":TermSelect" },
 		{
 			cmd.LYRDReplace,
 			function()
