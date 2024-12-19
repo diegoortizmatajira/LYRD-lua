@@ -6,6 +6,11 @@ local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 
 local L = { name = "Python language" }
 
+-- Opens the .env file in the current directory
+function L.open_dotenv()
+    vim.cmd("e .env")
+end
+
 function L.plugins(s)
 	setup.plugin(s, {
 		{
@@ -35,7 +40,7 @@ function L.plugins(s)
 			},
 			lazy = false,
 			branch = "regexp", -- This is the regexp branch, use this for the new version
-			opts={},
+			opts = {},
 			ft = "python",
 		},
 	})
@@ -75,6 +80,7 @@ function L.settings(s)
 	commands.implement(s, "python", {
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
+		{ cmd.LYRDCodeSecrets, L.open_dotenv },
 	})
 end
 

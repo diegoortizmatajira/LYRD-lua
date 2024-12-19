@@ -164,8 +164,8 @@ function L.keybindings(s)
 			{ "l", cmd.LYRDDiagnosticLinesToggle },
 			{ "p", cmd.LYRDCodeRestorePackages },
 			{ "x", cmd.LYRDCodeRun },
-			{ "S", cmd.LYRDCodeSecrets },
-			{ "s", cmd.LYRDCodeInsertSnippet },
+			{ "s", cmd.LYRDCodeSecrets },
+			{ "S", cmd.LYRDCodeInsertSnippet },
 			{ "t", cmd.LYRDCodeAlternateFile },
 		}),
 		menu_header("d", "Debug", {

@@ -74,7 +74,6 @@ local function header()
 	return combine_ascii_art(image, title, 3)
 end
 
-
 function L.notify(message, level, options)
 	local notify = require("notify")
 	notify(message, level, options)
@@ -240,7 +239,10 @@ function L.plugins(s)
 				"nvim-tree/nvim-web-devicons",
 			},
 		},
-		{ "akinsho/toggleterm.nvim" },
+		{
+			"akinsho/toggleterm.nvim",
+			opts = {},
+		},
 		{
 			"natecraddock/workspaces.nvim",
 			opts = {
@@ -384,7 +386,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
 		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
-
+		{ cmd.LYRDTerminal, ":ToggleTerm"},
 		{
 			cmd.LYRDReplace,
 			function()
