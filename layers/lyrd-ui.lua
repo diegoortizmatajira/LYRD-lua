@@ -20,6 +20,7 @@ local L = {
 		{ filetype = "aerial", title = "Outline" },
 		{ filetype = "alpha" },
 		{ filetype = "fugitive" },
+		{ filetype = "NeogitStatus" },
 		{ filetype = "qf" },
 		{ filetype = "gitcommit" },
 		{ filetype = "help" },
