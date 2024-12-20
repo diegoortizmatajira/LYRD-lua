@@ -178,7 +178,9 @@ function L.plugins(s)
 		},
 		{
 			"VidocqH/lsp-lens.nvim",
-			opts = {},
+			opts = {
+				enable = false,
+			},
 		},
 		{
 			"kosayoda/nvim-lightbulb",
@@ -327,6 +329,7 @@ function L.settings(s)
 				require("lsp_lines").toggle()
 			end,
 		},
+		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
 	})
 end
 

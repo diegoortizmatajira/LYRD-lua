@@ -297,6 +297,10 @@ local L = {
 			default = commands.list_implemented,
 			desc = "List implemented commands",
 		},
+		LYRDLSPToggleLens = {
+			desc = "Toggle Code Lens",
+			icon = icons.action.toggle_on,
+		},
 		LYRDLSPFindCodeActions = {
 			desc = "Actions",
 			icon = icons.action.code_action,
