@@ -30,12 +30,14 @@ function L.plugins(s)
 				},
 				commit_editor = {
 					kind = "split_below_all",
+					show_staged_diff = true,
+					staged_diff_split_kind = "vsplit",
 				},
 			},
 		},
-		-- {
-		--     "tpope/vim-fugitive",
-		-- },
+		{
+		    "tpope/vim-fugitive",
+		},
 		-- {
 		--     "tpope/vim-rhubarb",
 		--     dependencies = {
@@ -150,9 +152,9 @@ function L.settings(s)
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Neogit" },
-		{ cmd.LYRDGitCommit, ":Git commit" },
-		{ cmd.LYRDGitPush, ":Git push" },
-		{ cmd.LYRDGitPull, ":Git pull" },
+		{ cmd.LYRDGitCommit, ":Neogit commit" },
+		{ cmd.LYRDGitPush, ":Neogit push" },
+		{ cmd.LYRDGitPull, ":Neogit pull" },
 		{ cmd.LYRDGitViewDiff, ":Gvdiffsplit" },
 		{ cmd.LYRDGitStageAll, ":Git add ." },
 		{ cmd.LYRDGitViewBlame, ":Git_blame" },
