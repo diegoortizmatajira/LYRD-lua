@@ -8,18 +8,44 @@ local L = { name = "Git" }
 function L.plugins(s)
 	setup.plugin(s, {
 		{
-			"tpope/vim-fugitive",
-		},
-		{
-			"tpope/vim-rhubarb",
+			"NeogitOrg/neogit",
 			dependencies = {
+				"nvim-lua/plenary.nvim", -- required
+				"sindrets/diffview.nvim", -- optional - Diff integration
 
-				"tpope/vim-fugitive",
+				-- Only one of these is needed.
+				"nvim-telescope/telescope.nvim", -- optional
+				"ibhagwan/fzf-lua", -- optional
+				"echasnovski/mini.pick", -- optional
+			},
+			opts = {
+				kind = "split_below_all",
+				disable_hint = true,
+				graph_style = "unicode",
+				signs = {
+					-- { CLOSED, OPENED }
+					hunk = { "", "" },
+					item = { icons.chevron.right, icons.chevron.down },
+					section = { icons.chevron.right, icons.chevron.down },
+				},
+				commit_editor = {
+					kind = "split_below_all",
+				},
 			},
 		},
-		{
-			"tpope/vim-dispatch",
-		},
+		-- {
+		--     "tpope/vim-fugitive",
+		-- },
+		-- {
+		--     "tpope/vim-rhubarb",
+		--     dependencies = {
+		--
+		--         "tpope/vim-fugitive",
+		--     },
+		-- },
+		-- {
+		--     "tpope/vim-dispatch",
+		-- },
 		{
 			"lewis6991/gitsigns.nvim",
 			opts = {
@@ -95,7 +121,6 @@ function L.plugins(s)
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 				"nvim-telescope/telescope.nvim",
-				"tpope/vim-fugitive",
 			},
 		},
 	})
@@ -124,7 +149,7 @@ end
 function L.settings(s)
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
-		{ cmd.LYRDGitStatus, ":Git" },
+		{ cmd.LYRDGitStatus, ":Neogit" },
 		{ cmd.LYRDGitCommit, ":Git commit" },
 		{ cmd.LYRDGitPush, ":Git push" },
 		{ cmd.LYRDGitPull, ":Git pull" },
