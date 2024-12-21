@@ -15,12 +15,11 @@ function L.plugins(s)
 
 				-- Only one of these is needed.
 				"nvim-telescope/telescope.nvim", -- optional
-				"ibhagwan/fzf-lua", -- optional
-				"echasnovski/mini.pick", -- optional
 			},
 			opts = {
 				kind = "split_below_all",
-				disable_hint = true,
+				disable_hint = false,
+				disable_context_highlighting = true,
 				graph_style = "unicode",
 				signs = {
 					-- { CLOSED, OPENED }
@@ -29,14 +28,14 @@ function L.plugins(s)
 					section = { icons.chevron.right, icons.chevron.down },
 				},
 				commit_editor = {
-					kind = "split_below_all",
+					kind = "floating",
 					show_staged_diff = true,
 					staged_diff_split_kind = "vsplit",
 				},
 			},
 		},
 		{
-		    "tpope/vim-fugitive",
+			"tpope/vim-fugitive",
 		},
 		-- {
 		--     "tpope/vim-rhubarb",
