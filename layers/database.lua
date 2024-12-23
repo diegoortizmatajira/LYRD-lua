@@ -6,7 +6,31 @@ local L = { name = "Database" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"muniftanjim/nui.nvim",
+		{
+			"kristijanhusak/vim-dadbod-ui",
+			dependencies = {
+				{
+					"tpope/vim-dadbod",
+					lazy = true,
+				},
+				{
+					"kristijanhusak/vim-dadbod-completion",
+					ft = { "sql", "mysql", "plsql" },
+					lazy = true,
+				}, -- Optional
+			},
+			cmd = {
+				"DBUI",
+				"DBUIToggle",
+				"DBUIAddConnection",
+				"DBUIFindBuffer",
+			},
+			init = function()
+				-- Your DBUI configuration
+				vim.g.db_ui_use_nerd_fonts = 1
+			end,
+		},
+		{ "muniftanjim/nui.nvim" },
 		{
 			"kndndrj/nvim-dbee",
 			dependencies = {
@@ -25,7 +49,10 @@ end
 
 function L.settings(s)
 	commands.implement(s, "*", {
-		{ cmd.LYRDDatabaseUI, ":Dbee" },
+		{ cmd.LYRDDatabaseUI, ":DBUIToggle" },
+	})
+	commands.implement(s, "sql", {
+		{ cmd.LYRDCodeRun, ":call <SNR>101_method('execute_query')" },
 	})
 end
 

@@ -19,6 +19,8 @@ local L = {
 		{ filetype = "NvimTree", title = "Explorer" },
 		{ filetype = "aerial", title = "Outline" },
 		{ filetype = "alpha" },
+		{ filetype = "dbui" },
+		{ filetype = "dbout" },
 		{ filetype = "fugitive" },
 		{ filetype = "qf" },
 		{ filetype = "gitcommit" },
