@@ -12,6 +12,33 @@ function L.plugins(s)
 			version = "*",
 			opts = {},
 		},
+		{
+			"chrisgrieser/nvim-spider",
+			opts = {},
+			keys = {
+				-- Mapped commands need to be defined as Ex commands to be able repeatable
+				{
+					"e",
+					"<cmd>lua require('spider').motion('e')<CR>",
+					mode = { "n", "o", "x" },
+				},
+				{
+					"w",
+					"<cmd>lua require('spider').motion('w')<CR>",
+					mode = { "n", "o", "x" },
+				},
+				{
+					"b",
+					"<cmd>lua require('spider').motion('b')<CR>",
+					mode = { "n", "o", "x" },
+				},
+				{
+					"ge",
+					"<cmd>lua require('spider').motion('ge')<CR>",
+					mode = { "n", "o", "x" },
+				},
+			},
+		},
 	})
 end
 
