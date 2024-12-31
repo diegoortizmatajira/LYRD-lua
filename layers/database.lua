@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local c = commands.command_shortcut
 
 local L = { name = "Database" }
 
@@ -52,7 +53,8 @@ function L.settings(s)
 		{ cmd.LYRDDatabaseUI, ":DBUIToggle" },
 	})
 	commands.implement(s, "sql", {
-		{ cmd.LYRDCodeRun, ":call <SNR>101_method('execute_query')" },
+		{ cmd.LYRDCodeRun, "%DB" },
+		{ cmd.LYRDCodeRunSelection, "'<,'>DB" },
 	})
 end
 

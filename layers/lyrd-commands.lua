@@ -166,6 +166,10 @@ local L = {
 			desc = "Refactor",
 			icon = icons.code.refactor,
 		},
+		LYRDCodeRunSelection = {
+			desc = "Run selection",
+			icon = icons.code.run,
+		},
 		LYRDCodeRun = {
 			desc = "Run",
 			icon = icons.code.run,
