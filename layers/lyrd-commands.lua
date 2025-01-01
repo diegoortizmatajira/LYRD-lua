@@ -122,6 +122,10 @@ local L = {
 			desc = "Build all",
 			icon = icons.code.build,
 		},
+		LYRDCodeAddDocumentation = {
+			desc = "Add documentation",
+			icon = icons.code.document,
+		},
 		LYRDCodeFillStructure = {
 			desc = "Fill structure",
 			icon = icons.code.outline,

@@ -128,6 +128,7 @@ local L = {
 		rename = " ",
 		test = "󰙨 ",
 		make = "󱜧 ",
+		document="󱪝 ",
 		-- Code elements
 		package = " ",
 		symbol = " ",
