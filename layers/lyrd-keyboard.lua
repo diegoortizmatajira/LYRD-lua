@@ -9,17 +9,16 @@ local L = {
 	name = "LYRD Keyboard",
 	ai_keys = {
 		-- Accept the current completion.
-		accept = "<S-Right>",
-		-- Accept the next word.
-		accept_word = "<S-Left>",
+		accept = "<M-l>", -- Accept the next word.
+		accept_word = "<M-o>",
 		-- Accept the next line.
-		accept_line = "<S-End>",
+		accept_line = "<M-i>",
 		-- Clear the virtual text.
-		clear = "<S-Del>",
+		clear = "<M-h>",
 		-- Cycle to the next completion.
-		next = "<S-Up>",
+		next = "<M-j>",
 		-- Cycle to the previous completion.
-		prev = "<S-Down>",
+		prev = "<M-k>",
 	},
 }
 
@@ -44,8 +43,6 @@ function L.keybindings(s)
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
 		{ "n", "<C-f>", cmd.LYRDResumeLastSearch },
-		{ "n", "<A-Left>", cmd.LYRDBufferPrev },
-		{ "n", "<A-Right>", cmd.LYRDBufferNext },
 		{ "n", "K", cmd.LYRDLSPHoverInfo },
 		{ "n", "<C-S-k>", cmd.LYRDLSPSignatureHelp },
 		{ "n", "gd", cmd.LYRDLSPFindDefinitions },
@@ -55,12 +52,16 @@ function L.keybindings(s)
 		{ "n", "gr", cmd.LYRDLSPFindReferences },
 		{ "n", "gO", c([[call append(line('.')-1, '')]]) },
 		{ "n", "go", c([[call append(line('.'), '')]]) },
-		{ "n", "<A-PageUp>", cmd.LYRDLSPGotoPrevDiagnostic },
-		{ "n", "<A-PageDown>", cmd.LYRDLSPGotoNextDiagnostic },
-		{ "n", "<A-Enter>", cmd.LYRDLSPFindCodeActions },
+		{ "n", "<M-PageUp>", cmd.LYRDLSPGotoPrevDiagnostic },
+		{ "n", "<M-PageDown>", cmd.LYRDLSPGotoNextDiagnostic },
+		{ "n", "<M-Enter>", cmd.LYRDLSPFindCodeActions },
 		{ "n", "<C-r><C-r>", cmd.LYRDLSPRename },
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
+		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
+		{ "i", "<M-C-]>", "<Esc>" .. c(cmd.LYRDBufferNext.name) },
+		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
+		{ "i", "<M-C-[>", "<Esc>" .. c(cmd.LYRDBufferPrev.name) },
 	})
 
 	mappings.create_menu("<Leader>", {
@@ -117,8 +118,8 @@ function L.keybindings(s)
 		{ "j", cmd.LYRDSmartCoder },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
 		{ "t", cmd.LYRDApplyNextTheme },
-		{ "x", cmd.LYRDBufferNext },
-		{ "z", cmd.LYRDBufferPrev },
+		{ "]", cmd.LYRDBufferNext },
+		{ "[", cmd.LYRDBufferPrev },
 	})
 
 	mappings.create_menu("<Space>", {
@@ -159,7 +160,7 @@ function L.keybindings(s)
 			{ "a", cmd.LYRDLSPFindCodeActions },
 			{ "b", cmd.LYRDCodeBuild },
 			{ "c", cmd.LYRDCodeGlobalCheck },
-			{ "d", cmd.LYRDCodeAddDocumentation},
+			{ "d", cmd.LYRDCodeAddDocumentation },
 			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },
 			{ "i", cmd.LYRDCodeFixImports },
