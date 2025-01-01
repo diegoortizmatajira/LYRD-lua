@@ -22,38 +22,44 @@ local L = {
 		"tokyonight-storm",
 		"tokyonight-night",
 		"tokyonight-moon",
-		"jellybeans",
 	},
-	selected_theme = 1,
 }
 
---Applies the currently selected_theme
-function L.apply_theme(skip_notification)
-	local theme = L.favorite_themes[L.selected_theme]
-	require("themery").setThemeByName(theme, true)
-	-- vim.cmd.colorscheme(theme)
-	if skip_notification then
-		return
+function L.notify_current_theme()
+	local themery = require("themery")
+	local current_theme = themery.getCurrentTheme()
+	if current_theme and current_theme.name then
+		vim.notify("Theme changed to " .. current_theme.name, vim.log.levels.INFO, { title = "UI" })
 	end
-	vim.notify("Theme changed to " .. theme, "info", { title = "UI" })
+end
+
+--Applies the currently selected_theme
+function L.apply_theme(skip_notification, index)
+	local themery = require("themery")
+	if not index then
+		local current_theme = themery.getCurrentTheme()
+		index = (current_theme and current_theme.index) or 1
+	end
+	local themes = themery.getAvailableThemes()
+	if index > #themes then
+		index = 1
+	end
+	themery.setThemeByIndex(index, true)
+	if not skip_notification then
+		L.notify_current_theme()
+	end
 end
 
 -- Rotates through favorite themes
 function L.next_theme()
-	L.selected_theme = L.selected_theme + 1
-	if L.selected_theme > #L.favorite_themes then
-		L.selected_theme = 1
-	end
-	L.apply_theme()
+	local themery = require("themery")
+	local current_theme = themery.getCurrentTheme()
+	local index = (current_theme and current_theme.index) or 1
+	L.apply_theme(false, index + 1)
 end
 
 function L.plugins(s)
 	setup.plugin(s, {
-		{
-			"WTFox/jellybeans.nvim",
-			priority = 1000,
-			opts = {},
-		},
 		{
 			"folke/tokyonight.nvim",
 			priority = 1000,
