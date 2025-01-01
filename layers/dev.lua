@@ -35,7 +35,9 @@ function L.plugins(s)
 		},
 		{
 			"danymat/neogen",
-			config = {},
+			config = {
+				snippet_engine = "luasnip",
+			},
 		},
 		{
 			"gh-liu/fold_line.nvim",
