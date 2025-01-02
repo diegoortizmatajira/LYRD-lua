@@ -116,17 +116,6 @@ function L.git_flow_finish(what)
 	vim.cmd(string.format("Git flow %s finish %s", what, name))
 end
 
--- function L.git_flow_finish(what)
--- 	local name = vim.api.nvim_exec2(
--- 		[[
---     let parts = split(FugitiveHead(),'/')
---     echo parts[len(parts)-1]
---         ]],
--- 		{ capture_output = true }
--- 	)
--- 	vim.cmd(":Git flow " .. what .. " finish " .. name)
--- end
-
 function L.settings(s)
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
