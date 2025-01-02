@@ -9,16 +9,17 @@ local L = {
 	name = "LYRD Keyboard",
 	ai_keys = {
 		-- Accept the current completion.
-		accept = "<M-l>", -- Accept the next word.
-		accept_word = "<M-o>",
+		accept = "<C-l>",
+		-- Accept the next word.
+		accept_word = "<C-Right>",
 		-- Accept the next line.
-		accept_line = "<M-i>",
+		accept_line = "<C-PageDown>",
 		-- Clear the virtual text.
-		clear = "<M-h>",
+		clear = "<C-Left>",
 		-- Cycle to the next completion.
-		next = "<M-j>",
+		next = "<C-Down>",
 		-- Cycle to the previous completion.
-		prev = "<M-k>",
+		prev = "<C-Up>",
 	},
 }
 
