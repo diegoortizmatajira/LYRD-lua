@@ -71,6 +71,24 @@ function L.keybindings(s)
 			{ "e", cmd.LYRDHttpEnvironmentFileSelect },
 			{ "h", cmd.LYRDHttpSendRequest },
 		}),
+		menu_header("n", "Notebook", {
+			menu_header("r", "Run", {
+				{ "X", cmd.LYRDReplNotebookRunCell },
+				{ "x", cmd.LYRDReplNotebookRunCellAndMove },
+				{ "e", cmd.LYRDReplNotebookRunAllCells },
+				{ "a", cmd.LYRDReplNotebookRunAllAbove },
+				{ "b", cmd.LYRDReplNotebookRunAllBelow },
+			}),
+			menu_header("m", "Move", {
+				{ "u", cmd.LYRDReplNotebookMoveCellUp },
+				{ "d", cmd.LYRDReplNotebookMoveCellDown },
+			}),
+			{ "n", cmd.LYRDReplView },
+			{ "R", cmd.LYRDReplRestart },
+			{ "x", cmd.LYRDReplNotebookRunCellAndMove },
+			{ "a", cmd.LYRDReplNotebookAddCellAbove },
+			{ "b", cmd.LYRDReplNotebookAddCellBelow },
+		}),
 		menu_header("s", "Scratches", {
 			{ "f", cmd.LYRDScratchSearch },
 			{ "n", cmd.LYRDScratchNew },
@@ -153,6 +171,24 @@ function L.keybindings(s)
 				{ "g", cmd.LYRDCodeProduceGetter },
 				{ "s", cmd.LYRDCodeProduceSetter },
 				{ "m", cmd.LYRDCodeProduceMapping },
+			}),
+			menu_header("n", "Notebook", {
+				menu_header("r", "Run", {
+					{ "X", cmd.LYRDReplNotebookRunCell },
+					{ "x", cmd.LYRDReplNotebookRunCellAndMove },
+					{ "e", cmd.LYRDReplNotebookRunAllCells },
+					{ "a", cmd.LYRDReplNotebookRunAllAbove },
+					{ "b", cmd.LYRDReplNotebookRunAllBelow },
+				}),
+				menu_header("m", "Move", {
+					{ "u", cmd.LYRDReplNotebookMoveCellUp },
+					{ "d", cmd.LYRDReplNotebookMoveCellDown },
+				}),
+				{ "n", cmd.LYRDReplView },
+				{ "R", cmd.LYRDReplRestart },
+				{ "x", cmd.LYRDReplNotebookRunCellAndMove },
+				{ "a", cmd.LYRDReplNotebookAddCellAbove },
+				{ "b", cmd.LYRDReplNotebookAddCellBelow },
 			}),
 			{ "A", cmd.LYRDLSPFindRangeCodeActions },
 			{ "B", cmd.LYRDCodeBuildAll },
@@ -259,6 +295,10 @@ function L.keybindings(s)
 				{ "e", cmd.LYRDHttpEnvironmentSelect },
 				{ "s", cmd.LYRDHttpSendRequest },
 				{ "a", cmd.LYRDHttpSendAllRequests },
+			}),
+			menu_header("r", "REPL", {
+				{ "v", cmd.LYRDReplView },
+				{ "r", cmd.LYRDReplRestart },
 			}),
 		}),
 		menu_header("s", "Services", {

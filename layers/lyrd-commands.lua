@@ -701,6 +701,50 @@ local L = {
 			desc = "TreeSitter playground",
 			icon = icons.code.outline,
 		},
+		LYRDReplView = {
+			desc = "View REPL",
+			icon = icons.code.run,
+		},
+		LYRDReplRestart = {
+			desc = "REPL Restart",
+			icon = icons.code.restart,
+		},
+		LYRDReplNotebookRunCell = {
+			desc = "Run notebook cell",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunCellAndMove = {
+			desc = "Run notebook cell and move to the next.",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunAllCells = {
+			desc = "Run all notebook cells",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunAllAbove = {
+			desc = "Run notebook cells above",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunAllBelow = {
+			desc = "Run notebook cells below",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookMoveCellUp = {
+			desc = "Move current notebook cell up",
+			icon = icons.arrow.up,
+		},
+		LYRDReplNotebookMoveCellDown = {
+			desc = "Move current notebook cell down",
+			icon = icons.arrow.down,
+		},
+		LYRDReplNotebookAddCellAbove = {
+			desc = "Add notebook cell above",
+			icon = icons.arrow.expand_up,
+		},
+		LYRDReplNotebookAddCellBelow = {
+			desc = "Add notebook cell below",
+			icon = icons.arrow.expand_down,
+		},
 	},
 }
 
