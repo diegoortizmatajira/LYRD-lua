@@ -29,6 +29,7 @@ local L = {
 		secret = " ",
 		environment = " ",
 		layers = " ",
+		focus = "󰋱 ",
 	},
 	apps = {
 		git = "󰊢 ",
@@ -128,7 +129,7 @@ local L = {
 		rename = " ",
 		test = "󰙨 ",
 		make = "󱜧 ",
-		document="󱪝 ",
+		document = "󱪝 ",
 		-- Code elements
 		package = " ",
 		symbol = " ",
