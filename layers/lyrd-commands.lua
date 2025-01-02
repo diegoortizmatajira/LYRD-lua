@@ -548,6 +548,10 @@ local L = {
 		LYRDViewYankList = {
 			desc = "Yank list",
 		},
+		LYRDViewFocusMode = {
+			desc = "Focus mode",
+			icon = icons.other.focus,
+		},
 		LYRDWindowClose = {
 			default = ":q",
 			desc = "Close window",

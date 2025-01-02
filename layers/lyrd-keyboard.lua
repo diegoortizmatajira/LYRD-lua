@@ -275,6 +275,7 @@ function L.keybindings(s)
 			{ "c", cmd.LYRDLSPToggleLens },
 			{ "d", cmd.LYRDLSPShowDocumentDiagnosticLocList },
 			{ "e", cmd.LYRDViewFileExplorer },
+			{ "f", cmd.LYRDViewFocusMode },
 			{ "l", cmd.LYRDViewLocationList },
 			{ "o", cmd.LYRDViewCodeOutline },
 			{ "p", cmd.LYRDViewTreeSitterPlayground },

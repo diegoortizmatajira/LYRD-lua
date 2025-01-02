@@ -332,6 +332,14 @@ function L.plugins(s)
 				hide_tabline = false,
 			},
 		},
+		{
+			"folke/twilight.nvim",
+			opts = {
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			},
+		},
 	})
 end
 
@@ -386,6 +394,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
 		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
+		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },
 		{ cmd.LYRDTerminalList, ":TermSelect" },
 		{
