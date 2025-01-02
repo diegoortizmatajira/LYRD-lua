@@ -297,6 +297,18 @@ local L = {
 		LYRDGitWrite = {
 			desc = "Write",
 		},
+		LYRDGitWorkTreeCreate = {
+			desc = "Create Worktree",
+			icon = icons.folder.new,
+		},
+		LYRDGitWorkTreeCreateExistingBranch = {
+			desc = "Create Worktree for existing branch",
+			icon = icons.folder.new,
+		},
+		LYRDGitWorkTreeList = {
+			desc = "List GIT Worktrees",
+			icon = icons.git.worktree,
+		},
 		LYRDImplementedCommands = {
 			default = commands.list_implemented,
 			desc = "List implemented commands",

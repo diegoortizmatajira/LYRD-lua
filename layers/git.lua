@@ -83,6 +83,11 @@ function L.plugins(s)
 			"akinsho/git-conflict.nvim",
 			version = "*",
 			opts = {},
+			config = function(_, opts)
+				require("worktrees").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("worktrees")
+			end,
 		},
 		{
 			"isak102/telescope-git-file-history.nvim",
@@ -97,6 +102,11 @@ function L.plugins(s)
 				"nvim-telescope/telescope.nvim",
 				"tpope/vim-fugitive",
 			},
+		},
+		{
+			"Juksuu/worktrees.nvim",
+			opts = {},
+			dependencies = { "nvim-lua/plenary.nvim" },
 		},
 	})
 end
@@ -167,6 +177,14 @@ function L.settings(s)
 		},
 		{ cmd.LYRDGitCheckoutMain, ":Git checkout main" },
 		{ cmd.LYRDGitCheckoutDev, ":Git checkout develop" },
+		{
+			cmd.LYRDGitWorkTreeList,
+			function()
+				require("telescope").extensions.worktrees.list_worktrees()
+			end,
+		},
+		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
+		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 	})
 end
 

@@ -214,6 +214,11 @@ function L.keybindings(s)
 				{ "D", cmd.LYRDGitCheckoutDev },
 				{ "M", cmd.LYRDGitCheckoutMain },
 			}),
+			menu_header("w", "Worktrees", {
+				{ "t", cmd.LYRDGitWorkTreeList },
+				{ "n", cmd.LYRDGitWorkTreeCreate },
+				{ "e", cmd.LYRDGitWorkTreeCreateExistingBranch },
+			}),
 			{ "g", cmd.LYRDGitUI },
 			{ "s", cmd.LYRDGitStatus },
 			{ "c", cmd.LYRDGitCommit },
@@ -223,7 +228,7 @@ function L.keybindings(s)
 			{ "a", cmd.LYRDGitStageAll },
 			{ "b", cmd.LYRDGitViewBlame },
 			{ "l", cmd.LYRDGitViewCurrentFileLog },
-			{ "w", cmd.LYRDGitBrowseOnWeb },
+			{ "x", cmd.LYRDGitBrowseOnWeb },
 		}),
 		menu_header("t", "Test", {
 			{ "t", cmd.LYRDTest },

@@ -169,6 +169,7 @@ function L.plugins(s)
 			"rcarriga/nvim-notify",
 			opts = {
 				render = "compact",
+				background_colour = "#000000",
 			},
 		},
 		{
