@@ -170,6 +170,7 @@ function L.plugins(s)
 			opts = {
 				render = "compact",
 				background_colour = "#000000",
+				top_down = false,
 			},
 		},
 		{
