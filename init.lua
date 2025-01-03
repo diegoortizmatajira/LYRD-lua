@@ -34,6 +34,7 @@ setup.load({
 		-- "LYRD.layers.ai-tabnine",
 		-- "LYRD.layers.ai-copilot",
 		-- "LYRD.layers.ai-chat-gpt",
+		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.dotnet",
 		"LYRD.layers.lang.go",
