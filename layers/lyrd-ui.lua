@@ -118,113 +118,113 @@ local function get_buffers_that_close_with_their_window()
 end
 
 function L.plugins(s)
-    setup.plugin(s, {
-        {
-            "mcauley-penney/visual-whitespace.nvim",
-            config = true,
-        },
-        {
-            "folke/noice.nvim",
-            event = "VeryLazy",
-            opts = {
-                cmdline = {
-                    format = {
-                        cmdline = { icon = icons.other.command },
-                        search_down = { icon = icons.search.default .. icons.chevron.double_down },
-                        search_up = { icon = icons.search.default .. icons.chevron.double_up },
-                        filter = { icon = icons.other.filter },
-                        lua = { icon = "" },
-                        help = { icon = icons.other.help },
-                        input = { icon = icons.other.keyboard }, -- Used by input()
-                    },
-                },
-                lsp = {
-                    progress = {
-                        enabled = false, -- disables a lot of distracting text from popping up when done
-                        format_done = "",
-                    },
-                    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-                    override = {
-                        ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-                        ["vim.lsp.util.stylize_markdown"] = true,
-                        ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
-                    },
-                },
-                -- you can enable a preset for easier configuration
-                presets = {
-                    bottom_search = false, -- use a classic bottom cmdline for search
-                    command_palette = false, -- position the cmdline and popupmenu together
-                    long_message_to_split = true, -- long messages will be sent to a split
-                    inc_rename = false, -- enables an input dialog for inc-rename.nvim
-                    lsp_doc_border = false, -- add a border to hover docs and signature help
-                },
-            },
-            config = function(_, opts)
-                require("noice").setup(opts)
-                local telescope = require("telescope")
-                telescope.load_extension("noice")
-            end,
-            dependencies = {
-                -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-                "MunifTanjim/nui.nvim",
-                -- OPTIONAL:
-                --   `nvim-notify` is only needed, if you want to use the notification view.
-                --   If not available, we use `mini` as the fallback
-                "rcarriga/nvim-notify",
-            },
-        },
-        {
-            "rcarriga/nvim-notify",
-            opts = {
-                render = "compact",
-                background_colour = "#000000",
-            },
-        },
-        {
-            "akinsho/bufferline.nvim",
-            version = "*",
-            opts = {
-                highlights = {
-                    background = {
-                        italic = true,
-                    },
-                    buffer_selected = {
-                        bold = true,
-                        italic = false,
-                    },
-                },
-                options = {
-                    themable = true,
-                    mode = "buffers",
-                    numbers = "none",
-                    show_buffer_close_icons = false,
-                    separator_style = "slope",
-                    offsets = get_buffer_offsets(),
-                },
-            },
-            dependencies = "nvim-tree/nvim-web-devicons",
-        },
-        {
-            "nvim-lualine/lualine.nvim",
-            opts = {
-                sections = {
-                    lualine_c = {
-                        "filename",
-                    },
-                    lualine_x = {
-                        "tabnine",
-                        "filetype",
-                    },
-                },
-            },
-            dependencies = {
-                "nvim-tree/nvim-web-devicons",
-            },
-        },
-        {
-            "goolord/alpha-nvim",
-            config = function()
-                local startify = require("alpha.themes.startify")
+	setup.plugin(s, {
+		{
+			"mcauley-penney/visual-whitespace.nvim",
+			config = true,
+		},
+		{
+			"folke/noice.nvim",
+			event = "VeryLazy",
+			opts = {
+				cmdline = {
+					format = {
+						cmdline = { icon = icons.other.command },
+						search_down = { icon = icons.search.default .. icons.chevron.double_down },
+						search_up = { icon = icons.search.default .. icons.chevron.double_up },
+						filter = { icon = icons.other.filter },
+						lua = { icon = "" },
+						help = { icon = icons.other.help },
+						input = { icon = icons.other.keyboard }, -- Used by input()
+					},
+				},
+				lsp = {
+					progress = {
+						enabled = false, -- disables a lot of distracting text from popping up when done
+						format_done = "",
+					},
+					-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+					override = {
+						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+						["vim.lsp.util.stylize_markdown"] = true,
+						["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+					},
+				},
+				-- you can enable a preset for easier configuration
+				presets = {
+					bottom_search = false, -- use a classic bottom cmdline for search
+					command_palette = false, -- position the cmdline and popupmenu together
+					long_message_to_split = true, -- long messages will be sent to a split
+					inc_rename = false, -- enables an input dialog for inc-rename.nvim
+					lsp_doc_border = false, -- add a border to hover docs and signature help
+				},
+			},
+			config = function(_, opts)
+				require("noice").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("noice")
+			end,
+			dependencies = {
+				-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+				"MunifTanjim/nui.nvim",
+				-- OPTIONAL:
+				--   `nvim-notify` is only needed, if you want to use the notification view.
+				--   If not available, we use `mini` as the fallback
+				"rcarriga/nvim-notify",
+			},
+		},
+		{
+			"rcarriga/nvim-notify",
+			opts = {
+				render = "compact",
+				background_colour = "#000000",
+			},
+		},
+		{
+			"akinsho/bufferline.nvim",
+			version = "*",
+			opts = {
+				highlights = {
+					background = {
+						italic = true,
+					},
+					buffer_selected = {
+						bold = true,
+						italic = false,
+					},
+				},
+				options = {
+					themable = true,
+					mode = "buffers",
+					numbers = "none",
+					show_buffer_close_icons = false,
+					separator_style = "slope",
+					offsets = get_buffer_offsets(),
+				},
+			},
+			dependencies = "nvim-tree/nvim-web-devicons",
+		},
+		{
+			"nvim-lualine/lualine.nvim",
+			opts = {
+				sections = {
+					lualine_c = {
+						"filename",
+					},
+					lualine_x = {
+						"tabnine",
+						"filetype",
+					},
+				},
+			},
+			dependencies = {
+				"nvim-tree/nvim-web-devicons",
+			},
+		},
+		{
+			"goolord/alpha-nvim",
+			config = function()
+				local startify = require("alpha.themes.startify")
 
                 startify.section.header.val = header()
                 startify.section.top_buttons.val = {
