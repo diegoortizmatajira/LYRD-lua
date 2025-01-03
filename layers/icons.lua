@@ -209,6 +209,10 @@ local L = {
 		bottom = "─",
 		thin_left = "▏",
 	},
+	indicators = {
+		thin = "│",
+		thick = "┃",
+	},
 	folder = {
 		new = " ",
 		default = "󰉋 ",
