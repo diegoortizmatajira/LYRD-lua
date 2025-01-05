@@ -7,6 +7,8 @@ local L = {
 		lightbulb = "💡",
 	},
 	other = {
+		briefcase = " ",
+		code = " ",
 		command = " ",
 		database = "",
 		docker = "󰡨 ",
@@ -58,6 +60,7 @@ local L = {
 		keys = " ",
 	},
 	action = {
+		exit = "󰩈 ",
 		clean = "󰃢 ",
 		install = "󰃘 ",
 		update = "󱪍 ",
@@ -72,9 +75,11 @@ local L = {
 		save_all = " ",
 		kill = "󰚌 ",
 		kill_target = "󱓇 ",
+		move = "󰆾 ",
 		break_line = "󰌑 ",
 		toggle_on = "󰨚 ",
 		toggle_off = "󰨙 ",
+		view = " ",
 		split_h = " ",
 		split_v = " ",
 		wrap = " ",
@@ -83,6 +88,9 @@ local L = {
 		replace_in_files = "󰬳 ",
 	},
 	arrow = {
+		swap = " ",
+		expand = "󰘖 ",
+		collapse = "󰘕 ",
 		left = " ",
 		right = " ",
 		down = " ",
@@ -161,10 +169,12 @@ local L = {
 		variable = " ",
 	},
 	http = {
+		default = "󰖟 ",
 		send = "󱅡 ",
 		environment = "󰟭 ",
 	},
 	git = {
+		default = " ",
 		-- Actions
 		branch = " ",
 		commit = " ",
@@ -226,6 +236,7 @@ local L = {
 		new = " ",
 		swap = "󰾵 ",
 		default = " ",
+		notebook = " ",
 		symlink = " ",
 		scratch = "󱞁 ",
 	},

@@ -12,11 +12,12 @@ local L = { name = "Mappings" }
 ---@field [2] LYRD.commands.command contains the command
 
 ---@class LYRD.mappings.header_mapping
----@field [1] string contains the key
----@field [2] string title for the menu
----@field [3] LYRD.mappings.mapping[]
----@field [4] "header" | "submode" type of header
-
+---@field key string contains the key
+---@field title string title for the menu
+---@field items LYRD.mappings.mapping[]
+---@field type "header" | "submode" type of header
+---@field icon? string
+---
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
 
 function L.plugins(s)
@@ -99,9 +100,15 @@ end
 ---Creates a keybinding for a menu
 ---@param keys string
 ---@param title string
-local function map_menu(keys, title)
+---@param icon? string
+local function map_menu(keys, title, icon)
 	local wk = require("which-key")
-	wk.add({ { keys, group = "[" .. title .. "]" } })
+	if type(icon) == "string" then
+		icon_str = icons.icon(icon)
+	else
+		icon_str = icon
+	end
+	wk.add({ { keys, group = "[" .. title .. "]", icon = icon_str } })
 end
 
 ---Creates a set of keybindings
@@ -145,22 +152,19 @@ end
 --- @param items LYRD.mappings.mapping[]
 function L.create_menu(prefix, items)
 	for _, item in ipairs(items) do
-		if #item == 4 and item[4] == "header" then
-			-- Map a menu header and its child items
-			local key, title, sub_items, _ = unpack(item)
-			map_menu(prefix .. key, title)
-			L.create_menu(prefix .. key, sub_items)
-		elseif #item == 4 and item[4] == "submode" then
+		if item.type == "header" then
+			map_menu(prefix .. item.key, item.title, item.icon)
+			L.create_menu(prefix .. item.key, item.items)
+		elseif item.type == "submode" then
 			-- Creates a submode
-			local key, title, sub_items, _ = unpack(item)
-			map_menu(prefix .. key, title)
+			map_menu(prefix .. item.key, item.title, item.icon)
 			local submode = require("submode")
-			submode.create("submode_" .. prefix .. key, {
+			submode.create("submode_" .. prefix .. item.key, {
 				mode = "n",
-				enter = prefix .. key,
+				enter = prefix .. item.key,
 				leave = { "q", "<ESC>" },
 				default = function(register)
-					for _, mode_item in ipairs(sub_items) do
+					for _, mode_item in ipairs(item.items) do
 						local submode_key, command = unpack(mode_item)
 						if type(command) == "string" then
 							register(submode_key, command)
@@ -199,9 +203,15 @@ end
 --- @param title string
 --- @param items LYRD.mappings.mapping[]
 --- @return LYRD.mappings.header_mapping
-function L.menu_header(key, title, items)
+function L.menu_header(key, title, items, icon)
 	---@type LYRD.mappings.header_mapping
-	return { key, title, items, "header" }
+	return {
+		key = key,
+		title = title,
+		items = items,
+		type = "header",
+		icon = icon,
+	}
 end
 
 --- Creates a submode header
@@ -209,9 +219,15 @@ end
 --- @param title string
 --- @param items LYRD.mappings.mapping[]
 --- @return LYRD.mappings.header_mapping
-function L.submode_header(key, title, items)
+function L.submode_header(key, title, items, icon)
 	---@type LYRD.mappings.header_mapping
-	return { key, title, items, "submode" }
+	return {
+		key = key,
+		title = title,
+		items = items,
+		type = "submode",
+		icon = icon,
+	}
 end
 
 return L
