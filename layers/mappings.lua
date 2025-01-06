@@ -50,6 +50,7 @@ function L.plugins(s)
 		{
 			"pogyomo/submode.nvim",
 			lazy = true,
+			 version = "6.4.1",
 		},
 	})
 end
