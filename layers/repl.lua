@@ -46,6 +46,10 @@ function L.plugins(s)
 			opts = {},
 		},
 		{
+			"GCBallesteros/jupytext.nvim",
+			opts = {},
+		},
+		{
 			"echasnovski/mini.hipatterns",
 			dependencies = { "GCBallesteros/NotebookNavigator.nvim" },
 			opts = function()
