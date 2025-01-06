@@ -47,7 +47,6 @@ function L.plugins(s)
 		},
 		{
 			"GCBallesteros/jupytext.nvim",
-			ft = L.supported_filetypes,
 			opts = {},
 		},
 		{
