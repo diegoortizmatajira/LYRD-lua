@@ -256,6 +256,20 @@ function L.plugins(s)
 						{ name = "path" },
 						{ name = "tmux" },
 					}),
+					sorting = {
+						priority_weight = 2,
+						comparators = {
+							cmp.config.compare.offset,
+							cmp.config.compare.exact,
+							cmp.config.compare.score,
+							require("cmp-under-comparator").under,
+							cmp.config.compare.recently_used,
+							cmp.config.compare.locality,
+							cmp.config.compare.kind,
+							cmp.config.compare.length,
+							cmp.config.compare.order,
+						},
+					},
 				})
 
 				cmp.setup.cmdline({ "/", "?" }, {
@@ -303,6 +317,7 @@ function L.plugins(s)
 		{ "hrsh7th/cmp-nvim-lsp-signature-help" },
 		{ "mattn/emmet-vim" },
 		{ "MattiasMTS/cmp-dbee" },
+		{ "lukas-reineke/cmp-under-comparator" },
 	})
 end
 
