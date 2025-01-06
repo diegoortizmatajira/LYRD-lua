@@ -244,16 +244,17 @@ function L.plugins(s)
 						end,
 					},
 					sources = cmp.config.sources({
-						{ name = "nvim_lsp", priority = 1000 },
-						{ name = "nvim_lsp_signature_help", priority = 500 },
-						{ name = "lazydev", priority = 500 },
-						{ name = "luasnip", priority = 400 },
-						{ name = "cmp_tabnine", priority = 300 },
-						{ name = "codeium", priority = 300 },
-						{ name = "buffer", priority = 280 },
-						{ name = "cmp-dbee", priority = 250 },
-						{ name = "path", priority = 200 },
-						{ name = "tmux", priority = 100 },
+						{ name = "nvim_lsp" },
+						{ name = "nvim_lsp_signature_help" },
+						{ name = "lazydev" },
+						{ name = "luasnip" },
+						{ name = "codeium" },
+						{ name = "cmp_tabnine" },
+					}, {
+						{ name = "buffer" },
+						{ name = "cmp-dbee" },
+						{ name = "path" },
+						{ name = "tmux" },
 					}),
 				})
 
