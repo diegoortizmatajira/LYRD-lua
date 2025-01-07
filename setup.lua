@@ -37,7 +37,7 @@ local function bootstrap_lazy()
 				{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
 				{ out, "WarningMsg" },
 				{ "\nPress any key to exit..." },
-			}, true, {})
+ 			}, true, {})
 			vim.fn.getchar()
 			os.exit(1)
 		end
