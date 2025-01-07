@@ -12,6 +12,12 @@ local icons = require("LYRD.layers.icons")
 local L = {
 	name = "LYRD UI",
 	---@type LYRD.ui.special_type[]
+	special_filenames = {
+
+		{ type_id = "fugitive:" },
+		{ type_id = "diffview:" },
+	},
+	---@type LYRD.ui.special_type[]
 	special_filetypes = {
 		-- You can add entries here to mark special filetypes that have a header in their
 		-- sidebar or that should close with their window (unless the value true is provided)
@@ -26,6 +32,7 @@ local L = {
 		{ type_id = "help" },
 		{ type_id = "http_response" },
 		{ type_id = "lazy" },
+		{ type_id = "DiffviewFileHistory" },
 		{ type_id = "NeogitStatus" },
 		{ type_id = "NeogitPopup" },
 		{ type_id = "dbui", title = "Database" },
@@ -36,6 +43,7 @@ local L = {
 		{ type_id = "trouble" },
 		{ type_id = "tsplayground", title = "Treesitter Playground" },
 	},
+	---@type LYRD.ui.special_type[]
 	special_buffertypes = {
 		{ type_id = "terminal" },
 	},
@@ -105,9 +113,12 @@ end
 
 -- Gets the list of buffers that will be closed when the buffer is closed
 local function get_buffers_that_close_with_their_window()
-	local result = {
-		{ filename = "fugitive:" },
-	}
+	local result = {}
+	for _, value in pairs(L.special_filenames) do
+		if not value.keep_window then
+			table.insert(result, { filename = value.type_id })
+		end
+	end
 	for _, value in pairs(L.special_filetypes) do
 		if not value.keep_window then
 			table.insert(result, { filetype = value.type_id })

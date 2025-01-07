@@ -12,8 +12,6 @@ function L.plugins(s)
 			dependencies = {
 				"nvim-lua/plenary.nvim", -- required
 				"sindrets/diffview.nvim", -- optional - Diff integration
-
-				-- Only one of these is needed.
 				"nvim-telescope/telescope.nvim", -- optional
 			},
 			opts = {
@@ -118,29 +116,16 @@ function L.plugins(s)
 			"akinsho/git-conflict.nvim",
 			version = "*",
 			opts = {},
-			config = function(_, opts)
-				require("worktrees").setup(opts)
-				local telescope = require("telescope")
-				telescope.load_extension("worktrees")
-			end,
-		},
-		{
-			"isak102/telescope-git-file-history.nvim",
-			opts = {},
-			config = function(_, opts)
-				require("telescope").setup(opts)
-				local telescope = require("telescope")
-				telescope.load_extension("git_file_history")
-			end,
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"nvim-telescope/telescope.nvim",
-			},
 		},
 		{
 			"Juksuu/worktrees.nvim",
 			opts = {},
 			dependencies = { "nvim-lua/plenary.nvim" },
+			config = function(_, opts)
+				require("worktrees").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("worktrees")
+			end,
 		},
 	})
 end
@@ -150,17 +135,20 @@ function L.git_flow_start(what)
 		if not name then
 			return
 		end
-		vim.cmd(":Git flow " .. what .. " start " .. name)
+		vim.cmd(":!git flow " .. what .. " start " .. name)
 	end)
 end
 
 function L.git_flow_finish(what)
 	local head = vim.fn.FugitiveHead()
 	local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-	vim.cmd(string.format("Git flow %s finish %s", what, name))
+	vim.cmd(string.format("!git flow %s finish %s", what, name))
 end
 
 function L.settings(s)
+	commands.implement(s, { "DiffviewFileHistory" }, {
+		{ cmd.LYRDBufferClose, ":tabclose" },
+	})
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Neogit" },
@@ -170,9 +158,9 @@ function L.settings(s)
 		{ cmd.LYRDGitViewDiff, ":Gvdiffsplit" },
 		{ cmd.LYRDGitStageAll, ":Git add ." },
 		{ cmd.LYRDGitViewBlame, ":Git_blame" },
-		{ cmd.LYRDGitViewCurrentFileLog, ":Telescope git_file_history" },
+		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitBrowseOnWeb, ":GBrowse" },
-		{ cmd.LYRDGitFlowInit, ":Git flow init" },
+		{ cmd.LYRDGitFlowInit, ":!git flow init -d" },
 		{
 			cmd.LYRDGitFlowFeatureStart,
 			function()
