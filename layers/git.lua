@@ -34,9 +34,10 @@ function L.plugins(s)
 				},
 				mappings = {
 					status = {
-						["o"] = "Toggle",
-						["<CR>"] = "Toggle",
-						-- ["<tab>"] = "",
+						["<space>"] = "Toggle",
+						["<tab>"] = false,
+						["<c-s>"] = false,
+						["<c-a>"] = "StageAll",
 					},
 				},
 			},
