@@ -34,6 +34,12 @@ function L.plugins(s)
 			},
 		},
 		{
+			"danymat/neogen",
+			config = {
+				snippet_engine = "luasnip",
+			},
+		},
+		{
 			"gh-liu/fold_line.nvim",
 			event = "VeryLazy",
 			init = function()
@@ -139,6 +145,7 @@ function L.settings(s)
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
 		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
+		{ cmd.LYRDCodeAddDocumentation, ":Neogen" },
 	})
 end
 

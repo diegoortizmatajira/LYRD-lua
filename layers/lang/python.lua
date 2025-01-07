@@ -83,6 +83,7 @@ function L.settings(s)
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
 		{ cmd.LYRDCodeSecrets, L.open_dotenv },
+		{ cmd.LYRDCodeRunSelection, ":LYRDReplNotebookRunCellAndMove" },
 	})
 end
 

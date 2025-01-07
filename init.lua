@@ -29,10 +29,12 @@ setup.load({
 		"LYRD.layers.docker",
 		"LYRD.layers.kubernetes",
 		"LYRD.layers.tasks", -- Must be after debug and database
+		"LYRD.layers.repl",
 		"LYRD.layers.ai-codeium",
 		-- "LYRD.layers.ai-tabnine",
 		-- "LYRD.layers.ai-copilot",
 		-- "LYRD.layers.ai-chat-gpt",
+		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.dotnet",
 		"LYRD.layers.lang.go",
@@ -44,5 +46,6 @@ setup.load({
 		"LYRD.layers.lang.sql",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
+		"LYRD.layers.extras",
 	},
 })

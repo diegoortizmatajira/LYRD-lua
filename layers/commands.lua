@@ -21,123 +21,135 @@ local setup = require("LYRD.setup")
 ---@param commandName string
 ---@param implementation string|function
 local function register_implementation(s, filetype, commandName, implementation)
-	if s.commands[commandName] == nil then
-		s.commands[commandName] = {}
-	end
-	setup.config.commands[commandName][filetype] = implementation
+    if s.commands[commandName] == nil then
+        s.commands[commandName] = {}
+    end
+    setup.config.commands[commandName][filetype] = implementation
 end
 
 ---Executes a command depending on the type
 ---@param s LYRD.commands.settings
 ---@param commandName string
 local function execute_command(s, commandName)
-	---Executes a command
-	---@param command string
-	local function safe_cmd(command)
-		return vim.cmd(command)
-	end
+    ---Executes a command
+    ---@param command string
+    local function safe_cmd(command)
+        return vim.cmd(command)
+    end
 
-	---Executes a command instance
-	---@param command_instance string|function
-	---@return boolean
-	local execute_and_confirm = function(command_instance)
-		if type(command_instance) == "string" then
-			if command_instance ~= nil and command_instance ~= "" then
-				local ok, _ = pcall(safe_cmd, command_instance)
-				if not ok then
-					vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
-				end
-				return true
-			end
-		elseif type(command_instance) == "function" then
-			command_instance()
-			return true
-		end
-		return false
-	end
+    ---Executes a command instance
+    ---@param command_instance string|function
+    ---@return boolean
+    local execute_and_confirm = function(command_instance)
+        if type(command_instance) == "string" then
+            if command_instance ~= nil and command_instance ~= "" then
+                local ok, _ = pcall(safe_cmd, command_instance)
+                if not ok then
+                    vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
+                end
+                return true
+            end
+        elseif type(command_instance) == "function" then
+            command_instance()
+            return true
+        end
+        return false
+    end
 
-	-- Looks for the current file type command implementation
-	local cmd = s.commands[commandName][vim.bo.filetype]
-	if execute_and_confirm(cmd) then
-		return
-	end
-	-- Looks for the generic command implementation
-	cmd = s.commands[commandName]["*"]
-	if execute_and_confirm(cmd) then
-		return
-	end
-	vim.notify(
-		string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype),
-		vim.log.levels.WARN
-	)
+    -- Looks for the current file type command implementation
+    local cmd = s.commands[commandName][vim.bo.filetype]
+    if execute_and_confirm(cmd) then
+        return
+    end
+    -- Looks for the generic command implementation
+    cmd = s.commands[commandName]["*"]
+    if execute_and_confirm(cmd) then
+        return
+    end
+    vim.notify(
+        string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype),
+        vim.log.levels.WARN
+    )
 end
 
 local function show_unimplemented_commands(s)
-	print("The next commands are not implemented for any type of file")
-	for command, implementation in pairs(s.commands) do
-		if implementation["*"] == "" and #implementation == 1 then
-			print("-", command)
-		end
-	end
-	print("End of the list")
+    print("The next commands are not implemented for any type of file")
+    for command, implementation in pairs(s.commands) do
+        if implementation["*"] == "" and #implementation == 1 then
+            print("-", command)
+        end
+    end
+    print("End of the list")
 end
 
 local function show_implemented_commands(s)
-	print("The next commands are implemented by default")
-	for command, implementation in pairs(s.commands) do
-		if implementation["*"] ~= "" then
-			print("-", command, "=>", implementation["*"])
-		end
-	end
-	print("End of the list")
+    print("The next commands are implemented by default")
+    for command, implementation in pairs(s.commands) do
+        if implementation["*"] ~= "" then
+            print("-", command, "=>", implementation["*"])
+        end
+    end
+    print("End of the list")
 end
 
 function L.settings(s)
-	s.commands = {}
+    s.commands = {}
 
-	L.list_unimplemented = function()
-		show_unimplemented_commands(s)
-	end
-	L.list_implemented = function()
-		show_implemented_commands(s)
-	end
+    L.list_unimplemented = function()
+        show_unimplemented_commands(s)
+    end
+    L.list_implemented = function()
+        show_implemented_commands(s)
+    end
+end
+
+local function implement_per_filetype(s, filetype, commands)
+    for _, command_info in ipairs(commands) do
+        local cmd, implementation = unpack(command_info)
+        if cmd == nil then
+            error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
+        end
+        register_implementation(s, filetype, cmd.name, implementation)
+    end
 end
 
 ---Registers a set of commands for a specific filetype
 ---@param s LYRD.commands.settings
----@param filetype string
+---@param filetype string|string[]
 ---@param commands LYRD.commands.implementation[]
 function L.implement(s, filetype, commands)
-	for _, command_info in ipairs(commands) do
-		local cmd, implementation = unpack(command_info)
-		if cmd == nil then
-			error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
-		end
-		register_implementation(s, filetype, cmd.name, implementation)
-	end
+    if type(filetype) == "string" then
+        implement_per_filetype(s, filetype, commands)
+    elseif type(filetype) == "table" then
+        for _, f in pairs(filetype) do
+            implement_per_filetype(s, f, commands)
+        end
+    else
+        error("Filetype must be a string or a list of strings")
+    end
 end
 
 ---Registers a set of commands
 ---@param commands table<string, LYRD.commands.command>
 function L.register(s, commands)
-	for command_name, definition in pairs(commands) do
-		definition.name = command_name
-		register_implementation(s, "*", command_name, definition.default)
-		vim.api.nvim_create_user_command(command_name, function()
-			execute_command(s, command_name)
-		end, { desc = definition.desc })
-	end
+    for command_name, definition in pairs(commands) do
+        definition.name = command_name
+        register_implementation(s, "*", command_name, definition.default)
+        vim.api.nvim_create_user_command(command_name, function()
+            execute_command(s, command_name)
+        end, { desc = definition.desc })
+    end
 end
 
 function L.command_shortcut(commandName)
-	return "<cmd>" .. commandName .. "<CR>"
+    return "<cmd>" .. commandName .. "<CR>"
 end
 
 function L.handler(callback, ...)
-	local params = { ... }
-	return function()
-		callback(unpack(params))
-	end
+    local params = { ... }
+    return function()
+        callback(unpack(params))
+    end
 end
 
 return L

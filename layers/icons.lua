@@ -7,6 +7,8 @@ local L = {
 		lightbulb = "💡",
 	},
 	other = {
+		briefcase = " ",
+		code = " ",
 		command = " ",
 		database = "",
 		docker = "󰡨 ",
@@ -29,6 +31,7 @@ local L = {
 		secret = " ",
 		environment = " ",
 		layers = " ",
+		focus = "󰋱 ",
 	},
 	apps = {
 		git = "󰊢 ",
@@ -57,6 +60,7 @@ local L = {
 		keys = " ",
 	},
 	action = {
+		exit = "󰩈 ",
 		clean = "󰃢 ",
 		install = "󰃘 ",
 		update = "󱪍 ",
@@ -71,9 +75,11 @@ local L = {
 		save_all = " ",
 		kill = "󰚌 ",
 		kill_target = "󱓇 ",
+		move = "󰆾 ",
 		break_line = "󰌑 ",
 		toggle_on = "󰨚 ",
 		toggle_off = "󰨙 ",
+		view = " ",
 		split_h = " ",
 		split_v = " ",
 		wrap = " ",
@@ -82,6 +88,9 @@ local L = {
 		replace_in_files = "󰬳 ",
 	},
 	arrow = {
+		swap = " ",
+		expand = "󰘖 ",
+		collapse = "󰘕 ",
 		left = " ",
 		right = " ",
 		down = " ",
@@ -128,6 +137,8 @@ local L = {
 		rename = " ",
 		test = "󰙨 ",
 		make = "󱜧 ",
+		document = "󱪝 ",
+		restart = "󰜉",
 		-- Code elements
 		package = " ",
 		symbol = " ",
@@ -158,10 +169,12 @@ local L = {
 		variable = " ",
 	},
 	http = {
+		default = "󰖟 ",
 		send = "󱅡 ",
 		environment = "󰟭 ",
 	},
 	git = {
+		default = " ",
 		-- Actions
 		branch = " ",
 		commit = " ",
@@ -181,6 +194,7 @@ local L = {
 		diff = " ",
 		blame = " ",
 		init = " ",
+		worktree = " ",
 		-- Status
 		unstaged = " ",
 		staged = "✓ ",
@@ -205,6 +219,10 @@ local L = {
 		bottom = "─",
 		thin_left = "▏",
 	},
+	indicators = {
+		thin = "│",
+		thick = "┃",
+	},
 	folder = {
 		new = " ",
 		default = "󰉋 ",
@@ -218,6 +236,7 @@ local L = {
 		new = " ",
 		swap = "󰾵 ",
 		default = " ",
+		notebook = " ",
 		symlink = " ",
 		scratch = "󱞁 ",
 	},
