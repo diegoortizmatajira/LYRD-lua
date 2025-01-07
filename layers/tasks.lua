@@ -25,7 +25,6 @@ function L.plugins(s)
 				"muniftanjim/nui.nvim",
 				"kndndrj/projector-neotest",
 				"kndndrj/projector-vscode",
-				"kndndrj/projector-dbee",
 			},
 			config = function()
 				require("projector").setup({
@@ -40,7 +39,6 @@ function L.plugins(s)
 						require("projector.outputs").DadbodOutputBuilder:new(),
 						require("projector.outputs").DapOutputBuilder:new(),
 						require("projector_neotest").OutputBuilder:new(),
-						require("projector_dbee").OutputBuilder:new(),
 					},
 				})
 			end,
@@ -53,9 +51,6 @@ function L.plugins(s)
 		},
 		{
 			"kndndrj/projector-vscode",
-		},
-		{
-			"kndndrj/projector-dbee",
 		},
 	})
 end
