@@ -146,8 +146,8 @@ function L.git_flow_finish(what)
 end
 
 function L.settings(s)
-	commands.implement(s, { "DiffviewFileHistory" }, {
-		{ cmd.LYRDBufferClose, ":tabclose" },
+	commands.implement(s, { "DiffviewFileHistory", "DiffviewFiles" }, {
+		{ cmd.LYRDBufferClose, ":DiffViewClose" },
 	})
 	commands.implement(s, "*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
@@ -155,7 +155,7 @@ function L.settings(s)
 		{ cmd.LYRDGitCommit, ":Neogit commit" },
 		{ cmd.LYRDGitPush, ":Neogit push" },
 		{ cmd.LYRDGitPull, ":Neogit pull" },
-		{ cmd.LYRDGitViewDiff, ":Gvdiffsplit" },
+		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, ":Git add ." },
 		{ cmd.LYRDGitViewBlame, ":Git_blame" },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
@@ -197,8 +197,8 @@ function L.settings(s)
 				L.git_flow_finish("hotfix")
 			end,
 		},
-		{ cmd.LYRDGitCheckoutMain, ":Git checkout main" },
-		{ cmd.LYRDGitCheckoutDev, ":Git checkout develop" },
+		{ cmd.LYRDGitCheckoutMain, ":!git checkout main" },
+		{ cmd.LYRDGitCheckoutDev, ":!git checkout develop" },
 		{
 			cmd.LYRDGitWorkTreeList,
 			function()
