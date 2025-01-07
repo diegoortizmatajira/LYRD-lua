@@ -110,6 +110,11 @@ function L.plugins(s)
 			"akinsho/git-conflict.nvim",
 			version = "*",
 			opts = {},
+			config = function(_, opts)
+				require("worktrees").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("worktrees")
+			end,
 		},
 		{
 			"isak102/telescope-git-file-history.nvim",
@@ -124,6 +129,11 @@ function L.plugins(s)
 				"nvim-telescope/telescope.nvim",
 			},
 		},
+		{
+			"Juksuu/worktrees.nvim",
+			opts = {},
+			dependencies = { "nvim-lua/plenary.nvim" },
+		},
 	})
 end
 
@@ -137,14 +147,9 @@ function L.git_flow_start(what)
 end
 
 function L.git_flow_finish(what)
-	local name = vim.api.nvim_exec2(
-		[[
-    let parts = split(FugitiveHead(),'/')
-    echo parts[len(parts)-1]
-        ]],
-		{ capture_output = true }
-	)
-	vim.cmd(":Git flow " .. what .. " finish " .. name)
+	local head = vim.fn.FugitiveHead()
+	local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
+	vim.cmd(string.format("Git flow %s finish %s", what, name))
 end
 
 function L.settings(s)
@@ -198,6 +203,14 @@ function L.settings(s)
 		},
 		{ cmd.LYRDGitCheckoutMain, ":Git checkout main" },
 		{ cmd.LYRDGitCheckoutDev, ":Git checkout develop" },
+		{
+			cmd.LYRDGitWorkTreeList,
+			function()
+				require("telescope").extensions.worktrees.list_worktrees()
+			end,
+		},
+		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
+		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 	})
 end
 

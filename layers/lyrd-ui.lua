@@ -3,34 +3,39 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.ui.special_filetype
----@field filetype string
+---@class LYRD.ui.special_type
+---@field type_id string
 ---@field title? string
 ---@field keep_window? boolean
 ---@field allow_saving? boolean
 
 local L = {
 	name = "LYRD UI",
-	---@type LYRD.ui.special_filetype[]
+	---@type LYRD.ui.special_type[]
 	special_filetypes = {
 		-- You can add entries here to mark special filetypes that have a header in their
 		-- sidebar or that should close with their window (unless the value true is provided)
-		{ filetype = "DiffviewFiles", title = "Diff View" },
-		{ filetype = "NvimTree", title = "Explorer" },
-		{ filetype = "aerial", title = "Outline" },
-		{ filetype = "alpha" },
-		{ filetype = "fugitive" },
-		{ filetype = "NeogitStatus" },
-		{ filetype = "qf" },
-		{ filetype = "gitcommit" },
-		{ filetype = "help" },
-		{ filetype = "http_response" },
-		{ filetype = "lazy" },
-		{ filetype = "neotest-summary", title = "Tests" },
-		{ filetype = "toggleterm" },
-		{ filetype = "OverseerList" },
-		{ filetype = "trouble" },
-		{ filetype = "tsplayground", title = "Treesitter Playground" },
+		{ type_id = "DiffviewFiles", title = "Diff View" },
+		{ type_id = "NvimTree", title = "Explorer" },
+		{ type_id = "aerial", title = "Outline" },
+		{ type_id = "alpha" },
+		{ type_id = "fugitive" },
+		{ type_id = "noice" },
+		{ type_id = "qf" },
+		{ type_id = "gitcommit" },
+		{ type_id = "help" },
+		{ type_id = "http_response" },
+		{ type_id = "lazy" },
+		{ type_id = "dbui", title = "Database" },
+		{ type_id = "dbout" },
+		{ type_id = "neotest-summary", title = "Tests" },
+		{ type_id = "toggleterm" },
+		{ type_id = "OverseerList" },
+		{ type_id = "trouble" },
+		{ type_id = "tsplayground", title = "Treesitter Playground" },
+	},
+	special_buffertypes = {
+		{ type_id = "terminal" },
 	},
 }
 
@@ -86,7 +91,7 @@ local function get_buffer_offsets()
 	for _, value in pairs(L.special_filetypes) do
 		if value.title then
 			table.insert(result, {
-				filetype = value.filetype,
+				filetype = value.type_id,
 				text = value.title,
 				highlight = "PanelHeading",
 				padding = 1,
@@ -103,7 +108,12 @@ local function get_buffers_that_close_with_their_window()
 	}
 	for _, value in pairs(L.special_filetypes) do
 		if not value.keep_window then
-			table.insert(result, { filetype = value.filetype })
+			table.insert(result, { filetype = value.type_id })
+		end
+	end
+	for _, value in pairs(L.special_buffertypes) do
+		if not value.keep_window then
+			table.insert(result, { buftype = value.type_id })
 		end
 	end
 	return result
@@ -169,11 +179,13 @@ function L.plugins(s)
 			"rcarriga/nvim-notify",
 			opts = {
 				render = "compact",
+				background_colour = "#000000",
+				top_down = false,
 			},
 		},
 		{
 			"akinsho/bufferline.nvim",
-			version = "*",
+			-- version = "*",
 			opts = {
 				highlights = {
 					background = {
@@ -185,11 +197,9 @@ function L.plugins(s)
 					},
 				},
 				options = {
-					themable = true,
 					mode = "buffers",
 					numbers = "none",
 					show_buffer_close_icons = false,
-					separator_style = "slope",
 					offsets = get_buffer_offsets(),
 				},
 			},
@@ -333,6 +343,14 @@ function L.plugins(s)
 				hide_tabline = false,
 			},
 		},
+		{
+			"folke/twilight.nvim",
+			opts = {
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			},
+		},
 	})
 end
 
@@ -387,6 +405,7 @@ function L.settings(s)
 		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
 		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
 		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
+		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },
 		{ cmd.LYRDTerminalList, ":TermSelect" },
 		{
@@ -406,7 +425,7 @@ function L.settings(s)
 	-- Disable saving for special filetypes
 	for _, value in pairs(L.special_filetypes) do
 		if not value.allow_saving then
-			commands.implement(s, value.filetype, {
+			commands.implement(s, value.type_id, {
 				{
 					cmd.LYRDBufferSave,
 					function()

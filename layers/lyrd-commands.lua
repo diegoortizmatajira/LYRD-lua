@@ -122,6 +122,10 @@ local L = {
 			desc = "Build all",
 			icon = icons.code.build,
 		},
+		LYRDCodeAddDocumentation = {
+			desc = "Add documentation",
+			icon = icons.code.document,
+		},
 		LYRDCodeFillStructure = {
 			desc = "Fill structure",
 			icon = icons.code.outline,
@@ -165,6 +169,11 @@ local L = {
 		LYRDCodeRefactor = {
 			desc = "Refactor",
 			icon = icons.code.refactor,
+		},
+		LYRDCodeRunSelection = {
+			desc = "Run selection",
+			icon = icons.code.run,
+			range = true,
 		},
 		LYRDCodeRun = {
 			desc = "Run",
@@ -292,6 +301,18 @@ local L = {
 		},
 		LYRDGitWrite = {
 			desc = "Write",
+		},
+		LYRDGitWorkTreeCreate = {
+			desc = "Create Worktree",
+			icon = icons.folder.new,
+		},
+		LYRDGitWorkTreeCreateExistingBranch = {
+			desc = "Create Worktree for existing branch",
+			icon = icons.folder.new,
+		},
+		LYRDGitWorkTreeList = {
+			desc = "List GIT Worktrees",
+			icon = icons.git.worktree,
 		},
 		LYRDImplementedCommands = {
 			default = commands.list_implemented,
@@ -544,6 +565,10 @@ local L = {
 		LYRDViewYankList = {
 			desc = "Yank list",
 		},
+		LYRDViewFocusMode = {
+			desc = "Focus mode",
+			icon = icons.other.focus,
+		},
 		LYRDWindowClose = {
 			default = ":q",
 			desc = "Close window",
@@ -680,6 +705,50 @@ local L = {
 		LYRDViewTreeSitterPlayground = {
 			desc = "TreeSitter playground",
 			icon = icons.code.outline,
+		},
+		LYRDReplView = {
+			desc = "View REPL",
+			icon = icons.code.run,
+		},
+		LYRDReplRestart = {
+			desc = "REPL Restart",
+			icon = icons.code.restart,
+		},
+		LYRDReplNotebookRunCell = {
+			desc = "Run notebook cell",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunCellAndMove = {
+			desc = "Run notebook cell and move to the next.",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunAllCells = {
+			desc = "Run all notebook cells",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunAllAbove = {
+			desc = "Run notebook cells above",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookRunAllBelow = {
+			desc = "Run notebook cells below",
+			icon = icons.code.run,
+		},
+		LYRDReplNotebookMoveCellUp = {
+			desc = "Move current notebook cell up",
+			icon = icons.arrow.up,
+		},
+		LYRDReplNotebookMoveCellDown = {
+			desc = "Move current notebook cell down",
+			icon = icons.arrow.down,
+		},
+		LYRDReplNotebookAddCellAbove = {
+			desc = "Add notebook cell above",
+			icon = icons.arrow.expand_up,
+		},
+		LYRDReplNotebookAddCellBelow = {
+			desc = "Add notebook cell below",
+			icon = icons.arrow.expand_down,
 		},
 	},
 }

@@ -7,6 +7,7 @@ local setup = require("LYRD.setup")
 ---@field desc string
 ---@field default? string|function|nil
 ---@field icon string|nil
+---@field range? boolean|nil
 
 ---@class LYRD.commands.settings
 ---@field commands table<string, table<string, string|function>>
@@ -103,17 +104,29 @@ function L.settings(s)
 	end
 end
 
----Registers a set of commands for a specific filetype
----@param s LYRD.commands.settings
----@param filetype string
----@param commands LYRD.commands.implementation[]
-function L.implement(s, filetype, commands)
+local function implement_per_filetype(s, filetype, commands)
 	for _, command_info in ipairs(commands) do
 		local cmd, implementation = unpack(command_info)
 		if cmd == nil then
 			error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
 		end
 		register_implementation(s, filetype, cmd.name, implementation)
+	end
+end
+
+---Registers a set of commands for a specific filetype
+---@param s LYRD.commands.settings
+---@param filetype string|string[]
+---@param commands LYRD.commands.implementation[]
+function L.implement(s, filetype, commands)
+	if type(filetype) == "string" then
+		implement_per_filetype(s, filetype, commands)
+	elseif type(filetype) == "table" then
+		for _, f in pairs(filetype) do
+			implement_per_filetype(s, f, commands)
+		end
+	else
+		error("Filetype must be a string or a list of strings")
 	end
 end
 
@@ -125,7 +138,7 @@ function L.register(s, commands)
 		register_implementation(s, "*", command_name, definition.default)
 		vim.api.nvim_create_user_command(command_name, function()
 			execute_command(s, command_name)
-		end, { desc = definition.desc })
+		end, { desc = definition.desc, range = definition.range })
 	end
 end
 
