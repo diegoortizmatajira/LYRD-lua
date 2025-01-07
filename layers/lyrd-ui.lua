@@ -26,6 +26,8 @@ local L = {
 		{ type_id = "help" },
 		{ type_id = "http_response" },
 		{ type_id = "lazy" },
+		{ type_id = "dbui" },
+		{ type_id = "dbout" },
 		{ type_id = "neotest-summary", title = "Tests" },
 		{ type_id = "toggleterm" },
 		{ type_id = "OverseerList" },

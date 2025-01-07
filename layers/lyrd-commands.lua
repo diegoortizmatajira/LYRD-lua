@@ -173,6 +173,7 @@ local L = {
 		LYRDCodeRunSelection = {
 			desc = "Run selection",
 			icon = icons.code.run,
+			range = true,
 		},
 		LYRDCodeRun = {
 			desc = "Run",

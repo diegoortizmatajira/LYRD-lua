@@ -1,7 +1,10 @@
 local setup = require("LYRD.setup")
 local utils = require("LYRD.utils")
 
-local L = { name = "File templates" }
+local L = {
+	name = "File templates",
+	ignore_filetypes = { "dbout" },
+}
 
 function L.plugins(s)
 	setup.plugin(s, {
@@ -28,6 +31,15 @@ function L.plugins(s)
 	})
 end
 
+local function is_string_in_list(target, list)
+	for _, str in ipairs(list) do
+		if str == target then
+			return true
+		end
+	end
+	return false
+end
+
 function L.settings(_)
 	vim.api.nvim_create_augroup("EmptyFileCheck", { clear = true })
 
@@ -35,6 +47,9 @@ function L.settings(_)
 		group = "EmptyFileCheck",
 		pattern = "*",
 		callback = function()
+			if is_string_in_list(vim.bo.filetype, L.ignore_filetypes) then
+				return
+			end
 			-- Check if the file is empty
 			if vim.fn.line("$") == 1 and vim.fn.getline(1) == "" then
 				-- Attempt to use Spook to apply a template

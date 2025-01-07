@@ -27,8 +27,8 @@ function L.plugins(s)
 				"DBUIFindBuffer",
 			},
 			init = function()
-				-- Your DBUI configuration
 				vim.g.db_ui_use_nerd_fonts = 1
+				vim.g.db_ui_execute_on_save = 0
 			end,
 		},
 		{ "muniftanjim/nui.nvim" },
@@ -53,8 +53,8 @@ function L.settings(s)
 		{ cmd.LYRDDatabaseUI, ":DBUIToggle" },
 	})
 	commands.implement(s, "sql", {
-		{ cmd.LYRDCodeRun, "%DB" },
-		{ cmd.LYRDCodeRunSelection, "'<,'>DB" },
+		{ cmd.LYRDCodeRun, ":%DB" },
+		{ cmd.LYRDCodeRunSelection, ":'<,'>DB" },
 	})
 end
 
