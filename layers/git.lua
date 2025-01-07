@@ -32,6 +32,13 @@ function L.plugins(s)
 					show_staged_diff = true,
 					staged_diff_split_kind = "vsplit",
 				},
+				mappings = {
+					status = {
+						["o"] = "Toggle",
+						["<CR>"] = "Toggle",
+						-- ["<tab>"] = "",
+					},
+				},
 			},
 		},
 		{

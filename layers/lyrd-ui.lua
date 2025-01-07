@@ -26,6 +26,7 @@ local L = {
 		{ type_id = "help" },
 		{ type_id = "http_response" },
 		{ type_id = "lazy" },
+		{ type_id = "NeogitStatus" },
 		{ type_id = "dbui", title = "Database" },
 		{ type_id = "dbout" },
 		{ type_id = "neotest-summary", title = "Tests" },
