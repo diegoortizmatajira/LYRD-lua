@@ -252,7 +252,6 @@ function L.plugins(s)
 						{ name = "cmp_tabnine" },
 					}, {
 						{ name = "buffer" },
-						{ name = "cmp-dbee" },
 						{ name = "path" },
 						{ name = "tmux" },
 					}),
@@ -296,7 +295,6 @@ function L.plugins(s)
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-nvim-lsp-signature-help",
 				"hrsh7th/cmp-cmdline",
-				"MattiasMTS/cmp-dbee",
 			},
 		},
 		{
@@ -316,7 +314,6 @@ function L.plugins(s)
 		{ "saadparwaiz1/cmp_luasnip" },
 		{ "hrsh7th/cmp-nvim-lsp-signature-help" },
 		{ "mattn/emmet-vim" },
-		{ "MattiasMTS/cmp-dbee" },
 		{ "lukas-reineke/cmp-under-comparator" },
 	})
 end

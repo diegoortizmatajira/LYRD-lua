@@ -64,6 +64,7 @@ function L.plugins(s)
 				"nvim-treesitter/nvim-treesitter",
 				"nvim-tree/nvim-web-devicons",
 			},
+			cmd = { "AerialToggle" },
 		},
 		{ "norcalli/nvim-colorizer.lua" },
 		{ "ellisonleao/dotenv.nvim", opts = {} },
