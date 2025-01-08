@@ -67,7 +67,11 @@ function L.plugins(s)
 			cmd = { "AerialToggle" },
 		},
 		{ "norcalli/nvim-colorizer.lua" },
-		{ "ellisonleao/dotenv.nvim", opts = {} },
+		{
+			"ellisonleao/dotenv.nvim",
+			opts = {},
+			cmd = { "Dotenv", "DotenvGet" },
+		},
 		{
 			"windwp/nvim-autopairs",
 			event = "InsertEnter",
