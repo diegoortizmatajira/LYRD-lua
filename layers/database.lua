@@ -29,6 +29,16 @@ function L.plugins(s)
 			init = function()
 				vim.g.db_ui_use_nerd_fonts = 1
 				vim.g.db_ui_execute_on_save = 0
+				vim.g.db_ui_table_helpers = {
+					postgresql = {
+						["Preview data"] = [[select * from "{table}" limit 10]],
+						Count = [[select count(*) from "{table}"]],
+					},
+					sqlite = {
+						["Preview data"] = [[select * from "{table}" limit 10]],
+						Count = [[select count(*) from "{table}"]],
+					},
+				}
 			end,
 		},
 		{ "muniftanjim/nui.nvim" },
