@@ -17,6 +17,7 @@ function L.plugins(s)
 					default_detail = 1,
 				},
 			},
+			lazy = true,
 		},
 		{
 			"kndndrj/nvim-projector",
@@ -42,22 +43,30 @@ function L.plugins(s)
 					},
 				})
 			end,
+			lazy = true,
 		},
 		{
 			"kndndrj/projector-neotest",
 			dependencies = {
 				"nvim-neotest/neotest",
 			},
+			lazy = true,
 		},
 		{
 			"kndndrj/projector-vscode",
+			lazy = true,
 		},
 	})
 end
 
 function L.settings(s)
 	commands.implement(s, "*", {
-		{ cmd.LYRDDebugContinue, require("projector").continue },
+		{
+			cmd.LYRDDebugContinue,
+			function()
+				require("projector").continue()
+			end,
+		},
 	})
 end
 

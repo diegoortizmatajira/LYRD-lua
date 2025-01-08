@@ -253,6 +253,7 @@ function L.plugins(s)
 		{
 			"akinsho/toggleterm.nvim",
 			opts = {},
+			lazy = true,
 		},
 		{
 			"natecraddock/workspaces.nvim",
@@ -268,6 +269,7 @@ function L.plugins(s)
 				telescope.load_extension("workspaces")
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
+			lazy = true,
 		},
 		{
 			"zeioth/project.nvim",
@@ -302,6 +304,7 @@ function L.plugins(s)
 				telescope.load_extension("ui-select")
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
+			lazy = true,
 		},
 		{
 			"stevearc/dressing.nvim",
@@ -350,6 +353,7 @@ function L.plugins(s)
 				-- or leave it empty to use the default settings
 				-- refer to the configuration section below
 			},
+			cmd = { "Twilight" },
 		},
 	})
 end

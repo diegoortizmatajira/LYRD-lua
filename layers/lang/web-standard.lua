@@ -14,6 +14,7 @@ function L.plugins(s)
 				vim.g.javascript_plugin_ngdoc = 1
 				vim.g.javascript_plugin_flow = 1
 			end,
+			ft = { "js" },
 		},
 		"b0o/schemastore.nvim",
 		{
@@ -24,6 +25,7 @@ function L.plugins(s)
 				"windwp/nvim-autopairs",
 			},
 			opts = {},
+			ft = { "json", "yaml" },
 		},
 		{
 			"diegoortizmatajira/nvim-http-client",
@@ -35,6 +37,7 @@ function L.plugins(s)
 				request_timeout = 30000, -- 30 seconds
 				create_keybindings = false,
 			},
+			ft = { "http" },
 			config = function(_, opts)
 				require("http_client").setup(opts)
 				require("telescope").load_extension("http_client")

@@ -5,7 +5,10 @@ local L = { name = "Web frontend" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"leafgarland/typescript-vim",
+		{
+			"leafgarland/typescript-vim",
+			ft = { "ts", "tsx", "vue" },
+		},
 	})
 end
 

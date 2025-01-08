@@ -24,6 +24,7 @@ function L.plugins(s)
 			dependencies = {
 				"nvim-treesitter/nvim-treesitter",
 			},
+			cmd = { "TSPlaygroundToggle" },
 		},
 		{
 			"ThePrimeagen/refactoring.nvim",
@@ -66,7 +67,7 @@ function L.settings(s)
 			"gomod",
 			"gosum",
 			"gotmpl",
-			"regex"
+			"regex",
 		},
 		highlight = {
 			enable = true,

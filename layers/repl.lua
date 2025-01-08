@@ -47,6 +47,7 @@ function L.plugins(s)
 		},
 		{
 			"GCBallesteros/jupytext.nvim",
+			event = "VeryLazy",
 			opts = {},
 		},
 		{

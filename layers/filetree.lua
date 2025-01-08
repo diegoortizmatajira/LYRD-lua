@@ -13,6 +13,7 @@ function L.plugins(s)
 			dependencies = {
 				"nvim-tree/nvim-web-devicons",
 			},
+			cmd = { "NvimTreeFindFileToggle" },
 			opts = {
 				disable_netrw = false,
 				update_cwd = true,

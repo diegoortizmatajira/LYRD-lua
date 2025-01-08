@@ -78,16 +78,13 @@ function L.plugins(s)
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 			},
+			cmd = { "LazyGit" },
 		},
 		{
 			"akinsho/git-conflict.nvim",
 			version = "*",
 			opts = {},
-			config = function(_, opts)
-				require("worktrees").setup(opts)
-				local telescope = require("telescope")
-				telescope.load_extension("worktrees")
-			end,
+			event = "VeryLazy",
 		},
 		{
 			"isak102/telescope-git-file-history.nvim",
@@ -107,6 +104,11 @@ function L.plugins(s)
 			"Juksuu/worktrees.nvim",
 			opts = {},
 			dependencies = { "nvim-lua/plenary.nvim" },
+			config = function(_, opts)
+				require("worktrees").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("worktrees")
+			end,
 		},
 	})
 end
