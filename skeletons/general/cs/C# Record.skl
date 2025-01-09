@@ -7,7 +7,7 @@ return function (buf)
   return { 
       type_name = basename,
       namespace = generator.get_namespace(name),
-      _cursor = { 5, 5 }
+      _cursor = { 4, 5 }
     }
 end
 ---
