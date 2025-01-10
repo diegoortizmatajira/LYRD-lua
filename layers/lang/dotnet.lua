@@ -138,7 +138,7 @@ function L.plugins(s)
 				},
 				csproj_mappings = true,
 				fsproj_mappings = true,
-				auto_bootstrap_namespace = true,
+				auto_bootstrap_namespace = false,
 			},
 			ft = dotnet_languages,
 		},
