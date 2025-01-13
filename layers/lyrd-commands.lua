@@ -191,7 +191,7 @@ local L = {
 			desc = "Toggle breakpoint",
 			icon = icons.debug.breakpoint,
 		},
-		LYRDDebugStart= {
+		LYRDDebugStart = {
 			desc = "Start debug session",
 			icon = icons.debug.play,
 		},
@@ -708,7 +708,7 @@ local L = {
 		LYRDClearSearchHighlights = {
 			default = ":noh",
 			desc = "Clear search highlights",
-			icon = icons.other.palette,
+			icon = icons.other.highlighter,
 		},
 		LYRDViewCodeOutline = {
 			desc = "View code outline",
@@ -761,6 +761,14 @@ local L = {
 		LYRDReplNotebookAddCellBelow = {
 			desc = "Add notebook cell below",
 			icon = icons.arrow.expand_down,
+		},
+		LYRDPasteImage = {
+			desc = "Paste image",
+			icon = icons.images.add,
+		},
+		LYRDInsertImage = {
+			desc = "Insert image",
+			icon = icons.images.search,
 		},
 	},
 }

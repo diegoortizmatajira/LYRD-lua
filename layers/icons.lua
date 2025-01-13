@@ -32,6 +32,12 @@ local L = {
 		environment = " ",
 		layers = " ",
 		focus = "󰋱 ",
+		highlighter = "󰸱 ",
+	},
+	images = {
+		default = " ",
+		add = "󱤾 ",
+		search = "󰥸 ",
 	},
 	apps = {
 		git = "󰊢 ",

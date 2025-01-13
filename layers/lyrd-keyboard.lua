@@ -41,7 +41,7 @@ function L.keybindings(s)
 		{ "n", "<F9>", cmd.LYRDDebugBreakpoint },
 		{ "n", "<F10>", cmd.LYRDDebugStepOver },
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
-		{ "n", "<S-F11>", cmd.LYRDDebugStepOut },
+		{ "n", "<F12>", cmd.LYRDDebugStepOut },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
 		{ "i", "<C-s>", "<Esc>" .. c(cmd.LYRDBufferSave.name) },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
@@ -86,6 +86,10 @@ function L.keybindings(s)
 			{ "e", cmd.LYRDHttpEnvironmentFileSelect },
 			{ "h", cmd.LYRDHttpSendRequest },
 		}, icons.http.default),
+		menu_header("i", "Images", {
+			{ "p", cmd.LYRDPasteImage },
+			{ "i", cmd.LYRDInsertImage },
+		}, icons.images.default),
 		menu_header("n", "Notebook", {
 			menu_header("r", "Run", {
 				{ "X", cmd.LYRDReplNotebookRunCell },
