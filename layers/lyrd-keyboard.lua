@@ -41,9 +41,9 @@ function L.keybindings(s)
 		{ "n", "<F9>", cmd.LYRDDebugBreakpoint },
 		{ "n", "<F10>", cmd.LYRDDebugStepOver },
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
-		{ "n", "<S-F11>", cmd.LYRDDebugStepOut },
+		{ "n", "<F12>", cmd.LYRDDebugStepOut },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
-		{ "i", "<C-s>", "<Esc>" .. c(cmd.LYRDBufferSave.name) },
+		{ "i", "<C-s>", cmd.LYRDBufferSave:exit_mode_and_run() },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
 		{ "n", "<C-f>", cmd.LYRDResumeLastSearch },
@@ -73,10 +73,10 @@ function L.keybindings(s)
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
-		{ "i", "<M-C-]>", "<Esc>" .. c(cmd.LYRDBufferNext.name) },
+		{ "i", "<M-C-]>", cmd.LYRDBufferNext:exit_mode_and_run() },
 		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
-		{ "i", "<M-C-[>", "<Esc>" .. c(cmd.LYRDBufferPrev.name) },
-		{ "x", "<Leader>x", ":'<,'>" .. cmd.LYRDCodeRunSelection.name .. "<CR>" },
+		{ "i", "<M-C-[>", cmd.LYRDBufferPrev:exit_mode_and_run() },
+		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection:as_range_command() },
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 	})
 
@@ -86,6 +86,10 @@ function L.keybindings(s)
 			{ "e", cmd.LYRDHttpEnvironmentFileSelect },
 			{ "h", cmd.LYRDHttpSendRequest },
 		}, icons.http.default),
+		menu_header("i", "Images", {
+			{ "p", cmd.LYRDPasteImage },
+			{ "i", cmd.LYRDInsertImage },
+		}, icons.images.default),
 		menu_header("n", "Notebook", {
 			menu_header("r", "Run", {
 				{ "X", cmd.LYRDReplNotebookRunCell },
