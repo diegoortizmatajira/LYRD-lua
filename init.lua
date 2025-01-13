@@ -30,8 +30,8 @@ setup.load({
 		"LYRD.layers.kubernetes",
 		"LYRD.layers.tasks", -- Must be after debug and database
 		"LYRD.layers.repl",
-		"LYRD.layers.ai-codeium",
-		-- "LYRD.layers.ai-tabnine",
+		-- "LYRD.layers.ai-codeium",
+		"LYRD.layers.ai-tabnine",
 		-- "LYRD.layers.ai-copilot",
 		-- "LYRD.layers.ai-chat-gpt",
 		"LYRD.layers.lang.csv",

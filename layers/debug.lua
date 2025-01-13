@@ -104,21 +104,57 @@ function L.plugins(s)
 	})
 end
 
+function L.is_running()
+	local dap = require("dap")
+	return dap.status() ~= ""
+end
+
+function L.start_handler(implementation)
+	return function()
+		if L.is_running() then
+			vim.cmd(":LYRDDebugStop")
+		end
+		if type(implementation) == "string" then
+			-- execute command as a text
+			vim.cmd(implementation)
+		else
+			-- calls the implementation as a function
+			implementation()
+		end
+	end
+end
+
+function L.continue_handler(implementation)
+	return function()
+		if L.is_running() then
+			if type(implementation) == "string" then
+				-- execute command as a text
+				vim.cmd(implementation)
+			else
+				-- calls the implementation as a function
+				implementation()
+			end
+		else
+			vim.cmd(":LYRDDebugStart")
+		end
+	end
+end
+
 function L.settings(s)
 	vim.fn.sign_define("DapBreakpoint", {
-		text = "",
+		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",
 		linehl = "",
 		numhl = "",
 	})
 	vim.fn.sign_define("DapBreakpointRejected", {
-		text = "",
+		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",
 		linehl = "",
 		numhl = "",
 	})
 	vim.fn.sign_define("DapStopped", {
-		text = "",
+		text = icons.debug.current_line,
 		texthl = "DiagnosticSignWarn",
 		linehl = "Visual",
 		numhl = "DiagnosticSignWarn",
@@ -126,13 +162,10 @@ function L.settings(s)
 
 	commands.implement(s, "*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
-		{
-			cmd.LYRDDebugContinue,
-			function()
-				require("dap-utils").continue()
-			end,
-		},
+		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
+		{ cmd.LYRDDebugContinue, L.continue_handler(":DapContinue") },
 		{ cmd.LYRDDebugStepInto, ":DapStepInto" },
+		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
 		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
