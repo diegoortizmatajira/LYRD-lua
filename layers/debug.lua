@@ -96,6 +96,7 @@ function L.plugins(s)
 		},
 		{
 			"theHamsta/nvim-dap-virtual-text",
+			opts = {},
 		},
 		-- {
 		-- 	--TODO: Add configuration https://github.com/niuiic/dap-utils.nvim
@@ -112,30 +113,18 @@ end
 function L.start_handler(implementation)
 	return function()
 		if L.is_running() then
-			vim.cmd(":LYRDDebugStop")
+			commands.execute_implementation(cmd.LYRDDebugStop)
 		end
-		if type(implementation) == "string" then
-			-- execute command as a text
-			vim.cmd(implementation)
-		else
-			-- calls the implementation as a function
-			implementation()
-		end
+		commands.execute_implementation(implementation)
 	end
 end
 
 function L.continue_handler(implementation)
 	return function()
 		if L.is_running() then
-			if type(implementation) == "string" then
-				-- execute command as a text
-				vim.cmd(implementation)
-			else
-				-- calls the implementation as a function
-				implementation()
-			end
+			commands.execute_implementation(implementation)
 		else
-			vim.cmd(":LYRDDebugStart")
+			commands.execute_implementation(cmd.LYRDDebugStart)
 		end
 	end
 end
@@ -172,9 +161,5 @@ function L.settings(s)
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end
-
-function L.keybindings(_) end
-
-function L.complete(_) end
 
 return L

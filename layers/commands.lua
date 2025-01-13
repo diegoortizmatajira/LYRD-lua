@@ -28,43 +28,44 @@ local function register_implementation(s, filetype, commandName, implementation)
 	setup.config.commands[commandName][filetype] = implementation
 end
 
+---Executes a command instance
+---@param implementation string|function
+---@return boolean
+function L.execute_implementation(implementation)
+	if type(implementation) == "string" then
+		---Executes a command
+		---@param command string
+		local function safe_cmd(command)
+			return vim.cmd(command)
+		end
+		if implementation ~= nil and implementation ~= "" then
+			local ok, _ = pcall(safe_cmd, implementation)
+			if not ok then
+				vim.notify("Command execution failed: " .. implementation, vim.log.levels.ERROR)
+			end
+			return true
+		end
+	elseif type(implementation) == "function" then
+		implementation()
+		return true
+	elseif type(implementation) == "table" and implementation.name then
+		L.execute_implementation(":" .. implementation.name)
+	end
+	return false
+end
+
 ---Executes a command depending on the type
 ---@param s LYRD.commands.settings
 ---@param commandName string
 local function execute_command(s, commandName)
-	---Executes a command
-	---@param command string
-	local function safe_cmd(command)
-		return vim.cmd(command)
-	end
-
-	---Executes a command instance
-	---@param command_instance string|function
-	---@return boolean
-	local execute_and_confirm = function(command_instance)
-		if type(command_instance) == "string" then
-			if command_instance ~= nil and command_instance ~= "" then
-				local ok, _ = pcall(safe_cmd, command_instance)
-				if not ok then
-					vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
-				end
-				return true
-			end
-		elseif type(command_instance) == "function" then
-			command_instance()
-			return true
-		end
-		return false
-	end
-
 	-- Looks for the current file type command implementation
 	local cmd = s.commands[commandName][vim.bo.filetype]
-	if execute_and_confirm(cmd) then
+	if L.execute_implementation(cmd) then
 		return
 	end
 	-- Looks for the generic command implementation
 	cmd = s.commands[commandName]["*"]
-	if execute_and_confirm(cmd) then
+	if L.execute_implementation(cmd) then
 		return
 	end
 	vim.notify(
