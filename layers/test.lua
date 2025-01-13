@@ -10,6 +10,7 @@ function L.plugins(s)
 		{
 			"nvim-neotest/neotest",
 			priority = 0,
+			setup = false, -- It will be setup manually later
 			dependencies = {
 				"nvim-neotest/nvim-nio",
 				"nvim-lua/plenary.nvim",
@@ -53,6 +54,12 @@ function L.settings(s)
 			cmd.LYRDTestFile,
 			function()
 				require("neotest").run.run(vim.fn.expand("%"))
+			end,
+		},
+		{
+			cmd.LYRDTestDebugFunc,
+			function()
+				require("neotest").run.run({ strategy = "dap" })
 			end,
 		},
 		{

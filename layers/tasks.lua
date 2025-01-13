@@ -60,12 +60,13 @@ function L.plugins(s)
 end
 
 function L.settings(s)
+	local debug = require("LYRD.layers.debug")
 	commands.implement(s, "*", {
 		{
-			cmd.LYRDDebugContinue,
-			function()
+			cmd.LYRDDebugStart,
+			debug.start_handler(function()
 				require("projector").continue()
-			end,
+			end),
 		},
 	})
 end

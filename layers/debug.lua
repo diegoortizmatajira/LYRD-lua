@@ -96,6 +96,7 @@ function L.plugins(s)
 		},
 		{
 			"theHamsta/nvim-dap-virtual-text",
+			opts = {},
 		},
 		-- {
 		-- 	--TODO: Add configuration https://github.com/niuiic/dap-utils.nvim
@@ -104,21 +105,45 @@ function L.plugins(s)
 	})
 end
 
+function L.is_running()
+	local dap = require("dap")
+	return dap.status() ~= ""
+end
+
+function L.start_handler(implementation)
+	return function()
+		if L.is_running() then
+			commands.execute_implementation(cmd.LYRDDebugStop)
+		end
+		commands.execute_implementation(implementation)
+	end
+end
+
+function L.continue_handler(implementation)
+	return function()
+		if L.is_running() then
+			commands.execute_implementation(implementation)
+		else
+			commands.execute_implementation(cmd.LYRDDebugStart)
+		end
+	end
+end
+
 function L.settings(s)
 	vim.fn.sign_define("DapBreakpoint", {
-		text = "",
+		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",
 		linehl = "",
 		numhl = "",
 	})
 	vim.fn.sign_define("DapBreakpointRejected", {
-		text = "",
+		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",
 		linehl = "",
 		numhl = "",
 	})
 	vim.fn.sign_define("DapStopped", {
-		text = "",
+		text = icons.debug.current_line,
 		texthl = "DiagnosticSignWarn",
 		linehl = "Visual",
 		numhl = "DiagnosticSignWarn",
@@ -126,22 +151,15 @@ function L.settings(s)
 
 	commands.implement(s, "*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
-		{
-			cmd.LYRDDebugContinue,
-			function()
-				require("dap-utils").continue()
-			end,
-		},
+		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
+		{ cmd.LYRDDebugContinue, L.continue_handler(":DapContinue") },
 		{ cmd.LYRDDebugStepInto, ":DapStepInto" },
+		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
 		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end
-
-function L.keybindings(_) end
-
-function L.complete(_) end
 
 return L

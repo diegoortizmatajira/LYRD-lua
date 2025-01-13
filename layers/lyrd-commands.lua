@@ -191,13 +191,21 @@ local L = {
 			desc = "Toggle breakpoint",
 			icon = icons.debug.breakpoint,
 		},
+		LYRDDebugStart= {
+			desc = "Start debug session",
+			icon = icons.debug.play,
+		},
 		LYRDDebugContinue = {
-			desc = "Start / Continue",
+			desc = "Continue",
 			icon = icons.debug.play,
 		},
 		LYRDDebugStepInto = {
 			desc = "Step into",
 			icon = icons.debug.step_into,
+		},
+		LYRDDebugStepOut = {
+			desc = "Step out",
+			icon = icons.debug.step_out,
 		},
 		LYRDDebugStepOver = {
 			desc = "Step over",
@@ -518,6 +526,10 @@ local L = {
 		LYRDTestFile = {
 			desc = "Test current file",
 			icon = icons.code.test,
+		},
+		LYRDTestDebugFunc = {
+			desc = "Debug current test function",
+			icon = icons.debug.breakpoint,
 		},
 		LYRDTestFunc = {
 			desc = "Test current function",
