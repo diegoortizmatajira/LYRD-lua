@@ -9,7 +9,7 @@ local L = { name = "Mappings" }
 
 ---@class LYRD.mappings.standard_mapping
 ---@field [1] string contains the key
----@field [2] LYRD.commands.command contains the command
+---@field [2] Command contains the command
 
 ---@class LYRD.mappings.header_mapping
 ---@field key string contains the key
@@ -59,7 +59,7 @@ end
 ---@param mode string
 ---@param lead string|nil
 ---@param keys string|table
----@param command string|LYRD.commands.command
+---@param command string|Command
 ---@param documentation? string
 ---@param options? table
 local function map_key(mode, lead, keys, command, documentation, options)
@@ -113,7 +113,7 @@ local function map_menu(keys, title, icon)
 end
 
 ---Creates a set of keybindings
----@param mappings {[1]: string|string[], [2]:string, [3]:string|function|LYRD.commands.command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|function|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(_, mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
