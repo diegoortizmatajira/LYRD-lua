@@ -6,7 +6,7 @@ local L = { name = "AI - Copilot" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"github/copilot.vim",
+		{ "github/copilot.vim" },
 	})
 end
 

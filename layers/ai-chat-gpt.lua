@@ -6,9 +6,9 @@ local L = { name = "AI - ChatGPT" }
 
 function L.plugins(s)
 	setup.plugin(s, {
-		"jackmort/chatgpt.nvim",
-		"muniftanjim/nui.nvim",
-		"james1236/backseat.nvim",
+		{ "jackmort/chatgpt.nvim" },
+		{ "muniftanjim/nui.nvim" },
+		{ "james1236/backseat.nvim" },
 	})
 end
 
