@@ -241,131 +241,135 @@ function L.plugins(s)
             config = function()
                 local startify = require("alpha.themes.startify")
 
-                startify.section.header.val = header()
-                startify.section.top_buttons.val = {
-                    startify.button("e", icons.file.new .. "  New file", ":ene <BAR> startinsert <CR>"),
-                    startify.button("p", icons.other.project .. "  Select Project", ":Telescope projects<CR>"),
-                    startify.button("w", icons.other.workspace .. "  Select Workspaces", ":Telescope workspaces<CR>"),
-                }
-                startify.section.mru.val[2].val = "Files"
-                startify.section.mru.val[4].val = function()
-                    return { startify.mru(10) }
-                end
-                startify.section.mru_cwd.val[2].val = function()
-                    return "Current Directory"
-                end
-                startify.section.mru_cwd.val[4].val = function()
-                    return { startify.mru(0, vim.fn.getcwd()) }
-                end
-                startify.file_icons.provider = "devicons"
-                require("alpha").setup(startify.config)
-            end,
-            dependencies = {
-                "nvim-tree/nvim-web-devicons",
-            },
-        },
-        {
-            "akinsho/toggleterm.nvim",
-            opts = {},
-        },
-        {
-            "natecraddock/workspaces.nvim",
-            opts = {
-                float_opts = {
-                    border = "rounded",
-                    highlights = { border = "Normal", background = "Normal" },
-                },
-            },
-            config = function(_, opts)
-                require("workspaces").setup(opts)
-                local telescope = require("telescope")
-                telescope.load_extension("workspaces")
-            end,
-            dependencies = { "nvim-telescope/telescope.nvim" },
-        },
-        {
-            "zeioth/project.nvim",
-            opts = {
-                detection_methods = {
-                    "lsp",
-                    "pattern",
-                },
-                patterns = {
-                    ".git",
-                    "_darcs",
-                    ".hg",
-                    ".bzr",
-                    ".svn",
-                    "Makefile",
-                    "package.json",
-                    "pom.xml",
-                    ".solution",
-                    ".solution.toml",
-                },
-                exclude_dirs = {
-                    "~/",
-                },
-                exclude_chdir = {
-                    filetype = { "", "OverseerList", "alpha" },
-                    buftype = { "nofile", "terminal" },
-                },
-            },
-            config = function(_, opts)
-                require("project_nvim").setup(opts)
-                local telescope = require("telescope")
-                telescope.load_extension("ui-select")
-            end,
-            dependencies = { "nvim-telescope/telescope.nvim" },
-        },
-        {
-            "stevearc/dressing.nvim",
-            opts = {
-                input = {
-                    -- Set to false to disable the vim.ui.input implementation
-                    enabled = true,
-                    prompt_align = "center",
-                    relative = "editor",
-                },
-            },
-        },
-        {
-            "LintaoAmons/scratch.nvim",
-            opts = {
-                use_telescope = true,
-                file_picker = "telescope",
-                filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
-            },
-            event = "VeryLazy",
-        },
-        {
-            "diegoortizmatajira/bufdelete.nvim",
-            opts = {
-                debug = false,
-                close_with_their_window = get_buffers_that_close_with_their_window(),
-            },
-        },
-        {
-            "nvim-pack/nvim-spectre",
-            opts = {},
-            dependencies = {
-                "nvim-lua/plenary.nvim",
-            },
-        },
-        {
-            "fasterius/simple-zoom.nvim",
-            opts = {
-                hide_tabline = false,
-            },
-        },
-        {
-            "folke/twilight.nvim",
-            opts = {
-                -- your configuration comes here
-                -- or leave it empty to use the default settings
-                -- refer to the configuration section below
-            },
-        },
-    })
+				startify.section.header.val = header()
+				startify.section.top_buttons.val = {
+					startify.button("e", icons.file.new .. "  New file", ":ene <BAR> startinsert <CR>"),
+					startify.button("p", icons.other.project .. "  Select Project", ":Telescope projects<CR>"),
+					startify.button("w", icons.other.workspace .. "  Select Workspaces", ":Telescope workspaces<CR>"),
+				}
+				startify.section.mru.val[2].val = "Files"
+				startify.section.mru.val[4].val = function()
+					return { startify.mru(10) }
+				end
+				startify.section.mru_cwd.val[2].val = function()
+					return "Current Directory"
+				end
+				startify.section.mru_cwd.val[4].val = function()
+					return { startify.mru(0, vim.fn.getcwd()) }
+				end
+				startify.file_icons.provider = "devicons"
+				require("alpha").setup(startify.config)
+			end,
+			dependencies = {
+				"nvim-tree/nvim-web-devicons",
+			},
+		},
+		{
+			"akinsho/toggleterm.nvim",
+			opts = {},
+			lazy = true,
+		},
+		{
+			"natecraddock/workspaces.nvim",
+			opts = {
+				float_opts = {
+					border = "rounded",
+					highlights = { border = "Normal", background = "Normal" },
+				},
+			},
+			config = function(_, opts)
+				require("workspaces").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("workspaces")
+			end,
+			dependencies = { "nvim-telescope/telescope.nvim" },
+			lazy = true,
+		},
+		{
+			"zeioth/project.nvim",
+			opts = {
+				detection_methods = {
+					"lsp",
+					"pattern",
+				},
+				patterns = {
+					".git",
+					"_darcs",
+					".hg",
+					".bzr",
+					".svn",
+					"Makefile",
+					"package.json",
+					"pom.xml",
+					".solution",
+					".solution.toml",
+				},
+				exclude_dirs = {
+					"~/",
+				},
+				exclude_chdir = {
+					filetype = { "", "OverseerList", "alpha" },
+					buftype = { "nofile", "terminal" },
+				},
+			},
+			config = function(_, opts)
+				require("project_nvim").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("ui-select")
+			end,
+			dependencies = { "nvim-telescope/telescope.nvim" },
+			lazy = true,
+		},
+		{
+			"stevearc/dressing.nvim",
+			opts = {
+				input = {
+					-- Set to false to disable the vim.ui.input implementation
+					enabled = true,
+					prompt_align = "center",
+					relative = "editor",
+				},
+			},
+		},
+		{
+			"LintaoAmons/scratch.nvim",
+			opts = {
+				use_telescope = true,
+				file_picker = "telescope",
+				filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
+			},
+			event = "VeryLazy",
+		},
+		{
+			"diegoortizmatajira/bufdelete.nvim",
+			opts = {
+				debug = false,
+				close_with_their_window = get_buffers_that_close_with_their_window(),
+			},
+		},
+		{
+			"nvim-pack/nvim-spectre",
+			opts = {},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+			},
+		},
+		{
+			"fasterius/simple-zoom.nvim",
+			opts = {
+				hide_tabline = false,
+			},
+		},
+		{
+			"folke/twilight.nvim",
+			opts = {
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			},
+			cmd = { "Twilight" },
+		},
+	})
 end
 
 function L.settings(s)

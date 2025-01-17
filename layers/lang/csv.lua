@@ -12,6 +12,7 @@ function L.plugins(s)
 					display_mode = "border",
 				},
 			},
+			ft = { "csv", "tsv" },
 		},
 	})
 end

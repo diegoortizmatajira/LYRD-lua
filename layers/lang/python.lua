@@ -29,6 +29,7 @@ function L.plugins(s)
 		{
 			"nvim-neotest/neotest-python",
 			ft = "python",
+			python = nil,
 		},
 		{
 			"linux-cultist/venv-selector.nvim",

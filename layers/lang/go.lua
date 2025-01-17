@@ -16,8 +16,11 @@ function L.plugins(s)
 				"neovim/nvim-lspconfig",
 				"nvim-treesitter/nvim-treesitter",
 			},
-			opts = {},
-			event = { "CmdlineEnter" },
+			opts = {
+				diagnostic = {
+					virtual_text = false,
+				},
+			},
 			ft = { "go", "gomod" },
 			build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
 		},

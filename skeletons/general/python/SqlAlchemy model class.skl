@@ -1,0 +1,19 @@
+return function (buf)
+  local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = text.to_pascal_case(basename:match("(.+)%..+$"))
+
+  return { 
+      type_name = basename,
+      _cursor = { 7, 4 }
+    }
+end
+---
+from sqlalchemy.orm import DeclarativeBase
+
+class BaseEntity(DeclarativeBase):
+    """Provides the base class for every model in the database"""
+
+class ${type_name}(BaseEntity):
+    pass   

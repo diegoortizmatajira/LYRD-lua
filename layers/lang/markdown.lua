@@ -7,6 +7,7 @@ function L.plugins(s)
 		{
 			"MeanderingProgrammer/markdown.nvim",
 			main = "render-markdown",
+			ft = { "markdown" },
 			opts = {
 				heading = {
 					sign = false,

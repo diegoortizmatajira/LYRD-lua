@@ -138,7 +138,7 @@ function L.plugins(s)
 				},
 				csproj_mappings = true,
 				fsproj_mappings = true,
-				auto_bootstrap_namespace = true,
+				auto_bootstrap_namespace = false,
 			},
 			ft = dotnet_languages,
 		},
@@ -158,16 +158,45 @@ function L.preparation(_)
 end
 
 function L.settings(s)
-	local dotnet = require("easy-dotnet")
 	commands.implement(s, "cs", {
 		-- { cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
 		-- { cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
 		{ cmd.LYRDBufferFormat, lsp.format_handler("roslyn") },
-		{ cmd.LYRDCodeBuild, commands.handler(dotnet.build_quickfix) },
-		{ cmd.LYRDCodeBuildAll, commands.handler(dotnet.build_solution) },
-		{ cmd.LYRDCodeRun, commands.handler(dotnet.run, {}) },
-		{ cmd.LYRDCodeRestorePackages, commands.handler(dotnet.restore) },
-		{ cmd.LYRDCodeSecrets, commands.handler(dotnet.secrets) },
+		{
+			cmd.LYRDCodeBuild,
+			function()
+				local dotnet = require("easy-dotnet")
+				dotnet.build_quickfix()
+			end,
+		},
+		{
+			cmd.LYRDCodeBuildAll,
+			function()
+				local dotnet = require("easy-dotnet")
+				dotnet.build_solution()
+			end,
+		},
+		{
+			cmd.LYRDCodeRun,
+			function()
+				local dotnet = require("easy-dotnet")
+				dotnet.run({})
+			end,
+		},
+		{
+			cmd.LYRDCodeRestorePackages,
+			function()
+				local dotnet = require("easy-dotnet")
+				dotnet.restore()
+			end,
+		},
+		{
+			cmd.LYRDCodeSecrets,
+			function()
+				local dotnet = require("easy-dotnet")
+				dotnet.secrets()
+			end,
+		},
 	})
 
 	-- DEBUG ADAPTER

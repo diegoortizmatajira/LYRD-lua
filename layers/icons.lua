@@ -32,6 +32,12 @@ local L = {
 		environment = " ",
 		layers = " ",
 		focus = "󰋱 ",
+		highlighter = "󰸱 ",
+	},
+	images = {
+		default = " ",
+		add = "󱤾 ",
+		search = "󰥸 ",
 	},
 	apps = {
 		git = "󰊢 ",
@@ -122,6 +128,7 @@ local L = {
 		step_back = " ",
 		run_last = " ",
 		terminate = " ",
+		current_line = " ",
 	},
 	code = {
 		-- Actions

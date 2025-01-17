@@ -111,11 +111,13 @@ function L.plugins(s)
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 			},
+			cmd = { "LazyGit" },
 		},
 		{
 			"akinsho/git-conflict.nvim",
 			version = "*",
 			opts = {},
+			event = "VeryLazy",
 		},
 		{
 			"Juksuu/worktrees.nvim",
