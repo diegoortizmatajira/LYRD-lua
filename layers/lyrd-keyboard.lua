@@ -28,9 +28,19 @@ local L = {
 function L.plugins(s)
 	setup.plugin(s, {
 		{
-		    -- Navigates using brackets (buffers, diagnostics, etc.)
+			-- Navigates using brackets (buffers, diagnostics, etc.)
 			"echasnovski/mini.bracketed",
-			version = "*",
+			opts = {},
+		},
+		{
+		    -- Text operators g=: evaluate, gx: exchange, multiply: gm, sort: gs, replace with register: gr
+			"echasnovski/mini.operators",
+			opts = {},
+		},
+		{
+		    -- new a/i objects around/inside next/last
+			"echasnovski/mini.ai",
+			opts = {},
 		},
 	})
 end
