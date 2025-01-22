@@ -11,18 +11,10 @@ function L.plugins(s)
 			"tummetott/unimpaired.nvim",
 			event = "VeryLazy",
 			opts = {},
-		}, -- use lazy.nvim
+		}, 
 		{
-			"numtostr/comment.nvim",
-			config = function()
-				---@diagnostic disable-next-line: missing-fields
-				require("Comment").setup({
-					pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-				})
-			end,
-			dependencies = {
-				"joosepalviste/nvim-ts-context-commentstring",
-			},
+			"echasnovski/mini.comment",
+			version = "*",
 		},
 		{
 			"folke/todo-comments.nvim",
@@ -47,12 +39,6 @@ function L.plugins(s)
 				vim.g.fold_line_char_open_start = "╭"
 				vim.g.fold_line_char_open_end = "╰"
 			end,
-		},
-		{
-			"joosepalviste/nvim-ts-context-commentstring",
-			opts = {
-				enable_autocmd = false,
-			},
 		},
 		{
 			"stevearc/aerial.nvim",
