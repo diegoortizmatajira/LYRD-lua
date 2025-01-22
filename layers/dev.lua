@@ -11,7 +11,7 @@ function L.plugins(s)
 			"tummetott/unimpaired.nvim",
 			event = "VeryLazy",
 			opts = {},
-		}, 
+		},
 		{
 			"echasnovski/mini.comment",
 			version = "*",
@@ -59,12 +59,9 @@ function L.plugins(s)
 			cmd = { "Dotenv", "DotenvGet" },
 		},
 		{
-			"windwp/nvim-autopairs",
-			event = "InsertEnter",
-			config = true,
-			dependencies = {
-				"hrsh7th/nvim-cmp",
-			},
+			"echasnovski/mini.pairs",
+			version = "*",
+			opts = {},
 		},
 		{
 			"kylechui/nvim-surround",
