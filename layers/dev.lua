@@ -13,10 +13,6 @@ function L.plugins(s)
 			opts = {},
 		},
 		{
-			"echasnovski/mini.comment",
-			version = "*",
-		},
-		{
 			"folke/todo-comments.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {
@@ -57,10 +53,6 @@ function L.plugins(s)
 			"ellisonleao/dotenv.nvim",
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
-		},
-		{
-			"echasnovski/mini.pairs",
-			opts = {},
 		},
 		{
 			"kylechui/nvim-surround",
@@ -118,11 +110,6 @@ function L.plugins(s)
 		},
 		{
 			"rest-nvim/rest.nvim",
-		},
-		{
-			-- Splits/Joins arguments in functions with gS
-			"echasnovski/mini.splitjoin",
-			opts = {},
 		},
 	})
 end
