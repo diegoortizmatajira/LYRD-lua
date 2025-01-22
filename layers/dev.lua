@@ -60,7 +60,6 @@ function L.plugins(s)
 		},
 		{
 			"echasnovski/mini.pairs",
-			version = "*",
 			opts = {},
 		},
 		{
