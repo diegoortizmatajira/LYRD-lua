@@ -1,3 +1,4 @@
+local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
@@ -23,6 +24,16 @@ local L = {
 		prev = "<C-Up>",
 	},
 }
+
+function L.plugins(s)
+	setup.plugin(s, {
+		{
+		    -- Navigates using brackets (buffers, diagnostics, etc.)
+			"echasnovski/mini.bracketed",
+			version = "*",
+		},
+	})
+end
 
 function L.keybindings(s)
 	mappings.keys(s, {
