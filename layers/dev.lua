@@ -8,11 +8,6 @@ local L = { name = "Development" }
 function L.plugins(s)
 	setup.plugin(s, {
 		{
-			"tummetott/unimpaired.nvim",
-			event = "VeryLazy",
-			opts = {},
-		},
-		{
 			"folke/todo-comments.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {
