@@ -11,18 +11,6 @@ function L.plugins(s)
 			"tummetott/unimpaired.nvim",
 			event = "VeryLazy",
 			opts = {},
-		}, -- use lazy.nvim
-		{
-			"numtostr/comment.nvim",
-			config = function()
-				---@diagnostic disable-next-line: missing-fields
-				require("Comment").setup({
-					pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-				})
-			end,
-			dependencies = {
-				"joosepalviste/nvim-ts-context-commentstring",
-			},
 		},
 		{
 			"folke/todo-comments.nvim",
@@ -49,12 +37,6 @@ function L.plugins(s)
 			end,
 		},
 		{
-			"joosepalviste/nvim-ts-context-commentstring",
-			opts = {
-				enable_autocmd = false,
-			},
-		},
-		{
 			"stevearc/aerial.nvim",
 			opts = {
 				close_on_select = true,
@@ -71,14 +53,6 @@ function L.plugins(s)
 			"ellisonleao/dotenv.nvim",
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
-		},
-		{
-			"windwp/nvim-autopairs",
-			event = "InsertEnter",
-			config = true,
-			dependencies = {
-				"hrsh7th/nvim-cmp",
-			},
 		},
 		{
 			"kylechui/nvim-surround",
@@ -136,11 +110,6 @@ function L.plugins(s)
 		},
 		{
 			"rest-nvim/rest.nvim",
-		},
-		{
-			-- Splits/Joins arguments in functions with gS
-			"echasnovski/mini.splitjoin",
-			opts = {},
 		},
 	})
 end

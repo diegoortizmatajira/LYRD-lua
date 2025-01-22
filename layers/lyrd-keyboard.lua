@@ -1,3 +1,4 @@
+local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
@@ -23,6 +24,41 @@ local L = {
 		prev = "<C-Up>",
 	},
 }
+
+function L.plugins(s)
+	setup.plugin(s, {
+		{
+			-- Navigates using brackets (buffers, diagnostics, etc.)
+			"echasnovski/mini.bracketed",
+			opts = {},
+		},
+		{
+			-- Text operators g=: evaluate, gx: exchange, multiply: gm, sort: gs, replace with register: gr
+			"echasnovski/mini.operators",
+			opts = {},
+		},
+		{
+			-- new a/i objects around/inside next/last
+			"echasnovski/mini.ai",
+			opts = {},
+		},
+		{
+			-- Splits/Joins arguments in functions with gS
+			"echasnovski/mini.splitjoin",
+			opts = {},
+		},
+		{
+			-- Adds the completing pair character when typing the opening one
+			"echasnovski/mini.pairs",
+			opts = {},
+		},
+		{
+			-- Allows to toggle comments with gc/gcc keymaps
+			"echasnovski/mini.comment",
+			version = "*",
+		},
+	})
+end
 
 function L.keybindings(s)
 	mappings.keys(s, {
