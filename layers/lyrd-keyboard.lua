@@ -368,12 +368,12 @@ function L.keybindings(s)
 			{ "k", cmd.LYRDKubernetesUI },
 			{ "t", cmd.LYRDTerminal },
 			{ "T", cmd.LYRDTerminalList },
-			{ "h", "Hardtime" },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
 			{ "w", cmd.LYRDBufferToggleWrap },
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
+			{ "h", cmd.LYRDHardModeToggle },
 		}, icons.other.palette),
 		menu_header("v", "View", {
 			{ ".", cmd.LYRDViewHomePage },

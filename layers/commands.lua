@@ -172,7 +172,7 @@ function L.register(commands)
 end
 
 --- @param commandName string Name of the command to generate the shortcut
---- @param opts ShortCutOptions Options for the generated shortcut
+--- @param opts? ShortCutOptions Options for the generated shortcut
 function L.command_shortcut(commandName, opts)
 	local sequence = commandName
 	if opts and opts.range then
