@@ -79,7 +79,7 @@ function L.keybindings(s)
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
 		{ "n", "<F12>", cmd.LYRDDebugStepOut },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
-		{ "i", "<C-s>", cmd.LYRDBufferSave:exit_mode_and_run() },
+		{ "i", "<C-s>", cmd.LYRDBufferSave:shortcut({ escape = true }) },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
 		{ "n", "<C-f>", cmd.LYRDResumeLastSearch },
@@ -109,10 +109,10 @@ function L.keybindings(s)
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
-		{ "i", "<M-C-]>", cmd.LYRDBufferNext:exit_mode_and_run() },
+		{ "i", "<M-C-]>", cmd.LYRDBufferNext:shortcut({ escape = true }) },
 		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
-		{ "i", "<M-C-[>", cmd.LYRDBufferPrev:exit_mode_and_run() },
-		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection:as_range_command() },
+		{ "i", "<M-C-[>", cmd.LYRDBufferPrev:shortcut({ escape = true }) },
+		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection:shortcut({ range = true }) },
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 	})
 
@@ -368,6 +368,7 @@ function L.keybindings(s)
 			{ "k", cmd.LYRDKubernetesUI },
 			{ "t", cmd.LYRDTerminal },
 			{ "T", cmd.LYRDTerminalList },
+			{ "h", "Hardtime" },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
 			{ "w", cmd.LYRDBufferToggleWrap },

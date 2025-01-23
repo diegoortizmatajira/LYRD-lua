@@ -198,11 +198,12 @@ local L = {
 		LYRDReplNotebookAddCellBelow = Command:new("Add notebook cell below", nil, icons.arrow.expand_down),
 		LYRDPasteImage = Command:new("Paste image", nil, icons.images.add),
 		LYRDInsertImage = Command:new("Insert image", nil, icons.images.search),
+		LYRDHardModeToggle = Command:new("Toggle hard mode", nil, icons.action.toggle_on),
 	},
 }
 
 function L.settings(s)
-	commands.register(s, L.cmd)
+	commands.register(L.cmd)
 end
 
 return L

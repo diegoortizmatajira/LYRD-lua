@@ -3,8 +3,9 @@ local L = {
 	--- @type table<string, Command>
 	commands = {},
 }
-
-local setup = require("LYRD.setup")
+--- @class ShortCutOptions
+--- @field range? boolean Indicates the shorcut uses current selection.
+--- @field escape? boolean Indicates the shorcut includes <ESC> before running the command.
 
 ---@class Command
 ---@field name? string|nil Name of the command.
@@ -91,16 +92,11 @@ function Command:register_with_name(command_name)
 	end, { desc = self.desc, range = self.range })
 end
 
---- Returns the command with modifiers to exit the current mode and then run the command.
----@return string
-function Command:exit_mode_and_run()
-	return "<ESC>" .. L.command_shortcut(self.name)
-end
-
 --- Returns the command with modifiers to be used with a text range in visual mode.
----@return string
-function Command:as_range_command()
-	return L.command_shortcut(self.name, true)
+--- @param opts ShortCutOptions
+--- @return string
+function Command:shortcut(opts)
+	return L.command_shortcut(self.name, opts)
 end
 
 --- Executes a command instance
@@ -133,7 +129,7 @@ end
 ---@field commands table<string, table<string, string|function>>
 
 ---@class LYRD.commands.implementation
----@field [1] Command
+---@field [1] LYRD.command.Command
 ---@field [2] string|function
 
 function L.list_unimplemented()
@@ -171,19 +167,26 @@ function L.implement(s, filetype, commands)
 end
 
 ---Registers a set of commands
----@param commands table<string, LYRD.commands.command>
-function L.register(s, commands)
+---@param commands table<string, Command>
+function L.register(commands)
 	for command_name, definition in pairs(commands) do
 		definition:register_with_name(command_name)
 	end
 end
 
-function L.command_shortcut(commandName, range)
-	prefix = ""
-	if range then
-		prefix = "'<,'>"
+--- @param commandName string Name of the command to generate the shortcut
+--- @param opts ShortCutOptions
+function L.command_shortcut(commandName, opts)
+	local sequence = commandName
+	if opts and opts.range then
+		sequence = "'<,'>" .. sequence
 	end
-	return "<cmd>" .. prefix .. commandName .. "<CR>"
+	sequence = "<cmd>" .. sequence .. "<CR>"
+	if opts and opts.escape then
+		sequence = "<ESC>" .. sequence
+	end
+
+	return sequence
 end
 
 function L.handler(callback, ...)
