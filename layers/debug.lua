@@ -149,7 +149,7 @@ function L.settings(s)
 		numhl = "DiagnosticSignWarn",
 	})
 
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
 		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
 		{ cmd.LYRDDebugContinue, L.continue_handler(":DapContinue") },

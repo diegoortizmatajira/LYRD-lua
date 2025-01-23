@@ -68,7 +68,7 @@ function L.select_file_and_execute(callback, title, filter, working_directory)
 end
 
 function L.settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
 		{ cmd.LYRDSearchBuffers, ":Telescope buffers" },
 		{ cmd.LYRDSearchGitFiles, ":Telescope git_files" },

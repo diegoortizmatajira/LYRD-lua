@@ -110,7 +110,7 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
 		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },

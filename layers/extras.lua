@@ -40,7 +40,7 @@ function L.plugins(s)
 end
 
 function L.Settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDHardModeToggle, ":Hardtime toggle" },
 	})
 end

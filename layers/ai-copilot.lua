@@ -12,7 +12,7 @@ end
 
 function L.settings(s)
 	vim.g.copilot_no_tab_map = false
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":Copilot" },
 	})
 end

@@ -129,7 +129,7 @@ function L.git_flow_finish(what)
 end
 
 function L.settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Git" },
 		{ cmd.LYRDGitCommit, ":Git commit" },
@@ -188,6 +188,13 @@ function L.settings(s)
 		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("git")
+	health.check_executable("lazygit")
 end
 
 return L

@@ -42,7 +42,7 @@ function L.settings(s)
 		--     group = 'Comment',
 		-- }
 	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDAIAssistant, ":ChatGPT" },
 		{ cmd.LYRDAIRefactor, ":ChatGPTEditWithInstructions" },
 		{ cmd.LYRDAISuggestions, ":Backseat" },

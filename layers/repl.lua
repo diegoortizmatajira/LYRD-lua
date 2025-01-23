@@ -104,7 +104,7 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	commands.implement(s, L.supported_filetypes, {
+	commands.implement(L.supported_filetypes, {
 		{ cmd.LYRDReplView, ":IronRepl" },
 		{ cmd.LYRDReplRestart, ":IronRestart" },
 		{

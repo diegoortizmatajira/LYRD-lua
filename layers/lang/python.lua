@@ -80,7 +80,7 @@ function L.preparation(_)
 end
 
 function L.settings(s)
-	commands.implement(s, "python", {
+	commands.implement("python", {
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
 		{ cmd.LYRDCodeSecrets, L.open_dotenv },

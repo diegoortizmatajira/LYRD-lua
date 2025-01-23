@@ -62,11 +62,11 @@ function L.preparation(_)
 end
 
 function L.settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDHttpEnvironmentFileSelect, ":Telescope http_client http_env_files" },
 		{ cmd.LYRDHttpEnvironmentSelect, ":Telescope http_client http_envs" },
 	})
-	commands.implement(s, "http", {
+	commands.implement("http", {
 		{ cmd.LYRDHttpSendRequest, ":HttpRun" },
 		{ cmd.LYRDHttpSendAllRequests, ":HttpRunAll" },
 	})

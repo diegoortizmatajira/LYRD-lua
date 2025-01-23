@@ -312,7 +312,7 @@ function L.settings(s)
 	-- Enable rounded borders in :LspInfo window.
 	require("lspconfig.ui.windows").default_options.border = "rounded"
 
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
 		{
 			cmd.LYRDBufferFormat,

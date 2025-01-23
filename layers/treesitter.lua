@@ -133,7 +133,7 @@ function L.settings(s)
 			},
 		},
 	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDCodeRefactor, require("refactoring").select_refactor },
 		{ cmd.LYRDViewTreeSitterPlayground, ":TSPlaygroundToggle" },
 	})

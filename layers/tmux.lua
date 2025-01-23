@@ -18,7 +18,7 @@ end
 
 function L.settings(s)
 	vim.g.tmux_navigator_no_wrap = 1
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDPaneNavigateLeft, ":TmuxNavigateLeft" },
 		{ cmd.LYRDPaneNavigateRight, ":TmuxNavigateRight" },
 		{ cmd.LYRDPaneNavigateUp, ":TmuxNavigateUp" },

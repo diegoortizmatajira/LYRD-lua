@@ -61,7 +61,7 @@ end
 
 function L.settings(s)
 	local debug = require("LYRD.layers.debug")
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{
 			cmd.LYRDDebugStart,
 			debug.start_handler(function()

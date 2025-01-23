@@ -103,19 +103,16 @@ end
 ---@param implementation string|function|Command
 ---@return boolean
 function L.execute_implementation(implementation)
-	if type(implementation) == "string" then
+	if type(implementation) == "string" and implementation ~= "" then
 		---Executes a command
 		---@param command string
-		local function safe_cmd(command)
+		local ok, _ = pcall(function(command)
 			return vim.cmd(command)
+		end, implementation)
+		if not ok then
+			vim.notify("Command execution failed: " .. implementation, vim.log.levels.ERROR)
 		end
-		if implementation ~= nil and implementation ~= "" then
-			local ok, _ = pcall(safe_cmd, implementation)
-			if not ok then
-				vim.notify("Command execution failed: " .. implementation, vim.log.levels.ERROR)
-			end
-			return true
-		end
+		return true
 	elseif type(implementation) == "function" then
 		implementation()
 		return true
@@ -129,9 +126,10 @@ end
 ---@field commands table<string, table<string, string|function>>
 
 ---@class LYRD.commands.implementation
----@field [1] LYRD.command.Command
+---@field [1] Command
 ---@field [2] string|function
 
+--- Prints a list of commands that don't have an implementation (default or per filetype)
 function L.list_unimplemented()
 	print("The following commands are not implemented for any type of file")
 	for name, cmd in pairs(L.commands) do
@@ -153,10 +151,9 @@ function L.list_implemented()
 end
 
 ---Registers a set of commands for a specific filetype
----@param s LYRD.commands.settings
 ---@param filetype string|string[]
 ---@param commands LYRD.commands.implementation[]
-function L.implement(s, filetype, commands)
+function L.implement(filetype, commands)
 	for _, command_info in ipairs(commands) do
 		local cmd, implementation = unpack(command_info)
 		if cmd == nil then
@@ -167,7 +164,7 @@ function L.implement(s, filetype, commands)
 end
 
 ---Registers a set of commands
----@param commands table<string, Command>
+---@param commands table<string, Command> dictionary with the list of commands to be registered.
 function L.register(commands)
 	for command_name, definition in pairs(commands) do
 		definition:register_with_name(command_name)
@@ -175,7 +172,7 @@ function L.register(commands)
 end
 
 --- @param commandName string Name of the command to generate the shortcut
---- @param opts ShortCutOptions
+--- @param opts ShortCutOptions Options for the generated shortcut
 function L.command_shortcut(commandName, opts)
 	local sequence = commandName
 	if opts and opts.range then
@@ -189,10 +186,28 @@ function L.command_shortcut(commandName, opts)
 	return sequence
 end
 
+--- This function return a handler function which will execute the given callback function with the given arguments.
+---@param callback Function to be executed with the given arguments
+---@vararg any list of arguments to be passed to the callback function
+---@return function
 function L.handler(callback, ...)
 	local params = { ... }
 	return function()
 		callback(unpack(params))
+	end
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local unimplemented_commands = {}
+	for name, cmd in pairs(L.commands) do
+		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+			table.insert(unimplemented_commands, name)
+			vim.health.warn(name .. " commmand is not implemented")
+		end
+	end
+	if #unimplemented_commands == 0 then
+		vim.health.ok("All commands have at least one implementation.")
 	end
 end
 

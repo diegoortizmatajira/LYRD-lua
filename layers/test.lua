@@ -34,10 +34,7 @@ function L.settings(s)
 	-- Called only when all adapters have been collected into L.test_adapters
 	require("neotest").setup({ adapters = L.test_adapters })
 
-	commands.implement(s, "neotest-summary", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{
 			cmd.LYRDTest,
 			function()
