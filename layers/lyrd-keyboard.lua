@@ -166,6 +166,7 @@ function L.keybindings(s)
 				{ "h", cmd.LYRDPaneSwapLeft },
 				{ "l", cmd.LYRDPaneSwapRight },
 			}, icons.arrow.swap),
+			{ "/", cmd.LYRDSearchBuffers },
 			{ ".", cmd.LYRDViewHomePage },
 			{ "D", cmd.LYRDLSPShowWorkspaceDiagnosticLocList },
 			{ "c", cmd.LYRDViewRegisters },
@@ -390,7 +391,6 @@ function L.keybindings(s)
 			{ "t", cmd.LYRDViewFileTree },
 			{ "y", cmd.LYRDViewYankList },
 		}, icons.action.view),
-		{ "/", cmd.LYRDSearchBuffers },
 	})
 end
 

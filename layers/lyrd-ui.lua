@@ -8,6 +8,7 @@ local icons = require("LYRD.layers.icons")
 ---@field title? string
 ---@field keep_window? boolean
 ---@field allow_saving? boolean
+---@field allow_replacement? boolean
 
 local L = {
 	name = "LYRD UI",
