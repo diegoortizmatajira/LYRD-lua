@@ -211,10 +211,16 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
 	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("yazi")
 end
 
 return L

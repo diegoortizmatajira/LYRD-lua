@@ -35,7 +35,9 @@ function L.plugins(s)
 					spacing = 3, -- spacing between columns
 					align = "center", -- align columns left, center or right
 				},
-				-- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
+				-- win = {
+				-- 	border = "solid",
+				-- },
 			},
 			keys = {
 				{
@@ -48,9 +50,14 @@ function L.plugins(s)
 			},
 		},
 		{
-			"pogyomo/submode.nvim",
-			lazy = true,
-			 version = "6.4.1",
+			"nvimtools/hydra.nvim",
+			opts = {
+				hint = {
+					float_opts = {
+						border = "rounded",
+					},
+				},
+			},
 		},
 	})
 end
@@ -152,6 +159,7 @@ end
 --- @param prefix string
 --- @param items LYRD.mappings.mapping[]
 function L.create_menu(prefix, items)
+	local Hydra = require("hydra")
 	for _, item in ipairs(items) do
 		if item.type == "header" then
 			map_menu(prefix .. item.key, item.title, item.icon)
@@ -159,21 +167,26 @@ function L.create_menu(prefix, items)
 		elseif item.type == "submode" then
 			-- Creates a submode
 			map_menu(prefix .. item.key, item.title, item.icon)
-			local submode = require("submode")
-			submode.create("submode_" .. prefix .. item.key, {
+			heads = {}
+			for _, mode_item in ipairs(item.items) do
+				local submode_key, command = unpack(mode_item)
+				if type(command) == "string" then
+					table.insert(heads, { submode_key, command })
+				else
+					table.insert(heads, { submode_key, c(command.name), { desc = command.desc } })
+				end
+			end
+			table.insert(heads, { "<Esc>", nil, { exit = true, desc = "Exit" } })
+			Hydra({
+				name = item.title,
 				mode = "n",
-				enter = prefix .. item.key,
-				leave = { "q", "<ESC>" },
-				default = function(register)
-					for _, mode_item in ipairs(item.items) do
-						local submode_key, command = unpack(mode_item)
-						if type(command) == "string" then
-							register(submode_key, command)
-						else
-							register(submode_key, c(command.name))
-						end
-					end
-				end,
+				body = prefix .. item.key,
+				hint = item.title,
+				config = {
+					color = "amaranth",
+					invoke_on_body = true,
+				},
+				heads = heads,
 			})
 		elseif #item == 2 then
 			-- Map a menu item with its sequence of keys

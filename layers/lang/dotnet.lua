@@ -158,7 +158,7 @@ function L.preparation(_)
 end
 
 function L.settings(s)
-	commands.implement(s, "cs", {
+	commands.implement("cs", {
 		-- { cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
 		-- { cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
 		{ cmd.LYRDBufferFormat, lsp.format_handler("roslyn") },

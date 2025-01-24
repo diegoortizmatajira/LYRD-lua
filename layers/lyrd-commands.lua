@@ -87,20 +87,20 @@ local L = {
 		LYRDImplementedCommands = Command:new("List implemented commands", commands.list_implemented),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPFindCodeActions = Command:new("Actions", nil, icons.action.code_action),
-		LYRDLSPFindDeclaration = Command:new("", nil, icons.code.navigate),
-		LYRDLSPFindDefinitions = Command:new("", nil, icons.code.navigate),
-		LYRDLSPFindDocumentDiagnostics = Command:new("", nil, icons.diagnostic.search),
-		LYRDLSPFindDocumentSymbols = Command:new("", nil, icons.code.symbol),
-		LYRDLSPFindImplementations = Command:new("", nil, icons.code.navigate),
-		LYRDLSPFindLineDiagnostics = Command:new("", nil, icons.diagnostic.search),
+		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
+		LYRDLSPFindDefinitions = Command:new("Go to Definition", nil, icons.code.navigate),
+		LYRDLSPFindDocumentDiagnostics = Command:new("Find Document Diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPFindDocumentSymbols = Command:new("Find Document Symbols", nil, icons.code.symbol),
+		LYRDLSPFindImplementations = Command:new("Find Implementations", nil, icons.code.navigate),
+		LYRDLSPFindLineDiagnostics = Command:new("Find Line Diagnostics", nil, icons.diagnostic.search),
 		LYRDLSPFindRangeCodeActions = Command:new("Range Actions", nil, icons.action.code_action),
-		LYRDLSPFindReferences = Command:new("", nil, icons.code.navigate),
-		LYRDLSPFindTypeDefinition = Command:new("", nil, icons.code.navigate),
-		LYRDLSPFindWorkspaceDiagnostics = Command:new("", nil, icons.diagnostic.search),
-		LYRDLSPFindWorkspaceSymbols = Command:new("", nil, icons.code.symbol),
-		LYRDLSPGotoNextDiagnostic = Command:new("", nil, icons.diagnostic.next),
-		LYRDLSPGotoPrevDiagnostic = Command:new("", nil, icons.diagnostic.prev),
-		LYRDLSPHoverInfo = Command:new("", nil, icons.code.hint),
+		LYRDLSPFindReferences = Command:new("Find References", nil, icons.code.navigate),
+		LYRDLSPFindTypeDefinition = Command:new("Go to Type Definition", nil, icons.code.navigate),
+		LYRDLSPFindWorkspaceDiagnostics = Command:new("Find Workspace Diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPFindWorkspaceSymbols = Command:new("Find Workspace Symbols", nil, icons.code.symbol),
+		LYRDLSPGotoNextDiagnostic = Command:new("Goto Next Diagnostic", nil, icons.diagnostic.next),
+		LYRDLSPGotoPrevDiagnostic = Command:new("Goto Previous Diagnostic", nil, icons.diagnostic.prev),
+		LYRDLSPHoverInfo = Command:new("Show hover information", nil, icons.code.hint),
 		LYRDLSPRename = Command:new("Rename symbol", nil, icons.code.rename),
 		LYRDLSPShowDocumentDiagnosticLocList = Command:new("Document diagnostics", nil, icons.diagnostic.search),
 		LYRDLSPShowWorkspaceDiagnosticLocList = Command:new("Workspace diagnostics", nil, icons.diagnostic.search),
@@ -198,11 +198,12 @@ local L = {
 		LYRDReplNotebookAddCellBelow = Command:new("Add notebook cell below", nil, icons.arrow.expand_down),
 		LYRDPasteImage = Command:new("Paste image", nil, icons.images.add),
 		LYRDInsertImage = Command:new("Insert image", nil, icons.images.search),
+		LYRDHardModeToggle = Command:new("Toggle hard mode", nil, icons.action.toggle_on),
 	},
 }
 
 function L.settings(s)
-	commands.register(s, L.cmd)
+	commands.register(L.cmd)
 end
 
 return L

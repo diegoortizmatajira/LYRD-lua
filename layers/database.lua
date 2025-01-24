@@ -45,10 +45,10 @@ function L.plugins(s)
 end
 
 function L.settings(s)
-    commands.implement(s, "*", {
+    commands.implement("*", {
         { cmd.LYRDDatabaseUI, ":DBUIToggle" },
     })
-    commands.implement(s, "sql", {
+    commands.implement("sql", {
         { cmd.LYRDCodeRun,          ":%DB" },
         { cmd.LYRDCodeRunSelection, ":'<,'>DB" },
     })

@@ -400,7 +400,7 @@ function L.settings(s)
 		end,
 	})
 
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDViewHomePage, ":Alpha" },
 		{ cmd.LYRDScratchNew, ":ScratchWithName" },
 		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
@@ -429,7 +429,7 @@ function L.settings(s)
 	-- Disable saving for special filetypes
 	for _, value in pairs(L.special_filetypes) do
 		if not value.allow_saving then
-			commands.implement(s, value.type_id, {
+			commands.implement(value.type_id, {
 				{
 					cmd.LYRDBufferSave,
 					function()

@@ -12,7 +12,7 @@ end
 function L.preparation(s) end
 
 function L.settings(s)
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		-- { cmd.LYRDXXXX, ":XXXXX" },
 	})
 end

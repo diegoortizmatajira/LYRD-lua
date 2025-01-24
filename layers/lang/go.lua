@@ -95,7 +95,7 @@ local function DetectGoHtmlTmpl()
 end
 
 function L.settings(s)
-	commands.implement(s, "go", {
+	commands.implement("go", {
 		{ cmd.LYRDCodeBuild, L.build_go_files },
 		{ cmd.LYRDCodeRun, ":GoRun" },
 		{ cmd.LYRDTest, ":GoTest" },

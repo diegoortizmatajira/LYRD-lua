@@ -46,7 +46,7 @@ function L.insert_image()
 end
 
 function L.settings(s)
-	commands.implement(s, { "markdown", "vimwiki", "html", "asciidoc" }, {
+	commands.implement({ "markdown", "vimwiki", "html", "asciidoc" }, {
 		{ cmd.LYRDPasteImage, ":PasteImage" },
 		{ cmd.LYRDInsertImage, L.insert_image },
 	})

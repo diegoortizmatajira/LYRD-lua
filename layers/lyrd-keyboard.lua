@@ -1,3 +1,4 @@
+local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
@@ -24,6 +25,41 @@ local L = {
 	},
 }
 
+function L.plugins(s)
+	setup.plugin(s, {
+		{
+			-- Navigates using brackets (buffers, diagnostics, etc.)
+			"echasnovski/mini.bracketed",
+			opts = {},
+		},
+		{
+			-- Text operators g=: evaluate, gx: exchange, multiply: gm, sort: gs, replace with register: gr
+			"echasnovski/mini.operators",
+			opts = {},
+		},
+		{
+			-- new a/i objects around/inside next/last
+			"echasnovski/mini.ai",
+			opts = {},
+		},
+		{
+			-- Splits/Joins arguments in functions with gS
+			"echasnovski/mini.splitjoin",
+			opts = {},
+		},
+		{
+			-- Adds the completing pair character when typing the opening one
+			"echasnovski/mini.pairs",
+			opts = {},
+		},
+		{
+			-- Allows to toggle comments with gc/gcc keymaps
+			"echasnovski/mini.comment",
+			version = "*",
+		},
+	})
+end
+
 function L.keybindings(s)
 	mappings.keys(s, {
 		{ "n", "<C-j>", cmd.LYRDPaneNavigateDown },
@@ -43,7 +79,7 @@ function L.keybindings(s)
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
 		{ "n", "<F12>", cmd.LYRDDebugStepOut },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
-		{ "i", "<C-s>", cmd.LYRDBufferSave:exit_mode_and_run() },
+		{ "i", "<C-s>", cmd.LYRDBufferSave:shortcut({ escape = true }) },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
 		{ "n", "<C-f>", cmd.LYRDResumeLastSearch },
@@ -73,10 +109,10 @@ function L.keybindings(s)
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
-		{ "i", "<M-C-]>", cmd.LYRDBufferNext:exit_mode_and_run() },
+		{ "i", "<M-C-]>", cmd.LYRDBufferNext:shortcut({ escape = true }) },
 		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
-		{ "i", "<M-C-[>", cmd.LYRDBufferPrev:exit_mode_and_run() },
-		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection:as_range_command() },
+		{ "i", "<M-C-[>", cmd.LYRDBufferPrev:shortcut({ escape = true }) },
+		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection:shortcut({ range = true }) },
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 	})
 
@@ -337,6 +373,7 @@ function L.keybindings(s)
 			{ "w", cmd.LYRDBufferToggleWrap },
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
+			{ "h", cmd.LYRDHardModeToggle },
 		}, icons.other.palette),
 		menu_header("v", "View", {
 			{ ".", cmd.LYRDViewHomePage },

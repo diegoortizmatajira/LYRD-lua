@@ -2,7 +2,7 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.setup.Settings
 ---@field layers string[] contains the list of layers provided in init script
----@field loaded_layers? string[] contains the list of names of the loaded layers
+---@field loaded_layers? LYRD.setup.Module[] contains the list of names of the loaded layers
 ---@field plugins? LazySpec contains the list of plugins loaded
 ---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
 
@@ -13,6 +13,7 @@ local utils = require("LYRD.utils")
 ---@field settings? nil|fun(s: LYRD.setup.Settings):nil
 ---@field keybindings? nil|fun(s: LYRD.setup.Settings):nil
 ---@field complete? nil|fun(s: LYRD.setup.Settings):nil
+---@field healthcheck? nil|fun():nil
 
 local setup = {
 	configs_path = utils.get_lyrd_path() .. "/configs",
@@ -37,7 +38,7 @@ local function bootstrap_lazy()
 				{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
 				{ out, "WarningMsg" },
 				{ "\nPress any key to exit..." },
- 			}, true, {})
+			}, true, {})
 			vim.fn.getchar()
 			os.exit(1)
 		end
@@ -123,17 +124,15 @@ end
 function setup.load(s)
 	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
 	---@type LYRD.setup.Module[]
-	local loaded_modules = {}
 	for _, layer in ipairs(setup.config.layers) do
 		local L = require(layer)
-		table.insert(loaded_modules, L)
-		table.insert(setup.config.loaded_layers, L.name)
+		table.insert(setup.config.loaded_layers, L)
 	end
 
 	-- Process each layer
-	load_plugins(setup.config, loaded_modules)
-	load_settings(setup.config, loaded_modules)
-	load_complete(setup.config, loaded_modules)
+	load_plugins(setup.config, setup.config.loaded_layers)
+	load_settings(setup.config, setup.config.loaded_layers)
+	load_complete(setup.config, setup.config.loaded_layers)
 end
 
 -- Enables a plugin with its name and options
