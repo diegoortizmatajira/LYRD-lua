@@ -43,6 +43,7 @@ setup.load({
 		"LYRD.layers.tasks", -- Must be after debug and database
 		"LYRD.layers.repl",
 		ai_layer(),
+		-- "LYRD.layers.ai-copilot",
 		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.dotnet",

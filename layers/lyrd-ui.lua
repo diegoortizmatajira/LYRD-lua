@@ -20,6 +20,7 @@ local L = {
 		{ type_id = "NvimTree", title = "Explorer" },
 		{ type_id = "aerial", title = "Outline" },
 		{ type_id = "alpha" },
+		{ type_id = "copilot-chat", title = "AI Chat" },
 		{ type_id = "fugitive" },
 		{ type_id = "noice" },
 		{ type_id = "qf" },
