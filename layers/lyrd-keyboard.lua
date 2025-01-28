@@ -117,6 +117,11 @@ function L.keybindings(s)
 	})
 
 	mappings.create_menu("<Leader>", {
+		menu_header("a", "Artificial Intelligence", {
+			{ "a", cmd.LYRDAIAssistant },
+			{ "r", cmd.LYRDAIRefactor },
+			{ "s", cmd.LYRDAISuggestions },
+		}, icons.other.ia),
 		menu_header("h", "Http Requests", {
 			{ "a", cmd.LYRDHttpSendAllRequests },
 			{ "e", cmd.LYRDHttpEnvironmentFileSelect },
@@ -187,7 +192,6 @@ function L.keybindings(s)
 		}, icons.action.split_v),
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
-		{ "a", cmd.LYRDLSPFindCodeActions },
 		{ "c", cmd.LYRDBufferClose },
 		{ "f", cmd.LYRDBufferFormat },
 		{ "j", cmd.LYRDSmartCoder },
