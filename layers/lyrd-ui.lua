@@ -20,6 +20,7 @@ local L = {
 		{ type_id = "NvimTree", title = "Explorer" },
 		{ type_id = "aerial", title = "Outline" },
 		{ type_id = "alpha" },
+		{ type_id = "copilot-chat", title = "AI Chat" },
 		{ type_id = "fugitive" },
 		{ type_id = "noice" },
 		{ type_id = "qf" },
@@ -106,6 +107,7 @@ end
 local function get_buffers_that_close_with_their_window()
 	local result = {
 		{ filename = "fugitive:" },
+		{ filename = "copilot:" },
 	}
 	for _, value in pairs(L.special_filetypes) do
 		if not value.keep_window then
