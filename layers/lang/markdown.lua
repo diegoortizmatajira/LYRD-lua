@@ -7,8 +7,9 @@ function L.plugins(s)
 		{
 			"MeanderingProgrammer/markdown.nvim",
 			main = "render-markdown",
-			ft = { "markdown" },
+			ft = { "markdown", "Avante" },
 			opts = {
+				file_types = { "markdown", "Avante" },
 				heading = {
 					sign = false,
 					icons = { " ", " ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },

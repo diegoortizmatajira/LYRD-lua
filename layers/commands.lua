@@ -23,8 +23,8 @@ Command = {}
 ---@param range? boolean|nil Indicates whether the command can be applied to a range of text.
 ---@return Command
 function Command:new(desc, default_implementation, icon, range)
-	self.__index = self
 	local o = setmetatable({}, self)
+	self.__index = self
 	o.name = ""
 	o.desc = desc
 	o.default_implementation = default_implementation
@@ -63,22 +63,22 @@ end
 --- Executes the command implementation corresponding to the current file type or the default one if no specific implementation is available.
 function Command:execute()
 	-- Looks for the current file type command implementation
-	local implementation = self.implementations[vim.bo.filetype]
+	local filetype = vim.bo.filetype
+	if not filetype then
+		vim.notify("Filetype is not set", vim.log.levels.ERROR)
+		return
+	end
+
+	local implementation = self.implementations[filetype]
 	if implementation then
 		L.execute_implementation(implementation)
+	elseif self.default_implementation then
+		L.execute_implementation(self.default_implementation)
 	else
-		if self.default_implementation then
-			L.execute_implementation(self.default_implementation)
-		else
-			vim.notify(
-				string.format(
-					[[Command '%s' has not been implemented for the filetype '%s']],
-					self.name,
-					vim.bo.filetype
-				),
-				vim.log.levels.WARN
-			)
-		end
+		vim.notify(
+			string.format([[Command '%s' has not been implemented for the filetype '%s']], self.name, filetype),
+			vim.log.levels.WARN
+		)
 	end
 end
 
