@@ -13,7 +13,6 @@ function L.plugins(s)
 			lazy = false,
 			version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
 			opts = {
-				-- add any opts here
 				provider = "copilot",
 				auto_suggestions_provider = "copilot",
 			},
@@ -36,16 +35,10 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(s) end
-
 function L.settings(s)
 	commands.implement("*", {
-		-- { cmd.LYRDXXXX, ":XXXXX" },
+		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 	})
 end
-
-function L.keybindings(s) end
-
-function L.complete(s) end
 
 return L
