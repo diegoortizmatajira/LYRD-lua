@@ -1,16 +1,5 @@
 local setup = require("LYRD.setup")
 
-local function ai_layer()
-	local uname = vim.loop.os_uname()
-	if uname.sysname == "Darwin" then
-		return "LYRD.layers.ai-tabnine"
-	else
-		return "LYRD.layers.ai-codeium"
-	end
-	-- "LYRD.layers.ai-copilot",
-	-- "LYRD.layers.ai-chat-gpt",
-end
-
 setup.load({
 	layers = {
 		"LYRD.layers.general",
@@ -42,9 +31,7 @@ setup.load({
 		"LYRD.layers.kubernetes",
 		"LYRD.layers.tasks", -- Must be after debug and database
 		"LYRD.layers.repl",
-		ai_layer(),
-		"LYRD.layers.ai-copilot",
-		"LYRD.layers.ai-avante",
+		"LYRD.layers.ai-dev",
 		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.dotnet",
@@ -57,7 +44,7 @@ setup.load({
 		"LYRD.layers.lang.sql",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
-		"LYRD.layers.extras",
+		-- "LYRD.layers.extras",
 		"LYRD.layers.media",
 	},
 })
