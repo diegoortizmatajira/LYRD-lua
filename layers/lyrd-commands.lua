@@ -9,7 +9,7 @@ local L = {
 		LYRDAIRefactor = Command:new("AI Refactor", nil, icons.other.wrench),
 		LYRDAISuggestions = Command:new("AI Suggestions", nil, icons.other.ia),
 		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
-		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia),
+		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia, true),
 		LYRDBreakLine = Command:new(
 			"Break current line",
 			":s/[,(]/&\r/ge|:noh|:'[,']normal==",
