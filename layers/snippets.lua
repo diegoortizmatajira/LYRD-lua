@@ -1,6 +1,12 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
-local L = { name = "Snippets" }
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
+local L = {
+	name = "Snippets",
+	snippets_path = utils.get_lyrd_path() .. "/snippets",
+}
+local utils = require("LYRD.utils")
 
 function L.plugins(s)
 	setup.plugin(s, {
@@ -8,7 +14,9 @@ function L.plugins(s)
 			"L3MON4D3/LuaSnip",
 			version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
 			config = function()
-				require("luasnip.loaders.from_vscode").lazy_load()
+				require("luasnip.loaders.from_vscode").lazy_load({
+					paths = { L.snippets_path },
+				})
 			end,
 			-- install jsregexp (optional!).
 			build = "make install_jsregexp",
@@ -16,12 +24,12 @@ function L.plugins(s)
 				"rafamadriz/friendly-snippets",
 			},
 		},
-		"rafamadriz/friendly-snippets",
+		{ "rafamadriz/friendly-snippets" },
 		{
 			"chrisgrieser/nvim-scissors",
 			dependencies = "nvim-telescope/telescope.nvim",
 			opts = {
-				snippetDir = "path/to/your/snippetFolder",
+				snippetDir = L.snippets_path,
 			},
 		},
 	})
@@ -36,8 +44,20 @@ function L.settings(_)
 			return capabilities
 		end
 	end)
+	commands.implement("*", {
+		{
+			cmd.LYRDCodeCreateSnippet,
+			function()
+				require("scissors").addNewSnippet()
+			end,
+		},
+		{
+			cmd.LYRDCodeEditSnippet,
+			function()
+				require("scissors").editSnippet()
+			end,
+		},
+	})
 end
-
-function L.keybindings(_) end
 
 return L

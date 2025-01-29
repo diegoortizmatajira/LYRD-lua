@@ -41,6 +41,8 @@ local L = {
 		LYRDCodeGlobalCheck = Command:new("Global check", nil, icons.code.check),
 		LYRDCodeImplementInterface = Command:new("Implement interface", nil, icons.code.interface),
 		LYRDCodeInsertSnippet = Command:new("Insert snippet", nil, icons.code.snippet),
+		LYRDCodeCreateSnippet = Command:new("Create snippet", nil, icons.code.snippet, true),
+		LYRDCodeEditSnippet = Command:new("Edit snippet", nil, icons.code.snippet),
 		LYRDCodeProduceGetter = Command:new("Generate getters code", nil, icons.code.generate),
 		LYRDCodeProduceMapping = Command:new("Generate mappings code", nil, icons.code.generate),
 		LYRDCodeProduceSetter = Command:new("Generate setters code", nil, icons.code.generate),
@@ -84,7 +86,6 @@ local L = {
 		LYRDGitWorkTreeCreate = Command:new("Create Worktree", nil, icons.folder.new),
 		LYRDGitWorkTreeCreateExistingBranch = Command:new("Create Worktree for existing branch", nil, icons.folder.new),
 		LYRDGitWorkTreeList = Command:new("List GIT Worktrees", nil, icons.git.worktree),
-		LYRDImplementedCommands = Command:new("List implemented commands", commands.list_implemented),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPFindCodeActions = Command:new("Actions", nil, icons.action.code_action),
 		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
@@ -139,11 +140,6 @@ local L = {
 		LYRDTestLast = Command:new("Repeat last test", nil, icons.action.repeat_once),
 		LYRDTestSuite = Command:new("Test suite", nil, icons.code.test),
 		LYRDTestSummary = Command:new("View test summary", nil, icons.other.report),
-		LYRDUnimplementedCommands = Command:new(
-			"List unimplemented commands",
-			commands.list_unimplemented,
-			icons.search.commands
-		),
 		LYRDViewFileExplorer = Command:new("File Explorer", nil, icons.apps.file_explorer),
 		LYRDViewFileTree = Command:new("Toggle file tree", nil, icons.action.toggle_on),
 		LYRDViewHomePage = Command:new("Home page", nil, icons.other.home),

@@ -49,12 +49,6 @@ function L.plugins(s)
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
 		},
-		{
-			"kylechui/nvim-surround",
-			version = "*", -- Use for stability; omit to use `main` branch for the latest features
-			event = "VeryLazy",
-			opts = {},
-		},
 		{ -- This plugin
 			"zeioth/compiler.nvim",
 			cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
@@ -116,19 +110,6 @@ function L.settings(s)
 		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
 		{ cmd.LYRDCodeAddDocumentation, ":Neogen" },
 	})
-end
-
-function L.complete(_)
-	-- If you want insert `(` after select function or method item
-	local is_cmp_loaded, cmp = pcall(require, "cmp")
-	if is_cmp_loaded then
-		cmp.event:on(
-			"confirm_done",
-			require("nvim-autopairs.completion.cmp").on_confirm_done({
-				tex = false,
-			})
-		)
-	end
 end
 
 return L

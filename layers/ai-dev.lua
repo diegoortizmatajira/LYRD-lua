@@ -21,7 +21,7 @@ local ai_providers = {
 							auto_trigger = suggestion_enabled,
 							hide_during_completion = true,
 							debounce = 75,
-							keymap = {
+							keymap = suggestion_enabled and {
 								accept = keyboard.ai_keys.accept,
 								accept_word = keyboard.ai_keys.accept_word,
 								accept_line = keyboard.ai_keys.accept_line,
@@ -59,7 +59,7 @@ local ai_providers = {
 							-- desired.
 							virtual_text_priority = 65535,
 							-- Set to false to disable all key bindings for managing completions.
-							map_keys = true,
+							map_keys = suggestion_enabled,
 							-- The key to press when hitting the accept keybinding but no completion is showing.
 							-- Defaults to \t normally or <c-n> when a popup is showing.
 							accept_fallback = nil,

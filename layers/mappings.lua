@@ -10,6 +10,7 @@ local L = { name = "Mappings" }
 ---@class LYRD.mappings.standard_mapping
 ---@field [1] string contains the key
 ---@field [2] Command contains the command
+---@field [3]? string[] contains any additional modes to create the mapping
 
 ---@class LYRD.mappings.header_mapping
 ---@field key string contains the key
@@ -17,7 +18,8 @@ local L = { name = "Mappings" }
 ---@field items LYRD.mappings.mapping[]
 ---@field type "header" | "submode" type of header
 ---@field icon? string
----
+---@field additional_modes? string[] contains any additional modes to create the mapping
+
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
 
 function L.plugins(s)
@@ -38,6 +40,7 @@ function L.plugins(s)
 				-- win = {
 				-- 	border = "solid",
 				-- },
+				sort = { "alphanum" },
 			},
 			keys = {
 				{
@@ -109,7 +112,8 @@ end
 ---@param keys string
 ---@param title string
 ---@param icon? string
-local function map_menu(keys, title, icon)
+---@param additional_modes? string[]
+local function map_menu(keys, title, icon, additional_modes)
 	local wk = require("which-key")
 	if type(icon) == "string" then
 		icon_str = icons.icon(icon)
@@ -117,6 +121,11 @@ local function map_menu(keys, title, icon)
 		icon_str = icon
 	end
 	wk.add({ { keys, group = "[" .. title .. "]", icon = icon_str } })
+	if additional_modes then
+		for _, mode in ipairs(additional_modes) do
+			wk.add({ { keys, group = "[" .. title .. "]", mode = mode, icon = icon_str } })
+		end
+	end
 end
 
 ---Creates a set of keybindings
@@ -162,7 +171,7 @@ function L.create_menu(prefix, items)
 	local Hydra = require("hydra")
 	for _, item in ipairs(items) do
 		if item.type == "header" then
-			map_menu(prefix .. item.key, item.title, item.icon)
+			map_menu(prefix .. item.key, item.title, item.icon, item.additional_modes)
 			L.create_menu(prefix .. item.key, item.items)
 		elseif item.type == "submode" then
 			-- Creates a submode
@@ -188,10 +197,15 @@ function L.create_menu(prefix, items)
 				},
 				heads = heads,
 			})
-		elseif #item == 2 then
+		else
 			-- Map a menu item with its sequence of keys
-			local key, command = unpack(item)
+			local key, command, additional_modes = unpack(item)
 			map_key("n", nil, prefix .. key, command)
+			if additional_modes then
+				for _, mode in ipairs(additional_modes) do
+					map_key(mode, nil, prefix .. key, command)
+				end
+			end
 		end
 	end
 end
@@ -216,8 +230,9 @@ end
 --- @param key string
 --- @param title string
 --- @param items LYRD.mappings.mapping[]
+--- @param additional_modes? string[]
 --- @return LYRD.mappings.header_mapping
-function L.menu_header(key, title, items, icon)
+function L.menu_header(key, title, items, icon, additional_modes)
 	---@type LYRD.mappings.header_mapping
 	return {
 		key = key,
@@ -225,6 +240,7 @@ function L.menu_header(key, title, items, icon)
 		items = items,
 		type = "header",
 		icon = icon,
+		additional_modes = additional_modes,
 	}
 end
 
