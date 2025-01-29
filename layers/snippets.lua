@@ -17,6 +17,13 @@ function L.plugins(s)
 			},
 		},
 		"rafamadriz/friendly-snippets",
+		{
+			"chrisgrieser/nvim-scissors",
+			dependencies = "nvim-telescope/telescope.nvim",
+			opts = {
+				snippetDir = "path/to/your/snippetFolder",
+			},
+		},
 	})
 end
 

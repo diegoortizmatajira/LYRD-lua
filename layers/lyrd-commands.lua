@@ -5,9 +5,11 @@ local L = {
 	name = "LYRD Commands",
 
 	cmd = {
-		LYRDAIAssistant = Command:new("Open AI Assistant", nil, icons.other.ia),
-		LYRDAIRefactor = Command:new("Open AI Refactor", nil, icons.other.wrench),
-		LYRDAISuggestions = Command:new("Open AI Suggestions", nil, icons.other.ia),
+		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia),
+		LYRDAIRefactor = Command:new("AI Refactor", nil, icons.other.wrench),
+		LYRDAISuggestions = Command:new("AI Suggestions", nil, icons.other.ia),
+		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
+		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia),
 		LYRDBreakLine = Command:new(
 			"Break current line",
 			":s/[,(]/&\r/ge|:noh|:'[,']normal==",
@@ -21,10 +23,10 @@ local L = {
 		LYRDBufferFormat = Command:new("Format document", nil, icons.action.format),
 		LYRDBufferJumpToLast = Command:new("Jump to last buffer", ":b#", icons.arrow.up_left),
 		LYRDBufferNew = Command:new("New empty buffer", ":enew", icons.file.new),
-		LYRDBufferNext = Command:new("Next buffer", ":bn", icons.chevron.double_right),
+		LYRDBufferNext = Command:new("Next buffer", ":bn", icons.chevron.double_right, false, true),
 		LYRDBufferPaste = Command:new("Paste clipboard to whole buffer", ':normal! ggdG"+P', icons.action.paste),
-		LYRDBufferPrev = Command:new("Previous Buffer", ":bp", icons.chevron.double_left),
-		LYRDBufferSave = Command:new("Save current file", ":w", icons.action.save),
+		LYRDBufferPrev = Command:new("Previous Buffer", ":bp", icons.chevron.double_left, false, true),
+		LYRDBufferSave = Command:new("Save current file", ":w", icons.action.save, false, true),
 		LYRDBufferSaveAll = Command:new("Save all files", ":wall", icons.action.save_all),
 		LYRDBufferSetReadOnly = Command:new("Toggle read only mode", ":setl readonly!", icons.action.toggle_on),
 		LYRDBufferSplitH = Command:new("Horizonal split", ":split", icons.action.split_h),

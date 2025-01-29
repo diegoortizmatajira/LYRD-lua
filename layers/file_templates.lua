@@ -31,15 +31,6 @@ function L.plugins(s)
 	})
 end
 
-local function is_string_in_list(target, list)
-	for _, str in ipairs(list) do
-		if str == target then
-			return true
-		end
-	end
-	return false
-end
-
 function L.settings(_)
 	vim.api.nvim_create_augroup("EmptyFileCheck", { clear = true })
 
@@ -47,7 +38,7 @@ function L.settings(_)
 		group = "EmptyFileCheck",
 		pattern = "*",
 		callback = function()
-			if is_string_in_list(vim.bo.filetype, L.ignore_filetypes) then
+			if utils.contains(L.ignore_filetypes, vim.bo.filetype) then
 				return
 			end
 			-- Check if the file is empty

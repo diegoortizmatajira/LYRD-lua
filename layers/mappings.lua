@@ -89,7 +89,7 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	local icon_str = nil
 	-- If the command is a Command object, then uses the command name and description
 	if type(command) ~= "string" then
-		command_str = c(command.name)
+		command_str = command:as_vim_command(mode)
 		desc_str = command.desc
 		if type(command.icon) == "string" then
 			icon_str = icons.icon(command.icon)

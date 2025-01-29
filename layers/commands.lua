@@ -1,3 +1,5 @@
+utils = require("LYRD.utils")
+
 local L = {
 	name = "Commands",
 	--- @type table<string, Command>
@@ -13,6 +15,7 @@ local L = {
 ---@field default_implementation? string|function|nil Default implementation.
 ---@field icon string|nil Icon to show for the command.
 ---@field range? boolean|nil Indicates whether the command can be applied to a range of text.
+---@field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
 ---@field implementations table<string, string|function> Implementations per filetype.
 Command = {}
 
@@ -22,7 +25,7 @@ Command = {}
 ---@param icon? string|nil Icon to show for the command.
 ---@param range? boolean|nil Indicates whether the command can be applied to a range of text.
 ---@return Command
-function Command:new(desc, default_implementation, icon, range)
+function Command:new(desc, default_implementation, icon, range, leave_insert_mode)
 	local o = setmetatable({}, self)
 	self.__index = self
 	o.name = ""
@@ -30,6 +33,7 @@ function Command:new(desc, default_implementation, icon, range)
 	o.default_implementation = default_implementation
 	o.icon = icon
 	o.range = range
+	o.leave_insert_mode = leave_insert_mode
 	o.implementations = {}
 	return o
 end
@@ -93,10 +97,21 @@ function Command:register_with_name(command_name)
 end
 
 --- Returns the command with modifiers to be used with a text range in visual mode.
---- @param opts ShortCutOptions
+--- @param opts? ShortCutOptions
 --- @return string
 function Command:shortcut(opts)
 	return L.command_shortcut(self.name, opts)
+end
+
+--- Returns the command as a string command to be run in vim
+function Command:as_vim_command(mode)
+	if self.range and utils.contains({ "v", "x" }, mode) then
+		return self:shortcut({ range = true })
+	elseif self.leave_insert_mode and mode == "i" then
+		return self:shortcut({ escape = true })
+	else
+		return self:shortcut()
+	end
 end
 
 --- Executes a command instance
@@ -187,7 +202,7 @@ function L.command_shortcut(commandName, opts)
 end
 
 --- This function return a handler function which will execute the given callback function with the given arguments.
----@param callback Function to be executed with the given arguments
+---@param callback function to be executed with the given arguments
 ---@vararg any list of arguments to be passed to the callback function
 ---@return function
 function L.handler(callback, ...)

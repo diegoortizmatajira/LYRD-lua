@@ -5,7 +5,7 @@ local keyboard = require("LYRD.layers.lyrd-keyboard")
 
 --- @class ai_provider
 --- @field name string Name of the provider
---- @field plugins function function that return a list of plugins for the provider
+--- @field plugins fun(suggestion_enabled: boolean): table function that returns a list of plugins for the provider, taking a boolean parameter
 
 --- @type table<string,ai_provider>
 local ai_providers = {
@@ -39,13 +39,13 @@ local ai_providers = {
 	},
 	CODEIUM = {
 		name = "codeium",
-		plugins = function()
+		plugins = function(suggestion_enabled)
 			return {
 				{
 					"Exafunction/codeium.nvim",
 					opts = {
 						virtual_text = {
-							enabled = true,
+							enabled = suggestion_enabled,
 							-- Set to true if you never want completions to be shown automatically.
 							manual = false,
 							-- A mapping of filetype to true or false, to enable virtual text.
@@ -79,6 +79,7 @@ local ai_providers = {
 								prev = keyboard.ai_keys.prev,
 							},
 						},
+						enable_cmp_source = true,
 					},
 					dependencies = {
 						"nvim-lua/plenary.nvim",
@@ -106,6 +107,11 @@ local ai_providers = {
 					main = "tabnine",
 					build = "./dl_binaries.sh",
 				},
+				{
+					"tzachar/cmp-tabnine",
+					build = "./install.sh",
+					dependencies = "hrsh7th/nvim-cmp",
+				},
 			}
 		end,
 	},
@@ -121,7 +127,7 @@ local function completion_provider()
 end
 
 local L = {
-	name = "Avante-AI",
+	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,
 	completion_provider = completion_provider(),
 }
@@ -155,6 +161,10 @@ function L.plugins(s)
 			opts = {
 				provider = L.avante_provider.name,
 				auto_suggestions_provider = L.avante_provider.name,
+				mapping = {
+					ask = false,
+					edit = false,
+				},
 			},
 			-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 			build = "make",
@@ -170,9 +180,21 @@ function L.plugins(s)
 	end
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
+		{
+			cmd.LYRDAIAsk,
+			function()
+				require("avante.api").ask()
+			end,
+		},
+		{
+			cmd.LYRDAIEdit,
+			function()
+				require("avante.api").edit()
+			end,
+		},
 	})
 end
 

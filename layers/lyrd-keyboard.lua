@@ -49,8 +49,21 @@ function L.plugins(s)
 		},
 		{
 			-- Adds the completing pair character when typing the opening one
-			"echasnovski/mini.pairs",
-			opts = {},
+			"windwp/nvim-autopairs",
+			event = "InsertEnter",
+			config = function()
+				-- If you want insert `(` after select function or method item
+				local cmp = require("cmp")
+				cmp.event:on(
+					"confirm_done",
+					require("nvim-autopairs.completion.cmp").on_confirm_done({
+						tex = false,
+					})
+				)
+			end,
+			dependencies = {
+				"hrsh7th/nvim-cmp",
+			},
 		},
 		{
 			-- Allows to toggle comments with gc/gcc keymaps
@@ -79,7 +92,7 @@ function L.keybindings(s)
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
 		{ "n", "<F12>", cmd.LYRDDebugStepOut },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
-		{ "i", "<C-s>", cmd.LYRDBufferSave:shortcut({ escape = true }) },
+		{ "i", "<C-s>", cmd.LYRDBufferSave },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
 		{ "n", "<C-f>", cmd.LYRDResumeLastSearch },
@@ -109,18 +122,20 @@ function L.keybindings(s)
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
-		{ "i", "<M-C-]>", cmd.LYRDBufferNext:shortcut({ escape = true }) },
+		{ "i", "<M-C-]>", cmd.LYRDBufferNext },
 		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
-		{ "i", "<M-C-[>", cmd.LYRDBufferPrev:shortcut({ escape = true }) },
-		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection:shortcut({ range = true }) },
+		{ "i", "<M-C-[>", cmd.LYRDBufferPrev },
+		{ "x", "<Leader>x", cmd.LYRDCodeRunSelection },
+		{ "x", "<Leader>ae", cmd.LYRDAIEdit },
+		{ "x", "<Leader>aa", cmd.LYRDAIAsk },
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 	})
 
 	mappings.create_menu("<Leader>", {
 		menu_header("a", "Artificial Intelligence", {
 			{ "a", cmd.LYRDAIAssistant },
-			{ "r", cmd.LYRDAIRefactor },
-			{ "s", cmd.LYRDAISuggestions },
+			{ "k", cmd.LYRDAIAsk },
+			{ "e", cmd.LYRDAIEdit },
 		}, icons.other.ia),
 		menu_header("h", "Http Requests", {
 			{ "a", cmd.LYRDHttpSendAllRequests },
@@ -203,11 +218,6 @@ function L.keybindings(s)
 	})
 
 	mappings.create_menu("<Space>", {
-		menu_header("a", "Artificial Intelligence", {
-			{ "a", cmd.LYRDAIAssistant },
-			{ "r", cmd.LYRDAIRefactor },
-			{ "s", cmd.LYRDAISuggestions },
-		}, icons.other.ia),
 		menu_header("b", "Buffers", {
 			{ "e", cmd.LYRDBufferNew },
 			{ "n", cmd.LYRDBufferNext },
