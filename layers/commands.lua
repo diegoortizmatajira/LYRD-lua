@@ -1,4 +1,4 @@
-utils = require("LYRD.utils")
+local utils = require("LYRD.utils")
 
 local L = {
 	name = "Commands",
