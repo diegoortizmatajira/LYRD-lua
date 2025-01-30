@@ -118,6 +118,7 @@ local L = {
 		LYRDSearchCommandHistory = Command:new("Recent comands", nil, icons.search.history),
 		LYRDSearchCommands = Command:new("Commands", nil, icons.search.commands),
 		LYRDSearchCurrentString = Command:new("Current string in files", nil, icons.search.default),
+		LYRDSearchAllFiles = Command:new("Find all files", nil, icons.search.files),
 		LYRDSearchFiles = Command:new("Find files", nil, icons.search.files),
 		LYRDSearchFiletypes = Command:new("Filetypes", nil, icons.search.default),
 		LYRDSearchGitFiles = Command:new("Git Files", nil, icons.search.files),

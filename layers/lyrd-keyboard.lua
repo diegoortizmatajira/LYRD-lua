@@ -91,6 +91,7 @@ function L.keybindings(s)
 		{ "n", "<C-k>", cmd.LYRDPaneNavigateUp },
 		{ "n", "<C-l>", cmd.LYRDPaneNavigateRight },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
+		{ "n", "<C-o>", cmd.LYRDSearchAllFiles },
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<C-r><C-r>", cmd.LYRDLSPRename },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },

@@ -110,7 +110,10 @@ local ai_providers = {
 				{
 					"tzachar/cmp-tabnine",
 					build = "./install.sh",
-					dependencies = "hrsh7th/nvim-cmp",
+					dependencies = {
+						"hrsh7th/nvim-cmp",
+						"codota/tabnine-nvim",
+					},
 				},
 			}
 		end,

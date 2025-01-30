@@ -70,6 +70,12 @@ end
 function L.settings(s)
 	commands.implement("*", {
 		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
+		{
+			cmd.LYRDSearchAllFiles,
+			function()
+				require("telescope.builtin").find_files({ no_ignore = true })
+			end,
+		},
 		{ cmd.LYRDSearchBuffers, ":Telescope buffers" },
 		{ cmd.LYRDSearchGitFiles, ":Telescope git_files" },
 		{ cmd.LYRDSearchRecentFiles, ":Telescope oldfiles" },
