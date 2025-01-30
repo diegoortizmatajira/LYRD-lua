@@ -2,11 +2,11 @@ local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local utils = require("LYRD.utils")
 local L = {
 	name = "Snippets",
 	snippets_path = utils.get_lyrd_path() .. "/snippets",
 }
-local utils = require("LYRD.utils")
 
 function L.plugins(s)
 	setup.plugin(s, {
