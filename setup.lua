@@ -86,7 +86,17 @@ local function load_plugins()
 end
 
 --- Calls the sequence of methods to initialize for each layer
-local function load_settings()
+--- @param s LYRD.setup.Settings settings object
+function setup.load(s)
+	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
+	---@type LYRD.setup.Module[]
+	for _, layer in ipairs(setup.config.layers) do
+		local L = require(layer)
+		table.insert(setup.config.loaded_layers, L)
+	end
+
+	-- Process each layer
+	load_plugins()
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.preparation ~= nil then
 			layer.preparation(setup.config)
@@ -102,31 +112,11 @@ local function load_settings()
 			layer.keybindings(setup.config)
 		end
 	end
-end
-
----Calls the complete method for each layer
-local function load_complete()
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.complete ~= nil then
 			layer.complete(setup.config)
 		end
 	end
-end
-
---- Calls the sequence of methods to initialize for each layer
---- @param s LYRD.setup.Settings settings object
-function setup.load(s)
-	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
-	---@type LYRD.setup.Module[]
-	for _, layer in ipairs(setup.config.layers) do
-		local L = require(layer)
-		table.insert(setup.config.loaded_layers, L)
-	end
-
-	-- Process each layer
-	load_plugins()
-	load_settings()
-	load_complete()
 end
 
 -- Enables a plugin with its name and options
