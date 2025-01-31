@@ -155,7 +155,7 @@ local function avante_dependencies()
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"yetone/avante.nvim",
 			event = "VeryLazy",
@@ -176,10 +176,10 @@ function L.plugins(s)
 		},
 	})
 	if L.avante_provider == L.completion_provider then
-		setup.plugin(s, L.avante_provider.plugins(true))
+		setup.plugin(L.avante_provider.plugins(true))
 	else
-		setup.plugin(s, L.avante_provider.plugins(false))
-		setup.plugin(s, L.completion_provider.plugins(true))
+		setup.plugin(L.avante_provider.plugins(false))
+		setup.plugin(L.completion_provider.plugins(true))
 	end
 end
 

@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Test", test_adapters = {} }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{ "nvim-neotest/nvim-nio" },
 		{
 			"nvim-neotest/neotest",

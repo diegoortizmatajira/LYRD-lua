@@ -12,7 +12,7 @@ function L.open_dotenv()
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"mfussenegger/nvim-dap-python",
 			config = function()

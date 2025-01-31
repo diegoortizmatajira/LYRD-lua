@@ -287,7 +287,7 @@ local L = {
 }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"nvim-tree/nvim-web-devicons",
 			init = function()

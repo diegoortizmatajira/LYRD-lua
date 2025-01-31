@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Telescope" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		"nvim-lua/popup.nvim",
 		"nvim-lua/plenary.nvim",
 		{

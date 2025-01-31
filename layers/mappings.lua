@@ -23,7 +23,7 @@ local L = { name = "Mappings" }
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"folke/which-key.nvim",
 			event = "VeryLazy",
@@ -130,37 +130,13 @@ end
 
 ---Creates a set of keybindings
 ---@param mappings {[1]: string|string[], [2]:string, [3]:string|function|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
-function L.keys(_, mappings, options)
+function L.keys(mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
 		if opt == nil then
 			opt = options
 		end
 		map_key(mode, nil, { key }, command, nil, opt)
-	end
-end
-
--- Creates a set of keybindings starting with <Leader>
--- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
-function L.leader(_, mappings, options)
-	for _, mapping in ipairs(mappings) do
-		local opt = mapping[5]
-		if opt == nil then
-			opt = options
-		end
-		map_key(mapping[1], "Leader", mapping[2], mapping[3], mapping[4], opt)
-	end
-end
-
--- Creates a set of keybindings starting with <Space>
--- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
-function L.space(_, mappings, options)
-	for _, mapping in ipairs(mappings) do
-		local opt = mapping[5]
-		if opt == nil then
-			opt = options
-		end
-		map_key(mapping[1], "Space", mapping[2], mapping[3], mapping[4], opt)
 	end
 end
 

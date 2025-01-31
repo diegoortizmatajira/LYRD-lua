@@ -4,7 +4,7 @@ local lsp = require("LYRD.layers.lsp")
 local L = { name = "Web frontend" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"leafgarland/typescript-vim",
 			ft = { "ts", "tsx", "vue" },

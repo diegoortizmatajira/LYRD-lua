@@ -3,7 +3,7 @@ local utils = require("LYRD.utils")
 ---@class LYRD.setup.Settings
 ---@field layers string[] contains the list of layers provided in init script
 ---@field loaded_layers? LYRD.setup.Module[] contains the list of names of the loaded layers
----@field plugins? LazySpec contains the list of plugins loaded
+---@field plugins? LazySpec[] contains the list of plugins loaded
 ---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
 
 ---@class LYRD.setup.Module
@@ -47,21 +47,19 @@ local function bootstrap_lazy()
 end
 
 --- Calls the plugin method for each layer
----@param s LYRD.setup.Settings settings object
----@param loaded_layers  LYRD.setup.Module[]
-local function load_plugins(s, loaded_layers)
+local function load_plugins()
 	bootstrap_lazy()
 
 	-- Calls the plugin method for each layer
-	for _, layer in ipairs(loaded_layers) do
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.plugins then
-			layer.plugins(s)
+			layer.plugins(setup.config)
 		end
 	end
 
 	-- Setup lazy.nvim
 	require("lazy").setup({
-		spec = s.plugins,
+		spec = setup.config.plugins,
 		-- automatically check for plugin updates
 		checker = { enabled = true },
 		defaults = { lazy = false },
@@ -88,33 +86,29 @@ local function load_plugins(s, loaded_layers)
 end
 
 --- Calls the sequence of methods to initialize for each layer
----@param s LYRD.setup.Settings settings object
----@param loaded_layers  LYRD.setup.Module[]
-local function load_settings(s, loaded_layers)
-	for _, layer in ipairs(loaded_layers) do
+local function load_settings()
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.preparation ~= nil then
-			layer.preparation(s)
+			layer.preparation(setup.config)
 		end
 	end
-	for _, layer in ipairs(loaded_layers) do
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.settings ~= nil then
-			layer.settings(s)
+			layer.settings(setup.config)
 		end
 	end
-	for _, layer in ipairs(loaded_layers) do
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.keybindings ~= nil then
-			layer.keybindings(s)
+			layer.keybindings(setup.config)
 		end
 	end
 end
 
 ---Calls the complete method for each layer
----@param s LYRD.setup.Settings settings object
----@param loaded_layers  LYRD.setup.Module[]
-local function load_complete(s, loaded_layers)
-	for _, layer in ipairs(loaded_layers) do
+local function load_complete()
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.complete ~= nil then
-			layer.complete(s)
+			layer.complete(setup.config)
 		end
 	end
 end
@@ -130,17 +124,16 @@ function setup.load(s)
 	end
 
 	-- Process each layer
-	load_plugins(setup.config, setup.config.loaded_layers)
-	load_settings(setup.config, setup.config.loaded_layers)
-	load_complete(setup.config, setup.config.loaded_layers)
+	load_plugins()
+	load_settings()
+	load_complete()
 end
 
 -- Enables a plugin with its name and options
---- @param s LYRD.setup.Settings settings object
 --- @param plugin_list LazySpec[]
-function setup.plugin(s, plugin_list)
+function setup.plugin(plugin_list)
 	for _, p in ipairs(plugin_list) do
-		table.insert(s.plugins, p)
+		table.insert(setup.config.plugins, p)
 	end
 end
 

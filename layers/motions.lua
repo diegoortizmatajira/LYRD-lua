@@ -6,7 +6,7 @@ local c = commands.command_shortcut
 local L = { name = "Motions" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"smoka7/hop.nvim",
 			version = "*",
@@ -46,10 +46,8 @@ function L.plugins(s)
 end
 
 function L.keybindings(s)
-	mappings.leader(s, {
-		{ { "n", "v" }, { "w" }, c("HopWord"), "Go to word" },
-	})
-	mappings.keys(s, {
+	mappings.keys({
+		{ { "n", "v" }, "<Leader>w", c("HopWord"), { desc = "Go to word" } },
 		{ { "n", "v" }, "gl", c("HopLine"), { desc = "Go to line" } },
 		{ { "n", "v" }, "g/", c("HopPattern"), { desc = "Go to pattern" } },
 		{ { "n", "v" }, "s", "<cmd>HopChar1<CR>" },

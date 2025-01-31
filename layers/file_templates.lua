@@ -7,7 +7,7 @@ local L = {
 }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"Futarimiti/spooky.nvim",
 			opts = {

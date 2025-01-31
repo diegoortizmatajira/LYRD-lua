@@ -6,7 +6,7 @@ local icons = require("LYRD.layers.icons")
 local L = { name = "Media Files" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"HakonHarnes/img-clip.nvim",
 			opts = {

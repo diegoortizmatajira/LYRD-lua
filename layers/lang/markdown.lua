@@ -3,7 +3,7 @@ local setup = require("LYRD.setup")
 local L = { name = "Markdown" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"MeanderingProgrammer/markdown.nvim",
 			main = "render-markdown",

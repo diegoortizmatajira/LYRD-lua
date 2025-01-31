@@ -8,7 +8,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Go language" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"ray-x/go.nvim",
 			dependencies = { -- optional packages

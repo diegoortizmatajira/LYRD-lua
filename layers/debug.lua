@@ -6,7 +6,7 @@ local icons = require("LYRD.layers.icons")
 local L = { name = "Debug" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"pocco81/dap-buddy.nvim",
 		},

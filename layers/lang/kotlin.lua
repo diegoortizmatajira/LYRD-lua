@@ -4,7 +4,7 @@ local lsp = require("LYRD.layers.lsp")
 local L = { name = "Kotlin Language" }
 
 function L.plugins(s)
-	setup.plugin(s, {})
+	setup.plugin({})
 end
 
 function L.preparation(_)
