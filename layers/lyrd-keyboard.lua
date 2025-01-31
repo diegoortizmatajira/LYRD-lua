@@ -51,7 +51,9 @@ function L.plugins(s)
 			-- Adds the completing pair character when typing the opening one
 			"windwp/nvim-autopairs",
 			event = "InsertEnter",
-			config = function()
+			opts = {},
+			config = function(_, opts)
+				require("nvim-autopairs").setup(opts)
 				-- If you want insert `(` after select function or method item
 				local cmp = require("cmp")
 				cmp.event:on(
