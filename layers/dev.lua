@@ -106,7 +106,6 @@ end
 function L.settings(s)
 	commands.implement("*", {
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
-		{ cmd.LYRDViewFileExplorer, require("tfm").open },
 		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
 		{ cmd.LYRDCodeAddDocumentation, ":Neogen" },
 	})

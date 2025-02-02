@@ -120,7 +120,9 @@ local ai_providers = {
 	},
 }
 
+---@diagnostic disable-next-line: unused-function
 local function completion_provider()
+	---@diagnostic disable-next-line: undefined-field
 	local uname = vim.loop.os_uname()
 	if uname.sysname == "Darwin" then
 		return ai_providers.COPILOT
@@ -132,7 +134,8 @@ end
 local L = {
 	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,
-	completion_provider = completion_provider(),
+	-- completion_provider = completion_provider(),
+	completion_provider = ai_providers.COPILOT,
 }
 
 local function avante_dependencies()
