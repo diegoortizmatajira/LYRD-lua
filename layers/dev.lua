@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Development" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"folke/todo-comments.nvim",
@@ -103,7 +103,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
 		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },

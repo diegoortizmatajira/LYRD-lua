@@ -47,7 +47,7 @@ local function empty_jupyter_notebook()
 }]]
 end
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			-- Enables REPL processing
@@ -103,7 +103,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement(L.supported_filetypes, {
 		{ cmd.LYRDReplView, ":IronRepl" },
 		{ cmd.LYRDReplRestart, ":IronRestart" },

@@ -71,7 +71,7 @@ function L.next_theme()
 	L.apply_theme(false, index + 1)
 end
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"folke/tokyonight.nvim",
@@ -117,7 +117,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSearchColorSchemes, ":Themery" },
 		{ cmd.LYRDApplyCurrentTheme, L.apply_theme },

@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Database" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"kristijanhusak/vim-dadbod-ui",
@@ -44,7 +44,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDDatabaseUI, ":DBUIToggle" },
 	})

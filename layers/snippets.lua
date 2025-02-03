@@ -8,7 +8,7 @@ local L = {
 	snippets_path = utils.get_lyrd_path() .. "/snippets",
 }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"L3MON4D3/LuaSnip",
@@ -35,7 +35,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	-- Setup lspconfig.
 	lsp.plug_capabilities(function(previous_plug)
 		return function()

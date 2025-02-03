@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Tasks" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			--TODO: Make the most out of this one
@@ -59,7 +59,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	local debug = require("LYRD.layers.debug")
 	commands.implement("*", {
 		{

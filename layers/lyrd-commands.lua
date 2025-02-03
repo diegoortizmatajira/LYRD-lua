@@ -200,7 +200,7 @@ local L = {
 	},
 }
 
-function L.settings(s)
+function L.settings()
 	commands.register(L.cmd)
 end
 

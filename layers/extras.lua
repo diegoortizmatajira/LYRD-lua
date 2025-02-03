@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Extras" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			-- Enables hardtime constraints to improve VIM motions use
@@ -39,7 +39,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDHardModeToggle, ":Hardtime toggle" },
 	})

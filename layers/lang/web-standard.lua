@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Web Standard Languages" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"pangloss/vim-javascript",
@@ -46,7 +46,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"json-lsp",
 		"json-to-struct",
@@ -61,7 +61,7 @@ function L.preparation(_)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDHttpEnvironmentFileSelect, ":Telescope http_client http_env_files" },
 		{ cmd.LYRDHttpEnvironmentSelect, ":Telescope http_client http_envs" },
@@ -72,7 +72,7 @@ function L.settings(s)
 	})
 end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("jsonls", {
 		settings = {
 			json = {

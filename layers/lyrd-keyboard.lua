@@ -25,7 +25,7 @@ local L = {
 	},
 }
 
-function L.plugins(_)
+function L.plugins()
 	setup.plugin({
 		{
 			-- Navigates using brackets (buffers, diagnostics, etc.)
@@ -81,7 +81,7 @@ function L.plugins(_)
 	})
 end
 
-function L.keybindings(s)
+function L.keybindings()
 	mappings.keys({
 		{ "i", "<C-s>", cmd.LYRDBufferSave },
 		{ "i", "<M-C-[>", cmd.LYRDBufferPrev },

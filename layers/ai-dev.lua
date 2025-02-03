@@ -157,7 +157,7 @@ local function avante_dependencies()
 	return result
 end
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"yetone/avante.nvim",

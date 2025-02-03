@@ -5,7 +5,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "File tree" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"nvim-tree/nvim-tree.lua",
@@ -210,7 +210,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },

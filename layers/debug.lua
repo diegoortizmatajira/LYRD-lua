@@ -5,7 +5,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Debug" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"pocco81/dap-buddy.nvim",
@@ -129,7 +129,7 @@ function L.continue_handler(implementation)
 	end
 end
 
-function L.settings(s)
+function L.settings()
 	vim.fn.sign_define("DapBreakpoint", {
 		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",

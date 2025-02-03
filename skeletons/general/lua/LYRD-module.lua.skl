@@ -5,20 +5,20 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "General" }
 
-function L.plugins(s)
-	setup.plugin(s, {})
+function L.plugins()
+	setup.plugin({})
 end
 
-function L.preparation(s) end
+function L.preparation() end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		-- { cmd.LYRDXXXX, ":XXXXX" },
 	})
 end
 
-function L.keybindings(s) end
+function L.keybindings() end
 
-function L.complete(s) end
+function L.complete() end
 
 return L

@@ -8,7 +8,7 @@ function L.toggle_k9s()
 	ui.toggle_external_app_terminal("k9s")
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDKubernetesUI, L.toggle_k9s },
 	})

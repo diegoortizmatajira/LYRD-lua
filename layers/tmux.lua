@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Tmux" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"christoomey/vim-tmux-navigator",
@@ -16,7 +16,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	vim.g.tmux_navigator_no_wrap = 1
 	commands.implement("*", {
 		{ cmd.LYRDPaneNavigateLeft, ":TmuxNavigateLeft" },

@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Test", test_adapters = {} }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{ "nvim-neotest/nvim-nio" },
 		{
@@ -30,7 +30,7 @@ function L.configure_adapter(adapter)
 	table.insert(L.test_adapters, adapter)
 end
 
-function L.settings(s)
+function L.settings()
 	-- Called only when all adapters have been collected into L.test_adapters
 	require("neotest").setup({ adapters = L.test_adapters })
 

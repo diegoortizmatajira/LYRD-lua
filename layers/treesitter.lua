@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Treesitter" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"nvim-treesitter/nvim-treesitter",
@@ -46,7 +46,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	require("nvim-treesitter.configs").setup({
 		ensure_installed = {
 			"c",

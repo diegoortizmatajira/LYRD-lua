@@ -8,7 +8,7 @@ function L.toggle_lazydocker()
 	ui.toggle_external_app_terminal("lazydocker")
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
 	})
