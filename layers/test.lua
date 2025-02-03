@@ -77,6 +77,7 @@ function L.settings(s)
 				require("neotest").summary.toggle()
 			end,
 		},
+		{ cmd.LYRDTestOutput, ":Neotest output-panel" },
 		{ cmd.LYRDTestCoverageSummary, ":CoverageSummary" },
 		{ cmd.LYRDTestCoverage, ":CoverageToggle" },
 	})

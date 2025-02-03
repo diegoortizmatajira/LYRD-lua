@@ -256,6 +256,7 @@ function L.plugins(s)
 		{
 			"akinsho/toggleterm.nvim",
 			opts = {},
+			cmd = { "ToggleTerm", "TermSelect" },
 			lazy = true,
 		},
 		{

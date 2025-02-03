@@ -33,6 +33,7 @@ local L = {
 		layers = " ",
 		focus = "󰋱 ",
 		highlighter = "󰸱 ",
+		filetree = "󰙅 ",
 	},
 	images = {
 		default = " ",
@@ -133,7 +134,8 @@ local L = {
 	code = {
 		-- Actions
 		build = "󰙵 ",
-		outline = "󱏒 ",
+		outline = " ",
+		parser = " ",
 		fix = "󰁨 ",
 		generate = "󱃖 ",
 		check = "󰚔 ",
