@@ -120,7 +120,9 @@ local ai_providers = {
 	},
 }
 
+---@diagnostic disable-next-line: unused-function
 local function completion_provider()
+	---@diagnostic disable-next-line: undefined-field
 	local uname = vim.loop.os_uname()
 	if uname.sysname == "Darwin" then
 		return ai_providers.COPILOT
@@ -132,7 +134,8 @@ end
 local L = {
 	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,
-	completion_provider = completion_provider(),
+	-- completion_provider = completion_provider(),
+	completion_provider = ai_providers.COPILOT,
 }
 
 local function avante_dependencies()
@@ -155,7 +158,7 @@ local function avante_dependencies()
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"yetone/avante.nvim",
 			event = "VeryLazy",
@@ -176,10 +179,10 @@ function L.plugins(s)
 		},
 	})
 	if L.avante_provider == L.completion_provider then
-		setup.plugin(s, L.avante_provider.plugins(true))
+		setup.plugin(L.avante_provider.plugins(true))
 	else
-		setup.plugin(s, L.avante_provider.plugins(false))
-		setup.plugin(s, L.completion_provider.plugins(true))
+		setup.plugin(L.avante_provider.plugins(false))
+		setup.plugin(L.completion_provider.plugins(true))
 	end
 end
 

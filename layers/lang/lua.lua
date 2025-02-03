@@ -6,7 +6,7 @@ local L = {
 }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"folke/lazydev.nvim",
 			ft = "lua", -- only load on lua files

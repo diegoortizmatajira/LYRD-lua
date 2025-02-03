@@ -142,7 +142,7 @@ local function jumpable(dir)
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"hrsh7th/nvim-cmp",
 			config = function()

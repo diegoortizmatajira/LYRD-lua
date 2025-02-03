@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Extras" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			-- Enables hardtime constraints to improve VIM motions use
 			"m4xshen/hardtime.nvim",

@@ -6,7 +6,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Web Standard Languages" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"pangloss/vim-javascript",
 			init = function()

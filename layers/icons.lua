@@ -33,6 +33,7 @@ local L = {
 		layers = " ",
 		focus = "󰋱 ",
 		highlighter = "󰸱 ",
+		filetree = "󰙅 ",
 	},
 	images = {
 		default = " ",
@@ -133,7 +134,8 @@ local L = {
 	code = {
 		-- Actions
 		build = "󰙵 ",
-		outline = "󱏒 ",
+		outline = " ",
+		parser = " ",
 		fix = "󰁨 ",
 		generate = "󱃖 ",
 		check = "󰚔 ",
@@ -287,7 +289,7 @@ local L = {
 }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"nvim-tree/nvim-web-devicons",
 			init = function()

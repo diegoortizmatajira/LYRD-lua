@@ -72,7 +72,7 @@ function L.next_theme()
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"folke/tokyonight.nvim",
 			priority = 1000,

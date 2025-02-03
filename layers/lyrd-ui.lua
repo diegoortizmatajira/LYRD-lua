@@ -123,7 +123,7 @@ local function get_buffers_that_close_with_their_window()
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"mcauley-penney/visual-whitespace.nvim",
 			config = true,
@@ -256,6 +256,7 @@ function L.plugins(s)
 		{
 			"akinsho/toggleterm.nvim",
 			opts = {},
+			cmd = { "ToggleTerm", "TermSelect" },
 			lazy = true,
 		},
 		{

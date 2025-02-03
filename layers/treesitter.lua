@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Treesitter" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"nvim-treesitter/nvim-treesitter",
 			opts = {},

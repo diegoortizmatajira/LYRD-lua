@@ -6,7 +6,7 @@ local icons = require("LYRD.layers.icons")
 local L = { name = "File tree" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"nvim-tree/nvim-tree.lua",
 			version = "*",

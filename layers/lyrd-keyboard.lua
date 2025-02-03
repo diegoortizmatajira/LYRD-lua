@@ -25,8 +25,8 @@ local L = {
 	},
 }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins(_)
+	setup.plugin({
 		{
 			-- Navigates using brackets (buffers, diagnostics, etc.)
 			"echasnovski/mini.bracketed",
@@ -82,7 +82,7 @@ function L.plugins(s)
 end
 
 function L.keybindings(s)
-	mappings.keys(s, {
+	mappings.keys({
 		{ "i", "<C-s>", cmd.LYRDBufferSave },
 		{ "i", "<M-C-[>", cmd.LYRDBufferPrev },
 		{ "i", "<M-C-]>", cmd.LYRDBufferNext },
@@ -93,7 +93,7 @@ function L.keybindings(s)
 		{ "n", "<C-k>", cmd.LYRDPaneNavigateUp },
 		{ "n", "<C-l>", cmd.LYRDPaneNavigateRight },
 		{ "n", "<C-p>", cmd.LYRDSearchFiles },
-		{ "n", "<C-o>", cmd.LYRDSearchAllFiles },
+		{ "n", "<M-C-p>", cmd.LYRDSearchAllFiles },
 		{ "n", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<C-r><C-r>", cmd.LYRDLSPRename },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
@@ -101,9 +101,6 @@ function L.keybindings(s)
 		{ "n", "<F10>", cmd.LYRDDebugStepOver },
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
 		{ "n", "<F12>", cmd.LYRDDebugStepOut },
-		{ "n", "<F2>", cmd.LYRDViewFileTree },
-		{ "n", "<F3>", cmd.LYRDViewFileExplorer },
-		{ "n", "<F4>", cmd.LYRDTestSummary },
 		{ "n", "<F5>", cmd.LYRDDebugContinue },
 		{ "n", "<F6>", cmd.LYRDViewCodeOutline },
 		{ "n", "<F9>", cmd.LYRDDebugBreakpoint },
@@ -185,17 +182,18 @@ function L.keybindings(s)
 			{ "/", cmd.LYRDSearchBuffers },
 			{ ".", cmd.LYRDViewHomePage },
 			{ "D", cmd.LYRDLSPShowWorkspaceDiagnosticLocList },
-			{ "c", cmd.LYRDViewRegisters },
+			{ "R", cmd.LYRDViewRegisters },
 			{ "d", cmd.LYRDLSPShowDocumentDiagnosticLocList },
-			{ "e", cmd.LYRDViewFileExplorer },
+			{ "F", cmd.LYRDViewFileExplorer },
 			{ "f", cmd.LYRDViewFileTree },
 			{ "g", cmd.LYRDDebugToggleUI },
 			{ "h", cmd.LYRDBufferSplitH },
 			{ "l", cmd.LYRDViewLocationList },
 			{ "o", cmd.LYRDViewCodeOutline },
-			{ "p", cmd.LYRDViewTreeSitterPlayground },
+			{ "P", cmd.LYRDViewTreeSitterPlayground },
 			{ "q", cmd.LYRDViewQuickFixList },
 			{ "t", cmd.LYRDTestSummary },
+			{ "T", cmd.LYRDTestOutput },
 			{ "v", cmd.LYRDBufferSplitV },
 			{ "y", cmd.LYRDViewYankList },
 			{ "x", cmd.LYRDTerminalList },
@@ -376,34 +374,23 @@ function L.keybindings(s)
 			}, icons.other.command),
 		}, icons.code.run),
 		menu_header("s", "Services", {
-			{ "f", cmd.LYRDViewFileExplorer },
 			{ "d", cmd.LYRDDatabaseUI },
 			{ "c", cmd.LYRDContainersUI },
+			{ "f", cmd.LYRDViewFileExplorer },
 			{ "g", cmd.LYRDGitUI },
 			{ "k", cmd.LYRDKubernetesUI },
 			{ "t", cmd.LYRDTerminal },
 			{ "T", cmd.LYRDTerminalList },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
-			{ "w", cmd.LYRDBufferToggleWrap },
-			{ "T", cmd.LYRDApplyCurrentTheme },
-			{ "t", cmd.LYRDApplyNextTheme },
 			{ "h", cmd.LYRDHardModeToggle },
 		}, icons.other.palette),
 		menu_header("v", "View", {
 			{ ".", cmd.LYRDViewHomePage },
-			{ "D", cmd.LYRDLSPShowWorkspaceDiagnosticLocList },
-			{ "c", cmd.LYRDLSPToggleLens },
-			{ "d", cmd.LYRDLSPShowDocumentDiagnosticLocList },
-			{ "e", cmd.LYRDViewFileExplorer },
 			{ "f", cmd.LYRDViewFocusMode },
-			{ "l", cmd.LYRDViewLocationList },
-			{ "o", cmd.LYRDViewCodeOutline },
-			{ "p", cmd.LYRDViewTreeSitterPlayground },
-			{ "q", cmd.LYRDViewQuickFixList },
-			{ "r", cmd.LYRDViewRegisters },
-			{ "t", cmd.LYRDViewFileTree },
-			{ "y", cmd.LYRDViewYankList },
+			{ "w", cmd.LYRDBufferToggleWrap },
+			{ "T", cmd.LYRDApplyCurrentTheme },
+			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),
 	})
 end

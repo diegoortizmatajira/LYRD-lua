@@ -30,7 +30,7 @@ local function get_secret_path(secret_guid)
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"issafalcon/neotest-dotnet",
 			ft = dotnet_languages,

@@ -5,7 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Tasks" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",

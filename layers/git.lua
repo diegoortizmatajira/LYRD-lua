@@ -6,7 +6,7 @@ local icons = require("LYRD.layers.icons")
 local L = { name = "Git" }
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			"tpope/vim-fugitive",
 		},

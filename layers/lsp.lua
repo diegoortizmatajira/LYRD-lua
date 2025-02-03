@@ -132,7 +132,7 @@ local function exclude_lsp_lines_from_filetypes(filetypes)
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
 		{
 			"williamboman/mason.nvim",

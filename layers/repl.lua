@@ -48,7 +48,7 @@ local function empty_jupyter_notebook()
 end
 
 function L.plugins(s)
-	setup.plugin(s, {
+	setup.plugin({
 		{
 			-- Enables REPL processing
 			"vigemus/iron.nvim",

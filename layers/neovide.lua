@@ -4,7 +4,7 @@ local mappings = require("LYRD.layers.mappings")
 local L = { name = "Neovide" }
 
 function L.plugins(s)
-	setup.plugin(s, {})
+	setup.plugin({})
 end
 
 function L.settings(_)
@@ -24,7 +24,7 @@ end
 
 function L.keybindings(s)
 	if vim.g.neovide then
-		mappings.keys(s, {
+		mappings.keys({
 			{ "n", "<C-+>", ':lua require("LYRD.layers.neovide").ResizeGuiFont(1)<CR>' },
 			{ "n", "<C-->", ':lua require("LYRD.layers.neovide").ResizeGuiFont(-1)<CR>' },
 		})
