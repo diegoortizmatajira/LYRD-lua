@@ -3,21 +3,21 @@ local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Kotlin Language" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"kotlin-language-server",
 	})
 end
 
-function L.settings(_) end
+function L.settings() end
 
-function L.keybindings(_) end
+function L.keybindings() end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("kotlin_language_server", {})
 end
 

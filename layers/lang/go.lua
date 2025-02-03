@@ -7,7 +7,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Go language" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"ray-x/go.nvim",
@@ -62,7 +62,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"delve",
 		"go-debug-adapter",
@@ -94,7 +94,7 @@ local function DetectGoHtmlTmpl()
 	end
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("go", {
 		{ cmd.LYRDCodeBuild, L.build_go_files },
 		{ cmd.LYRDCodeRun, ":GoRun" },
@@ -123,7 +123,7 @@ function L.settings(s)
 	})
 end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("gopls", {
 		settings = {
 			gopls = {

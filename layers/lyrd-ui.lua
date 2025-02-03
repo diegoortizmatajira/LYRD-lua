@@ -122,7 +122,7 @@ local function get_buffers_that_close_with_their_window()
 	return result
 end
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"mcauley-penney/visual-whitespace.nvim",
@@ -362,7 +362,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {

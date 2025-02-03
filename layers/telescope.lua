@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Telescope" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		"nvim-lua/popup.nvim",
 		"nvim-lua/plenary.nvim",
@@ -67,7 +67,7 @@ function L.select_file_and_execute(callback, title, filter, working_directory)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
 		{

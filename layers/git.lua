@@ -5,7 +5,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Git" }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"tpope/vim-fugitive",
@@ -128,7 +128,7 @@ function L.git_flow_finish(what)
 	vim.cmd(string.format("Git flow %s finish %s", what, name))
 end
 
-function L.settings(s)
+function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Git" },

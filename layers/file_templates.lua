@@ -6,7 +6,7 @@ local L = {
 	ignore_filetypes = { "dbout" },
 }
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"Futarimiti/spooky.nvim",
@@ -31,7 +31,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	vim.api.nvim_create_augroup("EmptyFileCheck", { clear = true })
 
 	vim.api.nvim_create_autocmd("BufReadPost", {

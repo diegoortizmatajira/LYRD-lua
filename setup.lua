@@ -8,11 +8,11 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.setup.Module
 ---@field name string
----@field plugins? nil|fun(s: LYRD.setup.Settings):nil
----@field preparation? nil|fun(s: LYRD.setup.Settings):nil
----@field settings? nil|fun(s: LYRD.setup.Settings):nil
----@field keybindings? nil|fun(s: LYRD.setup.Settings):nil
----@field complete? nil|fun(s: LYRD.setup.Settings):nil
+---@field plugins? nil|fun():nil
+---@field preparation? nil|fun():nil
+---@field settings? nil|fun():nil
+---@field keybindings? nil|fun():nil
+---@field complete? nil|fun():nil
 ---@field healthcheck? nil|fun():nil
 
 local setup = {
@@ -53,7 +53,7 @@ local function load_plugins()
 	-- Calls the plugin method for each layer
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.plugins then
-			layer.plugins(setup.config)
+			layer.plugins()
 		end
 	end
 
@@ -99,22 +99,22 @@ function setup.load(s)
 	load_plugins()
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.preparation ~= nil then
-			layer.preparation(setup.config)
+			layer.preparation()
 		end
 	end
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.settings ~= nil then
-			layer.settings(setup.config)
+			layer.settings()
 		end
 	end
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.keybindings ~= nil then
-			layer.keybindings(setup.config)
+			layer.keybindings()
 		end
 	end
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.complete ~= nil then
-			layer.complete(setup.config)
+			layer.complete()
 		end
 	end
 end

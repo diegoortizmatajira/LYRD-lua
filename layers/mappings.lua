@@ -22,7 +22,7 @@ local L = { name = "Mappings" }
 
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
 
-function L.plugins(s)
+function L.plugins()
 	setup.plugin({
 		{
 			"folke/which-key.nvim",
