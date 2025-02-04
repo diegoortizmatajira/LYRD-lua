@@ -1,7 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
 local mappings = require("LYRD.layers.mappings")
 
 local L = { name = "REST Client" }
