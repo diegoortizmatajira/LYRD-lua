@@ -19,6 +19,7 @@ local L = { name = "Mappings" }
 ---@field type "header" | "submode" type of header
 ---@field icon? string
 ---@field additional_modes? string[] contains any additional modes to create the mapping
+---@field accept_foreign_keys? boolean For submodes, if true, the submode will accept keys from the parent mode
 
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
 
@@ -162,13 +163,17 @@ function L.create_menu(prefix, items)
 				end
 			end
 			table.insert(heads, { "<Esc>", nil, { exit = true, desc = "Exit" } })
+			local color = "amaranth"
+			if item.accept_foreign_keys then
+				color = "pink"
+			end
 			Hydra({
 				name = item.title,
 				mode = "n",
 				body = prefix .. item.key,
 				hint = item.title,
 				config = {
-					color = "amaranth",
+					color = color,
 					invoke_on_body = true,
 				},
 				heads = heads,
@@ -207,6 +212,7 @@ end
 --- @param title string
 --- @param items LYRD.mappings.mapping[]
 --- @param additional_modes? string[]
+--- @param accept_foreign_keys? boolean
 --- @return LYRD.mappings.header_mapping
 function L.menu_header(key, title, items, icon, additional_modes)
 	---@type LYRD.mappings.header_mapping
@@ -225,7 +231,7 @@ end
 --- @param title string
 --- @param items LYRD.mappings.mapping[]
 --- @return LYRD.mappings.header_mapping
-function L.submode_header(key, title, items, icon)
+function L.submode_header(key, title, items, icon, accept_foreign_keys)
 	---@type LYRD.mappings.header_mapping
 	return {
 		key = key,
@@ -233,6 +239,7 @@ function L.submode_header(key, title, items, icon)
 		items = items,
 		type = "submode",
 		icon = icon,
+		accept_foreign_keys = accept_foreign_keys,
 	}
 end
 
