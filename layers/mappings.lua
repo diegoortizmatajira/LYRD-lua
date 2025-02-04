@@ -73,14 +73,14 @@ end
 
 ---Gets the command details
 ---@param mode string mode for the mapping
----@param command string|Command command to get the details
+---@param command string|Command|fun() command to get the details
 ---@return LYRD.mappings.mapping_details
 local function get_command(mode, command)
-	local command_str = command
+	local actual_command = command
 	local desc_str = nil
 	local icon_str = nil
-	if type(command) ~= "string" then
-		command_str = command:as_vim_command(mode)
+	if type(command) == "table" then
+		actual_command = command:as_vim_command(mode)
 		desc_str = command.desc
 		if type(command.icon) == "string" then
 			icon_str = icons.icon(command.icon)
@@ -88,7 +88,7 @@ local function get_command(mode, command)
 			icon_str = command.icon
 		end
 	end
-	return { command = command_str, desc = desc_str, icon = icon_str }
+	return { command = actual_command, desc = desc_str, icon = icon_str }
 end
 
 ---Creates a keybinding
@@ -151,7 +151,7 @@ local function map_menu(keys, title, icon, additional_modes)
 end
 
 ---Creates a set of keybindings
----@param mappings {[1]: string|string[], [2]:string, [3]:string|function|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
@@ -165,7 +165,7 @@ end
 ---Creates a set of keybindings
 ---@param filetypes string|string[] filetype or filetypes to create the mappings for
 ---@param prefix? string prefix for the mappings
----@param mappings {[1]: string|string[], [2]:string, [3]:string|function|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys_per_filetype(filetypes, prefix, mappings, options)
 	-- Create an autocommand group for the filetype
 	local group = vim.api.nvim_create_augroup(filetypes .. "Mappings", { clear = true })
@@ -192,7 +192,7 @@ end
 
 ---Creates a set of keybindings for a filetype or filetypes
 ---@param filetypes string|string[] filetype or filetypes to create the mappings for
----@param mappings {[1]: string|string[], [2]:string, [3]:string|function|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.create_filetype_menu(filetypes, mappings, options)
 	L.keys_per_filetype(filetypes, "<leader>" .. L.filetype_specific_leader_prefix, mappings, options)
 end
