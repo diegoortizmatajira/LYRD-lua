@@ -9,7 +9,9 @@ function L.plugins()
     setup.plugin({
         {
             "mistweaverco/kulala.nvim",
-            opts = {},
+            opts = {
+                default_view = "headers_body",
+            },
         },
     })
 end
