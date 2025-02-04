@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
+local mappings = require("LYRD.layers.mappings")
 
 local L = { name = "REST Client" }
 
@@ -21,6 +22,12 @@ function L.preparation()
 		extension = {
 			["http"] = "http",
 		},
+	})
+end
+
+function L.keybindings()
+	mappings.create_filetype_menu("http", {
+		{ "n", "m", cmd.LYRDCodeRun },
 	})
 end
 
