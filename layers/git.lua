@@ -41,8 +41,22 @@ function L.plugins()
 			},
 		},
 		{
-			"tpope/vim-fugitive",
+			"sindrets/diffview.nvim", -- optional - Diff integration
+			opts = {
+				icons = { -- Only applies when use_icons is true.
+					folder_closed = icons.folder.default,
+					folder_open = icons.folder.open,
+				},
+				signs = {
+					fold_closed = icons.chevron.right,
+					fold_open = icons.chevron.down,
+					done = icons.other.check,
+				},
+			},
 		},
+		-- {
+		-- 	"tpope/vim-fugitive",
+		-- },
 		-- {
 		--     "tpope/vim-rhubarb",
 		--     dependencies = {
@@ -133,23 +147,28 @@ function L.plugins()
 end
 
 function L.git_flow_start(what)
-	vim.ui.input({ prompt = "Name for the new branch: " }, function(name)
-		if not name then
-			return
-		end
-		vim.cmd(":!git flow " .. what .. " start " .. name)
-	end)
+	return function()
+		vim.ui.input({ prompt = "Name for the new branch: " }, function(name)
+			if not name then
+				return
+			end
+			vim.cmd(":!git flow " .. what .. " start " .. name)
+		end)
+	end
 end
 
 function L.git_flow_finish(what)
-	local head = vim.fn.FugitiveHead()
-	local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-	vim.cmd(string.format("!git flow %s finish %s", what, name))
+	return function()
+		local head = vim.fn.FugitiveHead()
+		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
+		vim.cmd(string.format("!git flow %s finish %s", what, name))
+	end
 end
 
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
-		{ cmd.LYRDBufferClose, ":DiffViewClose" },
+		-- { cmd.LYRDBufferClose, ":DiffViewClose" },
+		{ cmd.LYRDBufferClose, ":tabclose" },
 	})
 	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
@@ -163,42 +182,12 @@ function L.settings()
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitBrowseOnWeb, ":GBrowse" },
 		{ cmd.LYRDGitFlowInit, ":!git flow init -d" },
-		{
-			cmd.LYRDGitFlowFeatureStart,
-			function()
-				L.git_flow_start("feature")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowFeatureFinish,
-			function()
-				L.git_flow_finish("feature")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowReleaseStart,
-			function()
-				L.git_flow_start("release")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowReleaseFinish,
-			function()
-				L.git_flow_finish("release")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowHotfixStart,
-			function()
-				L.git_flow_start("hotfix")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowHotfixFinish,
-			function()
-				L.git_flow_finish("hotfix")
-			end,
-		},
+		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
+		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
+		{ cmd.LYRDGitFlowReleaseStart, L.git_flow_start("release") },
+		{ cmd.LYRDGitFlowReleaseFinish, L.git_flow_finish("release") },
+		{ cmd.LYRDGitFlowHotfixStart, L.git_flow_start("hotfix") },
+		{ cmd.LYRDGitFlowHotfixFinish, L.git_flow_finish("hotfix") },
 		{ cmd.LYRDGitCheckoutMain, ":!git checkout main" },
 		{ cmd.LYRDGitCheckoutDev, ":!git checkout develop" },
 		{
