@@ -132,11 +132,6 @@ function L.keybindings()
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit },
 		}, icons.other.ia, { "x" }),
-		menu_header("h", "Http Requests", {
-			{ "a", cmd.LYRDHttpSendAllRequests },
-			{ "e", cmd.LYRDHttpEnvironmentFileSelect },
-			{ "h", cmd.LYRDHttpSendRequest },
-		}, icons.http.default, { "x" }),
 		menu_header("i", "Images", {
 			{ "p", cmd.LYRDPasteImage },
 			{ "i", cmd.LYRDInsertImage },
@@ -177,6 +172,9 @@ function L.keybindings()
 			{ "f", cmd.LYRDCodeRefactor },
 			{ "n", cmd.LYRDLSPRename },
 		}, icons.code.refactor),
+		menu_header(".", function()
+			return "'" .. vim.bo.filetype .. "' specific commands"
+		end, {}, icons.filetype_icon),
 		menu_header("<Leader>", "Panels", {
 			submode_header("r", "Resize", {
 				{ "j", cmd.LYRDPaneResizeDown },
@@ -218,6 +216,7 @@ function L.keybindings()
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
 		{ "t", cmd.LYRDApplyNextTheme },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
+		{ "X", cmd.LYRDCodeRun },
 		{ "]", cmd.LYRDBufferNext },
 		{ "[", cmd.LYRDBufferPrev },
 	})
@@ -373,12 +372,6 @@ function L.keybindings()
 			{ "Q", cmd.LYRDWindowForceCloseAll },
 		}, icons.action.exit),
 		menu_header("r", "Run", {
-			menu_header("h", "Http request", {
-				{ "f", cmd.LYRDHttpEnvironmentFileSelect },
-				{ "e", cmd.LYRDHttpEnvironmentSelect },
-				{ "s", cmd.LYRDHttpSendRequest },
-				{ "a", cmd.LYRDHttpSendAllRequests },
-			}, icons.http.default),
 			menu_header("r", "REPL", {
 				{ "v", cmd.LYRDReplView },
 				{ "r", cmd.LYRDReplRestart },

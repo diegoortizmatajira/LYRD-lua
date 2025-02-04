@@ -108,6 +108,7 @@ local function get_buffers_that_close_with_their_window()
 	local result = {
 		{ filename = "fugitive:" },
 		{ filename = "copilot:" },
+		{ filename = "kulala:" },
 	}
 	for _, value in pairs(L.special_filetypes) do
 		if not value.keep_window then

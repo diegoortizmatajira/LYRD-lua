@@ -55,6 +55,7 @@ function L.settings()
 			"css",
 			"csv",
 			"go",
+			"http",
 			"json",
 			"lua",
 			"python",
