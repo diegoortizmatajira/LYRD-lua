@@ -2,8 +2,8 @@ local setup = require("LYRD.setup")
 
 local L = { name = "Text functions" }
 
-function L.plugins(s)
-    setup.plugin(s, {
+function L.plugins()
+    setup.plugin({
         {
             "johmsalas/text-case.nvim",
             dependencies = { "nvim-telescope/telescope.nvim" },

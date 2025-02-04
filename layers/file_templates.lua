@@ -6,8 +6,8 @@ local L = {
 	ignore_filetypes = { "dbout" },
 }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"Futarimiti/spooky.nvim",
 			opts = {
@@ -31,23 +31,14 @@ function L.plugins(s)
 	})
 end
 
-local function is_string_in_list(target, list)
-	for _, str in ipairs(list) do
-		if str == target then
-			return true
-		end
-	end
-	return false
-end
-
-function L.settings(_)
+function L.settings()
 	vim.api.nvim_create_augroup("EmptyFileCheck", { clear = true })
 
 	vim.api.nvim_create_autocmd("BufReadPost", {
 		group = "EmptyFileCheck",
 		pattern = "*",
 		callback = function()
-			if is_string_in_list(vim.bo.filetype, L.ignore_filetypes) then
+			if utils.contains(L.ignore_filetypes, vim.bo.filetype) then
 				return
 			end
 			-- Check if the file is empty

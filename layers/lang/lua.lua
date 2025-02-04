@@ -5,8 +5,8 @@ local L = {
 	name = "Lua Language",
 }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"folke/lazydev.nvim",
 			ft = "lua", -- only load on lua files
@@ -19,7 +19,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"lua-language-server",
 		"luacheck",
@@ -33,9 +33,9 @@ function L.preparation(_)
 	})
 end
 
-function L.settings(_) end
+function L.settings() end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("lua_ls", {
 		settings = {
 			Lua = {

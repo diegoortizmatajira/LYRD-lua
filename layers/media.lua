@@ -5,13 +5,21 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Media Files" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"HakonHarnes/img-clip.nvim",
 			opts = {
-				-- add options here
-				-- or leave it empty to use the default settings
+				-- recommended settings
+				default = {
+					embed_image_as_base64 = false,
+					prompt_for_file_name = false,
+					drag_and_drop = {
+						insert_mode = true,
+					},
+					-- required for Windows users
+					use_absolute_path = true,
+				},
 			},
 			cmd = {
 				"PasteImage",
@@ -45,8 +53,8 @@ function L.insert_image()
 	})
 end
 
-function L.settings(s)
-	commands.implement(s, { "markdown", "vimwiki", "html", "asciidoc" }, {
+function L.settings()
+	commands.implement({ "markdown", "vimwiki", "html", "asciidoc" }, {
 		{ cmd.LYRDPasteImage, ":PasteImage" },
 		{ cmd.LYRDInsertImage, L.insert_image },
 	})

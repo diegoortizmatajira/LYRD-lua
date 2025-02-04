@@ -4,8 +4,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Treesitter" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"nvim-treesitter/nvim-treesitter",
 			opts = {},
@@ -46,7 +46,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	require("nvim-treesitter.configs").setup({
 		ensure_installed = {
 			"c",
@@ -55,6 +55,7 @@ function L.settings(s)
 			"css",
 			"csv",
 			"go",
+			"http",
 			"json",
 			"lua",
 			"python",
@@ -133,7 +134,7 @@ function L.settings(s)
 			},
 		},
 	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDCodeRefactor, require("refactoring").select_refactor },
 		{ cmd.LYRDViewTreeSitterPlayground, ":TSPlaygroundToggle" },
 	})

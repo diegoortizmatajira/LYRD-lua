@@ -5,8 +5,8 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "File tree" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"nvim-tree/nvim-tree.lua",
 			version = "*",
@@ -210,11 +210,17 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
-	commands.implement(s, "*", {
+function L.settings()
+	commands.implement("*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
 	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("yazi")
 end
 
 return L

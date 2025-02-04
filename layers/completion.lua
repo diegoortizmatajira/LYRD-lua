@@ -141,8 +141,8 @@ local function jumpable(dir)
 	end
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"hrsh7th/nvim-cmp",
 			config = function()
@@ -318,7 +318,7 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	vim.o.completeopt = "menu,preview,menuone,noselect"
 end
 

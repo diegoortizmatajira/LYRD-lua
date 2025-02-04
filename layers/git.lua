@@ -5,8 +5,8 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Git" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"NeogitOrg/neogit",
 			dependencies = {
@@ -147,11 +147,11 @@ function L.git_flow_finish(what)
 	vim.cmd(string.format("!git flow %s finish %s", what, name))
 end
 
-function L.settings(s)
-	commands.implement(s, { "DiffviewFileHistory", "DiffviewFiles" }, {
+function L.settings()
+	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffViewClose" },
 	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Neogit" },
 		{ cmd.LYRDGitCommit, ":Neogit commit" },
@@ -210,6 +210,13 @@ function L.settings(s)
 		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("git")
+	health.check_executable("lazygit")
 end
 
 return L

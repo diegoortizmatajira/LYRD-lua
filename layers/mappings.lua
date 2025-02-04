@@ -5,23 +5,31 @@ local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
 local c = require("LYRD.layers.commands").command_shortcut
 
-local L = { name = "Mappings" }
+local L = { name = "Mappings", filetype_specific_leader_prefix = "." }
 
 ---@class LYRD.mappings.standard_mapping
 ---@field [1] string contains the key
 ---@field [2] Command contains the command
+---@field [3]? string[] contains any additional modes to create the mapping
 
 ---@class LYRD.mappings.header_mapping
 ---@field key string contains the key
----@field title string title for the menu
+---@field title string|fun():string title for the menu
 ---@field items LYRD.mappings.mapping[]
 ---@field type "header" | "submode" type of header
----@field icon? string
----
+---@field icon? string|fun() icon for the menu
+---@field additional_modes? string[] contains any additional modes to create the mapping
+---@field accept_foreign_keys? boolean For submodes, if true, the submode will accept keys from the parent mode
+
+---@class LYRD.mappings.mapping_details
+---@field command string
+---@field desc string|fun():string
+---@field icon string|fun()
+
 ---@alias LYRD.mappings.mapping LYRD.mappings.header_mapping|LYRD.mappings.standard_mapping
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"folke/which-key.nvim",
 			event = "VeryLazy",
@@ -35,7 +43,10 @@ function L.plugins(s)
 					spacing = 3, -- spacing between columns
 					align = "center", -- align columns left, center or right
 				},
-				-- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
+				-- win = {
+				-- 	border = "solid",
+				-- },
+				sort = { "alphanum" },
 			},
 			keys = {
 				{
@@ -48,11 +59,36 @@ function L.plugins(s)
 			},
 		},
 		{
-			"pogyomo/submode.nvim",
-			lazy = true,
-			 version = "6.4.1",
+			"nvimtools/hydra.nvim",
+			opts = {
+				hint = {
+					float_opts = {
+						border = "rounded",
+					},
+				},
+			},
 		},
 	})
+end
+
+---Gets the command details
+---@param mode string mode for the mapping
+---@param command string|Command|fun() command to get the details
+---@return LYRD.mappings.mapping_details
+local function get_command(mode, command)
+	local actual_command = command
+	local desc_str = nil
+	local icon_str = nil
+	if type(command) == "table" then
+		actual_command = command:as_vim_command(mode)
+		desc_str = command.desc
+		if type(command.icon) == "string" then
+			icon_str = icons.icon(command.icon)
+		else
+			icon_str = command.icon
+		end
+	end
+	return { command = actual_command, desc = desc_str, icon = icon_str }
 end
 
 ---Creates a keybinding
@@ -76,45 +112,47 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	else
 		key_str = key_str .. table.concat(keys)
 	end
-	-- Adds the documentation to the native nvim keymap
-	local command_str = command
-	local desc_str = entry.desc
-	local icon_str = nil
-	-- If the command is a Command object, then uses the command name and description
-	if type(command) ~= "string" then
-		command_str = c(command.name)
-		desc_str = command.desc
-		if type(command.icon) == "string" then
-			icon_str = icons.icon(command.icon)
-		else
-			icon_str = command.icon
-		end
-	end
+	local command_details = get_command(mode, command)
 	table.insert(entry, 1, key_str)
-	table.insert(entry, 2, command_str)
-	entry.desc = documentation or desc_str
+	table.insert(entry, 2, command_details.command)
+	entry.desc = documentation or command_details.desc
 	entry.mode = mode
-	entry.icon = icon_str
+	entry.icon = command_details.icon
 	wk.add({ entry })
 end
 
 ---Creates a keybinding for a menu
 ---@param keys string
----@param title string
+---@param title string|fun():string
 ---@param icon? string
-local function map_menu(keys, title, icon)
+---@param additional_modes? string[]
+local function map_menu(keys, title, icon, additional_modes)
 	local wk = require("which-key")
+	local icon_str = nil
 	if type(icon) == "string" then
 		icon_str = icons.icon(icon)
 	else
 		icon_str = icon
 	end
-	wk.add({ { keys, group = "[" .. title .. "]", icon = icon_str } })
+	local actual_title = nil
+	if type(title) == "function" then
+		actual_title = function()
+			return "[" .. title() .. "]"
+		end
+	else
+		actual_title = "[" .. title .. "]"
+	end
+	wk.add({ { keys, group = actual_title, icon = icon_str } })
+	if additional_modes then
+		for _, mode in ipairs(additional_modes) do
+			wk.add({ { keys, group = actual_title, mode = mode, icon = icon_str } })
+		end
+	end
 end
 
 ---Creates a set of keybindings
----@param mappings {[1]: string|string[], [2]:string, [3]:string|function|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
-function L.keys(_, mappings, options)
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+function L.keys(mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
 		if opt == nil then
@@ -124,87 +162,99 @@ function L.keys(_, mappings, options)
 	end
 end
 
--- Creates a set of keybindings starting with <Leader>
--- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
-function L.leader(_, mappings, options)
-	for _, mapping in ipairs(mappings) do
-		local opt = mapping[5]
-		if opt == nil then
-			opt = options
-		end
-		map_key(mapping[1], "Leader", mapping[2], mapping[3], mapping[4], opt)
-	end
+---Creates a set of keybindings
+---@param filetypes string|string[] filetype or filetypes to create the mappings for
+---@param prefix? string prefix for the mappings
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+function L.keys_per_filetype(filetypes, prefix, mappings, options)
+	-- Create an autocommand group for the filetype
+	local group = vim.api.nvim_create_augroup(filetypes .. "Mappings", { clear = true })
+	-- Define the autocommand
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = filetypes,
+		group = group,
+		callback = function()
+			for _, mapping in ipairs(mappings) do
+				local mode, key, command, opt = unpack(mapping)
+				if opt == nil then
+					opt = options or {}
+				end
+				local command_details = get_command(mode, command)
+				if not opt.desc then
+					opt.desc = command_details.desc
+				end
+				local full_key = (prefix or "") .. key
+				vim.api.nvim_buf_set_keymap(0, mode, full_key, command_details.command, opt)
+			end
+		end,
+	})
 end
 
--- Creates a set of keybindings starting with <Space>
--- @param mappings contains the mapping definition as an array of (mode, {key1, key2 ...}, command, description, options)
-function L.space(_, mappings, options)
-	for _, mapping in ipairs(mappings) do
-		local opt = mapping[5]
-		if opt == nil then
-			opt = options
-		end
-		map_key(mapping[1], "Space", mapping[2], mapping[3], mapping[4], opt)
-	end
+---Creates a set of keybindings for a filetype or filetypes
+---@param filetypes string|string[] filetype or filetypes to create the mappings for
+---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+function L.create_filetype_menu(filetypes, mappings, options)
+	L.keys_per_filetype(filetypes, "<leader>" .. L.filetype_specific_leader_prefix, mappings, options)
 end
 
 --- Creates a menu
 --- @param prefix string
 --- @param items LYRD.mappings.mapping[]
 function L.create_menu(prefix, items)
+	local Hydra = require("hydra")
 	for _, item in ipairs(items) do
 		if item.type == "header" then
-			map_menu(prefix .. item.key, item.title, item.icon)
+			map_menu(prefix .. item.key, item.title, item.icon, item.additional_modes)
 			L.create_menu(prefix .. item.key, item.items)
 		elseif item.type == "submode" then
 			-- Creates a submode
 			map_menu(prefix .. item.key, item.title, item.icon)
-			local submode = require("submode")
-			submode.create("submode_" .. prefix .. item.key, {
+			heads = {}
+			for _, mode_item in ipairs(item.items) do
+				local submode_key, command = unpack(mode_item)
+				if type(command) == "string" then
+					table.insert(heads, { submode_key, command })
+				else
+					table.insert(heads, { submode_key, c(command.name), { desc = command.desc } })
+				end
+			end
+			table.insert(heads, { "<Esc>", nil, { exit = true, desc = "Exit" } })
+			local color = "amaranth"
+			if item.accept_foreign_keys then
+				color = "pink"
+			end
+			Hydra({
+				name = item.title,
 				mode = "n",
-				enter = prefix .. item.key,
-				leave = { "q", "<ESC>" },
-				default = function(register)
-					for _, mode_item in ipairs(item.items) do
-						local submode_key, command = unpack(mode_item)
-						if type(command) == "string" then
-							register(submode_key, command)
-						else
-							register(submode_key, c(command.name))
-						end
-					end
-				end,
+				body = prefix .. item.key,
+				hint = item.title,
+				config = {
+					color = color,
+					invoke_on_body = true,
+				},
+				heads = heads,
 			})
-		elseif #item == 2 then
+		else
 			-- Map a menu item with its sequence of keys
-			local key, command = unpack(item)
+			local key, command, additional_modes = unpack(item)
 			map_key("n", nil, prefix .. key, command)
+			if additional_modes then
+				for _, mode in ipairs(additional_modes) do
+					map_key(mode, nil, prefix .. key, command)
+				end
+			end
 		end
 	end
 end
 
-function L.create_filetype_menu()
-	-- Create an autocommand group
-	local group = vim.api.nvim_create_augroup("PythonMappings", { clear = true })
-	-- Define the autocommand
-	vim.api.nvim_create_autocmd("FileType", {
-		pattern = "python",
-		group = group,
-		callback = function()
-			-- Set key mappings for the buffer
-			local opts = { noremap = true, silent = true }
-			vim.api.nvim_buf_set_keymap(0, "n", "<leader>r", ":!python3 %<CR>", opts)
-			vim.api.nvim_buf_set_keymap(0, "n", "<leader>t", ":!pytest %<CR>", opts)
-		end,
-	})
-end
-
 --- Creates a menu header
 --- @param key string
---- @param title string
+--- @param title string|fun(): string
 --- @param items LYRD.mappings.mapping[]
+--- @param icon? string|fun()
+--- @param additional_modes? string[]
 --- @return LYRD.mappings.header_mapping
-function L.menu_header(key, title, items, icon)
+function L.menu_header(key, title, items, icon, additional_modes)
 	---@type LYRD.mappings.header_mapping
 	return {
 		key = key,
@@ -212,15 +262,17 @@ function L.menu_header(key, title, items, icon)
 		items = items,
 		type = "header",
 		icon = icon,
+		additional_modes = additional_modes,
 	}
 end
 
 --- Creates a submode header
 --- @param key string
---- @param title string
+--- @param title string|fun(): string
 --- @param items LYRD.mappings.mapping[]
+--- @param accept_foreign_keys? boolean
 --- @return LYRD.mappings.header_mapping
-function L.submode_header(key, title, items, icon)
+function L.submode_header(key, title, items, icon, accept_foreign_keys)
 	---@type LYRD.mappings.header_mapping
 	return {
 		key = key,
@@ -228,6 +280,7 @@ function L.submode_header(key, title, items, icon)
 		items = items,
 		type = "submode",
 		icon = icon,
+		accept_foreign_keys = accept_foreign_keys,
 	}
 end
 

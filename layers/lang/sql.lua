@@ -3,11 +3,11 @@ local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "SQL Language" }
 
-function L.plugins(s)
-	setup.plugin(s, {})
+function L.plugins()
+	setup.plugin({})
 end
 
-function L.preparation(_)
+function L.preparation()
 	-- Configures the null language server
 	local null_ls = require("null-ls")
 	local default_dialect = "tsql"
@@ -24,9 +24,9 @@ function L.preparation(_)
 	})
 end
 
-function L.settings(_) end
+function L.settings() end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("sqlls")
 end
 

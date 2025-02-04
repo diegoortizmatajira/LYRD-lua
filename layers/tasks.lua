@@ -4,8 +4,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Tasks" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
@@ -59,9 +59,9 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	local debug = require("LYRD.layers.debug")
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{
 			cmd.LYRDDebugStart,
 			debug.start_handler(function()

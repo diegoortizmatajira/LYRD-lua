@@ -3,8 +3,8 @@ local commands = require("LYRD.layers.commands")
 
 local L = { name = "CSV" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"hat0uma/csvview.nvim",
 			opts = {

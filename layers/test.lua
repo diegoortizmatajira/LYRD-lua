@@ -4,8 +4,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Test", test_adapters = {} }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{ "nvim-neotest/nvim-nio" },
 		{
 			"nvim-neotest/neotest",
@@ -30,14 +30,11 @@ function L.configure_adapter(adapter)
 	table.insert(L.test_adapters, adapter)
 end
 
-function L.settings(s)
+function L.settings()
 	-- Called only when all adapters have been collected into L.test_adapters
 	require("neotest").setup({ adapters = L.test_adapters })
 
-	commands.implement(s, "neotest-summary", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{
 			cmd.LYRDTest,
 			function()
@@ -80,6 +77,7 @@ function L.settings(s)
 				require("neotest").summary.toggle()
 			end,
 		},
+		{ cmd.LYRDTestOutput, ":Neotest output-panel" },
 		{ cmd.LYRDTestCoverageSummary, ":CoverageSummary" },
 		{ cmd.LYRDTestCoverage, ":CoverageToggle" },
 	})

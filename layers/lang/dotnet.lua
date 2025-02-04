@@ -29,8 +29,8 @@ local function get_secret_path(secret_guid)
 	return path
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"issafalcon/neotest-dotnet",
 			ft = dotnet_languages,
@@ -149,7 +149,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"netcoredbg",
 		"roslyn",
@@ -157,8 +157,8 @@ function L.preparation(_)
 	})
 end
 
-function L.settings(s)
-	commands.implement(s, "cs", {
+function L.settings()
+	commands.implement("cs", {
 		-- { cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
 		-- { cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
 		{ cmd.LYRDBufferFormat, lsp.format_handler("roslyn") },
@@ -229,7 +229,7 @@ function L.settings(s)
 	test.configure_adapter(require("neotest-dotnet"))
 end
 
-function L.complete(_)
+function L.complete()
 	-- lsp.enable("omnisharp", {
 	-- 	settings = omnisharp_settings,
 	-- })

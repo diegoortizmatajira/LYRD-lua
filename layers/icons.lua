@@ -33,6 +33,7 @@ local L = {
 		layers = " ",
 		focus = "󰋱 ",
 		highlighter = "󰸱 ",
+		filetree = "󰙅 ",
 	},
 	images = {
 		default = " ",
@@ -133,7 +134,8 @@ local L = {
 	code = {
 		-- Actions
 		build = "󰙵 ",
-		outline = "󱏒 ",
+		outline = " ",
+		parser = " ",
 		fix = "󰁨 ",
 		generate = "󱃖 ",
 		check = "󰚔 ",
@@ -286,8 +288,8 @@ local L = {
 	},
 }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"nvim-tree/nvim-web-devicons",
 			init = function()
@@ -363,6 +365,15 @@ function L.icon(icon_text, highlight, color)
 		hl = highlight or "WhichKeyIcon",
 		color = color or "cyan",
 	}
+end
+
+function L.filetype_icon()
+	local devicons = require("nvim-web-devicons")
+	local icon, icon_highlight = devicons.get_icon_by_filetype(vim.bo.filetype)
+	if not icon then
+		icon, icon_highlight = devicons.get_icon_by_filetype("default")
+	end
+	return { icon = icon, hl = icon_highlight }
 end
 
 return L

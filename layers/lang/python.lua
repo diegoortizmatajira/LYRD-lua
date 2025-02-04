@@ -11,8 +11,8 @@ function L.open_dotenv()
 	vim.cmd("e .env")
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"mfussenegger/nvim-dap-python",
 			config = function()
@@ -49,7 +49,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"debugpy",
 		"pylint",
@@ -79,8 +79,8 @@ function L.preparation(_)
 	test.configure_adapter(require("neotest-python"))
 end
 
-function L.settings(s)
-	commands.implement(s, "python", {
+function L.settings()
+	commands.implement("python", {
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
 		{ cmd.LYRDCodeSecrets, L.open_dotenv },
@@ -88,7 +88,7 @@ function L.settings(s)
 	})
 end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("pyright", {
 		settings = {
 			pyright = {

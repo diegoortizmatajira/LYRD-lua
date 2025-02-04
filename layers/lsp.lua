@@ -131,8 +131,8 @@ local function exclude_lsp_lines_from_filetypes(filetypes)
 	end
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
 		{
 			"williamboman/mason.nvim",
@@ -224,7 +224,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	add_mason_bin_to_path()
 	L.mason_ensure({
 		"angular-language-server",
@@ -250,7 +250,7 @@ function L.preparation(_)
 	setup_default_providers()
 end
 
-function L.settings(s)
+function L.settings()
 	require("mason").setup(mason_opts) -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
 		ensure_installed = mason_required,
@@ -312,7 +312,7 @@ function L.settings(s)
 	-- Enable rounded borders in :LspInfo window.
 	require("lspconfig.ui.windows").default_options.border = "rounded"
 
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
 		{
 			cmd.LYRDBufferFormat,
@@ -385,7 +385,7 @@ function L.register_code_actions(filetypes, fn)
 	})
 end
 
-function L.complete(_)
+function L.complete()
 	-- Added here to be executed after every plugin code has been initialized.
 	vim.diagnostic.config({ virtual_text = false })
 end

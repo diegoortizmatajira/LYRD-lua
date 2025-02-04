@@ -2,13 +2,14 @@ local setup = require("LYRD.setup")
 
 local L = { name = "Markdown" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"MeanderingProgrammer/markdown.nvim",
 			main = "render-markdown",
-			ft = { "markdown" },
+			ft = { "markdown", "Avante" },
 			opts = {
+				file_types = { "markdown", "Avante" },
 				heading = {
 					sign = false,
 					icons = { " ", " ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
@@ -56,7 +57,7 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	-- Registers code actions in NULL LS
 	local lsp = require("LYRD.layers.lsp")
 	lsp.register_code_actions({ "markdown" }, function(_)

@@ -2,15 +2,15 @@ local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "CMake Language" }
 
-function L.plugins(_) end
+function L.plugins() end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"cmake-language-server",
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	-- make/cmake
 	local vimrc_make_cmake_group = vim.api.nvim_create_augroup("vimrc-make-cmake", {})
 	vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -25,9 +25,9 @@ function L.settings(_)
 	})
 end
 
-function L.keybindings(_) end
+function L.keybindings() end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("cmake", {})
 end
 

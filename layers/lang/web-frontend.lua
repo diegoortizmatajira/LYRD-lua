@@ -3,8 +3,8 @@ local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Web frontend" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"leafgarland/typescript-vim",
 			ft = { "ts", "tsx", "vue" },
@@ -12,16 +12,16 @@ function L.plugins(s)
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"typescript-language-server",
 		"vue-language-server",
 	})
 end
 
-function L.settings(_) end
+function L.settings() end
 
-function L.complete(_)
+function L.complete()
 	local vue_typescript_plugin = require("mason-registry").get_package("vue-language-server"):get_install_path()
 		.. "/node_modules/@vue/language-server"
 		.. "/node_modules/@vue/typescript-plugin"

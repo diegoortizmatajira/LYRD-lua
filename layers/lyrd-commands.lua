@@ -5,9 +5,9 @@ local L = {
 	name = "LYRD Commands",
 
 	cmd = {
-		LYRDAIAssistant = Command:new("Open AI Assistant", nil, icons.other.ia),
-		LYRDAIRefactor = Command:new("Open AI Refactor", nil, icons.other.wrench),
-		LYRDAISuggestions = Command:new("Open AI Suggestions", nil, icons.other.ia),
+		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia),
+		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
+		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia, true),
 		LYRDBreakLine = Command:new(
 			"Break current line",
 			":s/[,(]/&\r/ge|:noh|:'[,']normal==",
@@ -21,10 +21,10 @@ local L = {
 		LYRDBufferFormat = Command:new("Format document", nil, icons.action.format),
 		LYRDBufferJumpToLast = Command:new("Jump to last buffer", ":b#", icons.arrow.up_left),
 		LYRDBufferNew = Command:new("New empty buffer", ":enew", icons.file.new),
-		LYRDBufferNext = Command:new("Next buffer", ":bn", icons.chevron.double_right),
+		LYRDBufferNext = Command:new("Next buffer", ":bn", icons.chevron.double_right, false, true),
 		LYRDBufferPaste = Command:new("Paste clipboard to whole buffer", ':normal! ggdG"+P', icons.action.paste),
-		LYRDBufferPrev = Command:new("Previous Buffer", ":bp", icons.chevron.double_left),
-		LYRDBufferSave = Command:new("Save current file", ":w", icons.action.save),
+		LYRDBufferPrev = Command:new("Previous Buffer", ":bp", icons.chevron.double_left, false, true),
+		LYRDBufferSave = Command:new("Save current file", ":w", icons.action.save, false, true),
 		LYRDBufferSaveAll = Command:new("Save all files", ":wall", icons.action.save_all),
 		LYRDBufferSetReadOnly = Command:new("Toggle read only mode", ":setl readonly!", icons.action.toggle_on),
 		LYRDBufferSplitH = Command:new("Horizonal split", ":split", icons.action.split_h),
@@ -41,6 +41,8 @@ local L = {
 		LYRDCodeGlobalCheck = Command:new("Global check", nil, icons.code.check),
 		LYRDCodeImplementInterface = Command:new("Implement interface", nil, icons.code.interface),
 		LYRDCodeInsertSnippet = Command:new("Insert snippet", nil, icons.code.snippet),
+		LYRDCodeCreateSnippet = Command:new("Create snippet", nil, icons.code.snippet, true),
+		LYRDCodeEditSnippet = Command:new("Edit snippet", nil, icons.code.snippet),
 		LYRDCodeProduceGetter = Command:new("Generate getters code", nil, icons.code.generate),
 		LYRDCodeProduceMapping = Command:new("Generate mappings code", nil, icons.code.generate),
 		LYRDCodeProduceSetter = Command:new("Generate setters code", nil, icons.code.generate),
@@ -58,7 +60,7 @@ local L = {
 		LYRDDebugStepOver = Command:new("Step over", nil, icons.debug.step_over),
 		LYRDDebugStop = Command:new("Stop", nil, icons.debug.terminate),
 		LYRDDebugToggleRepl = Command:new("Toggle Debug Repl", nil, icons.action.toggle_on),
-		LYRDDebugToggleUI = Command:new("Toggle Debug UI", nil, icons.action.toggle_on),
+		LYRDDebugToggleUI = Command:new("Debug UI", nil, icons.debug.breakpoint),
 		LYRDDiagnosticLinesToggle = Command:new("Toggle diagnostic lines", nil, icons.action.toggle_on),
 		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),
 		LYRDGitBrowseOnWeb = Command:new("Browse line on web", nil, icons.apps.browser),
@@ -84,7 +86,6 @@ local L = {
 		LYRDGitWorkTreeCreate = Command:new("Create Worktree", nil, icons.folder.new),
 		LYRDGitWorkTreeCreateExistingBranch = Command:new("Create Worktree for existing branch", nil, icons.folder.new),
 		LYRDGitWorkTreeList = Command:new("List GIT Worktrees", nil, icons.git.worktree),
-		LYRDImplementedCommands = Command:new("List implemented commands", commands.list_implemented),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPFindCodeActions = Command:new("Actions", nil, icons.action.code_action),
 		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
@@ -117,6 +118,7 @@ local L = {
 		LYRDSearchCommandHistory = Command:new("Recent comands", nil, icons.search.history),
 		LYRDSearchCommands = Command:new("Commands", nil, icons.search.commands),
 		LYRDSearchCurrentString = Command:new("Current string in files", nil, icons.search.default),
+		LYRDSearchAllFiles = Command:new("Find all files", nil, icons.search.files),
 		LYRDSearchFiles = Command:new("Find files", nil, icons.search.files),
 		LYRDSearchFiletypes = Command:new("Filetypes", nil, icons.search.default),
 		LYRDSearchGitFiles = Command:new("Git Files", nil, icons.search.files),
@@ -138,14 +140,10 @@ local L = {
 		LYRDTestFunc = Command:new("Test current function", nil, icons.code.test),
 		LYRDTestLast = Command:new("Repeat last test", nil, icons.action.repeat_once),
 		LYRDTestSuite = Command:new("Test suite", nil, icons.code.test),
-		LYRDTestSummary = Command:new("View test summary", nil, icons.other.report),
-		LYRDUnimplementedCommands = Command:new(
-			"List unimplemented commands",
-			commands.list_unimplemented,
-			icons.search.commands
-		),
+		LYRDTestSummary = Command:new("View test summary", nil, icons.code.test),
+		LYRDTestOutput = Command:new("View test output", nil, icons.other.report),
 		LYRDViewFileExplorer = Command:new("File Explorer", nil, icons.apps.file_explorer),
-		LYRDViewFileTree = Command:new("Toggle file tree", nil, icons.action.toggle_on),
+		LYRDViewFileTree = Command:new("File Tree", nil, icons.other.filetree),
 		LYRDViewHomePage = Command:new("Home page", nil, icons.other.home),
 		LYRDViewLocationList = Command:new("Location list"),
 		LYRDViewQuickFixList = Command:new("QuickFix", ":cope"),
@@ -176,15 +174,11 @@ local L = {
 		LYRDReplace = Command:new("Search and replace in current file", nil, icons.action.replace_text),
 		LYRDReplaceInFiles = Command:new("Search and replace in files", nil, icons.action.replace_in_files),
 		LYRDWindowZoom = Command:new("Toggles zoom in the selected window", nil, icons.other.expand),
-		LYRDHttpEnvironmentFileSelect = Command:new("Select the http environment file", nil, icons.http.environment),
-		LYRDHttpEnvironmentSelect = Command:new("Select the http environment", nil, icons.http.environment),
-		LYRDHttpSendRequest = Command:new("Send http request", nil, icons.http.send),
-		LYRDHttpSendAllRequests = Command:new("Send all http request", nil, icons.http.send),
 		LYRDApplyCurrentTheme = Command:new("Apply current theme", nil, icons.other.palette),
 		LYRDApplyNextTheme = Command:new("Apply next favorite theme", nil, icons.other.palette),
 		LYRDClearSearchHighlights = Command:new("Clear search highlights", ":noh", icons.other.highlighter),
 		LYRDViewCodeOutline = Command:new("View code outline", nil, icons.code.outline),
-		LYRDViewTreeSitterPlayground = Command:new("TreeSitter playground", nil, icons.code.outline),
+		LYRDViewTreeSitterPlayground = Command:new("TreeSitter playground", nil, icons.code.parser),
 		LYRDReplView = Command:new("View REPL", nil, icons.code.run),
 		LYRDReplRestart = Command:new("REPL Restart", nil, icons.code.restart),
 		LYRDReplNotebookRunCell = Command:new("Run notebook cell", nil, icons.code.run),
@@ -198,11 +192,12 @@ local L = {
 		LYRDReplNotebookAddCellBelow = Command:new("Add notebook cell below", nil, icons.arrow.expand_down),
 		LYRDPasteImage = Command:new("Paste image", nil, icons.images.add),
 		LYRDInsertImage = Command:new("Insert image", nil, icons.images.search),
+		LYRDHardModeToggle = Command:new("Toggle hard mode", nil, icons.action.toggle_on),
 	},
 }
 
-function L.settings(s)
-	commands.register(s, L.cmd)
+function L.settings()
+	commands.register(L.cmd)
 end
 
 return L
