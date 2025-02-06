@@ -165,12 +165,6 @@ function L.git_flow_finish(what)
 	end
 end
 
-local function neogit_action_handler(popup, name, args)
-	return function()
-		require("neogit").action(popup, name, args)
-	end
-end
-
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		-- { cmd.LYRDBufferClose, ":DiffViewClose" },
@@ -179,11 +173,11 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Neogit" },
-		{ cmd.LYRDGitCommit, neogit_action_handler("commit", "commit", {}) },
-		{ cmd.LYRDGitPush, ":Neogit push" },
-		{ cmd.LYRDGitPull, ":Neogit pull" },
+		{ cmd.LYRDGitCommit, require("neogit").action("commit", "commit", {}) },
+		{ cmd.LYRDGitPush, require("neogit").action("push", "to_pushremote") },
+		{ cmd.LYRDGitPull, require("neogit").action("pull", "from_pushremote") },
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
-		{ cmd.LYRDGitStageAll, ":Git add ." },
+		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewBlame, ":Git_blame" },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitBrowseOnWeb, ":GBrowse" },
