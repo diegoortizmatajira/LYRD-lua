@@ -5,7 +5,7 @@ local L = {
 	name = "LYRD Commands",
 
 	cmd = {
-		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia),
+		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia, true),
 		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
 		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia, true),
 		LYRDBreakLine = Command:new(

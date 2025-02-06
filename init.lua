@@ -10,6 +10,7 @@ setup.load({
 		"LYRD.layers.lyrd-commands",
 		"LYRD.layers.lyrd-ui",
 		"LYRD.layers.lyrd-keyboard",
+		"LYRD.layers.buffers",
 		"LYRD.layers.themes",
 		"LYRD.layers.clipboard",
 		"LYRD.layers.tmux",

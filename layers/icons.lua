@@ -34,6 +34,7 @@ local L = {
 		focus = "󰋱 ",
 		highlighter = "󰸱 ",
 		filetree = "󰙅 ",
+		check = "✓",
 	},
 	images = {
 		default = " ",

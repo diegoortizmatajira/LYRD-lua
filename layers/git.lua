@@ -5,20 +5,94 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Git" }
 
+--- @param key_table table
+--- @param replacement_pairs  {[1]: string, [2]:string}[] contains the mapping definition as an array of (mode, key, command, options)
+local function replace_keybindings(key_table, replacement_pairs)
+	for _, replacement in ipairs(replacement_pairs) do
+		local original_key, new_key = unpack(replacement)
+		for index, value in ipairs(key_table) do
+			if value[2] == original_key then
+				key_table[index][2] = new_key
+				break
+			end
+		end
+	end
+end
+
 function L.plugins()
 	setup.plugin({
 		{
-			"tpope/vim-fugitive",
-		},
-		{
-			"tpope/vim-rhubarb",
+			"NeogitOrg/neogit",
 			dependencies = {
-
-				"tpope/vim-fugitive",
+				"nvim-lua/plenary.nvim", -- required
+				"sindrets/diffview.nvim", -- optional - Diff integration
+				"nvim-telescope/telescope.nvim", -- optional
+			},
+			opts = {
+				kind = "split_below_all",
+				disable_hint = false,
+				disable_context_highlighting = true,
+				graph_style = "unicode",
+				signs = {
+					-- { CLOSED, OPENED }
+					hunk = { "", "" },
+					item = { icons.chevron.right, icons.chevron.down },
+					section = { icons.chevron.right, icons.chevron.down },
+				},
+				commit_editor = {
+					kind = "floating",
+					show_staged_diff = true,
+					staged_diff_split_kind = "vsplit",
+				},
+				mappings = {
+					status = {
+						["<cr>"] = "Toggle",
+						["g"] = "GoToFile",
+						["<tab>"] = false,
+						["<c-s>"] = false,
+						["<c-a>"] = "StageAll",
+					},
+				},
 			},
 		},
 		{
-			"tpope/vim-dispatch",
+			"sindrets/diffview.nvim", -- optional - Diff integration
+			opts = {
+				icons = { -- Only applies when use_icons is true.
+					folder_closed = icons.folder.default,
+					folder_open = icons.folder.open,
+				},
+				signs = {
+					fold_closed = icons.chevron.right,
+					fold_open = icons.chevron.down,
+					done = icons.other.check,
+				},
+			},
+			config = function(_, opts)
+				local utils = require("diffview.utils")
+				local diff_config = require("diffview.config")
+				-- Clones the default keymaps and replaces the default mappings with the custom mappings
+				local custom_keymaps = utils.tbl_clone(diff_config.defaults.keymaps)
+				custom_keymaps.disable_defaults = true
+				replace_keybindings(custom_keymaps.view, {
+					{ "<leader>co", "co" },
+					{ "<leader>ct", "ct" },
+					{ "<leader>cb", "cb" },
+					{ "<leader>ca", "ca" },
+					{ "<leader>cO", "cO" },
+					{ "<leader>cT", "cT" },
+					{ "<leader>cB", "cB" },
+					{ "<leader>cA", "cA" },
+				})
+				replace_keybindings(custom_keymaps.file_panel, {
+					{ "<leader>cO", "cO" },
+					{ "<leader>cT", "cT" },
+					{ "<leader>cB", "cB" },
+					{ "<leader>cA", "cA" },
+				})
+				opts.keymaps = custom_keymaps
+				require("diffview").setup(opts)
+			end,
 		},
 		{
 			"lewis6991/gitsigns.nvim",
@@ -87,20 +161,6 @@ function L.plugins()
 			event = "VeryLazy",
 		},
 		{
-			"isak102/telescope-git-file-history.nvim",
-			opts = {},
-			config = function(_, opts)
-				require("telescope").setup(opts)
-				local telescope = require("telescope")
-				telescope.load_extension("git_file_history")
-			end,
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"nvim-telescope/telescope.nvim",
-				"tpope/vim-fugitive",
-			},
-		},
-		{
 			"Juksuu/worktrees.nvim",
 			opts = {},
 			dependencies = { "nvim-lua/plenary.nvim" },
@@ -114,71 +174,49 @@ function L.plugins()
 end
 
 function L.git_flow_start(what)
-	vim.ui.input({ prompt = "Name for the new branch: " }, function(name)
-		if not name then
-			return
-		end
-		vim.cmd(":Git flow " .. what .. " start " .. name)
-	end)
+	return function()
+		vim.ui.input({ prompt = "Name for the new branch: " }, function(name)
+			if not name then
+				return
+			end
+			vim.cmd(":!git flow " .. what .. " start " .. name)
+		end)
+	end
 end
 
 function L.git_flow_finish(what)
-	local head = vim.fn.FugitiveHead()
-	local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-	vim.cmd(string.format("Git flow %s finish %s", what, name))
+	return function()
+		local head = vim.fn.FugitiveHead()
+		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
+		vim.cmd(string.format("!git flow %s finish %s", what, name))
+	end
 end
 
 function L.settings()
+	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
+		-- { cmd.LYRDBufferClose, ":DiffViewClose" },
+		{ cmd.LYRDBufferClose, ":tabclose" },
+	})
 	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
-		{ cmd.LYRDGitStatus, ":Git" },
-		{ cmd.LYRDGitCommit, ":Git commit" },
-		{ cmd.LYRDGitPush, ":Git push" },
-		{ cmd.LYRDGitPull, ":Git pull" },
-		{ cmd.LYRDGitViewDiff, ":Gvdiffsplit" },
-		{ cmd.LYRDGitStageAll, ":Git add ." },
+		{ cmd.LYRDGitStatus, ":Neogit" },
+		{ cmd.LYRDGitCommit, require("neogit").action("commit", "commit", {}) },
+		{ cmd.LYRDGitPush, require("neogit").action("push", "to_pushremote") },
+		{ cmd.LYRDGitPull, require("neogit").action("pull", "from_pushremote") },
+		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
+		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewBlame, ":Git_blame" },
-		{ cmd.LYRDGitViewCurrentFileLog, ":Telescope git_file_history" },
+		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitBrowseOnWeb, ":GBrowse" },
-		{ cmd.LYRDGitFlowInit, ":Git flow init" },
-		{
-			cmd.LYRDGitFlowFeatureStart,
-			function()
-				L.git_flow_start("feature")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowFeatureFinish,
-			function()
-				L.git_flow_finish("feature")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowReleaseStart,
-			function()
-				L.git_flow_start("release")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowReleaseFinish,
-			function()
-				L.git_flow_finish("release")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowHotfixStart,
-			function()
-				L.git_flow_start("hotfix")
-			end,
-		},
-		{
-			cmd.LYRDGitFlowHotfixFinish,
-			function()
-				L.git_flow_finish("hotfix")
-			end,
-		},
-		{ cmd.LYRDGitCheckoutMain, ":Git checkout main" },
-		{ cmd.LYRDGitCheckoutDev, ":Git checkout develop" },
+		{ cmd.LYRDGitFlowInit, ":!git flow init -d" },
+		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
+		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
+		{ cmd.LYRDGitFlowReleaseStart, L.git_flow_start("release") },
+		{ cmd.LYRDGitFlowReleaseFinish, L.git_flow_finish("release") },
+		{ cmd.LYRDGitFlowHotfixStart, L.git_flow_start("hotfix") },
+		{ cmd.LYRDGitFlowHotfixFinish, L.git_flow_finish("hotfix") },
+		{ cmd.LYRDGitCheckoutMain, ":!git checkout main" },
+		{ cmd.LYRDGitCheckoutDev, ":!git checkout develop" },
 		{
 			cmd.LYRDGitWorkTreeList,
 			function()
