@@ -128,7 +128,7 @@ function L.keybindings()
 
 	mappings.create_menu("<Leader>", {
 		menu_header("a", "Artificial Intelligence", {
-			{ "a", cmd.LYRDAIAssistant },
+			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit },
 		}, icons.other.ia, { "x" }),
