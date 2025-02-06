@@ -186,7 +186,10 @@ end
 
 function L.git_flow_finish(what)
 	return function()
-		local head = vim.fn.FugitiveHead()
+		local head = require("neogit.lib.git.branch").current()
+		if not head then
+			return
+		end
 		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
 		vim.cmd(string.format("!git flow %s finish %s", what, name))
 	end
