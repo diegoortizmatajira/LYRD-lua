@@ -5,6 +5,20 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Git" }
 
+--- @param key_table table
+--- @param replacement_pairs  {[1]: string, [2]:string}[] contains the mapping definition as an array of (mode, key, command, options)
+local function replace_keybindings(key_table, replacement_pairs)
+	for _, replacement in ipairs(replacement_pairs) do
+		local original_key, new_key = unpack(replacement)
+		for index, value in ipairs(key_table) do
+			if value[2] == original_key then
+				key_table[index][2] = new_key
+				break
+			end
+		end
+	end
+end
+
 function L.plugins()
 	setup.plugin({
 		{
@@ -32,7 +46,8 @@ function L.plugins()
 				},
 				mappings = {
 					status = {
-						["<space>"] = "Toggle",
+						["<cr>"] = "Toggle",
+						["g"] = "GoToFile",
 						["<tab>"] = false,
 						["<c-s>"] = false,
 						["<c-a>"] = "StageAll",
@@ -53,20 +68,32 @@ function L.plugins()
 					done = icons.other.check,
 				},
 			},
+			config = function(_, opts)
+				local utils = require("diffview.utils")
+				local diff_config = require("diffview.config")
+				-- Clones the default keymaps and replaces the default mappings with the custom mappings
+				local custom_keymaps = utils.tbl_clone(diff_config.defaults.keymaps)
+				custom_keymaps.disable_defaults = true
+				replace_keybindings(custom_keymaps.view, {
+					{ "<leader>co", "co" },
+					{ "<leader>ct", "ct" },
+					{ "<leader>cb", "cb" },
+					{ "<leader>ca", "ca" },
+					{ "<leader>cO", "cO" },
+					{ "<leader>cT", "cT" },
+					{ "<leader>cB", "cB" },
+					{ "<leader>cA", "cA" },
+				})
+				replace_keybindings(custom_keymaps.file_panel, {
+					{ "<leader>cO", "cO" },
+					{ "<leader>cT", "cT" },
+					{ "<leader>cB", "cB" },
+					{ "<leader>cA", "cA" },
+				})
+				opts.keymaps = custom_keymaps
+				require("diffview").setup(opts)
+			end,
 		},
-		-- {
-		-- 	"tpope/vim-fugitive",
-		-- },
-		-- {
-		--     "tpope/vim-rhubarb",
-		--     dependencies = {
-		--
-		--         "tpope/vim-fugitive",
-		--     },
-		-- },
-		-- {
-		--     "tpope/vim-dispatch",
-		-- },
 		{
 			"lewis6991/gitsigns.nvim",
 			opts = {
