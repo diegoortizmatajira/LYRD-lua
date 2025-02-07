@@ -197,8 +197,7 @@ end
 
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
-		-- { cmd.LYRDBufferClose, ":DiffViewClose" },
-		{ cmd.LYRDBufferClose, ":tabclose" },
+		{ cmd.LYRDBufferClose, ":DiffviewClose" },
 	})
 	commands.implement("*", {
 		{ cmd.LYRDGitUI, ":LazyGit" },
@@ -208,9 +207,7 @@ function L.settings()
 		{ cmd.LYRDGitPull, require("neogit").action("pull", "from_pushremote") },
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, ":!git add ." },
-		{ cmd.LYRDGitViewBlame, ":Git_blame" },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
-		{ cmd.LYRDGitBrowseOnWeb, ":GBrowse" },
 		{ cmd.LYRDGitFlowInit, ":!git flow init -d" },
 		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
 		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
