@@ -177,28 +177,28 @@ function L.plugins()
 				hide_tabline = false,
 			},
 		},
-		{
-			"akinsho/bufferline.nvim",
-			-- version = "*",
-			opts = {
-				highlights = {
-					background = {
-						italic = true,
-					},
-					buffer_selected = {
-						bold = true,
-						italic = false,
-					},
-				},
-				options = {
-					mode = "buffers",
-					numbers = "none",
-					show_buffer_close_icons = false,
-					offsets = get_buffer_offsets(),
-				},
-			},
-			dependencies = "nvim-tree/nvim-web-devicons",
-		},
+		-- {
+		-- 	"akinsho/bufferline.nvim",
+		-- 	-- version = "*",
+		-- 	opts = {
+		-- 		highlights = {
+		-- 			background = {
+		-- 				italic = true,
+		-- 			},
+		-- 			buffer_selected = {
+		-- 				bold = true,
+		-- 				italic = false,
+		-- 			},
+		-- 		},
+		-- 		options = {
+		-- 			mode = "buffers",
+		-- 			numbers = "none",
+		-- 			show_buffer_close_icons = false,
+		-- 			offsets = get_buffer_offsets(),
+		-- 		},
+		-- 	},
+		-- 	dependencies = "nvim-tree/nvim-web-devicons",
+		-- },
 	})
 end
 
