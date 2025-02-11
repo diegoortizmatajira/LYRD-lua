@@ -111,6 +111,7 @@ function L.keybindings()
 		{ "n", "<M-Enter>", cmd.LYRDLSPFindCodeActions },
 		{ "n", "<M-PageDown>", cmd.LYRDLSPGotoNextDiagnostic },
 		{ "n", "<M-PageUp>", cmd.LYRDLSPGotoPrevDiagnostic },
+		{ "n", "<M-z>", cmd.LYRDBufferToggleWrap },
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 		{ "n", "<S-F5>", cmd.LYRDDebugStart },
 		{ "n", "K", cmd.LYRDLSPHoverInfo },
