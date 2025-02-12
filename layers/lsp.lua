@@ -107,7 +107,6 @@ end
 local function setup_default_providers()
 	local null_ls = require("null-ls")
 	L.null_ls_register_sources({
-		null_ls.builtins.code_actions.gitsigns,
 		null_ls.builtins.formatting.yamlfmt,
 		null_ls.builtins.formatting.clang_format,
 	})
@@ -215,9 +214,9 @@ function L.plugins()
 					text = icons.other.lightbulb,
 				},
 			},
-			config = function(_, opts)
-				require("nvim-lightbulb").setup(opts)
-			end,
+			-- config = function(_, opts)
+			-- 	require("nvim-lightbulb").setup(opts)
+			-- end,
 		},
 		{
 			"aznhe21/actions-preview.nvim",
