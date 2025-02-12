@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
+local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
@@ -90,6 +91,7 @@ function L.plugins()
 					{ "<leader>cB", "cB" },
 					{ "<leader>cA", "cA" },
 				})
+				table.insert(custom_keymaps.file_panel, { "n", "q", c("DiffviewClose"), { desc = "Close the panel" } })
 				opts.keymaps = custom_keymaps
 				require("diffview").setup(opts)
 			end,
