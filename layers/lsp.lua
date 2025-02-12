@@ -133,6 +133,18 @@ local function exclude_lsp_lines_from_filetypes(filetypes)
 	end
 end
 
+local function format_buffer(args)
+	local range = nil
+	if args and args.count ~= -1 then
+		local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+		range = {
+			start = { args.line1, 0 },
+			["end"] = { args.line2, end_line:len() },
+		}
+	end
+	require("conform").format({ async = true, lsp_format = "fallback", range = range })
+end
+
 function L.plugins()
 	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
@@ -221,6 +233,20 @@ function L.plugins()
 					},
 				},
 			},
+		},
+		{
+			"stevearc/conform.nvim",
+			opts = {
+				formatters_by_ft = {},
+				-- Set default options
+				default_format_opts = {
+					lsp_format = "fallback",
+				},
+			},
+			init = function()
+				-- If you want the formatexpr, here is the place to set it
+				vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+			end,
 		},
 	})
 end
@@ -318,12 +344,7 @@ function L.settings()
 
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
-		{
-			cmd.LYRDBufferFormat,
-			function()
-				vim.lsp.buf.format({ async = true, timeout_ms = 3000 })
-			end,
-		},
+		{ cmd.LYRDBufferFormat, format_buffer },
 		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
 		{ cmd.LYRDLSPFindCodeActions, require("actions-preview").code_actions },
 		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
