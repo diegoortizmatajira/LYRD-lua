@@ -117,15 +117,17 @@ function L.plug_capabilities(plug_handler)
 	plugged_capabilities = plug_handler(plugged_capabilities)
 end
 
+local function toggle_diagnostic_lines()
+	local new_config = not vim.diagnostic.config().virtual_lines
+	vim.diagnostic.config({ virtual_lines = new_config })
+end
+
 local function exclude_lsp_lines_from_filetypes(filetypes)
 	for _, filetype in ipairs(filetypes) do
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = filetype,
 			callback = function()
-				local previous = not require("lsp_lines").toggle()
-				if not previous then
-					require("lsp_lines").toggle()
-				end
+				vim.diagnostic.config({ virtual_lines = false })
 			end,
 		})
 	end
@@ -163,7 +165,6 @@ function L.plugins()
 			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
 			config = function()
 				require("lsp_lines").setup()
-				exclude_lsp_lines_from_filetypes({ "lazy" })
 			end,
 			opts = {},
 		},
@@ -300,9 +301,12 @@ function L.settings()
 		update_in_insert = true,
 		underline = true,
 		severity_sort = true,
+		virtual_text = false,
+		virtual_lines = true,
 	}
 
 	vim.diagnostic.config(config)
+	exclude_lsp_lines_from_filetypes({ "lazy" })
 
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 
@@ -339,12 +343,7 @@ function L.settings()
 		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":Trouble diagnostics toggle" },
 		{ cmd.LYRDViewLocationList, ":Trouble loclist toggle" },
 		{ cmd.LYRDViewQuickFixList, ":Trouble qflist toggle" },
-		{
-			cmd.LYRDDiagnosticLinesToggle,
-			function()
-				require("lsp_lines").toggle()
-			end,
-		},
+		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
 		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
 	})
 end

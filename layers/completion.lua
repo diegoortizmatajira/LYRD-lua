@@ -285,6 +285,7 @@ function L.plugins()
 					}, {
 						{ name = "cmdline" },
 					}),
+					---@diagnostic disable-next-line: missing-fields
 					matching = { disallow_symbol_nonprefix_matching = false },
 				})
 			end,
