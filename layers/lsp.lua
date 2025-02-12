@@ -214,9 +214,6 @@ function L.plugins()
 					text = icons.other.lightbulb,
 				},
 			},
-			-- config = function(_, opts)
-			-- 	require("nvim-lightbulb").setup(opts)
-			-- end,
 		},
 		{
 			"aznhe21/actions-preview.nvim",

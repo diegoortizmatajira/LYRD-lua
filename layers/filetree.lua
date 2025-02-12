@@ -207,6 +207,20 @@ function L.plugins()
 				},
 			},
 		},
+		{
+			"stevearc/oil.nvim",
+			---@module 'oil'
+			---@type oil.SetupOpts
+			opts = {
+				keymaps = {
+					["q"] = { "actions.close", mode = "n" },
+				},
+			},
+			-- Optional dependencies
+			dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+			-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+			lazy = false,
+		},
 	})
 end
 
@@ -214,6 +228,7 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
+		{ cmd.LYRDViewFileExplorerAlt, require("oil").toggle_float },
 	})
 end
 
