@@ -1,6 +1,6 @@
 local L = { name = "General" }
 
-function L.settings()
+function L.preparation()
 	vim.g.mapleader = ","
 	vim.g.maplocalleader = "\\"
 	vim.g.big_file = { size = 1024 * 5000, lines = 50000 } -- For files bigger than this, disable 'treesitter' (+5Mb).

@@ -21,6 +21,7 @@ setup.load({
 		"LYRD.layers.test",
 		"LYRD.layers.git",
 		"LYRD.layers.lsp",
+		"LYRD.layers.foldings",
 		"LYRD.layers.rest",
 		"LYRD.layers.treesitter",
 		"LYRD.layers.filetree",
