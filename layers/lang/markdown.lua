@@ -1,4 +1,5 @@
 local setup = require("LYRD.setup")
+local icons = require("LYRD.layers.icons")
 
 local L = { name = "Markdown" }
 
@@ -12,7 +13,14 @@ function L.plugins()
 				file_types = { "markdown", "Avante" },
 				heading = {
 					sign = false,
-					icons = { " ", " ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+					icons = {
+						icons.styles.h1,
+						icons.styles.h2,
+						icons.styles.h3,
+						icons.styles.h4,
+						icons.styles.h5,
+						icons.styles.h6,
+					},
 					width = "block",
 				},
 				code = {
