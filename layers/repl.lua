@@ -49,11 +49,36 @@ end
 
 function L.plugins()
 	setup.plugin({
+		-- {
+		-- 	"vhyrro/luarocks.nvim",
+		-- 	priority = 1001, -- this plugin needs to run before anything else
+		-- 	opts = {
+		-- 		rocks = { "magick" },
+		-- 	},
+		-- },
+		-- {
+		-- 	"3rd/image.nvim",
+		-- 	dependencies = { "luarocks.nvim" },
+		-- 	opts = {},
+		-- },
+		-- {
+		-- 	"benlubas/molten-nvim",
+		-- 	version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+		-- 	build = ":UpdateRemotePlugins",
+		--
+		-- 	init = function()
+		-- 		-- this is an example, not a default. Please see the readme for more configuration options
+		-- 		vim.g.molten_image_provider = "image.nvim"
+		-- 		vim.g.molten_output_win_max_height = 20
+		-- 	end,
+		-- },
 		{
 			-- Enables REPL processing
 			"vigemus/iron.nvim",
-			opts = {
-				config = {
+			config = function()
+				local iron = require("iron")
+				local common = require("iron.fts.common")
+				iron.setup({
 					repl_open_cmd = "horizontal bot 20 split",
 					repl_definition = {
 						python = {
@@ -66,10 +91,12 @@ function L.plugins()
 									or "python3"
 								return { binary }
 							end,
+							format = common.bracketed_paste_python,
+							block_deviders = { "# %%", "#%%" },
 						},
 					},
-				},
-			},
+				})
+			end,
 			main = "iron.core",
 			ft = L.supported_filetypes,
 		},
@@ -79,6 +106,7 @@ function L.plugins()
 			dependencies = {
 				"echasnovski/mini.comment",
 				"vigemus/iron.nvim", -- repl provider
+				-- "benlubas/molten-nvim", -- alternative repl provider
 			},
 			ft = L.supported_filetypes,
 			opts = {},
