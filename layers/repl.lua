@@ -86,17 +86,9 @@ function L.plugins()
 								-- Tries to check if IPython, Python or Python3 are available in that specific order.
 								local ipython_available = vim.fn.executable("ipython") == 1
 								local python_available = vim.fn.executable("python") == 1
-								local binary = (
-									ipython_available
-									and {
-										"ipython",
-										"--no-autoindent",
-										"--ZMQTerminalInteractiveShell.image_handler=None",
-									}
-								)
+								local binary = (ipython_available and { "ipython", "--no-autoindent" })
 									or (python_available and { "python" })
 									or { "python3" }
-								vim.notify("Using " .. binary[1] .. " as the Python REPL")
 								return binary
 							end,
 							format = common.bracketed_paste_python,
