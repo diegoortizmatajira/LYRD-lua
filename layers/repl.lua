@@ -127,13 +127,13 @@ local function empty_jupyter_notebook()
 end
 
 function L.plugins()
-	setup.plugin(repl_providers[L.selected_repl_provider].plugins)
 	setup.plugin({
 		{
 			-- Enables notebook like mode
 			"GCBallesteros/NotebookNavigator.nvim",
 			dependencies = {
 				"echasnovski/mini.comment",
+				repl_providers[L.selected_repl_provider].plugins,
 			},
 			ft = L.supported_filetypes,
 			opts = {
