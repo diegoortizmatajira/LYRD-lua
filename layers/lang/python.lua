@@ -46,6 +46,9 @@ function L.plugins()
 			},
 			ft = "python",
 		},
+		{
+			"raimon49/requirements.txt.vim",
+		},
 	})
 end
 

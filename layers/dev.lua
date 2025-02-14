@@ -18,7 +18,7 @@ function L.plugins()
         },
         {
             "danymat/neogen",
-            config = {
+            opts = {
                 snippet_engine = "luasnip",
             },
         },
