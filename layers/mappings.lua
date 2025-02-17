@@ -68,6 +68,13 @@ function L.plugins()
 				},
 			},
 		},
+		{
+			"meznaric/key-analyzer.nvim",
+			opts = {},
+			cmd = {
+				"KeyAnalyzer",
+			},
+		},
 	})
 end
 
