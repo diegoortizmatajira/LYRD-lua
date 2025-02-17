@@ -34,6 +34,7 @@ local L = {
 		{ type_id = "OverseerList" },
 		{ type_id = "aerial", title = "Outline" },
 		{ type_id = "alpha", prevent_closing = true },
+		{ type_id = "code-stdout", title = "Playground output" },
 		{ type_id = "copilot-chat", title = "AI Chat" },
 		{ type_id = "dbout" },
 		{ type_id = "dbui", title = "Database" },
@@ -177,28 +178,6 @@ function L.plugins()
 				hide_tabline = false,
 			},
 		},
-		-- {
-		-- 	"akinsho/bufferline.nvim",
-		-- 	-- version = "*",
-		-- 	opts = {
-		-- 		highlights = {
-		-- 			background = {
-		-- 				italic = true,
-		-- 			},
-		-- 			buffer_selected = {
-		-- 				bold = true,
-		-- 				italic = false,
-		-- 			},
-		-- 		},
-		-- 		options = {
-		-- 			mode = "buffers",
-		-- 			numbers = "none",
-		-- 			show_buffer_close_icons = false,
-		-- 			offsets = get_buffer_offsets(),
-		-- 		},
-		-- 	},
-		-- 	dependencies = "nvim-tree/nvim-web-devicons",
-		-- },
 	})
 end
 
