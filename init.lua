@@ -47,7 +47,7 @@ setup.load({
 		"LYRD.layers.lang.sql",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
-		-- "LYRD.layers.extras",
+		"LYRD.layers.extras",
 		"LYRD.layers.media",
 	},
 })
