@@ -16,6 +16,7 @@ function L.plugins()
 					max_height = 25,
 					default_detail = 1,
 				},
+				dap = false,
 			},
 		},
 	})

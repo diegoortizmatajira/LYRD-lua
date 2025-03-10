@@ -13,9 +13,12 @@ function L.plugins()
 		{
 			"mfussenegger/nvim-dap",
 			config = function()
-				local dap = require("dap")
-				dap.set_log_level("info")
+				require("dap").set_log_level("info")
+				require("overseer").enable_dap()
 			end,
+			dependencies = {
+				"stevearc/overseer.nvim",
+			},
 		},
 		{
 			"rcarriga/nvim-dap-ui",
