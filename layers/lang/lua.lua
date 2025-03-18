@@ -1,6 +1,4 @@
 local lsp = require("LYRD.layers.lsp")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 local setup = require("LYRD.setup")
 
 local L = {
@@ -29,16 +27,7 @@ function L.preparation()
 		"luau-lsp",
 		"stylua",
 	})
-	local null_ls = require("null-ls")
-	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.stylua,
-	})
-end
-
-function L.settings()
-	commands.implement("lua", {
-		{ cmd.LYRDBufferFormat, lsp.format_handler("null-ls") },
-	})
+	lsp.format_with_conform("lua", { "stylua" })
 end
 
 function L.complete()

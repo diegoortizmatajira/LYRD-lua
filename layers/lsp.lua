@@ -4,12 +4,15 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
-local L = { name = "LSP" }
+local L = {
+	name = "LSP",
+	required_tools = {},
+	null_ls_sources = {},
+	null_ls_registered = {},
+	conform_formatters = {},
+}
 
 local capabilities = nil
-local mason_required = {}
-local null_ls_sources = {}
-local null_ls_registered = {}
 local mason_opts = {
 	ui = {
 		check_outdated_packages_on_open = true,
@@ -232,13 +235,7 @@ function L.plugins()
 		},
 		{
 			"stevearc/conform.nvim",
-			opts = {
-				formatters_by_ft = {},
-				-- Set default options
-				default_format_opts = {
-					lsp_format = "fallback",
-				},
-			},
+			config = false,
 			init = function()
 				-- If you want the formatexpr, here is the place to set it
 				vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
@@ -276,7 +273,7 @@ end
 function L.settings()
 	require("mason").setup(mason_opts) -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
-		ensure_installed = mason_required,
+		ensure_installed = L.required_tools,
 	})
 	require("mason-lspconfig").setup()
 	require("mason-lspconfig").setup_handlers({
@@ -296,9 +293,9 @@ function L.settings()
 	-- Configures the null language server
 	local null_ls = require("null-ls")
 	null_ls.setup({
-		sources = null_ls_sources,
+		sources = L.null_ls_sources,
 	})
-	for _, custom_register in ipairs(null_ls_registered) do
+	for _, custom_register in ipairs(L.null_ls_registered) do
 		null_ls.register(custom_register)
 	end
 
@@ -306,6 +303,15 @@ function L.settings()
 		ensure_installed = {},
 		automatic_installation = true,
 	})
+
+	require("conform").setup({
+		formatters_by_ft = L.conform_formatters,
+		-- Set default options
+		default_format_opts = {
+			lsp_format = "fallback",
+		},
+	})
+
 	local signs = {
 		{ name = "DiagnosticSignError", text = icons.diagnostic.error },
 		{ name = "DiagnosticSignWarn", text = icons.diagnostic.warning },
@@ -376,18 +382,18 @@ end
 
 function L.mason_ensure(tools)
 	for _, tool in ipairs(tools) do
-		table.insert(mason_required, tool)
+		table.insert(L.required_tools, tool)
 	end
 end
 
 function L.null_ls_register_sources(sources)
 	for _, source in ipairs(sources) do
-		table.insert(null_ls_sources, source)
+		table.insert(L.null_ls_sources, source)
 	end
 end
 
 function L.null_ls_register(custom_register)
-	table.insert(null_ls_registered, custom_register)
+	table.insert(L.null_ls_registered, custom_register)
 end
 
 function L.register_code_actions(filetypes, fn)
@@ -399,6 +405,22 @@ function L.register_code_actions(filetypes, fn)
 			fn = fn,
 		},
 	})
+end
+
+--- Configures the given LSP server to format buffers for a given filetype.
+--- @param filetype string|string[] filetype(s) to format
+--- @param lsp_name string name of the LSP server
+function L.format_with_lsp(filetype, lsp_name)
+	commands.implement(filetype, {
+		{ cmd.LYRDBufferFormat, L.format_handler(lsp_name) },
+	})
+end
+
+--- Configures the given LSP server to format buffers for a given filetype.
+--- @param filetype string filetype to format
+--- @param format_settings table Settings for the formatter
+function L.format_with_conform(filetype, format_settings)
+	L.conform_formatters[filetype] = format_settings
 end
 
 function L.complete()
