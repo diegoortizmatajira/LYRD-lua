@@ -56,10 +56,6 @@ end
 function L.plugins()
 	setup.plugin({
 		{
-			"mcauley-penney/visual-whitespace.nvim",
-			config = true,
-		},
-		{
 			"folke/noice.nvim",
 			event = "VeryLazy",
 			opts = {
