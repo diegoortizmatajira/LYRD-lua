@@ -29,6 +29,7 @@ local ai_providers = {
 								prev = keyboard.ai_keys.prev,
 								dismiss = keyboard.ai_keys.clear,
 							},
+							copilot_model = "", -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
 						},
 					},
 					cmd = "Copilot",
@@ -164,6 +165,7 @@ function L.plugins()
 			event = "VeryLazy",
 			lazy = false,
 			version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+			-- version = "v0.0.20",
 			opts = {
 				provider = L.avante_provider.name,
 				auto_suggestions_provider = L.avante_provider.name,
