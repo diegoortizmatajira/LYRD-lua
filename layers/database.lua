@@ -40,6 +40,12 @@ function L.plugins()
 				}
 			end,
 		},
+
+		{
+			"kristijanhusak/vim-dadbod-completion",
+			ft = { "sql", "mysql", "plsql" },
+			lazy = true,
+		},
 		{ "muniftanjim/nui.nvim" },
 	})
 end
@@ -50,7 +56,14 @@ function L.settings()
 	})
 	commands.implement("sql", {
 		{ cmd.LYRDCodeRun, ":%DB" },
-		{ cmd.LYRDCodeRunSelection, ":'<,'>DB" },
+		{ cmd.LYRDCodeRunSelection, ":'<,'>normal <Plug>(DBUI_ExecuteQuery)" },
+	})
+
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = { "sql", "mysql", "plsql" },
+		callback = function()
+			require("cmp").setup.buffer({ sources = { { name = "vim-dadbod-completion" } } })
+		end,
 	})
 end
 

@@ -57,6 +57,7 @@ function L.preparation()
 		"debugpy",
 		"pylint",
 		"pyright",
+		"pydocstyle",
 		"ruff",
 	})
 
