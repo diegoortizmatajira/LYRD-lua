@@ -155,6 +155,8 @@ function L.preparation()
 		"roslyn",
 	})
 	lsp.format_with_lsp(dotnet_languages, "roslyn")
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-dotnet"))
 end
 
 function L.settings()
@@ -221,12 +223,8 @@ function L.settings()
 			}
 		end
 	end
-
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-dotnet"))
 end
 
-function L.complete()
-end
+function L.complete() end
 
 return L

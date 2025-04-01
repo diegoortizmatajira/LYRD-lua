@@ -62,8 +62,8 @@ local mason_opts = {
 	-- multiple registries, the registry listed first will be used.
 	registries = {
 		"lua:mason-registry.index",
-		"github:mason-org/mason-registry",
 		"github:nvim-java/mason-registry",
+		"github:mason-org/mason-registry",
 		"github:crashdummyy/mason-registry",
 	},
 

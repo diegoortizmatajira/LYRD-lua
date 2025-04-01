@@ -57,6 +57,7 @@ function L.settings()
 			"go",
 			"http",
 			"json",
+			"java",
 			"lua",
 			"python",
 			"query",
