@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling>=1.0.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = ""
+version = "0.0.1"
+description = ""
+readme = "README.md"
+authors = [{ name = "", email = "" }]
+keywords = ["python"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+]
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = [
+    "tests",
+    "integration",
+]
