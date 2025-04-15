@@ -45,7 +45,9 @@ function L.complete()
 			"vue",
 		},
 	})
-	lsp.enable("volar", {})
+	-- WARNING: Do not initialize volar, as it will conflict with the typescript language server.
+	-- Let the default volar settings handle the initialization.
+	-- lsp.enable("volar", {})
 end
 
 return L
