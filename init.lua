@@ -35,10 +35,11 @@ setup.load({
 		"LYRD.layers.tasks", -- Must be after debug and database
 		"LYRD.layers.repl",
 		"LYRD.layers.ai-dev",
-		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.cmake",
+		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.dotnet",
 		"LYRD.layers.lang.go",
+		-- "LYRD.layers.lang.java",
 		"LYRD.layers.lang.kotlin",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.markdown",

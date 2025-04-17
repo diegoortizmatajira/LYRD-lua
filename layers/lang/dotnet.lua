@@ -153,15 +153,14 @@ function L.preparation()
 	lsp.mason_ensure({
 		"netcoredbg",
 		"roslyn",
-		-- "omnisharp",
 	})
+	lsp.format_with_lsp(dotnet_languages, "roslyn")
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-dotnet"))
 end
 
 function L.settings()
-	commands.implement("cs", {
-		-- { cmd.LYRDCodeFixImports, ":OmniSharpFixUsings" },
-		-- { cmd.LYRDCodeGlobalCheck, ":OmniSharpGlobalCodeCheck" },
-		{ cmd.LYRDBufferFormat, lsp.format_handler("roslyn") },
+	commands.implement(dotnet_languages, {
 		{
 			cmd.LYRDCodeBuild,
 			function()
@@ -224,15 +223,8 @@ function L.settings()
 			}
 		end
 	end
-
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-dotnet"))
 end
 
-function L.complete()
-	-- lsp.enable("omnisharp", {
-	-- 	settings = omnisharp_settings,
-	-- })
-end
+function L.complete() end
 
 return L
