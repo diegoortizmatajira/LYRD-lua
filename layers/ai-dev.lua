@@ -179,6 +179,28 @@ function L.plugins()
 			-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
 			dependencies = avante_dependencies(),
 		},
+		{
+			"olimorris/codecompanion.nvim",
+			opts = {
+				strategies = {
+					strategies = {
+						chat = {
+							adapter = "copilot",
+						},
+						inline = {
+							adapter = "copilot",
+						},
+						cmd = {
+							adapter = "copilot",
+						},
+					},
+				},
+			},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-treesitter/nvim-treesitter",
+			},
+		},
 	})
 	if L.avante_provider == L.completion_provider then
 		setup.plugin(L.avante_provider.plugins(true))

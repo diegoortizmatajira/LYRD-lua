@@ -8,9 +8,9 @@ function L.plugins()
 		{
 			"MeanderingProgrammer/markdown.nvim",
 			main = "render-markdown",
-			ft = { "markdown", "Avante" },
+			ft = { "markdown", "Avante", "codecompanion" },
 			opts = {
-				file_types = { "markdown", "Avante" },
+				file_types = { "markdown", "Avante", "codecompanion" },
 				heading = {
 					sign = false,
 					icons = {
