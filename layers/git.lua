@@ -6,7 +6,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "Git",
-	git_flow_base_command = "gh", -- default to 'gh', but it can be 'git'
+	git_flow_base_command = "git", -- default to 'gh', but it can be 'git'
 }
 
 --- @param key_table table
