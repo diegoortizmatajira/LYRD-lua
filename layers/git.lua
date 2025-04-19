@@ -4,7 +4,10 @@ local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
-local L = { name = "Git" }
+local L = {
+	name = "Git",
+	git_flow_base_command = "gh", -- default to 'gh', but it can be 'git'
+}
 
 --- @param key_table table
 --- @param replacement_pairs  {[1]: string, [2]:string}[] contains the mapping definition as an array of (mode, key, command, options)
@@ -181,7 +184,7 @@ function L.git_flow_start(what)
 			if not name then
 				return
 			end
-			vim.cmd(":!git flow " .. what .. " start " .. name)
+			vim.cmd(":!" .. L.git_flow_base_command .. " flow " .. what .. " start " .. name)
 		end)
 	end
 end
@@ -193,7 +196,7 @@ function L.git_flow_finish(what)
 			return
 		end
 		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-		vim.cmd(string.format("!git flow %s finish %s", what, name))
+		vim.cmd(string.format("!" .. L.git_flow_base_command .. " flow %s finish %s", what, name))
 	end
 end
 
@@ -210,7 +213,7 @@ function L.settings()
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
-		{ cmd.LYRDGitFlowInit, ":!git flow init -d" },
+		{ cmd.LYRDGitFlowInit, ":!" .. L.git_flow_base_command .. " flow init -d" },
 		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
 		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
 		{ cmd.LYRDGitFlowReleaseStart, L.git_flow_start("release") },
