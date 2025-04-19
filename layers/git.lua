@@ -178,13 +178,19 @@ function L.plugins()
 	})
 end
 
+function L.git_flow_init()
+	return function()
+		vim.cmd(":!git flow init -d")
+	end
+end
+
 function L.git_flow_start(what)
 	return function()
 		vim.ui.input({ prompt = "Name for the new branch: " }, function(name)
 			if not name then
 				return
 			end
-			vim.cmd(":!" .. L.git_flow_base_command .. " flow " .. what .. " start " .. name)
+			vim.cmd(":!git flow " .. what .. " start " .. name)
 		end)
 	end
 end
@@ -196,10 +202,30 @@ function L.git_flow_finish(what)
 			return
 		end
 		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-		vim.cmd(string.format("!" .. L.git_flow_base_command .. " flow %s finish %s", what, name))
+		vim.cmd(string.format("!git flow %s finish %s", what, name))
 	end
 end
 
+function L.git_flow_publish(what)
+	return function()
+		local head = require("neogit.lib.git.branch").current()
+		if not head then
+			return
+		end
+		local target_branch = what == "feature" and "develop" or "main"
+		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
+		local ui = require("LYRD.layers.lyrd-ui")
+		ui.toggle_external_app_terminal(
+			string.format(
+				[[!gh pr create --base %s --head %s/%s --assignee "@me" --label "%s" --draft ]],
+				target_branch,
+				what,
+				name,
+				what
+			)
+		)
+	end
+end
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
@@ -213,13 +239,16 @@ function L.settings()
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
-		{ cmd.LYRDGitFlowInit, ":!" .. L.git_flow_base_command .. " flow init -d" },
+		{ cmd.LYRDGitFlowInit, L.git_flow_init() },
 		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
 		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
+		{ cmd.LYRDGitFlowFeaturePublish, L.git_flow_publish("feature") },
 		{ cmd.LYRDGitFlowReleaseStart, L.git_flow_start("release") },
 		{ cmd.LYRDGitFlowReleaseFinish, L.git_flow_finish("release") },
+		{ cmd.LYRDGitFlowReleasePublish, L.git_flow_publish("release") },
 		{ cmd.LYRDGitFlowHotfixStart, L.git_flow_start("hotfix") },
 		{ cmd.LYRDGitFlowHotfixFinish, L.git_flow_finish("hotfix") },
+		{ cmd.LYRDGitFlowHotfixPublish, L.git_flow_publish("hotfix") },
 		{ cmd.LYRDGitCheckoutMain, ":!git checkout main" },
 		{ cmd.LYRDGitCheckoutDev, ":!git checkout develop" },
 		{
