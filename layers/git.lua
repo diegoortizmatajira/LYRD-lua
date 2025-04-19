@@ -217,7 +217,7 @@ function L.git_flow_publish(what)
 		local ui = require("LYRD.layers.lyrd-ui")
 		ui.toggle_external_app_terminal(
 			string.format(
-				[[gh pr create --base %s --head %s/%s --assignee "@me" --label "%s" --draft ]],
+				[[gh pr create --base %s --head %s/%s --assignee "@me" --draft ]],
 				target_branch,
 				what,
 				name,
