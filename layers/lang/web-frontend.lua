@@ -22,19 +22,7 @@ end
 function L.settings() end
 
 function L.complete()
-	local vue_typescript_plugin = require("mason-registry").get_package("vue-language-server"):get_install_path()
-		.. "/node_modules/@vue/language-server"
-		.. "/node_modules/@vue/typescript-plugin"
 	lsp.enable("ts_ls", {
-		init_options = {
-			plugins = {
-				{
-					name = "@vue/typescript-plugin",
-					location = vue_typescript_plugin,
-					languages = { "javascript", "typescript", "vue" },
-				},
-			},
-		},
 		filetypes = {
 			"javascript",
 			"javascriptreact",
@@ -44,10 +32,27 @@ function L.complete()
 			"typescript.tsx",
 			"vue",
 		},
+		init_options = {
+			plugins = {
+				{
+					name = "@vue/typescript-plugin",
+					location = vim.fn.stdpath("data")
+						.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+
+					languages = { "vue" },
+				},
+			},
+		},
+		settings = {},
 	})
-	-- WARNING: Do not initialize volar, as it will conflict with the typescript language server.
-	-- Let the default volar settings handle the initialization.
-	-- lsp.enable("volar", {})
+	lsp.enable("volar", {
+		init_options = {
+			vue = {
+				hybridMode = true,
+			},
+		},
+		settings = {},
+	})
 end
 
 return L
