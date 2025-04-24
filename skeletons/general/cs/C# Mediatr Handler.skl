@@ -1,0 +1,34 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  request = string.gsub(basename, "Handler", "Request")
+  response = string.gsub(basename, "Handler", "Response")
+
+  return { 
+      type_name = basename,
+      request_type_name = request,
+      response_type_name = response,
+      namespace = generator.get_namespace(name),
+      _cursor = { 6, 5 }
+    }
+end
+---
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Scrutor;
+
+namespace ${namespace};
+
+[ServiceDescriptor]
+public class ${type_name}(
+    ILogger<${type_name}> logger
+) 
+: IRequestHandler<${request_type_name}, ${response_type_name}>
+{
+    public Task<${response_type_name}> Handle(${request_type_name} request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+}
