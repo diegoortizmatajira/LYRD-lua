@@ -3,7 +3,7 @@ return function (buf)
   local name = vim.api.nvim_buf_get_name(buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
-  response = string.replace(basename, "Request", "Response")
+  response = string.gsub(basename, "Request", "Response")
 
   return { 
       type_name = basename,
