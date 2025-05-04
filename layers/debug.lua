@@ -5,15 +5,20 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "Debug" }
 
-function L.plugins(s)
-	setup.plugin(s, {
-		"pocco81/dap-buddy.nvim",
+function L.plugins()
+	setup.plugin({
+		{
+			"pocco81/dap-buddy.nvim",
+		},
 		{
 			"mfussenegger/nvim-dap",
 			config = function()
-				local dap = require("dap")
-				dap.set_log_level("info")
+				require("dap").set_log_level("info")
+				require("overseer").enable_dap()
 			end,
+			dependencies = {
+				"stevearc/overseer.nvim",
+			},
 		},
 		{
 			"rcarriga/nvim-dap-ui",
@@ -92,43 +97,72 @@ function L.plugins(s)
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
 		},
-		"theHamsta/nvim-dap-virtual-text",
+		{
+			"theHamsta/nvim-dap-virtual-text",
+			opts = {},
+		},
+		-- {
+		-- 	--TODO: Add configuration https://github.com/niuiic/dap-utils.nvim
+		-- 	"niuiic/dap-utils.nvim",
+		-- },
 	})
 end
 
-function L.settings(s)
+function L.is_running()
+	local dap = require("dap")
+	return dap.status() ~= ""
+end
+
+function L.start_handler(implementation)
+	return function()
+		if L.is_running() then
+			commands.execute_implementation(cmd.LYRDDebugStop)
+		end
+		commands.execute_implementation(implementation)
+	end
+end
+
+function L.continue_handler(implementation)
+	return function()
+		if L.is_running() then
+			commands.execute_implementation(implementation)
+		else
+			commands.execute_implementation(cmd.LYRDDebugStart)
+		end
+	end
+end
+
+function L.settings()
 	vim.fn.sign_define("DapBreakpoint", {
-		text = "",
+		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",
 		linehl = "",
 		numhl = "",
 	})
 	vim.fn.sign_define("DapBreakpointRejected", {
-		text = "",
+		text = icons.debug.breakpoint,
 		texthl = "DiagnosticSignError",
 		linehl = "",
 		numhl = "",
 	})
 	vim.fn.sign_define("DapStopped", {
-		text = "",
+		text = icons.debug.current_line,
 		texthl = "DiagnosticSignWarn",
 		linehl = "Visual",
 		numhl = "DiagnosticSignWarn",
 	})
 
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
-		{ cmd.LYRDDebugContinue, ":DapContinue" },
+		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
+		{ cmd.LYRDDebugContinue, L.continue_handler(":DapContinue") },
 		{ cmd.LYRDDebugStepInto, ":DapStepInto" },
+		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
 		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end
-
-function L.keybindings(_) end
-
-function L.complete(_) end
 
 return L

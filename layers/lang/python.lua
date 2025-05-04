@@ -6,8 +6,13 @@ local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 
 local L = { name = "Python language" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+-- Opens the .env file in the current directory
+function L.open_dotenv()
+	vim.cmd("e .env")
+end
+
+function L.plugins()
+	setup.plugin({
 		{
 			"mfussenegger/nvim-dap-python",
 			config = function()
@@ -24,15 +29,35 @@ function L.plugins(s)
 		{
 			"nvim-neotest/neotest-python",
 			ft = "python",
+			python = nil,
+		},
+		{
+			"linux-cultist/venv-selector.nvim",
+			dependencies = {
+				"neovim/nvim-lspconfig",
+				"mfussenegger/nvim-dap",
+				"mfussenegger/nvim-dap-python", --optional
+				"nvim-telescope/telescope.nvim",
+			},
+			lazy = false,
+			branch = "regexp", -- This is the regexp branch, use this for the new version
+			opts = {
+				name = { "venv", ".venv" },
+			},
+			ft = "python",
+		},
+		{
+			"raimon49/requirements.txt.vim",
 		},
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"debugpy",
 		"pylint",
 		"pyright",
+		"pydocstyle",
 		"ruff",
 	})
 
@@ -58,13 +83,16 @@ function L.preparation(_)
 	test.configure_adapter(require("neotest-python"))
 end
 
-function L.settings(s)
-	commands.implement(s, "python", {
+function L.settings()
+	commands.implement("python", {
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
+		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
+		{ cmd.LYRDCodeSecrets, L.open_dotenv },
+		{ cmd.LYRDCodeRunSelection, ":LYRDReplNotebookRunCellAndMove" },
 	})
 end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("pyright", {
 		settings = {
 			pyright = {

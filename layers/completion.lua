@@ -141,8 +141,8 @@ local function jumpable(dir)
 	end
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"hrsh7th/nvim-cmp",
 			config = function()
@@ -157,6 +157,7 @@ function L.plugins(s)
 				local ConfirmBehavior = cmp_types.ConfirmBehavior
 				local SelectBehavior = cmp_types.SelectBehavior
 				cmp.setup({
+					preselect = cmp.PreselectMode.None,
 					mapping = cmp_mapping.preset.insert({
 						["<Down>"] = cmp_mapping(
 							cmp.mapping.select_next_item({ behavior = SelectBehavior.Select }),
@@ -229,6 +230,7 @@ function L.plugins(s)
 						end),
 					}),
 					formatting = {
+						expandable_indicator = true,
 						fields = { "abbr", "kind", "menu" },
 						format = function(entry, vim_item)
 							vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
@@ -243,16 +245,30 @@ function L.plugins(s)
 					},
 					sources = cmp.config.sources({
 						{ name = "nvim_lsp" },
+						{ name = "nvim_lsp_signature_help" },
 						{ name = "lazydev" },
 						{ name = "luasnip" },
-						{ name = "buffer" },
-						{ name = "cmp_tabnine" },
 						{ name = "codeium" },
+						{ name = "cmp_tabnine" },
+					}, {
+						{ name = "buffer" },
 						{ name = "path" },
-						{ name = "nvim_lsp_signature_help" },
-						{ name = "cmp-dbee" },
 						{ name = "tmux" },
 					}),
+					sorting = {
+						priority_weight = 2,
+						comparators = {
+							cmp.config.compare.offset,
+							cmp.config.compare.exact,
+							cmp.config.compare.score,
+							require("cmp-under-comparator").under,
+							cmp.config.compare.recently_used,
+							cmp.config.compare.locality,
+							cmp.config.compare.kind,
+							cmp.config.compare.length,
+							cmp.config.compare.order,
+						},
+					},
 				})
 
 				cmp.setup.cmdline({ "/", "?" }, {
@@ -269,6 +285,7 @@ function L.plugins(s)
 					}, {
 						{ name = "cmdline" },
 					}),
+					---@diagnostic disable-next-line: missing-fields
 					matching = { disallow_symbol_nonprefix_matching = false },
 				})
 			end,
@@ -279,7 +296,6 @@ function L.plugins(s)
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-nvim-lsp-signature-help",
 				"hrsh7th/cmp-cmdline",
-				"MattiasMTS/cmp-dbee",
 			},
 		},
 		{
@@ -292,18 +308,18 @@ function L.plugins(s)
 				end)
 			end,
 		},
-		"hrsh7th/cmp-buffer",
-		"hrsh7th/cmp-path",
-		"hrsh7th/cmp-cmdline",
-		"andersevenrud/cmp-tmux",
-		"saadparwaiz1/cmp_luasnip",
-		"hrsh7th/cmp-nvim-lsp-signature-help",
-		"mattn/emmet-vim",
-		"MattiasMTS/cmp-dbee",
+		{ "hrsh7th/cmp-buffer" },
+		{ "hrsh7th/cmp-path" },
+		{ "hrsh7th/cmp-cmdline" },
+		{ "andersevenrud/cmp-tmux" },
+		{ "saadparwaiz1/cmp_luasnip" },
+		{ "hrsh7th/cmp-nvim-lsp-signature-help" },
+		{ "mattn/emmet-vim" },
+		{ "lukas-reineke/cmp-under-comparator" },
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	vim.o.completeopt = "menu,preview,menuone,noselect"
 end
 

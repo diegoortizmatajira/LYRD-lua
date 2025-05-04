@@ -3,620 +3,205 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD Commands",
+
 	cmd = {
-		LYRDAIAssistant = {
-			desc = "Open AI Assistant",
-			icon = icons.other.ia,
-		},
-		LYRDAIRefactor = {
-			desc = "Open AI Refactor",
-			icon = icons.other.wrench,
-		},
-		LYRDAISuggestions = {
-			desc = "Open AI Suggestions",
-			icon = icons.other.ia,
-		},
-		LYRDBreakLine = {
-			default = ":s/[,(]/&\r/ge|:noh|:'[,']normal==",
-			desc = "Break current line",
-			icon = icons.action.break_line,
-		},
-		LYRDBufferClose = {
-			default = ":bd",
-			desc = "Close buffer",
-			icon = icons.action.close,
-		},
-		LYRDBufferCloseAll = {
-			default = ":bufdo bd",
-			desc = "Close all buffers",
-			icon = icons.action.close_many,
-		},
-		LYRDBufferCopy = {
-			default = ':normal! ggVG"+y``',
-			desc = "Copy whole buffer to clipboard",
-			icon = icons.action.copy,
-		},
-		LYRDBufferForceClose = {
-			default = ":bd!",
-			desc = "Force close buffer",
-			icon = icons.action.kill,
-		},
-		LYRDBufferForceCloseAll = {
-			default = ":bufdo bd!",
-			desc = "Force close all buffers",
-			icon = icons.action.kill_target,
-		},
-		LYRDBufferFormat = {
-			desc = "Format document",
-			icon = icons.action.format,
-		},
-		LYRDBufferJumpToLast = {
-			default = ":b#",
-			desc = "Jump to last buffer",
-			icon = icons.arrow.up_left,
-		},
-		LYRDBufferNew = {
-			default = ":enew",
-			desc = "New empty buffer",
-			icon = icons.file.new,
-		},
-		LYRDBufferNext = {
-			default = ":bn",
-			desc = "Next buffer",
-			icon = icons.chevron.double_right,
-		},
-		LYRDBufferPaste = {
-			default = ':normal! ggdG"+P',
-			desc = "Paste clipboard to whole buffer",
-			icon = icons.action.paste,
-		},
-		LYRDBufferPrev = {
-			default = ":bp",
-			desc = "Previous Buffer",
-			icon = icons.chevron.double_left,
-		},
-		LYRDBufferSave = {
-			default = ":w",
-			desc = "Save current file",
-			icon = icons.action.save,
-		},
-		LYRDBufferSaveAll = {
-			default = ":wall",
-			desc = "Save all files",
-			icon = icons.action.save_all,
-		},
-		LYRDBufferSetReadOnly = {
-			default = ":setl readonly!",
-			desc = "Toggle read only mode",
-			icon = icons.action.toggle_on,
-		},
-		LYRDBufferSplitH = {
-			default = ":split",
-			desc = "Horizonal split",
-			icon = icons.action.split_h,
-		},
-		LYRDBufferSplitV = {
-			default = ":vsplit",
-			desc = "Vertical split",
-			icon = icons.action.split_v,
-		},
-		LYRDBufferToggleWrap = {
-			default = ":setlocal wrap!",
-			desc = "Toggle line wrap",
-			icon = icons.action.wrap,
-		},
-		LYRDCodeAlternateFile = {
-			desc = "Toggle alternate file",
-			icon = icons.file.swap,
-		},
-		LYRDCodeBuild = {
-			desc = "Build",
-			icon = icons.code.build,
-		},
-		LYRDCodeFillStructure = {
-			desc = "Fill structure",
-			icon = icons.code.outline,
-		},
-		LYRDCodeFixImports = {
-			desc = "Fix imports",
-			icon = icons.code.fix,
-		},
-		LYRDCodeGenerate = {
-			desc = "Run Generator Tool",
-			icon = icons.code.generate,
-		},
-		LYRDCodeGlobalCheck = {
-			desc = "Global check",
-			icon = icons.code.check,
-		},
-		LYRDCodeImplementInterface = {
-			desc = "Implement interface",
-			icon = icons.code.interface,
-		},
-		LYRDCodeInsertSnippet = {
-			desc = "Insert snippet",
-			icon = icons.code.snippet,
-		},
-		LYRDCodeProduceGetter = {
-			desc = "Generate getters code",
-			icon = icons.code.generate,
-		},
-		LYRDCodeProduceMapping = {
-			desc = "Generate mappings code",
-			icon = icons.code.generate,
-		},
-		LYRDCodeProduceSetter = {
-			desc = "Generate setters code",
-			icon = icons.code.generate,
-		},
-		LYRDCodeRefactor = {
-			desc = "Refactor",
-			icon = icons.code.refactor,
-		},
-		LYRDCodeRun = {
-			desc = "Run",
-			icon = icons.code.run,
-		},
-		LYRDDebugBreakpoint = {
-			desc = "Toggle breakpoint",
-			icon = icons.debug.breakpoint,
-		},
-		LYRDDebugContinue = {
-			desc = "Start / Continue",
-			icon = icons.debug.play,
-		},
-		LYRDDebugStepInto = {
-			desc = "Step into",
-			icon = icons.debug.step_into,
-		},
-		LYRDDebugStepOver = {
-			desc = "Step over",
-			icon = icons.debug.step_over,
-		},
-		LYRDDebugStop = {
-			desc = "Stop",
-			icon = icons.debug.terminate,
-		},
-		LYRDDebugToggleRepl = {
-			desc = "Toggle Debug Repl",
-			icon = icons.action.toggle_on,
-		},
-		LYRDDebugToggleUI = {
-			desc = "Toggle Debug UI",
-			icon = icons.action.toggle_on,
-		},
-		LYRDDiagnosticLinesToggle = {
-			desc = "Toggle diagnostic lines",
-			icon = icons.action.toggle_on,
-		},
-		LYRDGitUI = {
-			desc = "Git UI",
-			icon = icons.apps.git,
-		},
-		LYRDGitBrowseOnWeb = {
-			desc = "Browse line on web",
-			icon = icons.apps.browser,
-		},
-		LYRDGitCheckoutDev = {
-			desc = "Checkout Develop branch",
-			icon = icons.git.branch,
-		},
-		LYRDGitCheckoutMain = {
-			desc = "Checkout Main branch",
-			icon = icons.git.branch,
-		},
-		LYRDGitCommit = {
-			desc = "Commit changes",
-			icon = icons.git.commit,
-		},
-		LYRDGitFlowFeatureFinish = {
-			desc = "Feature finish",
-			icon = icons.git.commit_end,
-		},
-		LYRDGitFlowFeatureStart = {
-			desc = "Feature start",
-			icon = icons.git.commit_start,
-		},
-		LYRDGitFlowHotfixFinish = {
-			desc = "Hotfix finish",
-			icon = icons.git.commit_end,
-		},
-		LYRDGitFlowHotfixStart = {
-			desc = "Hotfix start",
-			icon = icons.git.commit_start,
-		},
-		LYRDGitFlowInit = {
-			desc = "Init",
-			icon = icons.git.init,
-		},
-		LYRDGitFlowReleaseFinish = {
-			desc = "Release finish",
-			icon = icons.git.commit_end,
-		},
-		LYRDGitFlowReleaseStart = {
-			desc = "Release start",
-			icon = icons.git.commit_start,
-		},
-		LYRDGitPull = {
-			desc = "Pull",
-			icon = icons.git.pull,
-		},
-		LYRDGitPush = {
-			desc = "Push",
-			icon = icons.git.push,
-		},
-		LYRDGitStageAll = {
-			desc = "Stage all",
-			icon = icons.git.stage_all,
-		},
-		LYRDGitStatus = {
-			desc = "Status",
-			icon = icons.git.status,
-		},
-		LYRDGitViewBlame = {
-			desc = "View blame",
-			icon = icons.git.blame,
-		},
-		LYRDGitViewCurrentFileLog = {
-			desc = "Current file log",
-			icon = icons.git.log,
-		},
-		LYRDGitViewDiff = {
-			desc = "View diff",
-			icon = icons.git.diff,
-		},
-		LYRDGitViewLog = {
-			desc = "File log",
-			icon = icons.git.log,
-		},
-		LYRDGitWrite = {
-			desc = "Write",
-		},
-		LYRDImplementedCommands = {
-			default = commands.list_implemented,
-			desc = "List implemented commands",
-		},
-		LYRDLSPFindCodeActions = {
-			desc = "Actions",
-			icon = icons.action.code_action,
-		},
-		LYRDLSPFindDeclaration = {
-			desc = "",
-			icon = icons.code.navigate,
-		},
-		LYRDLSPFindDefinitions = {
-			desc = "",
-			icon = icons.code.navigate,
-		},
-		LYRDLSPFindDocumentDiagnostics = {
-			desc = "",
-			icon = icons.diagnostic.search,
-		},
-		LYRDLSPFindDocumentSymbols = {
-			desc = "",
-			icon = icons.code.symbol,
-		},
-		LYRDLSPFindImplementations = {
-			desc = "",
-			icon = icons.code.navigate,
-		},
-		LYRDLSPFindLineDiagnostics = {
-			desc = "",
-			icon = icons.diagnostic.search,
-		},
-		LYRDLSPFindRangeCodeActions = {
-			desc = "Range Actions",
-			icon = icons.action.code_action,
-		},
-		LYRDLSPFindReferences = {
-			desc = "",
-			icon = icons.code.navigate,
-		},
-		LYRDLSPFindTypeDefinition = {
-			desc = "",
-			icon = icons.code.navigate,
-		},
-		LYRDLSPFindWorkspaceDiagnostics = {
-			desc = "",
-			icon = icons.diagnostic.search,
-		},
-		LYRDLSPFindWorkspaceSymbols = {
-			desc = "",
-			icon = icons.code.symbol,
-		},
-		LYRDLSPGotoNextDiagnostic = {
-			desc = "",
-			icon = icons.diagnostic.next,
-		},
-		LYRDLSPGotoPrevDiagnostic = {
-			desc = "",
-			icon = icons.diagnostic.prev,
-		},
-		LYRDLSPHoverInfo = {
-			desc = "",
-			icon = icons.code.hint,
-		},
-		LYRDLSPRename = {
-			desc = "Rename symbol",
-			icon = icons.code.rename,
-		},
-		LYRDLSPShowDocumentDiagnosticLocList = {
-			desc = "Document diagnostics",
-			icon = icons.diagnostic.search,
-		},
-		LYRDLSPShowWorkspaceDiagnosticLocList = {
-			desc = "Workspace diagnostics",
-			icon = icons.diagnostic.search,
-		},
-		LYRDLSPSignatureHelp = {
-			desc = "Signature help",
-			icon = icons.code.hint,
-		},
-		LYRDToolManager = {
-			desc = "Tool Manager",
-			icon = icons.other.tools,
-		},
-		LYRDPluginManager = {
-			default = ":Lazy",
-			desc = "Plugin Manager",
-			icon = icons.other.plug,
-		},
-		LYRDPluginsClean = {
-			default = ":Lazy clean",
-			desc = "Clean plugins",
-			icon = icons.action.clean,
-		},
-		LYRDPluginsInstall = {
-			default = ":Lazy install",
-			desc = "Install plugins",
-			icon = icons.action.install,
-		},
-		LYRDPluginsUpdate = {
-			default = ":Lazy sync",
-			desc = "Update plugins",
-			icon = icons.action.update,
-		},
-		LYRDSearchBufferLines = {
-			desc = "Lines",
-			icon = icons.search.lines,
-		},
-		LYRDSearchBufferTags = {
-			desc = "Tags",
-			icon = icons.search.tags,
-		},
-		LYRDSearchBuffers = {
-			desc = "Search buffers",
-			icon = icons.search.buffers,
-		},
-		LYRDSearchColorSchemes = {
-			desc = "Color Schemes",
-			icon = icons.search.default,
-		},
-		LYRDSearchCommandHistory = {
-			desc = "Recent comands",
-			icon = icons.search.history,
-		},
-		LYRDSearchCommands = {
-			desc = "Commands",
-			icon = icons.search.commands,
-		},
-		LYRDSearchCurrentString = {
-			desc = "Current string in files",
-			icon = icons.search.default,
-		},
-		LYRDSearchFiles = {
-			desc = "Find files",
-			icon = icons.search.files,
-		},
-		LYRDSearchFiletypes = {
-			desc = "Filetypes",
-			icon = icons.search.default,
-		},
-		LYRDSearchGitFiles = {
-			desc = "Git Files",
-			icon = icons.search.files,
-		},
-		LYRDSearchHighlights = {
-			desc = "Highlights",
-			icon = icons.search.default,
-		},
-		LYRDSearchKeyMappings = {
-			desc = "Key Maps",
-			icon = icons.search.keys,
-		},
-		LYRDSearchLiveGrep = {
-			desc = "Live grep",
-			icon = icons.search.default,
-		},
-		LYRDSearchQuickFixes = {
-			desc = "Quick Fixes",
-			icon = icons.diagnostic.search,
-		},
-		LYRDSearchRecentFiles = {
-			desc = "Recent files",
-			icon = icons.search.history,
-		},
-		LYRDSearchRegisters = {
-			desc = "Registers",
-			icon = icons.search.default,
-		},
-		LYRDResumeLastSearch = {
-			desc = "Resume last search",
-			icon = icons.search.history,
-		},
-		LYRDSmartCoder = {
-			desc = "Smart code generator",
-			icon = icons.code.generate,
-		},
-		LYRDTerminal = {
-			default = ":terminal",
-			desc = "Terminal",
-			icon = icons.apps.terminal,
-		},
-		LYRDTest = {
-			desc = "Test everything",
-			icon = icons.code.test,
-		},
-		LYRDTestCoverage = {
-			desc = "Test Coverage",
-			icon = icons.code.test,
-		},
-		LYRDTestFile = {
-			desc = "Test current file",
-			icon = icons.code.test,
-		},
-		LYRDTestFunc = {
-			desc = "Test current function",
-			icon = icons.code.test,
-		},
-		LYRDTestLast = {
-			desc = "Repeat last test",
-			icon = icons.action.repeat_once,
-		},
-		LYRDTestSuite = {
-			desc = "Test suite",
-			icon = icons.code.test,
-		},
-		LYRDTestSummary = {
-			desc = "View test summary",
-			icon = icons.other.report,
-		},
-		LYRDUnimplementedCommands = {
-			default = commands.list_unimplemented,
-			desc = "List unimplemented commands",
-			icon = icons.search.commands,
-		},
-		LYRDViewFileExplorer = {
-			desc = "File Explorer",
-			icon = icons.apps.file_explorer,
-		},
-		LYRDViewFileTree = {
-			desc = "Toggle file tree",
-			icon = icons.action.toggle_on,
-		},
-		LYRDViewHomePage = {
-			desc = "Home page",
-			icon = icons.other.home,
-		},
-		LYRDViewLocationList = {
-			desc = "Location list",
-		},
-		LYRDViewQuickFixList = {
-			default = ":cope",
-			desc = "QuickFix",
-		},
-		LYRDViewRegisters = {
-			desc = "Registers",
-		},
-		LYRDViewYankList = {
-			desc = "Yank list",
-		},
-		LYRDWindowClose = {
-			default = ":q",
-			desc = "Close window",
-		},
-		LYRDWindowCloseAll = {
-			default = ":qa",
-			desc = "Close all",
-		},
-		LYRDWindowForceCloseAll = {
-			default = ":qa!",
-			desc = "Force Quit",
-		},
-		LYRDPaneNavigateLeft = {
-			default = "<C-w>h",
-			desc = "Navigate to panel left",
-		},
-		LYRDPaneNavigateDown = {
-			default = "<C-w>j",
-			desc = "Navigate to panel below",
-		},
-		LYRDPaneNavigateUp = {
-			default = "<C-w>k",
-			desc = "Navigate to panel up",
-		},
-		LYRDPaneNavigateRight = {
-			default = "<C-w>l",
-			desc = "Navigate to panel right",
-		},
-		LYRDPaneResizeLeft = {
-			desc = "Resize to panel left",
-		},
-		LYRDPaneResizeDown = {
-			desc = "Resize to panel below",
-		},
-		LYRDPaneResizeUp = {
-			desc = "Resize to panel up",
-		},
-		LYRDPaneResizeRight = {
-			desc = "Resize to panel right",
-		},
-		LYRDPaneSwapLeft = {
-			desc = "Swap to panel left",
-		},
-		LYRDPaneSwapDown = {
-			desc = "Swap to panel below",
-		},
-		LYRDPaneSwapUp = {
-			desc = "Swap to panel up",
-		},
-		LYRDPaneSwapRight = {
-			desc = "Swap to panel right",
-		},
-		LYRDDatabaseUI = {
-			desc = "Database UI",
-		},
-		LYRDContainersUI = {
-			desc = "Running containers UI",
-		},
-		LYRDKubernetesUI = {
-			desc = "Kubernetes UI",
-		},
-		LYRDScratchNew = {
-			desc = "Create a new scratch",
-			icon = icons.file.scratch,
-		},
-		LYRDScratchOpen = {
-			desc = "Select scratch file to open",
-			icon = icons.search.files,
-		},
-		LYRDScratchSearch = {
-			desc = "Search inside scratches",
-			icon = icons.search.lines,
-		},
-		LYRDReplace = {
-			desc = "Search and replace in current file",
-			icon = icons.action.replace_text,
-		},
-		LYRDReplaceInFiles = {
-			desc = "Search and replace in files",
-			icon = icons.action.replace_in_files,
-		},
-		LYRDWindowZoom = {
-			desc = "Toggles zoom in the selected window",
-			icon = icons.other.zoom,
-		},
-		LYRDHttpEnvironmentFileSelect = {
-			desc = "Select the http environment file",
-			icon = icons.http.environment,
-		},
-		LYRDHttpEnvironmentSelect = {
-			desc = "Select the http environment",
-			icon = icons.http.environment,
-		},
-		LYRDHttpSendRequest = {
-			desc = "Send http request",
-			icon = icons.http.send,
-		},
-		LYRDHttpSendAllRequests = {
-			desc = "Send all http request",
-			icon = icons.http.send,
-		},
+		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia, true),
+		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
+		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia, true),
+		LYRDBreakLine = Command:new(
+			"Break current line",
+			":s/[,(]/&\r/ge|:noh|:'[,']normal==",
+			icons.action.break_line
+		),
+		LYRDBufferClose = Command:new("Close buffer", ":bd", icons.action.close),
+		LYRDBufferCloseAll = Command:new("Close all buffers", ":bufdo bd", icons.action.close_many),
+		LYRDBufferCopy = Command:new("Copy whole buffer to clipboard", ':normal! ggVG"+y``', icons.action.copy),
+		LYRDBufferForceClose = Command:new("Force close buffer", ":bd!", icons.action.kill),
+		LYRDBufferForceCloseAll = Command:new("Force close all buffers", ":bufdo bd!", icons.action.kill_target),
+		LYRDBufferFormat = Command:new("Format document", nil, icons.action.format, true),
+		LYRDBufferJumpToLast = Command:new("Jump to last buffer", ":b#", icons.arrow.up_left),
+		LYRDBufferNew = Command:new("New empty buffer", ":enew", icons.file.new),
+		LYRDBufferNext = Command:new("Next buffer", ":bn", icons.chevron.double_right, false, true),
+		LYRDBufferPaste = Command:new("Paste clipboard to whole buffer", ':normal! ggdG"+P', icons.action.paste),
+		LYRDBufferPrev = Command:new("Previous Buffer", ":bp", icons.chevron.double_left, false, true),
+		LYRDBufferSave = Command:new("Save current file", ":w", icons.action.save, false, true),
+		LYRDBufferSaveAll = Command:new("Save all files", ":wall", icons.action.save_all),
+		LYRDBufferSetReadOnly = Command:new("Toggle read only mode", ":setl readonly!", icons.action.toggle_on),
+		LYRDBufferSplitH = Command:new("Horizonal split", ":split", icons.action.split_h),
+		LYRDBufferSplitV = Command:new("Vertical split", ":vsplit", icons.action.split_v),
+		LYRDBufferToggleWrap = Command:new("Toggle line wrap", ":setlocal wrap!", icons.action.wrap),
+		LYRDCodeAlternateFile = Command:new("Toggle alternate file", nil, icons.file.swap),
+		LYRDCodeMakeTasks = Command:new("Make tasks", nil, icons.code.make),
+		LYRDCodeBuild = Command:new("Build", nil, icons.code.build),
+		LYRDCodeBuildAll = Command:new("Build all", nil, icons.code.build),
+		LYRDCodeAddDocumentation = Command:new("Add documentation", nil, icons.code.document),
+		LYRDCodeFillStructure = Command:new("Fill structure", nil, icons.code.outline),
+		LYRDCodeFixImports = Command:new("Fix imports", nil, icons.code.fix),
+		LYRDCodeGenerate = Command:new("Run Generator Tool", nil, icons.code.generate),
+		LYRDCodeGlobalCheck = Command:new("Global check", nil, icons.code.check),
+		LYRDCodeImplementInterface = Command:new("Implement interface", nil, icons.code.interface),
+		LYRDCodeInsertSnippet = Command:new("Insert snippet", nil, icons.code.snippet),
+		LYRDCodeCreateSnippet = Command:new("Create snippet", nil, icons.code.snippet, true),
+		LYRDCodeEditSnippet = Command:new("Edit snippet", nil, icons.code.snippet),
+		LYRDCodeProduceGetter = Command:new("Generate getters code", nil, icons.code.generate),
+		LYRDCodeProduceMapping = Command:new("Generate mappings code", nil, icons.code.generate),
+		LYRDCodeProduceSetter = Command:new("Generate setters code", nil, icons.code.generate),
+		LYRDCodeRestorePackages = Command:new("Restore packages", nil, icons.code.package),
+		LYRDCodeRefactor = Command:new("Refactor", nil, icons.code.refactor),
+		LYRDCodeRunSelection = Command:new("Run selection code", nil, icons.code.run, true),
+		LYRDCodeRun = Command:new("Run", nil, icons.code.run),
+		LYRDCodeSelectEnvironment = Command:new("Select environment", nil, icons.other.environment),
+		LYRDCodeSecrets = Command:new("Edit Secrets", nil, icons.other.secret),
+		LYRDDebugBreakpoint = Command:new("Toggle breakpoint", nil, icons.debug.breakpoint),
+		LYRDDebugStart = Command:new("Start debug session", nil, icons.debug.play),
+		LYRDDebugContinue = Command:new("Continue", nil, icons.debug.play),
+		LYRDDebugStepInto = Command:new("Step into", nil, icons.debug.step_into),
+		LYRDDebugStepOut = Command:new("Step out", nil, icons.debug.step_out),
+		LYRDDebugStepOver = Command:new("Step over", nil, icons.debug.step_over),
+		LYRDDebugStop = Command:new("Stop", nil, icons.debug.terminate),
+		LYRDDebugToggleRepl = Command:new("Toggle Debug Repl", nil, icons.action.toggle_on),
+		LYRDDebugToggleUI = Command:new("Debug UI", nil, icons.debug.breakpoint),
+		LYRDDiagnosticLinesToggle = Command:new("Toggle diagnostic lines", nil, icons.action.toggle_on),
+		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),
+		LYRDGitBrowseOnWeb = Command:new("Browse line on web", nil, icons.apps.browser),
+		LYRDGitCheckoutDev = Command:new("Checkout Develop branch", nil, icons.git.branch),
+		LYRDGitCheckoutMain = Command:new("Checkout Main branch", nil, icons.git.branch),
+		LYRDGitCommit = Command:new("Commit changes", nil, icons.git.commit),
+		LYRDGitFlowFeatureFinish = Command:new("Feature finish", nil, icons.git.commit_end),
+		LYRDGitFlowFeatureStart = Command:new("Feature start", nil, icons.git.commit_start),
+		LYRDGitFlowFeaturePublish = Command:new("Feature publish (pull req.)", nil, icons.git.pull_request),
+		LYRDGitFlowHotfixFinish = Command:new("Hotfix finish", nil, icons.git.commit_end),
+		LYRDGitFlowHotfixStart = Command:new("Hotfix start", nil, icons.git.commit_start),
+		LYRDGitFlowHotfixPublish = Command:new("Hotfix publish (pull req.)", nil, icons.git.pull_request),
+		LYRDGitFlowInit = Command:new("Init", nil, icons.git.init),
+		LYRDGitFlowReleaseFinish = Command:new("Release finish", nil, icons.git.commit_end),
+		LYRDGitFlowReleaseStart = Command:new("Release start", nil, icons.git.commit_start),
+		LYRDGitFlowReleasePublish = Command:new("Release publish (pull req.)", nil, icons.git.pull_request),
+		LYRDGitPull = Command:new("Pull", nil, icons.git.pull),
+		LYRDGitPush = Command:new("Push", nil, icons.git.push),
+		LYRDGitStageAll = Command:new("Stage all", nil, icons.git.stage_all),
+		LYRDGitStatus = Command:new("Status", nil, icons.git.status),
+		LYRDGitViewBlame = Command:new("View blame", nil, icons.git.blame),
+		LYRDGitViewCurrentFileLog = Command:new("Current file log", nil, icons.git.log),
+		LYRDGitViewDiff = Command:new("View diff", nil, icons.git.diff),
+		LYRDGitViewLog = Command:new("File log", nil, icons.git.log),
+		LYRDGitWrite = Command:new("Write"),
+		LYRDGitWorkTreeCreate = Command:new("Create Worktree", nil, icons.folder.new),
+		LYRDGitWorkTreeCreateExistingBranch = Command:new("Create Worktree for existing branch", nil, icons.folder.new),
+		LYRDGitWorkTreeList = Command:new("List GIT Worktrees", nil, icons.git.worktree),
+		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
+		LYRDLSPFindCodeActions = Command:new("Actions", nil, icons.action.code_action),
+		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
+		LYRDLSPFindDefinitions = Command:new("Go to Definition", nil, icons.code.navigate),
+		LYRDLSPFindDocumentDiagnostics = Command:new("Find Document Diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPFindDocumentSymbols = Command:new("Find Document Symbols", nil, icons.code.symbol),
+		LYRDLSPFindImplementations = Command:new("Find Implementations", nil, icons.code.navigate),
+		LYRDLSPFindLineDiagnostics = Command:new("Find Line Diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPFindRangeCodeActions = Command:new("Range Actions", nil, icons.action.code_action),
+		LYRDLSPFindReferences = Command:new("Find References", nil, icons.code.navigate),
+		LYRDLSPFindTypeDefinition = Command:new("Go to Type Definition", nil, icons.code.navigate),
+		LYRDLSPFindWorkspaceDiagnostics = Command:new("Find Workspace Diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPFindWorkspaceSymbols = Command:new("Find Workspace Symbols", nil, icons.code.symbol),
+		LYRDLSPGotoNextDiagnostic = Command:new("Goto Next Diagnostic", nil, icons.diagnostic.next),
+		LYRDLSPGotoPrevDiagnostic = Command:new("Goto Previous Diagnostic", nil, icons.diagnostic.prev),
+		LYRDLSPHoverInfo = Command:new("Show hover information", nil, icons.code.hint),
+		LYRDLSPRename = Command:new("Rename symbol", nil, icons.code.rename),
+		LYRDLSPShowDocumentDiagnosticLocList = Command:new("Document diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPShowWorkspaceDiagnosticLocList = Command:new("Workspace diagnostics", nil, icons.diagnostic.search),
+		LYRDLSPSignatureHelp = Command:new("Signature help", nil, icons.code.hint),
+		LYRDToolManager = Command:new("Tool Manager", nil, icons.other.tools),
+		LYRDPluginManager = Command:new("Plugin Manager", ":Lazy", icons.other.plug),
+		LYRDPluginsClean = Command:new("Clean plugins", ":Lazy clean", icons.action.clean),
+		LYRDPluginsInstall = Command:new("Install plugins", ":Lazy install", icons.action.install),
+		LYRDPluginsUpdate = Command:new("Update plugins", ":Lazy sync", icons.action.update),
+		LYRDSearchBufferLines = Command:new("Lines", nil, icons.search.lines),
+		LYRDSearchBufferTags = Command:new("Tags", nil, icons.search.tags),
+		LYRDSearchBuffers = Command:new("Search buffers", nil, icons.search.buffers),
+		LYRDSearchColorSchemes = Command:new("Color Schemes", nil, icons.search.default),
+		LYRDSearchCommandHistory = Command:new("Recent comands", nil, icons.search.history),
+		LYRDSearchCommands = Command:new("Commands", nil, icons.search.commands),
+		LYRDSearchCurrentString = Command:new("Current string in files", nil, icons.search.default),
+		LYRDSearchAllFiles = Command:new("Find all files", nil, icons.search.files),
+		LYRDSearchFiles = Command:new("Find files", nil, icons.search.files),
+		LYRDSearchFiletypes = Command:new("Filetypes", nil, icons.search.default),
+		LYRDSearchGitFiles = Command:new("Git Files", nil, icons.search.files),
+		LYRDSearchHighlights = Command:new("Highlights", nil, icons.search.default),
+		LYRDSearchKeyMappings = Command:new("Key Maps", nil, icons.search.keys),
+		LYRDSearchLiveGrep = Command:new("Live grep", nil, icons.search.default),
+		LYRDSearchQuickFixes = Command:new("Quick Fixes", nil, icons.diagnostic.search),
+		LYRDSearchRecentFiles = Command:new("Recent files", nil, icons.search.history),
+		LYRDSearchRegisters = Command:new("Registers", nil, icons.search.default),
+		LYRDResumeLastSearch = Command:new("Resume last search", nil, icons.search.history),
+		LYRDSmartCoder = Command:new("Smart code generator", nil, icons.code.generate),
+		LYRDTerminalList = Command:new("View terminal list", nil, icons.search.layers),
+		LYRDTerminal = Command:new("Terminal", ":terminal", icons.apps.terminal),
+		LYRDTest = Command:new("Test everything", nil, icons.code.test),
+		LYRDTestCoverageSummary = Command:new("View Test Coverage Summary", nil, icons.code.test),
+		LYRDTestCoverage = Command:new("Toggle Test Coverage", nil, icons.code.test),
+		LYRDTestFile = Command:new("Test current file", nil, icons.code.test),
+		LYRDTestDebugFunc = Command:new("Debug current test function", nil, icons.debug.breakpoint),
+		LYRDTestFunc = Command:new("Test current function", nil, icons.code.test),
+		LYRDTestLast = Command:new("Repeat last test", nil, icons.action.repeat_once),
+		LYRDTestSuite = Command:new("Test suite", nil, icons.code.test),
+		LYRDTestSummary = Command:new("View test summary", nil, icons.code.test),
+		LYRDTestOutput = Command:new("View test output", nil, icons.other.report),
+		LYRDViewFileExplorer = Command:new("File Explorer", nil, icons.apps.file_explorer),
+		LYRDViewFileExplorerAlt = Command:new("File Explorer (Alternative)", nil, icons.apps.file_explorer),
+		LYRDViewFileTree = Command:new("File Tree", nil, icons.other.filetree),
+		LYRDViewHomePage = Command:new("Home page", nil, icons.other.home),
+		LYRDViewLocationList = Command:new("Location list"),
+		LYRDViewQuickFixList = Command:new("QuickFix", ":cope"),
+		LYRDViewRegisters = Command:new("Registers"),
+		LYRDViewYankList = Command:new("Yank list"),
+		LYRDViewFocusMode = Command:new("Focus mode", nil, icons.other.focus),
+		LYRDWindowClose = Command:new("Close window", ":q"),
+		LYRDWindowCloseAll = Command:new("Close all", ":qa"),
+		LYRDWindowForceCloseAll = Command:new("Force Quit", ":qa!"),
+		LYRDPaneNavigateLeft = Command:new("Navigate to panel left", "<C-w>h", icons.arrow.left),
+		LYRDPaneNavigateDown = Command:new("Navigate to panel below", "<C-w>j", icons.arrow.down),
+		LYRDPaneNavigateUp = Command:new("Navigate to panel up", "<C-w>k", icons.arrow.up),
+		LYRDPaneNavigateRight = Command:new("Navigate to panel right", "<C-w>l", icons.arrow.right),
+		LYRDPaneResizeLeft = Command:new("Resize to panel left", nil, icons.arrow.collapse_left),
+		LYRDPaneResizeDown = Command:new("Resize to panel below", nil, icons.arrow.collapse_down),
+		LYRDPaneResizeUp = Command:new("Resize to panel up", nil, icons.arrow.collapse_up),
+		LYRDPaneResizeRight = Command:new("Resize to panel right", nil, icons.arrow.collapse_right),
+		LYRDPaneSwapLeft = Command:new("Swap to panel left", nil, icons.arrow.expand_left),
+		LYRDPaneSwapDown = Command:new("Swap to panel below", nil, icons.arrow.expand_down),
+		LYRDPaneSwapUp = Command:new("Swap to panel up", nil, icons.arrow.expand_up),
+		LYRDPaneSwapRight = Command:new("Swap to panel right", nil, icons.arrow.expand_right),
+		LYRDDatabaseUI = Command:new("Database UI", nil, icons.other.database),
+		LYRDContainersUI = Command:new("Running containers UI", nil, icons.other.docker),
+		LYRDKubernetesUI = Command:new("Kubernetes UI", nil, icons.other.kubernetes),
+		LYRDScratchNew = Command:new("Create a new scratch", nil, icons.file.scratch),
+		LYRDScratchOpen = Command:new("Select scratch file to open", nil, icons.search.files),
+		LYRDScratchSearch = Command:new("Search inside scratches", nil, icons.search.lines),
+		LYRDReplace = Command:new("Search and replace in current file", nil, icons.action.replace_text),
+		LYRDReplaceInFiles = Command:new("Search and replace in files", nil, icons.action.replace_in_files),
+		LYRDWindowZoom = Command:new("Toggles zoom in the selected window", nil, icons.other.expand),
+		LYRDApplyCurrentTheme = Command:new("Apply current theme", nil, icons.other.palette),
+		LYRDApplyNextTheme = Command:new("Apply next favorite theme", nil, icons.other.palette),
+		LYRDClearSearchHighlights = Command:new("Clear search highlights", ":noh", icons.other.highlighter),
+		LYRDViewCodeOutline = Command:new("View code outline", nil, icons.code.outline),
+		LYRDViewTreeSitterPlayground = Command:new("TreeSitter playground", nil, icons.code.parser),
+		LYRDReplView = Command:new("View REPL", nil, icons.code.run),
+		LYRDReplRestart = Command:new("REPL Restart", nil, icons.code.restart),
+		LYRDReplNotebookRunCell = Command:new("Run notebook cell", nil, icons.code.run),
+		LYRDReplNotebookRunCellAndMove = Command:new("Run notebook cell and move to the next.", nil, icons.code.run),
+		LYRDReplNotebookRunAllCells = Command:new("Run all notebook cells", nil, icons.code.run),
+		LYRDReplNotebookRunAllAbove = Command:new("Run notebook cells above", nil, icons.code.run),
+		LYRDReplNotebookRunAllBelow = Command:new("Run notebook cells below", nil, icons.code.run),
+		LYRDReplNotebookMoveCellUp = Command:new("Move current notebook cell up", nil, icons.arrow.up),
+		LYRDReplNotebookMoveCellDown = Command:new("Move current notebook cell down", nil, icons.arrow.down),
+		LYRDReplNotebookAddCellAbove = Command:new("Add notebook cell above", nil, icons.arrow.expand_up),
+		LYRDReplNotebookAddCellBelow = Command:new("Add notebook cell below", nil, icons.arrow.expand_down),
+		LYRDPasteImage = Command:new("Paste image", nil, icons.images.add),
+		LYRDInsertImage = Command:new("Insert image", nil, icons.images.search),
+		LYRDHardModeToggle = Command:new("Toggle hard mode", nil, icons.action.toggle_on),
 	},
 }
 
-function L.settings(s)
-	commands.register(s, L.cmd)
+function L.settings()
+	commands.register(L.cmd)
 end
 
 return L

@@ -1,94 +1,229 @@
-local L = { name = "Commands" }
+local utils = require("LYRD.utils")
 
-local function register_implementation(s, filetype, commandName, implementation)
-	if s.commands[commandName] == nil then
-		s.commands[commandName] = {}
-	end
-	LYRD_setup.commands[commandName][filetype] = implementation
+local L = {
+	name = "Commands",
+	--- @type table<string, Command>
+	commands = {},
+}
+--- @class ShortCutOptions
+--- @field range? boolean Indicates the shorcut uses current selection.
+--- @field escape? boolean Indicates the shorcut includes <ESC> before running the command.
+
+---@class Command
+---@field name? string|nil Name of the command.
+---@field desc string Command description.
+---@field default_implementation? string|function|nil Default implementation.
+---@field icon string|nil Icon to show for the command.
+---@field range? boolean|nil Indicates whether the command can be applied to a range of text.
+---@field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
+---@field implementations table<string, string|function> Implementations per filetype.
+Command = {}
+
+--- Constructor
+---@param desc string Command description.
+---@param default_implementation? string|function|nil Default implementation.
+---@param icon? string|nil Icon to show for the command.
+---@param range? boolean|nil Indicates whether the command can be applied to a range of text.
+---@return Command
+function Command:new(desc, default_implementation, icon, range, leave_insert_mode)
+	local o = setmetatable({}, self)
+	self.__index = self
+	o.name = ""
+	o.desc = desc
+	o.default_implementation = default_implementation
+	o.icon = icon
+	o.range = range
+	o.leave_insert_mode = leave_insert_mode
+	o.implementations = {}
+	return o
 end
 
-local function execute_command(s, commandName)
-	-- Provides the execution logic depending on the type
-	local execute_and_confirm = function(command_instance)
-		if type(command_instance) == "string" then
-			if command_instance ~= nil and command_instance ~= "" then
-				local ok, res = pcall(vim.cmd, command_instance)
-				if not ok then
-					vim.notify("Command execution failed: " .. command_instance, vim.log.levels.ERROR)
-				end
-				return true
-			end
-		elseif type(command_instance) == "function" then
-			command_instance()
-			return true
-		end
-		return false
+--- Implements the command for one or many file types.
+---@param filetype string A filetype.
+---@param implementation string|function An implementation of the command.
+function Command:implement_for_filetype(filetype, implementation)
+	if filetype == "*" then
+		self.default_implementation = implementation
+	else
+		self.implementations[filetype] = implementation
 	end
+end
+
+--- Implements the command for one or many file types.
+---@param target string|string[] One filetype or a list of filetypes.
+---@param implementation string|function An implementation of the command.
+function Command:implement_for(target, implementation)
+	if type(target) == "string" then
+		self:implement_for_filetype(target, implementation)
+	elseif type(target) == "table" then
+		for _, f in pairs(target) do
+			self:implement_for_filetype(f, implementation)
+		end
+	else
+		error("Filetype must be a string or a list of strings")
+	end
+end
+
+--- Executes the command implementation corresponding to the current file type or the default one if no specific implementation is available.
+function Command:execute()
 	-- Looks for the current file type command implementation
-	local cmd = s.commands[commandName][vim.bo.filetype]
-	if execute_and_confirm(cmd) then
+	local filetype = vim.bo.filetype
+	if not filetype then
+		vim.notify("Filetype is not set", vim.log.levels.ERROR)
 		return
 	end
-	-- Looks for the generic command implementation
-	cmd = s.commands[commandName]["*"]
-	if execute_and_confirm(cmd) then
-		return
+
+	local implementation = self.implementations[filetype]
+	if implementation then
+		L.execute_implementation(implementation)
+	elseif self.default_implementation then
+		L.execute_implementation(self.default_implementation)
+	else
+		vim.notify(
+			string.format([[Command '%s' has not been implemented for the filetype '%s']], self.name, filetype),
+			vim.log.levels.WARN
+		)
 	end
-	print(string.format([[Command '%s' has not been implemented for the filetype '%s']], commandName, vim.bo.filetype))
 end
 
-local function show_unimplemented_commands(s)
-	print("The next commands are not implemented for any type of file")
-	for command, implementation in pairs(s.commands) do
-		if implementation["*"] == "" and #implementation == 1 then
-			print("-", command)
+--- Registers the command with the given name, and links the execute method to it.
+---@param command_name string Name for the command to be created
+function Command:register_with_name(command_name)
+	self.name = command_name
+	L.commands[self.name] = self
+	vim.api.nvim_create_user_command(command_name, function()
+		self:execute()
+	end, { desc = self.desc, range = self.range })
+end
+
+--- Returns the command with modifiers to be used with a text range in visual mode.
+--- @param opts? ShortCutOptions
+--- @return string
+function Command:shortcut(opts)
+	return L.command_shortcut(self.name, opts)
+end
+
+--- Returns the command as a string command to be run in vim
+function Command:as_vim_command(mode)
+	if self.range and utils.contains({ "v", "x" }, mode) then
+		return self:shortcut({ range = true })
+	elseif self.leave_insert_mode and mode == "i" then
+		return self:shortcut({ escape = true })
+	else
+		return self:shortcut()
+	end
+end
+
+--- Executes a command instance
+---@param implementation string|function|Command
+---@return boolean
+function L.execute_implementation(implementation)
+	if type(implementation) == "string" and implementation ~= "" then
+		---Executes a command
+		---@param command string
+		local ok, _ = pcall(function(command)
+			return vim.cmd(command)
+		end, implementation)
+		if not ok then
+			vim.notify("Command execution failed: " .. implementation, vim.log.levels.ERROR)
+		end
+		return true
+	elseif type(implementation) == "function" then
+		implementation()
+		return true
+	elseif type(implementation) == "table" and implementation.name then
+		L.execute_implementation(":" .. implementation.name)
+	end
+	return false
+end
+
+---@class LYRD.commands.settings
+---@field commands table<string, table<string, string|function>>
+
+---@class LYRD.commands.implementation
+---@field [1] Command
+---@field [2] string|function
+
+--- Prints a list of commands that don't have an implementation (default or per filetype)
+function L.list_unimplemented()
+	print("The following commands are not implemented for any type of file")
+	for name, cmd in pairs(L.commands) do
+		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+			print("-", name)
 		end
 	end
 	print("End of the list")
 end
 
-local function show_implemented_commands(s)
-	print("The next commands are implemented by default")
-	for command, implementation in pairs(s.commands) do
-		if implementation["*"] ~= "" then
-			print("-", command, "=>", implementation["*"])
+function L.list_implemented()
+	print("The following commands are implemented by default")
+	for name, cmd in pairs(L.commands) do
+		if cmd.default_implementation then
+			print("-", name, "=>", cmd.default_implementation)
 		end
 	end
 	print("End of the list")
 end
 
-function L.settings(s)
-	s.commands = {}
-
-	L.list_unimplemented = function()
-		show_unimplemented_commands(s)
-	end
-	L.list_implemented = function()
-		show_implemented_commands(s)
-	end
-end
-
-function L.implement(s, filetype, commands)
+---Registers a set of commands for a specific filetype
+---@param filetype string|string[]
+---@param commands LYRD.commands.implementation[]
+function L.implement(filetype, commands)
 	for _, command_info in ipairs(commands) do
-		if command_info[1] == nil then
-			error("The command to be implemented does not exist. It's implementation would be: " .. command_info[2])
+		local cmd, implementation = unpack(command_info)
+		if cmd == nil then
+			error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
 		end
-		register_implementation(s, filetype, command_info[1].name, command_info[2])
+		cmd:implement_for(filetype, implementation)
 	end
 end
 
-function L.register(s, commands)
+---Registers a set of commands
+---@param commands table<string, Command> dictionary with the list of commands to be registered.
+function L.register(commands)
 	for command_name, definition in pairs(commands) do
-		definition.name = command_name
-		register_implementation(s, "*", command_name, definition.default)
-		vim.api.nvim_create_user_command(command_name, function()
-			execute_command(s, command_name)
-		end, {})
+		definition:register_with_name(command_name)
 	end
 end
 
-function L.command_shortcut(commandName)
-	return "<cmd>" .. commandName .. "<CR>"
+--- @param commandName string Name of the command to generate the shortcut
+--- @param opts? ShortCutOptions Options for the generated shortcut
+function L.command_shortcut(commandName, opts)
+	local sequence = commandName
+	if opts and opts.range then
+		sequence = "'<,'>" .. sequence
+	end
+	sequence = "<cmd>" .. sequence .. "<CR>"
+	if opts and opts.escape then
+		sequence = "<ESC>" .. sequence
+	end
+
+	return sequence
+end
+
+--- This function return a handler function which will execute the given callback function with the given arguments.
+---@param callback function to be executed with the given arguments
+---@vararg any list of arguments to be passed to the callback function
+---@return function
+function L.handler(callback, ...)
+	local params = { ... }
+	return function()
+		callback(unpack(params))
+	end
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local unimplemented_commands = {}
+	for name, cmd in pairs(L.commands) do
+		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+			table.insert(unimplemented_commands, name)
+			vim.health.warn(name .. " commmand is not implemented")
+		end
+	end
+	if #unimplemented_commands == 0 then
+		vim.health.ok("All commands have at least one implementation.")
+	end
 end
 
 return L

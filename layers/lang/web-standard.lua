@@ -5,8 +5,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Web Standard Languages" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"pangloss/vim-javascript",
 			init = function()
@@ -14,6 +14,7 @@ function L.plugins(s)
 				vim.g.javascript_plugin_ngdoc = 1
 				vim.g.javascript_plugin_flow = 1
 			end,
+			ft = { "js" },
 		},
 		"b0o/schemastore.nvim",
 		{
@@ -24,31 +25,18 @@ function L.plugins(s)
 				"windwp/nvim-autopairs",
 			},
 			opts = {},
-		},
-		{
-			"diegoortizmatajira/nvim-http-client",
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-			},
-			opts = {
-				default_env_file = ".env.json",
-				request_timeout = 30000, -- 30 seconds
-				create_keybindings = false,
-			},
-			config = function(_, opts)
-				require("http_client").setup(opts)
-				require("telescope").load_extension("http_client")
-			end,
+			ft = { "json", "yaml" },
 		},
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"json-lsp",
 		"json-to-struct",
 		"yaml-language-server",
 		"prettier",
+		"emmet-language-server",
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
@@ -58,18 +46,7 @@ function L.preparation(_)
 	})
 end
 
-function L.settings(s)
-	commands.implement(s, "*", {
-		{ cmd.LYRDHttpEnvironmentFileSelect, ":Telescope http_client http_env_files" },
-		{ cmd.LYRDHttpEnvironmentSelect, ":Telescope http_client http_envs" },
-	})
-	commands.implement(s, "http", {
-		{ cmd.LYRDHttpSendRequest, ":HttpRun" },
-		{ cmd.LYRDHttpSendAllRequests, ":HttpRunAll" },
-	})
-end
-
-function L.complete(_)
+function L.complete()
 	lsp.enable("jsonls", {
 		settings = {
 			json = {
@@ -91,6 +68,35 @@ function L.complete(_)
 					url = "https://www.schemastore.org/api/json/catalog.json",
 				},
 				schemas = require("schemastore").yaml.schemas(),
+			},
+		},
+	})
+	lsp.enable("taplo", {
+		settings = {
+			evenBetterToml = {
+				schema = {
+					-- add additional schemas
+					associations = {
+						["example\\.toml$"] = "https://json.schemastore.org/example.json",
+					},
+				},
+			},
+		},
+	})
+	lsp.enable("emmet_language_server", {
+		settings = {
+			filetypes = {
+				"css",
+				"eruby",
+				"html",
+				"javascript",
+				"javascriptreact",
+				"less",
+				"sass",
+				"scss",
+				"pug",
+				"typescriptreact",
+				"vue",
 			},
 		},
 	})

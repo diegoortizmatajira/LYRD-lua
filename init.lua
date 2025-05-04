@@ -1,23 +1,28 @@
 local setup = require("LYRD.setup")
 
-_G.LYRD_setup = {
+setup.load({
 	layers = {
 		"LYRD.layers.general",
 		"LYRD.layers.neovide", -- Neovide settings
 		"LYRD.layers.icons",
-		"LYRD.layers.mappings",
 		"LYRD.layers.commands",
+		"LYRD.layers.mappings",
 		"LYRD.layers.lyrd-commands",
 		"LYRD.layers.lyrd-ui",
 		"LYRD.layers.lyrd-keyboard",
+		"LYRD.layers.buffers",
+		"LYRD.layers.themes",
 		"LYRD.layers.clipboard",
 		"LYRD.layers.tmux",
 		"LYRD.layers.motions",
 		"LYRD.layers.file_templates",
 		"LYRD.layers.dev",
+		"LYRD.layers.text",
 		"LYRD.layers.test",
 		"LYRD.layers.git",
 		"LYRD.layers.lsp",
+		"LYRD.layers.foldings",
+		"LYRD.layers.rest",
 		"LYRD.layers.treesitter",
 		"LYRD.layers.filetree",
 		"LYRD.layers.telescope",
@@ -28,13 +33,13 @@ _G.LYRD_setup = {
 		"LYRD.layers.docker",
 		"LYRD.layers.kubernetes",
 		"LYRD.layers.tasks", -- Must be after debug and database
-		"LYRD.layers.ai-codeium",
-		-- "LYRD.layers.ai-tabnine",
-		-- "LYRD.layers.ai-copilot",
-		-- "LYRD.layers.ai-chat-gpt",
+		"LYRD.layers.repl",
+		"LYRD.layers.ai-dev",
 		"LYRD.layers.lang.cmake",
+		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.dotnet",
 		"LYRD.layers.lang.go",
+		-- "LYRD.layers.lang.java",
 		"LYRD.layers.lang.kotlin",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.markdown",
@@ -43,7 +48,7 @@ _G.LYRD_setup = {
 		"LYRD.layers.lang.sql",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
+		"LYRD.layers.extras",
+		"LYRD.layers.media",
 	},
-}
-
-setup.load(_G.LYRD_setup)
+})

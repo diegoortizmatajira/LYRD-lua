@@ -4,12 +4,15 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
-local L = { name = "LSP" }
+local L = {
+	name = "LSP",
+	required_tools = {},
+	null_ls_sources = {},
+	null_ls_registered = {},
+	conform_formatters = {},
+}
 
 local capabilities = nil
-local mason_required = {}
-local null_ls_sources = {}
-local null_ls_registered = {}
 local mason_opts = {
 	ui = {
 		check_outdated_packages_on_open = true,
@@ -59,8 +62,8 @@ local mason_opts = {
 	-- multiple registries, the registry listed first will be used.
 	registries = {
 		"lua:mason-registry.index",
-		"github:mason-org/mason-registry",
 		"github:nvim-java/mason-registry",
+		"github:mason-org/mason-registry",
 		"github:crashdummyy/mason-registry",
 	},
 
@@ -107,7 +110,6 @@ end
 local function setup_default_providers()
 	local null_ls = require("null-ls")
 	L.null_ls_register_sources({
-		null_ls.builtins.code_actions.gitsigns,
 		null_ls.builtins.formatting.yamlfmt,
 		null_ls.builtins.formatting.clang_format,
 	})
@@ -117,22 +119,36 @@ function L.plug_capabilities(plug_handler)
 	plugged_capabilities = plug_handler(plugged_capabilities)
 end
 
-function exclude_lsp_lines_from_filetypes(filetypes)
+local function toggle_diagnostic_lines()
+	local new_config = not vim.diagnostic.config().virtual_lines
+	vim.diagnostic.config({ virtual_lines = new_config })
+end
+
+local function exclude_lsp_lines_from_filetypes(filetypes)
 	for _, filetype in ipairs(filetypes) do
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = filetype,
 			callback = function()
-				local previous = not require("lsp_lines").toggle()
-				if not previous then
-					require("lsp_lines").toggle()
-				end
+				vim.diagnostic.config({ virtual_lines = false })
 			end,
 		})
 	end
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+local function format_buffer(args)
+	local range = nil
+	if args and args.count ~= -1 then
+		local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+		range = {
+			start = { args.line1, 0 },
+			["end"] = { args.line2, end_line:len() },
+		}
+	end
+	require("conform").format({ async = true, lsp_format = "fallback", range = range })
+end
+
+function L.plugins()
+	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
 		{
 			"williamboman/mason.nvim",
@@ -161,9 +177,8 @@ function L.plugins(s)
 		},
 		{
 			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-			config = function(opts)
-				require("lsp_lines").setup(opts)
-				exclude_lsp_lines_from_filetypes({ "lazy" })
+			config = function()
+				require("lsp_lines").setup()
 			end,
 			opts = {},
 		},
@@ -176,10 +191,60 @@ function L.plugins(s)
 			"folke/trouble.nvim",
 			opts = {},
 		},
+		{
+			"VidocqH/lsp-lens.nvim",
+			opts = {
+				enable = false,
+			},
+			cmd = { "LspLensToggle" },
+		},
+		{
+			"kosayoda/nvim-lightbulb",
+			opts = {
+				action_kinds = { -- show only for relevant code actions.
+					"quickfix",
+				},
+				ignore = {
+					ft = { "lua", "markdown" }, -- ignore filetypes with bad code actions.
+				},
+				autocmd = {
+					enabled = true,
+					updatetime = 100,
+				},
+				sign = { enabled = true },
+				virtual_text = {
+					enabled = false,
+					text = icons.other.lightbulb,
+				},
+			},
+		},
+		{
+			"aznhe21/actions-preview.nvim",
+			opts = {
+				telescope = {
+					sorting_strategy = "ascending",
+					layout_strategy = "horizontal",
+					layout_config = {
+						width = 0.8,
+						height = 0.9,
+						prompt_position = "top",
+						preview_cutoff = 20,
+					},
+				},
+			},
+		},
+		{
+			"stevearc/conform.nvim",
+			config = false,
+			init = function()
+				-- If you want the formatexpr, here is the place to set it
+				vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+			end,
+		},
 	})
 end
 
-function L.preparation(_)
+function L.preparation()
 	add_mason_bin_to_path()
 	L.mason_ensure({
 		"angular-language-server",
@@ -205,10 +270,10 @@ function L.preparation(_)
 	setup_default_providers()
 end
 
-function L.settings(s)
+function L.settings()
 	require("mason").setup(mason_opts) -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
-		ensure_installed = mason_required,
+		ensure_installed = L.required_tools,
 	})
 	require("mason-lspconfig").setup()
 	require("mason-lspconfig").setup_handlers({
@@ -228,16 +293,25 @@ function L.settings(s)
 	-- Configures the null language server
 	local null_ls = require("null-ls")
 	null_ls.setup({
-		sources = null_ls_sources,
+		sources = L.null_ls_sources,
 	})
-	for _, custom_register in ipairs(null_ls_registered) do
+	for _, custom_register in ipairs(L.null_ls_registered) do
 		null_ls.register(custom_register)
 	end
 
 	require("mason-null-ls").setup({
-		ensure_installed = nil,
+		ensure_installed = {},
 		automatic_installation = true,
 	})
+
+	require("conform").setup({
+		formatters_by_ft = L.conform_formatters,
+		-- Set default options
+		default_format_opts = {
+			lsp_format = "fallback",
+		},
+	})
+
 	local signs = {
 		{ name = "DiagnosticSignError", text = icons.diagnostic.error },
 		{ name = "DiagnosticSignWarn", text = icons.diagnostic.warning },
@@ -250,23 +324,17 @@ function L.settings(s)
 	end
 
 	local config = {
-		virtual_text = false,
 		-- show signs
 		signs = { active = signs },
 		update_in_insert = true,
 		underline = true,
 		severity_sort = true,
-		float = {
-			focusable = false,
-			style = "minimal",
-			border = "rounded",
-			source = "always",
-			header = "",
-			prefix = "",
-		},
+		virtual_text = false,
+		virtual_lines = true,
 	}
 
 	vim.diagnostic.config(config)
+	exclude_lsp_lines_from_filetypes({ "lazy" })
 
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 
@@ -276,16 +344,11 @@ function L.settings(s)
 	-- Enable rounded borders in :LspInfo window.
 	require("lspconfig.ui.windows").default_options.border = "rounded"
 
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
-		{
-			cmd.LYRDBufferFormat,
-			function()
-				vim.lsp.buf.format({ async = true, timeout_ms = 3000 })
-			end,
-		},
+		{ cmd.LYRDBufferFormat, format_buffer },
 		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
-		{ cmd.LYRDLSPFindCodeActions, vim.lsp.buf.code_action },
+		{ cmd.LYRDLSPFindCodeActions, require("actions-preview").code_actions },
 		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
 		{ cmd.LYRDLSPFindLineDiagnostics, vim.diagnostic.show_line_diagnostics },
 		{ cmd.LYRDLSPFindDocumentDiagnostics, ":Trouble diagnostics toggle filter.buf=0" },
@@ -303,12 +366,8 @@ function L.settings(s)
 		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":Trouble diagnostics toggle" },
 		{ cmd.LYRDViewLocationList, ":Trouble loclist toggle" },
 		{ cmd.LYRDViewQuickFixList, ":Trouble qflist toggle" },
-		{
-			cmd.LYRDDiagnosticLinesToggle,
-			function()
-				require("lsp_lines").toggle()
-			end,
-		},
+		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
+		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
 	})
 end
 
@@ -323,21 +382,51 @@ end
 
 function L.mason_ensure(tools)
 	for _, tool in ipairs(tools) do
-		table.insert(mason_required, tool)
+		table.insert(L.required_tools, tool)
 	end
 end
 
 function L.null_ls_register_sources(sources)
 	for _, source in ipairs(sources) do
-		table.insert(null_ls_sources, source)
+		table.insert(L.null_ls_sources, source)
 	end
 end
 
 function L.null_ls_register(custom_register)
-	table.insert(null_ls_registered, custom_register)
+	table.insert(L.null_ls_registered, custom_register)
 end
 
-function L.complete(_) end
+function L.register_code_actions(filetypes, fn)
+	local null_ls = require("null-ls")
+	L.null_ls_register({
+		method = null_ls.methods.CODE_ACTION,
+		filetypes = filetypes,
+		generator = {
+			fn = fn,
+		},
+	})
+end
+
+--- Configures the given LSP server to format buffers for a given filetype.
+--- @param filetype string|string[] filetype(s) to format
+--- @param lsp_name string name of the LSP server
+function L.format_with_lsp(filetype, lsp_name)
+	commands.implement(filetype, {
+		{ cmd.LYRDBufferFormat, L.format_handler(lsp_name) },
+	})
+end
+
+--- Configures the given LSP server to format buffers for a given filetype.
+--- @param filetype string filetype to format
+--- @param format_settings table Settings for the formatter
+function L.format_with_conform(filetype, format_settings)
+	L.conform_formatters[filetype] = format_settings
+end
+
+function L.complete()
+	-- Added here to be executed after every plugin code has been initialized.
+	vim.diagnostic.config({ virtual_text = false })
+end
 
 function L.format_handler(server_name)
 	-- Returns a handler that format using the given lsp

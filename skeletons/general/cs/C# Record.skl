@@ -1,0 +1,19 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return { 
+      type_name = basename,
+      namespace = generator.get_namespace(name),
+      _cursor = { 4, 5 }
+    }
+end
+---
+namespace ${namespace};
+
+public record ${type_name}(
+
+);
+

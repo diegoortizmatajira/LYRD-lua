@@ -3,11 +3,11 @@ local mappings = require("LYRD.layers.mappings")
 
 local L = { name = "Neovide" }
 
-function L.plugins(s)
-	setup.plugin(s, {})
+function L.plugins()
+	setup.plugin({})
 end
 
-function L.settings(_)
+function L.settings()
 	if vim.g.neovide then
 		vim.g.neovide_refresh_rate = 60
 		vim.g.neovide_refresh_rate_idle = 5
@@ -22,9 +22,9 @@ function L.settings(_)
 	end
 end
 
-function L.keybindings(s)
+function L.keybindings()
 	if vim.g.neovide then
-		mappings.keys(s, {
+		mappings.keys({
 			{ "n", "<C-+>", ':lua require("LYRD.layers.neovide").ResizeGuiFont(1)<CR>' },
 			{ "n", "<C-->", ':lua require("LYRD.layers.neovide").ResizeGuiFont(-1)<CR>' },
 		})

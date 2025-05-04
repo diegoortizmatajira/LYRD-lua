@@ -1,10 +1,13 @@
 local setup = require("LYRD.setup")
 local utils = require("LYRD.utils")
 
-local L = { name = "File templates" }
+local L = {
+	name = "File templates",
+	ignore_filetypes = { "dbout" },
+}
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"Futarimiti/spooky.nvim",
 			opts = {
@@ -28,13 +31,16 @@ function L.plugins(s)
 	})
 end
 
-function L.settings(_)
+function L.settings()
 	vim.api.nvim_create_augroup("EmptyFileCheck", { clear = true })
 
 	vim.api.nvim_create_autocmd("BufReadPost", {
 		group = "EmptyFileCheck",
 		pattern = "*",
 		callback = function()
+			if utils.contains(L.ignore_filetypes, vim.bo.filetype) then
+				return
+			end
 			-- Check if the file is empty
 			if vim.fn.line("$") == 1 and vim.fn.getline(1) == "" then
 				-- Attempt to use Spook to apply a template

@@ -1,0 +1,23 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  response = string.gsub(basename, "Request", "Response")
+
+  return { 
+      type_name = basename,
+      response_type_name = response,
+      namespace = generator.get_namespace(name),
+      _cursor = { 6, 5 }
+    }
+end
+---
+using MediatR;
+
+namespace ${namespace};
+
+public record ${type_name}(
+
+): IRequest<${response_type_name}>;
+

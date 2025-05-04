@@ -19,5 +19,3 @@ Create a symbolic link to the lua init script.
 ```bash
 ln -s ~/.config/nvim/lua/LYRD/root-init.lua ~/.config/nvim/init.lua
 ```
-
-Execute Neovim and install the required packages using the command `:PackerInstall`, then restart.

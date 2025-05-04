@@ -1,8 +1,31 @@
 local utils = require("LYRD.utils")
 
-if vim.g.LYRD_Settings == nil then
-	vim.g.LYRD_Settings = { Loaded_layers = {} }
-end
+---@class LYRD.setup.Settings
+---@field layers string[] contains the list of layers provided in init script
+---@field loaded_layers? LYRD.setup.Module[] contains the list of names of the loaded layers
+---@field plugins? LazySpec[] contains the list of plugins loaded
+---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
+
+---@class LYRD.setup.Module
+---@field name string
+---@field plugins? nil|fun():nil
+---@field preparation? nil|fun():nil
+---@field settings? nil|fun():nil
+---@field keybindings? nil|fun():nil
+---@field complete? nil|fun():nil
+---@field healthcheck? nil|fun():nil
+
+local setup = {
+	configs_path = utils.get_lyrd_path() .. "/configs",
+	runtime_path = utils.get_lyrd_path() .. "/runtime",
+	---@type LYRD.setup.Settings
+	config = {
+		commands = {},
+		plugins = {},
+		loaded_layers = {},
+		layers = {},
+	},
+}
 
 local function bootstrap_lazy()
 	-- Bootstrap lazy.nvim
@@ -23,24 +46,29 @@ local function bootstrap_lazy()
 	vim.opt.rtp:prepend(lazypath)
 end
 
-local function load_plugins(s, loaded_layers)
+--- Calls the plugin method for each layer
+local function load_plugins()
 	bootstrap_lazy()
 
 	-- Calls the plugin method for each layer
-	for _, layer in ipairs(loaded_layers) do
-		if layer.plugins ~= nil then
-			layer.plugins(s)
+	for _, layer in ipairs(setup.config.loaded_layers) do
+		if layer.plugins then
+			layer.plugins()
 		end
 	end
 
 	-- Setup lazy.nvim
 	require("lazy").setup({
-		spec = s.plugins,
+		spec = setup.config.plugins,
 		-- automatically check for plugin updates
 		checker = { enabled = true },
 		defaults = { lazy = false },
 		performance = {
 			rtp = { -- Disable unnecessary nvim features to speed up startup.
+
+				paths = {
+					setup.runtime_path, -- Add LYRD runtime path
+				},
 				disabled_plugins = {
 					"tohtml",
 					"gzip",
@@ -57,58 +85,46 @@ local function load_plugins(s, loaded_layers)
 	})
 end
 
-local function load_settings(s, loaded_layers)
-	for _, layer in ipairs(loaded_layers) do
+--- Calls the sequence of methods to initialize for each layer
+--- @param s LYRD.setup.Settings settings object
+function setup.load(s)
+	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
+	---@type LYRD.setup.Module[]
+	for _, layer in ipairs(setup.config.layers) do
+		local L = require(layer)
+		table.insert(setup.config.loaded_layers, L)
+	end
+
+	-- Process each layer
+	load_plugins()
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.preparation ~= nil then
-			layer.preparation(s)
+			layer.preparation()
 		end
 	end
-	for _, layer in ipairs(loaded_layers) do
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.settings ~= nil then
-			layer.settings(s)
+			layer.settings()
 		end
 	end
-	for _, layer in ipairs(loaded_layers) do
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.keybindings ~= nil then
-			layer.keybindings(s)
+			layer.keybindings()
 		end
 	end
-end
-
-local function load_complete(s, loaded_layers)
-	for _, layer in ipairs(loaded_layers) do
+	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.complete ~= nil then
-			layer.complete(s)
+			layer.complete()
 		end
 	end
 end
 
-return {
-	configs_path = utils.get_lyrd_path() .. "/configs",
-	load = function(s)
-		s.plugins = {
-		}
-		local loaded_layers = {}
-		local vim_layers = {}
-		for _, layer in ipairs(s.layers) do
-			local L = require(layer)
-			table.insert(loaded_layers, L)
-			table.insert(vim_layers, L.name)
-		end
-		-- Updates LYRD_Settings in vim global
-		local g_var = vim.g.LYRD_Settings
-		g_var.Loaded_layers = vim_layers
-		vim.g.LYRD_Settings = g_var
-		-- Process each layer
-		load_plugins(s, loaded_layers)
-		load_settings(s, loaded_layers)
-		load_complete(s, loaded_layers)
-	end,
+-- Enables a plugin with its name and options
+--- @param plugin_list LazySpec[]
+function setup.plugin(plugin_list)
+	for _, p in ipairs(plugin_list) do
+		table.insert(setup.config.plugins, p)
+	end
+end
 
-	-- Enables a plugin with its name and options
-	plugin = function(s, plugin_list)
-		for _, p in ipairs(plugin_list) do
-			table.insert(s.plugins, p)
-		end
-	end,
-}
+return setup

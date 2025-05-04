@@ -8,10 +8,16 @@ function L.toggle_lazydocker()
 	ui.toggle_external_app_terminal("lazydocker")
 end
 
-function L.settings(s)
-	commands.implement(s, "*", {
+function L.settings()
+	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
 	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("lazydocker")
 end
 
 return L

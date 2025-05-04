@@ -4,19 +4,24 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Test", test_adapters = {} }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{ "nvim-neotest/nvim-nio" },
 		{
 			"nvim-neotest/neotest",
 			priority = 0,
-			config = false, -- It will be called by hand
+			setup = false, -- It will be setup manually later
 			dependencies = {
 				"nvim-neotest/nvim-nio",
 				"nvim-lua/plenary.nvim",
 				"antoinemadec/fixcursorhold.nvim",
 				"nvim-treesitter/nvim-treesitter",
 			},
+		},
+		{
+			"andythigpen/nvim-coverage",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			opts = {},
 		},
 	})
 end
@@ -25,14 +30,16 @@ function L.configure_adapter(adapter)
 	table.insert(L.test_adapters, adapter)
 end
 
-function L.settings(s)
+function L.settings()
 	-- Called only when all adapters have been collected into L.test_adapters
-	require("neotest").setup({ adapters = L.test_adapters })
-
-	commands.implement(s, "neotest-summary", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
+	require("neotest").setup({
+		adapters = L.test_adapters,
+		output = {
+			enabled = true, -- Enable output
+			open_on_run = true, -- Automatically open the output window
+		},
 	})
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{
 			cmd.LYRDTest,
 			function()
@@ -49,6 +56,12 @@ function L.settings(s)
 			cmd.LYRDTestFile,
 			function()
 				require("neotest").run.run(vim.fn.expand("%"))
+			end,
+		},
+		{
+			cmd.LYRDTestDebugFunc,
+			function()
+				require("neotest").run.run({ strategy = "dap" })
 			end,
 		},
 		{
@@ -69,6 +82,9 @@ function L.settings(s)
 				require("neotest").summary.toggle()
 			end,
 		},
+		{ cmd.LYRDTestOutput, ":Neotest output-panel" },
+		{ cmd.LYRDTestCoverageSummary, ":CoverageSummary" },
+		{ cmd.LYRDTestCoverage, ":CoverageToggle" },
 	})
 
 	-- Creates an autocommand to enable q to close test panels
@@ -86,6 +102,10 @@ function L.settings(s)
 			end,
 		})
 	end
+end
+
+function L.complete()
+	-- No completion needed for this layer
 end
 
 return L

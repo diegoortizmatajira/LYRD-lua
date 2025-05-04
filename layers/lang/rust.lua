@@ -3,19 +3,19 @@ local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Rust Language" }
 
-function L.plugins(s)
-	setup.plugin(s, {})
+function L.plugins()
+	setup.plugin({})
 end
 
-function L.preparation(_)
+function L.preparation()
 	lsp.mason_ensure({
 		"rust-analyzer",
 	})
 end
 
-function L.settings(_) end
+function L.settings() end
 
-function L.complete(_)
+function L.complete()
 	lsp.enable("rust_analyzer", {
 		-- standalone file support
 		-- setting it to false may improve startup time

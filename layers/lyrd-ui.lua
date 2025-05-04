@@ -3,7 +3,10 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
-local L = { name = "LYRD UI" }
+local L = {
+	name = "LYRD UI",
+}
+
 local ext_app_term = nil -- Store the terminal object
 
 local function combine_ascii_art(base, new, from_line)
@@ -45,55 +48,74 @@ local function header()
 	return combine_ascii_art(image, title, 3)
 end
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.notify(message, level, options)
+	local notify = require("notify")
+	notify(message, level, options)
+end
+
+function L.plugins()
+	setup.plugin({
 		{
-			"akinsho/bufferline.nvim",
-			version = "*",
+			"folke/noice.nvim",
+			event = "VeryLazy",
 			opts = {
-				highlights = {
-					background = {
-						italic = true,
-					},
-					buffer_selected = {
-						bold = true,
-						italic = false,
+				cmdline = {
+					format = {
+						cmdline = { icon = icons.other.command },
+						search_down = { icon = icons.search.default .. icons.chevron.double_down },
+						search_up = { icon = icons.search.default .. icons.chevron.double_up },
+						filter = { icon = icons.other.filter },
+						lua = { icon = "" },
+						help = { icon = icons.other.help },
+						input = { icon = icons.other.keyboard }, -- Used by input()
 					},
 				},
-				options = {
-					themable = true,
-					mode = "buffers",
-					numbers = "none",
-					show_buffer_close_icons = false,
-					separator_style = "slope",
-					offsets = {
-						{
-							filetype = "NvimTree",
-							text = "Explorer",
-							highlight = "PanelHeading",
-							padding = 1,
-						},
-						{
-							filetype = "neotest-summary",
-							text = "Tests",
-							highlight = "PanelHeading",
-							padding = 1,
-						},
-						{
-							filetype = "DiffviewFiles",
-							text = "Diff View",
-							highlight = "PanelHeading",
-							padding = 1,
-						},
+				lsp = {
+					progress = {
+						enabled = false, -- disables a lot of distracting text from popping up when done
+						format_done = "",
 					},
+					-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+					override = {
+						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+						["vim.lsp.util.stylize_markdown"] = true,
+						["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+					},
+				},
+				-- you can enable a preset for easier configuration
+				presets = {
+					bottom_search = false, -- use a classic bottom cmdline for search
+					command_palette = false, -- position the cmdline and popupmenu together
+					long_message_to_split = true, -- long messages will be sent to a split
+					inc_rename = false, -- enables an input dialog for inc-rename.nvim
+					lsp_doc_border = false, -- add a border to hover docs and signature help
 				},
 			},
-			dependencies = "nvim-tree/nvim-web-devicons",
+			config = function(_, opts)
+				require("noice").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("noice")
+			end,
+			dependencies = {
+				-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+				"muniftanjim/nui.nvim",
+				-- OPTIONAL:
+				--   `nvim-notify` is only needed, if you want to use the notification view.
+				--   If not available, we use `mini` as the fallback
+				"rcarriga/nvim-notify",
+			},
+		},
+		{
+			"rcarriga/nvim-notify",
+			opts = {
+				render = "compact",
+				background_colour = "#000000",
+				top_down = false,
+			},
 		},
 		{
 			"nvim-lualine/lualine.nvim",
 			opts = {
-				options = { theme = "gruvbox" },
 				sections = {
 					lualine_c = {
 						"filename",
@@ -103,24 +125,18 @@ function L.plugins(s)
 						"filetype",
 					},
 				},
+				tabline = {
+					lualine_a = { "buffers" },
+					lualine_b = {},
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = {},
+					lualine_z = { "tabs" },
+				},
 			},
 			dependencies = {
-				"ellisonleao/gruvbox.nvim",
 				"nvim-tree/nvim-web-devicons",
 			},
-		},
-		{
-			"ellisonleao/gruvbox.nvim",
-			priority = 1000,
-			opts = {
-				contrast = "hard",
-				dim_inactive = true,
-			},
-			config = function(opts)
-				require("gruvbox").setup(opts)
-				vim.o.background = "dark" -- or "light" for light mode
-				vim.cmd([[colorscheme gruvbox]])
-			end,
 		},
 		{
 			"goolord/alpha-nvim",
@@ -136,7 +152,9 @@ function L.plugins(s)
 				startify.section.mru.val[4].val = function()
 					return { startify.mru(10) }
 				end
-				startify.section.mru_cwd.val[2].val = "Current Directory"
+				startify.section.mru_cwd.val[2].val = function()
+					return "Current Directory"
+				end
 				startify.section.mru_cwd.val[4].val = function()
 					return { startify.mru(0, vim.fn.getcwd()) }
 				end
@@ -147,7 +165,12 @@ function L.plugins(s)
 				"nvim-tree/nvim-web-devicons",
 			},
 		},
-		{ "akinsho/toggleterm.nvim" },
+		{
+			"akinsho/toggleterm.nvim",
+			opts = {},
+			cmd = { "ToggleTerm", "TermSelect" },
+			lazy = true,
+		},
 		{
 			"natecraddock/workspaces.nvim",
 			opts = {
@@ -156,12 +179,13 @@ function L.plugins(s)
 					highlights = { border = "Normal", background = "Normal" },
 				},
 			},
-			config = function(opts)
+			config = function(_, opts)
 				require("workspaces").setup(opts)
 				local telescope = require("telescope")
 				telescope.load_extension("workspaces")
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
+			lazy = true,
 		},
 		{
 			"zeioth/project.nvim",
@@ -190,12 +214,13 @@ function L.plugins(s)
 					buftype = { "nofile", "terminal" },
 				},
 			},
-			config = function(opts)
+			config = function(_, opts)
 				require("project_nvim").setup(opts)
 				local telescope = require("telescope")
 				telescope.load_extension("ui-select")
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
+			lazy = true,
 		},
 		{
 			"stevearc/dressing.nvim",
@@ -213,27 +238,9 @@ function L.plugins(s)
 			opts = {
 				use_telescope = true,
 				file_picker = "telescope",
-
 				filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
 			},
 			event = "VeryLazy",
-		},
-		{
-			"diegoortizmatajira/bufdelete.nvim",
-			opts = {
-				debug = false,
-				close_with_their_window = {
-					{ filename = "fugitive:" },
-					{ filetype = "NvimTree" },
-					{ filetype = "alpha" },
-					{ filetype = "fugitive" },
-					{ filetype = "gitcommit" },
-					{ filetype = "help" },
-					{ filetype = "http_response" },
-					{ filetype = "lazy" },
-					{ filetype = "neotest-summary" },
-				},
-			},
 		},
 		{
 			"nvim-pack/nvim-spectre",
@@ -243,15 +250,18 @@ function L.plugins(s)
 			},
 		},
 		{
-			"fasterius/simple-zoom.nvim",
+			"folke/twilight.nvim",
 			opts = {
-				hide_tabline = false,
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
 			},
+			cmd = { "Twilight" },
 		},
 	})
 end
 
-function L.settings(s)
+function L.settings()
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {
@@ -278,32 +288,14 @@ function L.settings(s)
 		end,
 	})
 
-	-- Causes alpha to be opened when closing all buffers
-	vim.api.nvim_create_augroup("alpha_on_empty", { clear = true })
-	vim.api.nvim_create_autocmd("User", {
-		pattern = "BDeletePost *",
-		group = "alpha_on_empty",
-		callback = function()
-			local bufnr = vim.api.nvim_get_current_buf()
-			local name = vim.api.nvim_buf_get_name(bufnr)
-
-			if vim.bo[bufnr].filetype ~= "alpha" and name == "" then
-				vim.cmd([[:Alpha | bd#]])
-			end
-		end,
-	})
-
-	commands.implement(s, "*", {
+	commands.implement("*", {
 		{ cmd.LYRDViewHomePage, ":Alpha" },
 		{ cmd.LYRDScratchNew, ":ScratchWithName" },
 		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
 		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
-
-		{ cmd.LYRDBufferClose, ":Bdelete" },
-		{ cmd.LYRDBufferCloseAll, ":bufdo Bdelete" },
-		{ cmd.LYRDBufferForceClose, ":Bdelete!" },
-		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
-
+		{ cmd.LYRDViewFocusMode, ":Twilight" },
+		{ cmd.LYRDTerminal, ":ToggleTerm" },
+		{ cmd.LYRDTerminalList, ":TermSelect" },
 		{
 			cmd.LYRDReplace,
 			function()
@@ -316,9 +308,6 @@ function L.settings(s)
 				require("spectre").toggle()
 			end,
 		},
-	})
-	commands.implement(s, "alpha", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
 	})
 end
 

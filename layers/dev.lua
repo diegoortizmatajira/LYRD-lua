@@ -1,26 +1,12 @@
 local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Development" }
 
-function L.plugins(s)
-	setup.plugin(s, {
-		{
-			"tummetott/unimpaired.nvim",
-			event = "VeryLazy",
-			opts = {},
-		}, -- use lazy.nvim
-		{
-			"numtostr/comment.nvim",
-			opts = {
-				hook = function()
-					require("ts_context_commentstring").update_commentstring()
-				end,
-			},
-			dependencies = {
-				"joosepalviste/nvim-ts-context-commentstring",
-			},
-		},
+function L.plugins()
+	setup.plugin({
 		{
 			"folke/todo-comments.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
@@ -31,35 +17,28 @@ function L.plugins(s)
 			},
 		},
 		{
-			"gh-liu/fold_line.nvim",
-			event = "VeryLazy",
-			init = function()
-				-- change the char of the line, see the `Appearance` section
-				vim.g.fold_line_char_open_start = "╭"
-				vim.g.fold_line_char_open_end = "╰"
-			end,
+			"danymat/neogen",
+			opts = {
+				snippet_engine = "luasnip",
+			},
 		},
 		{
-			"joosepalviste/nvim-ts-context-commentstring",
+			"stevearc/aerial.nvim",
 			opts = {
-				enable_autocmd = false,
+				close_on_select = true,
 			},
+			-- Optional dependencies
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				"nvim-tree/nvim-web-devicons",
+			},
+			cmd = { "AerialToggle" },
 		},
 		{ "norcalli/nvim-colorizer.lua" },
-		{ "ellisonleao/dotenv.nvim", opts = {} },
 		{
-			"windwp/nvim-autopairs",
-			event = "InsertEnter",
-			config = true,
-			dependencies = {
-				"hrsh7th/nvim-cmp",
-			},
-		},
-		{
-			"kylechui/nvim-surround",
-			version = "*", -- Use for stability; omit to use `main` branch for the latest features
-			event = "VeryLazy",
+			"ellisonleao/dotenv.nvim",
 			opts = {},
+			cmd = { "Dotenv", "DotenvGet" },
 		},
 		{ -- This plugin
 			"zeioth/compiler.nvim",
@@ -67,65 +46,25 @@ function L.plugins(s)
 			dependencies = { "stevearc/overseer.nvim", "nvim-telescope/telescope.nvim" },
 			opts = {},
 		},
-		{ -- This plugin
+		{
 			"Zeioth/makeit.nvim",
 			cmd = { "MakeitOpen", "MakeitToggleResults", "MakeitRedo" },
 			dependencies = { "stevearc/overseer.nvim" },
 			opts = {},
 		},
 		{
-			"lukas-reineke/indent-blankline.nvim",
-			main = "ibl",
-			opts = {
-				enabled = true,
-				exclude = {
-					filetypes = {
-						"",
-						"NvimTree",
-						"TelescopePrompt",
-						"TelescopeResults",
-						"Trouble",
-						"checkhealth",
-						"dashboard",
-						"gitcommit",
-						"help",
-						"lazy",
-						"lspinfo",
-						"man",
-						"neogitstatus",
-						"packer",
-						"startify",
-						"text",
-					},
-					buftypes = {
-						"terminal",
-						"nofile",
-						"quickfix",
-						"prompt",
-					},
-				},
-				indent = {
-					char = icons.tree_lines.thin_left,
-				},
-			},
-		},
-		{
-			"rest-nvim/rest.nvim",
+			"GustavEikaas/code-playground.nvim",
+			opts={}
 		},
 	})
 end
 
-function L.complete(_)
-	-- If you want insert `(` after select function or method item
-	local is_cmp_loaded, cmp = pcall(require, "cmp")
-	if is_cmp_loaded then
-		cmp.event:on(
-			"confirm_done",
-			require("nvim-autopairs.completion.cmp").on_confirm_done({
-				tex = false,
-			})
-		)
-	end
+function L.settings()
+	commands.implement("*", {
+		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
+		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
+		{ cmd.LYRDCodeAddDocumentation, ":Neogen" },
+	})
 end
 
 return L

@@ -5,14 +5,15 @@ local icons = require("LYRD.layers.icons")
 
 local L = { name = "File tree" }
 
-function L.plugins(s)
-	setup.plugin(s, {
+function L.plugins()
+	setup.plugin({
 		{
 			"nvim-tree/nvim-tree.lua",
 			version = "*",
 			dependencies = {
 				"nvim-tree/nvim-web-devicons",
 			},
+			cmd = { "NvimTreeFindFileToggle" },
 			opts = {
 				disable_netrw = false,
 				update_cwd = true,
@@ -193,7 +194,7 @@ function L.plugins(s)
 					-- Override the open mode (i.e. vertical/horizontal split, new tab)
 					-- Tip: you can add an extra `<CR>` to the end of these to immediately open the selected file(s) (assuming the TFM uses `enter` to finalise selection)
 					["<C-v>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.vsplit)<CR>",
-					["<C-x>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.split)<CR>",
+					["<C-h>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.split)<CR>",
 					["<C-t>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.tabedit)<CR>",
 				},
 				-- Customise UI. The below options are the default
@@ -206,17 +207,35 @@ function L.plugins(s)
 				},
 			},
 		},
+		{
+			"stevearc/oil.nvim",
+			---@module 'oil'
+			---@type oil.SetupOpts
+			opts = {
+				keymaps = {
+					["q"] = { "actions.close", mode = "n" },
+				},
+			},
+			-- Optional dependencies
+			dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+			-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+			lazy = false,
+		},
 	})
 end
 
-function L.settings(s)
-	commands.implement(s, "NvimTree", {
-		{ cmd.LYRDBufferSave, [[:echo 'No saving']] },
-	})
-	commands.implement(s, "*", {
+function L.settings()
+	commands.implement("*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
 		{ cmd.LYRDViewFileExplorer, require("tfm").open },
+		{ cmd.LYRDViewFileExplorerAlt, require("oil").toggle_float },
 	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("yazi")
 end
 
 return L

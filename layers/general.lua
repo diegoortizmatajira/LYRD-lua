@@ -1,6 +1,6 @@
 local L = { name = "General" }
 
-function L.settings(_)
+function L.preparation()
 	vim.g.mapleader = ","
 	vim.g.maplocalleader = "\\"
 	vim.g.big_file = { size = 1024 * 5000, lines = 50000 } -- For files bigger than this, disable 'treesitter' (+5Mb).
@@ -20,9 +20,10 @@ function L.settings(_)
 	vim.opt.fileformats = "unix,dos,mac"
 	vim.opt.fillchars = { eob = " " } -- Disable `~` on nonexistent lines.
 	vim.opt.foldcolumn = "1" -- Show foldcolumn in nvim 0.9+.
-	vim.opt.foldenable = false -- Enable fold for nvim-ufo.
+	vim.opt.foldenable = true -- Enable fold for nvim-ufo.
 	vim.opt.foldlevel = 99 -- set highest foldlevel for nvim-ufo.
 	vim.opt.foldlevelstart = 99 -- Start with all code unfolded.
+	vim.opt.foldmethod = "syntax"
 	vim.opt.guicursor = "n:blinkon200,i-ci-ve:ver25" -- Enable cursor blink.
 	vim.opt.hidden = true
 	vim.opt.history = 1000 -- Number of commands to remember in a history table (per buffer).
@@ -55,7 +56,6 @@ function L.settings(_)
 	vim.opt.shiftwidth = 4 -- Number of space inserted for indentation.
 	vim.opt.shortmess:append({ c = true, s = true, I = true }) -- Disable startup message.
 	vim.opt.showmode = false -- Disable showing modes in command line.
-	vim.opt.showtabline = 2 -- always display tabline.
 	vim.opt.sidescrolloff = 8 -- Same but for side scrolling.
 	vim.opt.signcolumn = "yes" -- Always show the sign column.
 	vim.opt.smartcase = true -- Case sensitivie searching.
