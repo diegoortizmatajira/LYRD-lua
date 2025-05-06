@@ -152,13 +152,13 @@ function L.plugins()
 		{ "neovim/nvim-lspconfig" },
 		{
 			"mason-org/mason.nvim",
-			version="1",
+			version = "2.*",
 			config = false,
 		},
 		{
 			"mason-org/mason-lspconfig.nvim",
 			config = false,
-			version="1",
+			version = "2.*",
 			dependencies = {
 				"mason-org/mason.nvim",
 				"neovim/nvim-lspconfig",
@@ -277,19 +277,9 @@ function L.settings()
 	require("mason-tool-installer").setup({
 		ensure_installed = L.required_tools,
 	})
-	require("mason-lspconfig").setup()
-	require("mason-lspconfig").setup_handlers({
-		-- The first entry (without a key) will be the default handler
-		-- and will be called for each installed server that doesn't have
-		-- a dedicated handler.
-		function(server_name) -- default handler (optional)
-			L.enable(server_name, {})
-		end,
-		-- Next, you can provide targeted overrides for specific servers.
-		-- For example, a handler override for the `rust_analyzer`:
-		-- ["rust_analyzer"] = function()
-		--   require("rust-tools").setup{}
-		-- end
+	require("mason-lspconfig").setup({
+		-- ensure_installed = L.required_tools,
+		automatic_installation = true,
 	})
 
 	-- Configures the null language server

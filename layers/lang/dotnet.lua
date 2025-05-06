@@ -202,7 +202,7 @@ function L.settings()
 	local dap = require("dap")
 	dap.adapters.netcoredbg = {
 		type = "executable",
-		command = require("mason-registry").get_package("netcoredbg"):get_install_path() .. "/netcoredbg",
+		command = vim.fn.exepath("netcoredbg"),
 		args = { "--interpreter=vscode" },
 		options = {
 			detached = false,
