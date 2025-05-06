@@ -66,10 +66,8 @@ function L.preparation()
 	lsp.null_ls_register_sources({
 		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
 		null_ls.builtins.diagnostics.pylint.with({
-			command = "python",
+			command = vim.fn.exepath("pylint"),
 			args = {
-				"-m",
-				"pylint",
 				"--rcfile",
 				setup.configs_path .. "/pylintrc",
 				"--from-stdin",
