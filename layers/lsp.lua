@@ -151,14 +151,16 @@ function L.plugins()
 	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
 		{
-			"williamboman/mason.nvim",
+			"mason-org/mason.nvim",
+			version="1",
 			config = false,
 		},
 		{
-			"williamboman/mason-lspconfig.nvim",
+			"mason-org/mason-lspconfig.nvim",
 			config = false,
+			version="1",
 			dependencies = {
-				"williamboman/mason.nvim",
+				"mason-org/mason.nvim",
 				"neovim/nvim-lspconfig",
 			},
 		},
