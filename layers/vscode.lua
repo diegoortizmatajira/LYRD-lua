@@ -14,10 +14,13 @@ end
 
 function L.preparation() end
 
-local function vscode_action(action)
+local function vscode_action(action, secondary_action)
 	return function()
 		local vscode = require("vscode")
 		vscode.action(action)
+		if secondary_action then
+			vscode.action(secondary_action)
+		end
 	end
 end
 
@@ -35,7 +38,16 @@ function L.settings()
 	})
 
 	commands.implement("*", {
+		{
+			cmd.LYRDViewFileTree,
+			vscode_action("workbench.action.toggleSidebarVisibility", "workbench.files.action.focusFilesExplorer"),
+		},
+		{ cmd.LYRDSearchBuffers, vscode_action("workbench.action.showAllEditors") },
+		{ cmd.LYRDSearchLiveGrep, vscode_action("workbench.action.findInFiles") },
 		{ cmd.LYRDBufferClose, vscode_action("workbench.action.closeActiveEditor") },
+		{ cmd.LYRDBufferCloseAll, vscode_action("workbench.action.closeAllEditors") },
+		{ cmd.LYRDBufferNext, vscode_action("workbench.action.nextEditorInGroup") },
+		{ cmd.LYRDBufferPrev, vscode_action("workbench.action.previousEditorInGroup") },
 		{ cmd.LYRDBufferFormat, vscode_action("editor.action.formatDocument") },
 		{ cmd.LYRDLSPFindCodeActions, vscode_action("problems.action.showQuickFixes") },
 		{ cmd.LYRDLSPFindReferences, vscode_action("editor.action.goToReferences") },
@@ -49,6 +61,12 @@ function L.settings()
 		{ cmd.LYRDLSPFindTypeDefinition, vscode_action("editor.action.goToTypeDefinition") },
 		{ cmd.LYRDLSPRename, vscode_action("editor.action.rename") },
 		{ cmd.LYRDViewQuickFixList, vscode_action("problems.action.open") },
+		{ cmd.LYRDPaneNavigateLeft, vscode_action("workbench.action.navigateLeft") },
+		{ cmd.LYRDPaneNavigateRight, vscode_action("workbench.action.navigateRight") },
+		{ cmd.LYRDPaneNavigateUp, vscode_action("workbench.action.navigateUp") },
+		{ cmd.LYRDPaneNavigateDown, vscode_action("workbench.action.navigateDown") },
+		{ cmd.LYRDBufferSplitH, vscode_action("workbench.action.splitEditorDown") },
+		{ cmd.LYRDBufferSplitV, vscode_action("workbench.action.splitEditor") },
 	})
 end
 
