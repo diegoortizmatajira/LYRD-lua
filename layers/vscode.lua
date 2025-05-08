@@ -35,6 +35,7 @@ function L.settings()
 	})
 
 	commands.implement("*", {
+		{ cmd.LYRDBufferClose, vscode_action("workbench.action.closeActiveEditor") },
 		{ cmd.LYRDBufferFormat, vscode_action("editor.action.formatDocument") },
 		{ cmd.LYRDLSPFindCodeActions, vscode_action("problems.action.showQuickFixes") },
 		{ cmd.LYRDLSPFindReferences, vscode_action("editor.action.goToReferences") },
