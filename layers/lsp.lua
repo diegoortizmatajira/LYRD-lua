@@ -278,8 +278,7 @@ function L.settings()
 		ensure_installed = L.required_tools,
 	})
 	require("mason-lspconfig").setup({
-		-- ensure_installed = L.required_tools,
-		automatic_installation = true,
+		automatic_enable = false,
 	})
 
 	-- Configures the null language server

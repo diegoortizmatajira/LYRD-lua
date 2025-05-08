@@ -9,6 +9,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD Keyboard",
+	vscode_compatible = true,
 	ai_keys = {
 		-- Accept the current completion.
 		accept = "<C-l>",
@@ -112,6 +113,7 @@ function L.keybindings()
 		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
 		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
 		{ "n", "<M-Enter>", cmd.LYRDLSPFindCodeActions },
+		{ "n", "<C-.>", cmd.LYRDLSPFindCodeActions },
 		{ "n", "<M-PageDown>", cmd.LYRDLSPGotoNextDiagnostic },
 		{ "n", "<M-PageUp>", cmd.LYRDLSPGotoPrevDiagnostic },
 		{ "n", "<M-z>", cmd.LYRDBufferToggleWrap },

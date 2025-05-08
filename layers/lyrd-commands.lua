@@ -3,7 +3,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD Commands",
-
+	vscode_compatible = true,
 	cmd = {
 		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia, true),
 		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
