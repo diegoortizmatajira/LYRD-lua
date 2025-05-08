@@ -1,4 +1,6 @@
-local L = { name = "Clipboard" }
+local L = {
+	name = "Clipboard",
+}
 
 function L.settings()
 	-- only set clipboard if not in ssh, to make sure the OSC 52

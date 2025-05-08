@@ -8,6 +8,8 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.setup.Module
 ---@field name string
+---@field condition? nil|boolean
+---@field vscode_compatible? nil|boolean
 ---@field plugins? nil|fun():nil
 ---@field preparation? nil|fun():nil
 ---@field settings? nil|fun():nil
@@ -85,6 +87,22 @@ local function load_plugins()
 	})
 end
 
+local function should_load_layer(layer)
+	if layer.condition == nil then
+		layer.condition = true
+	end
+	--- Check if the layer has a condition and if it is met
+	if not layer.condition then
+		return false
+	end
+	--- Check if vscode is running and the layer is compatible with vscode
+	if vim.g.vscode and not layer.vscode_compatible then
+		return false
+	end
+
+	return true
+end
+
 --- Calls the sequence of methods to initialize for each layer
 --- @param s LYRD.setup.Settings settings object
 function setup.load(s)
@@ -92,7 +110,10 @@ function setup.load(s)
 	---@type LYRD.setup.Module[]
 	for _, layer in ipairs(setup.config.layers) do
 		local L = require(layer)
-		table.insert(setup.config.loaded_layers, L)
+		--- Checks if the layer meets the condition to be loaded
+		if should_load_layer(L) then
+			table.insert(setup.config.loaded_layers, L)
+		end
 	end
 
 	-- Process each layer

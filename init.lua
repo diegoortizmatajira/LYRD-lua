@@ -3,7 +3,6 @@ local setup = require("LYRD.setup")
 setup.load({
 	layers = {
 		"LYRD.layers.general",
-		"LYRD.layers.neovide", -- Neovide settings
 		"LYRD.layers.icons",
 		"LYRD.layers.commands",
 		"LYRD.layers.mappings",
@@ -50,5 +49,7 @@ setup.load({
 		"LYRD.layers.lang.web-standard",
 		"LYRD.layers.extras",
 		"LYRD.layers.media",
+		"LYRD.layers.neovide", -- Neovide settings
+		"LYRD.layers.vscode", -- VsCode settings
 	},
 })
