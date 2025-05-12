@@ -43,6 +43,7 @@ function L.settings()
 			vscode_action("workbench.action.toggleSidebarVisibility", "workbench.files.action.focusFilesExplorer"),
 		},
 		{ cmd.LYRDSearchBuffers, vscode_action("workbench.action.showAllEditors") },
+		{ cmd.LYRDSearchFiles, vscode_action("workbench.action.quickOpen") },
 		{ cmd.LYRDSearchLiveGrep, vscode_action("workbench.action.findInFiles") },
 		{ cmd.LYRDBufferClose, vscode_action("workbench.action.closeActiveEditor") },
 		{ cmd.LYRDBufferCloseAll, vscode_action("workbench.action.closeAllEditors") },
@@ -67,6 +68,18 @@ function L.settings()
 		{ cmd.LYRDPaneNavigateDown, vscode_action("workbench.action.navigateDown") },
 		{ cmd.LYRDBufferSplitH, vscode_action("workbench.action.splitEditorDown") },
 		{ cmd.LYRDBufferSplitV, vscode_action("workbench.action.splitEditor") },
+		{ cmd.LYRDAIAssistant, vscode_action("workbench.panel.chat") },
+		{ cmd.LYRDGitStatus, vscode_action("workbench.view.scm") },
+		{ cmd.LYRDGitPull, vscode_action("git.pull") },
+		{ cmd.LYRDGitPush, vscode_action("git.push") },
+		{ cmd.LYRDTestSummary, vscode_action("") },
+		{ cmd.LYRDTestFunc, vscode_action("testing.runAtCursor") },
+		{ cmd.LYRDTestFile, vscode_action("testing.runCurrentFile") },
+		{ cmd.LYRDTestLast, vscode_action("testing.runAtCursor") },
+		{ cmd.LYRDTestSuite, vscode_action("testing.runAll") },
+		{ cmd.LYRDTestDebugFunc, vscode_action("testing.debugAtCursor") },
+		{ cmd.LYRDLSPShowDocumentDiagnosticLocList, vscode_action("workbench.action.tasks.toggleProblems") },
+		{ cmd.LYRDTerminalList, vscode_action("workbench.action.terminal.toggleTerminal") },
 	})
 end
 
