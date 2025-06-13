@@ -19,7 +19,11 @@ function L.plugins()
 end
 
 function L.preparation()
-	lsp.mason_ensure({})
+	lsp.mason_ensure({
+	    "lombok-nightly",
+		"java-test",
+		"java-debug-adapter",
+	})
 end
 
 function L.settings()
