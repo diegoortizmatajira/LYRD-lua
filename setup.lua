@@ -65,6 +65,7 @@ local function load_plugins()
 		-- automatically check for plugin updates
 		checker = { enabled = true },
 		defaults = { lazy = false },
+		concurrency = 50,
 		performance = {
 			rtp = { -- Disable unnecessary nvim features to speed up startup.
 
