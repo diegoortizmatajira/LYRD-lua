@@ -1,4 +1,7 @@
-local L = { name = "General" }
+local L = {
+	name = "General",
+	vscode_compatible = true,
+}
 
 function L.preparation()
 	vim.g.mapleader = ","

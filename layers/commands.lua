@@ -2,6 +2,7 @@ local utils = require("LYRD.utils")
 
 local L = {
 	name = "Commands",
+	vscode_compatible = true,
 	--- @type table<string, Command>
 	commands = {},
 }

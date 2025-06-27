@@ -5,7 +5,11 @@ local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
 local c = require("LYRD.layers.commands").command_shortcut
 
-local L = { name = "Mappings", filetype_specific_leader_prefix = "." }
+local L = {
+	name = "Mappings",
+	vscode_compatible = true,
+	filetype_specific_leader_prefix = ".",
+}
 
 ---@class LYRD.mappings.standard_mapping
 ---@field [1] string contains the key

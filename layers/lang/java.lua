@@ -7,19 +7,15 @@ local L = { name = "Java language" }
 
 function L.plugins()
 	setup.plugin({
-		{
-			"nvim-java/nvim-java",
-			opts = {
-				jdk = {
-					auto_install = false,
-				},
-			},
-		},
 	})
 end
 
 function L.preparation()
-	lsp.mason_ensure({})
+	lsp.mason_ensure({
+	    "lombok-nightly",
+		"java-test",
+		"java-debug-adapter",
+	})
 end
 
 function L.settings()

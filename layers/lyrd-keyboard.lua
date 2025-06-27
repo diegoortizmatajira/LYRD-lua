@@ -9,6 +9,7 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "LYRD Keyboard",
+	vscode_compatible = true,
 	ai_keys = {
 		-- Accept the current completion.
 		accept = "<C-l>",
@@ -99,6 +100,8 @@ function L.keybindings()
 		{ "n", "<C-r><C-r>", cmd.LYRDLSPRename },
 		{ "n", "<C-s>", cmd.LYRDBufferSave },
 		{ "n", "<C-t>", cmd.LYRDSearchLiveGrep },
+		{ "n", "<C-B>", cmd.LYRDCodeBuildAll },
+		{ "n", "<C-M-b>", cmd.LYRDCodeBuild },
 		{ "n", "<F10>", cmd.LYRDDebugStepOver },
 		{ "n", "<F11>", cmd.LYRDDebugStepInto },
 		{ "n", "<F12>", cmd.LYRDDebugStepOut },
@@ -110,6 +113,7 @@ function L.keybindings()
 		{ "n", "<M-C-[>", cmd.LYRDBufferPrev },
 		{ "n", "<M-C-]>", cmd.LYRDBufferNext },
 		{ "n", "<M-Enter>", cmd.LYRDLSPFindCodeActions },
+		{ "n", "<C-.>", cmd.LYRDLSPFindCodeActions },
 		{ "n", "<M-PageDown>", cmd.LYRDLSPGotoNextDiagnostic },
 		{ "n", "<M-PageUp>", cmd.LYRDLSPGotoPrevDiagnostic },
 		{ "n", "<M-z>", cmd.LYRDBufferToggleWrap },
@@ -275,10 +279,10 @@ function L.keybindings()
 				{ "e", cmd.LYRDCodeEditSnippet },
 			}, icons.action.move, { "x" }),
 			{ "A", cmd.LYRDLSPFindRangeCodeActions },
-			{ "B", cmd.LYRDCodeBuildAll },
+			{ "B", cmd.LYRDCodeBuild },
 			{ "I", cmd.LYRDCodeImplementInterface },
 			{ "a", cmd.LYRDLSPFindCodeActions },
-			{ "b", cmd.LYRDCodeBuild },
+			{ "b", cmd.LYRDCodeBuildAll },
 			{ "c", cmd.LYRDCodeGlobalCheck },
 			{ "d", cmd.LYRDCodeAddDocumentation },
 			{ "e", cmd.LYRDCodeSelectEnvironment },

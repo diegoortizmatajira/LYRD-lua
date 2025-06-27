@@ -153,8 +153,12 @@ function L.preparation()
 	lsp.mason_ensure({
 		"netcoredbg",
 		"roslyn",
+		"csharpier",
 	})
-	lsp.format_with_lsp(dotnet_languages, "roslyn")
+	lsp.format_with_conform("cs", {
+		"csharpier",
+	})
+	-- lsp.format_with_lsp(dotnet_languages, "roslyn")
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-dotnet"))
 end
@@ -202,7 +206,7 @@ function L.settings()
 	local dap = require("dap")
 	dap.adapters.netcoredbg = {
 		type = "executable",
-		command = require("mason-registry").get_package("netcoredbg"):get_install_path() .. "/netcoredbg",
+		command = vim.fn.exepath("netcoredbg"),
 		args = { "--interpreter=vscode" },
 		options = {
 			detached = false,
