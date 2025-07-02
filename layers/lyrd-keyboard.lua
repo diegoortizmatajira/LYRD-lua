@@ -398,6 +398,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDDatabaseUI },
 			{ "c", cmd.LYRDContainersUI },
 			{ "f", cmd.LYRDViewFileExplorer },
+			{ "F", cmd.LYRDViewFileExplorerAlt },
 			{ "g", cmd.LYRDGitUI },
 			{ "k", cmd.LYRDKubernetesUI },
 			{ "t", cmd.LYRDTerminal },
