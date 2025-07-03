@@ -59,6 +59,7 @@ function L.preparation()
 		"pyright",
 		"pydocstyle",
 		"ruff",
+		"yapf",
 	})
 
 	local null_ls = require("null-ls")

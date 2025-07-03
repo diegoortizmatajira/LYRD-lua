@@ -68,6 +68,9 @@ end
 function L.preparation()
 	-- Registers code actions in NULL LS
 	local lsp = require("LYRD.layers.lsp")
+	lsp.mason_ensure({
+		"marksman",
+	})
 	lsp.register_code_actions({ "markdown" }, function(_)
 		local result = {}
 		-- Checks if the cursor is in a table

@@ -32,11 +32,18 @@ end
 
 function L.preparation()
 	lsp.mason_ensure({
+		"css-lsp",
+		"emmet-language-server",
+		"emmet-ls",
+		"eslint-lsp",
 		"json-lsp",
 		"json-to-struct",
-		"yaml-language-server",
+		"lemminx",
 		"prettier",
-		"emmet-language-server",
+		"taplo",
+		"yaml-language-server",
+		"yamlfmt",
+		"yamllint",
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({

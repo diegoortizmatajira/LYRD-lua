@@ -166,6 +166,9 @@ function L.plugins()
 		},
 		{
 			"nvimtools/none-ls.nvim",
+			dependencies = {
+				"nvimtools/none-ls-extras.nvim",
+			},
 			config = false,
 		},
 		{
@@ -249,25 +252,9 @@ end
 function L.preparation()
 	add_mason_bin_to_path()
 	L.mason_ensure({
-		"angular-language-server",
 		"bash-language-server",
-		"clang-format",
-		"css-lsp",
-		"dockerfile-language-server",
 		"editorconfig-checker",
-		"emmet-ls",
-		"eslint-lsp",
-		"firefox-debug-adapter",
-		"marksman",
-		"taplo",
-		"lemminx",
-		"node-debug2-adapter",
-		"sql-formatter",
-		"sqlls",
 		"vim-language-server",
-		"yamlfmt",
-		"yamllint",
-		"yapf",
 	})
 	setup_default_providers()
 end
@@ -428,10 +415,16 @@ function L.format_with_lsp(filetype, lsp_name)
 end
 
 --- Configures the given LSP server to format buffers for a given filetype.
---- @param filetype string filetype to format
+--- @param filetype string | string[] filetype(s) to format
 --- @param format_settings table Settings for the formatter
 function L.format_with_conform(filetype, format_settings)
-	L.conform_formatters[filetype] = format_settings
+	if type(filetype) == "string" then
+		L.conform_formatters[filetype] = format_settings
+	elseif type(filetype) == "table" then
+		for _, ft in pairs(filetype) do
+			L.conform_formatters[ft] = format_settings
+		end
+	end
 end
 
 function L.complete()

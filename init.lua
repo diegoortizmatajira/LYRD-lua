@@ -39,6 +39,7 @@ setup.load({
 		"LYRD.layers.lang.dotnet",
 		"LYRD.layers.lang.go",
 		"LYRD.layers.lang.java",
+		"LYRD.layers.lang.cpp",
 		"LYRD.layers.lang.kotlin",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.markdown",

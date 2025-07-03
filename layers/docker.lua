@@ -1,11 +1,18 @@
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Docker" }
 
 function L.toggle_lazydocker()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.toggle_external_app_terminal("lazydocker")
+end
+
+function L.preparation()
+	lsp.mason_ensure({
+		"dockerfile-language-server",
+	})
 end
 
 function L.settings()

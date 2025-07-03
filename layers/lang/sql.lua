@@ -13,6 +13,8 @@ function L.preparation()
 	local default_dialect = "tsql"
 	lsp.mason_ensure({
 		"sqlfluff",
+		"sql-formatter",
+		"sqlls",
 	})
 	lsp.null_ls_register_sources({
 		null_ls.builtins.diagnostics.sqlfluff.with({

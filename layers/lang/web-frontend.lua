@@ -16,6 +16,8 @@ function L.preparation()
 	lsp.mason_ensure({
 		"typescript-language-server",
 		"vue-language-server",
+		"angular-language-server",
+		"node-debug2-adapter",
 	})
 end
 
