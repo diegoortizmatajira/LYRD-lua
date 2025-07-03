@@ -6,15 +6,19 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Java language" }
 
 function L.plugins()
-	setup.plugin({
-	})
+	setup.plugin({})
 end
 
 function L.preparation()
 	lsp.mason_ensure({
-	    "lombok-nightly",
+		"jdtls",
+		"lombok-nightly",
 		"java-test",
 		"java-debug-adapter",
+		"google-java-format",
+	})
+	lsp.format_with_conform("java", {
+		"google-java-format",
 	})
 end
 
