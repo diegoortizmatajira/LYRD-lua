@@ -250,6 +250,7 @@ function L.plugins()
 						{ name = "luasnip" },
 						{ name = "codeium" },
 						{ name = "cmp_tabnine" },
+						{ name = "easy-dotnet" },
 					}, {
 						{ name = "buffer" },
 						{ name = "path" },

@@ -255,7 +255,6 @@ function L.settings()
 	dap.listeners.before["event_terminated"]["easy-dotnet"] = function()
 		L.debug_dll = nil
 	end
-	local dotnet = require("easy-dotnet")
 	for _, lang in ipairs(dotnet_languages) do
 		if not dap.configurations[lang] then
 			dap.configurations[lang] = {
@@ -264,12 +263,19 @@ function L.settings()
 					name = "Launch file",
 					request = "launch",
 					env = function()
+						local dotnet = require("easy-dotnet")
 						local dll = L.ensure_dll()
+						if not dll then
+							error("No debug dll found, please build the project first.")
+						end
 						local vars = dotnet.get_environment_variables(dll.project_name, dll.absolute_project_path)
 						return vars or nil
 					end,
 					program = function()
 						local dll = L.ensure_dll()
+						if not dll then
+							error("No debug dll found, please build the project first.")
+						end
 						local co = coroutine.running()
 						rebuild_project(co, dll.project_path)
 						if not file_exists(dll.target_path) then
@@ -279,6 +285,9 @@ function L.settings()
 					end,
 					cwd = function()
 						local dll = L.ensure_dll()
+						if not dll then
+							error("No debug dll found, please build the project first.")
+						end
 						return dll.absolute_project_path
 					end,
 				},

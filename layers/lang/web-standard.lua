@@ -107,6 +107,7 @@ function L.complete()
 			},
 		},
 	})
+	lsp.enable("lemminx", {})
 end
 
 return L
