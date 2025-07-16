@@ -268,7 +268,9 @@ function L.settings()
 						if not dll then
 							error("No debug dll found, please build the project first.")
 						end
-						local vars = dotnet.get_environment_variables(dll.project_name, dll.absolute_project_path)
+						-- Last false value, causes the profile not to be selected automatically, but asked to be selected.
+						local vars =
+							dotnet.get_environment_variables(dll.project_name, dll.absolute_project_path, false)
 						return vars or nil
 					end,
 					program = function()
