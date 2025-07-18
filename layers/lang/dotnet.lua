@@ -196,6 +196,7 @@ function L.preparation()
 	})
 	lsp.format_with_conform("cs", {
 		"csharpier",
+		lsp_format = "prefer",
 	})
 	-- lsp.format_with_lsp(dotnet_languages, "roslyn")
 	local test = require("LYRD.layers.test")

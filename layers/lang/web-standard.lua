@@ -1,7 +1,5 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Web Standard Languages" }
 
@@ -16,7 +14,7 @@ function L.plugins()
 			end,
 			ft = { "js" },
 		},
-		"b0o/schemastore.nvim",
+		{ "b0o/schemastore.nvim" },
 		{
 			"windwp/nvim-ts-autotag",
 			event = "InsertEnter",
@@ -41,6 +39,7 @@ function L.preparation()
 		"lemminx",
 		"prettier",
 		"taplo",
+		"xmlformatter",
 		"yaml-language-server",
 		"yamlfmt",
 		"yamllint",
@@ -50,6 +49,10 @@ function L.preparation()
 		null_ls.builtins.formatting.prettier.with({ -- For most standard file types
 			extra_filetypes = { "htmldjango" },
 		}),
+	})
+	lsp.format_with_conform("xml", {
+		"xmlformatter",
+		lsp_format = "prefer",
 	})
 end
 
@@ -99,9 +102,9 @@ function L.complete()
 				"javascript",
 				"javascriptreact",
 				"less",
+				"pug",
 				"sass",
 				"scss",
-				"pug",
 				"typescriptreact",
 				"vue",
 			},
