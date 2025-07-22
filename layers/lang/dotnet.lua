@@ -192,11 +192,11 @@ function L.preparation()
 		"roslyn",
 		"csharpier",
 	})
-	lsp.format_with_conform("cs", {
-		"csharpier",
-		lsp_format = "prefer",
-	})
-	-- lsp.format_with_lsp(dotnet_languages, "roslyn")
+	-- lsp.format_with_conform("cs", {
+	-- 	"csharpier",
+	-- 	lsp_format = "prefer",
+	-- })
+	lsp.format_with_lsp(dotnet_languages, "roslyn")
 	local test = require("LYRD.layers.test")
 	-- test.configure_adapter(require("neotest-dotnet"))
 	test.configure_adapter(require("neotest-vstest"))
