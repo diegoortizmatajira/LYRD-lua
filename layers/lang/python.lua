@@ -2,7 +2,6 @@ local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 
 local L = { name = "Python language" }
 
@@ -94,35 +93,15 @@ function L.settings()
 end
 
 function L.complete()
+	local virtual_env = os.getenv("VIRTUAL_ENV") or ""
 	lsp.enable("pyright", {
 		settings = {
-			pyright = {
-				disableOrganizeImports = false,
-			},
 			python = {
 				venvPath = virtual_env,
-				analysis = {
-					autoImportCompletions = true,
-					typeCheckingMode = "standard",
-					useLibraryCodeForTypes = true,
-				},
 			},
 		},
 	})
-	lsp.enable("ruff", {
-		init_options = {
-			settings = {
-				lineLength = 120,
-				lint = {
-					enable = true,
-					preview = true,
-				},
-				format = {
-					preview = true,
-				},
-			},
-		},
-	})
+	lsp.enable("ruff", {})
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
 		callback = function(args)

@@ -142,6 +142,7 @@ local L = {
 		step_back = " ",
 		run_last = " ",
 		terminate = " ",
+		disconnect = " ",
 		current_line = " ",
 	},
 	code = {
