@@ -165,6 +165,16 @@ function L.plugins()
 			},
 		},
 		{
+			"tamago324/nlsp-settings.nvim",
+			opts = {
+				config_home = setup.configs_path .. "/lsp",
+				local_settings_dir = ".lsp",
+				local_settings_root_markers_fallback = { ".git" },
+				append_default_schemas = true,
+				loader = "json",
+			},
+		},
+		{
 			"nvimtools/none-ls.nvim",
 			dependencies = {
 				"nvimtools/none-ls-extras.nvim",
@@ -260,6 +270,11 @@ function L.preparation()
 end
 
 function L.settings()
+	local lspconfig = require("lspconfig")
+	lspconfig.util.default_config = vim.tbl_extend("force", lspconfig.util.default_config, {
+		capabilities = plugged_capabilities(),
+	})
+
 	require("mason").setup(mason_opts) -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
 		ensure_installed = L.required_tools,
