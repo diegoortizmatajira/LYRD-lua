@@ -124,14 +124,7 @@ function L.settings()
 end
 
 function L.complete()
-	lsp.enable("gopls", {
-		settings = {
-			gopls = {
-				gofumpt = true,
-				buildFlags = { "-tags=wireinject,integration" },
-			},
-		},
-	})
+	lsp.enable("gopls", {})
 end
 
 local function ends_with(str, ending)

@@ -11,8 +11,6 @@ local L = {
 
 local dotnet_languages = { "cs", "vb" }
 
--- local omnisharp_settings = require("LYRD.configs.omnisharp")
-
 local function get_secret_path(secret_guid)
 	if secret_guid == nil then
 		return ""
