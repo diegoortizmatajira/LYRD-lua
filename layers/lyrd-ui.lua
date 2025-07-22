@@ -150,7 +150,6 @@ function L.plugins()
 				startify.section.header.val = header()
 				startify.section.top_buttons.val = {
 					startify.button("e", icons.file.new .. "  New file", ":ene <BAR> startinsert <CR>"),
-					startify.button("p", icons.other.project .. "  Select Project", ":Telescope projects<CR>"),
 					startify.button("w", icons.other.workspace .. "  Select Workspaces", ":Telescope workspaces<CR>"),
 				}
 				startify.section.mru.val[2].val = "Files"
@@ -190,42 +189,6 @@ function L.plugins()
 				telescope.load_extension("workspaces")
 			end,
 			dependencies = { "nvim-telescope/telescope.nvim" },
-			lazy = true,
-		},
-		{
-			"zeioth/project.nvim",
-			opts = {
-				detection_methods = {
-					"lsp",
-					"pattern",
-				},
-				patterns = {
-					".git",
-					"_darcs",
-					".hg",
-					".bzr",
-					".svn",
-					"Makefile",
-					"package.json",
-					"pom.xml",
-					".solution",
-					".solution.toml",
-				},
-				exclude_dirs = {
-					"~/",
-				},
-				exclude_chdir = {
-					filetype = { "", "OverseerList", "alpha" },
-					buftype = { "nofile", "terminal" },
-				},
-			},
-			config = function(_, opts)
-				require("project_nvim").setup(opts)
-				local telescope = require("telescope")
-				telescope.load_extension("ui-select")
-			end,
-			dependencies = { "nvim-telescope/telescope.nvim" },
-			lazy = true,
 		},
 		{
 			"stevearc/dressing.nvim",
