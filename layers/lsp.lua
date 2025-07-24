@@ -165,16 +165,6 @@ function L.plugins()
 			},
 		},
 		{
-			"tamago324/nlsp-settings.nvim",
-			opts = {
-				config_home = setup.configs_path .. "/lsp",
-				local_settings_dir = ".lsp",
-				local_settings_root_markers_fallback = { ".git" },
-				append_default_schemas = true,
-				loader = "json",
-			},
-		},
-		{
 			"nvimtools/none-ls.nvim",
 			dependencies = {
 				"nvimtools/none-ls-extras.nvim",
@@ -382,15 +372,6 @@ function L.settings()
 		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
 		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
 	})
-end
-
-function L.enable(server, options)
-	if capabilities == nil then
-		capabilities = plugged_capabilities()
-	end
-	options = options or {}
-	options.capabilities = options.capabilities or capabilities
-	require("lspconfig")[server].setup(options)
 end
 
 function L.mason_ensure(tools)

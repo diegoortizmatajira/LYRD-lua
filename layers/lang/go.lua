@@ -124,7 +124,7 @@ function L.settings()
 end
 
 function L.complete()
-	lsp.enable("gopls", {})
+	vim.lsp.enable("gopls")
 end
 
 local function ends_with(str, ending)

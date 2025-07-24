@@ -29,7 +29,7 @@ end
 function L.settings() end
 
 function L.complete()
-	lsp.enable("sqlls")
+	vim.lsp.enable("sqlls")
 end
 
 return L

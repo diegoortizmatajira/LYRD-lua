@@ -28,7 +28,7 @@ end
 function L.keybindings() end
 
 function L.complete()
-	lsp.enable("cmake", {})
+	vim.lsp.enable("cmake")
 end
 
 return L

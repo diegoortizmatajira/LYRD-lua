@@ -31,7 +31,7 @@ function L.preparation()
 end
 
 function L.complete()
-	lsp.enable("lua_ls", {})
+	vim.lsp.enable("lua_ls")
 end
 
 return L

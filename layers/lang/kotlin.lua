@@ -18,7 +18,7 @@ function L.settings() end
 function L.keybindings() end
 
 function L.complete()
-	lsp.enable("kotlin_language_server", {})
+	vim.lsp.enable("kotlin_language_server")
 end
 
 return L

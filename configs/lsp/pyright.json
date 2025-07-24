@@ -1,6 +1,0 @@
-{
-    "pyright.disableOrganizeImports": false,
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.typeCheckingMode": "standard",
-    "python.analysis.useLibraryCodeForTypes": true
-}

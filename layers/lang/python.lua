@@ -93,15 +93,7 @@ function L.settings()
 end
 
 function L.complete()
-	local virtual_env = os.getenv("VIRTUAL_ENV") or ""
-	lsp.enable("pyright", {
-		settings = {
-			python = {
-				venvPath = virtual_env,
-			},
-		},
-	})
-	lsp.enable("ruff", {})
+	vim.lsp.enable({ "pyright", "ruff" })
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
 		callback = function(args)

@@ -31,13 +31,7 @@ function L.settings()
 end
 
 function L.complete()
-	lsp.enable("jdtls", {
-		handlers = {
-			-- By assigning an empty function, you can remove the notifications
-			-- printed to the cmd
-			["$/progress"] = function(_, _, _) end,
-		},
-	})
+	vim.lsp.enable("jdtls")
 end
 
 return L

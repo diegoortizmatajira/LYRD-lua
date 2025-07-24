@@ -57,60 +57,13 @@ function L.preparation()
 end
 
 function L.complete()
-	lsp.enable("jsonls", {
-		settings = {
-			json = {
-				schemas = require("schemastore").json.schemas(),
-				validate = {
-					enabled = true,
-				},
-			},
-		},
+	vim.lsp.enable({
+		"jsonls",
+		"yamlls",
+		"taplo",
+		"emmet_language_server",
+		"lemminx",
 	})
-	lsp.enable("yamlls", {
-		settings = {
-			yaml = {
-				hover = true,
-				completion = true,
-				validate = true,
-				schemaStore = {
-					enable = true,
-					url = "https://www.schemastore.org/api/json/catalog.json",
-				},
-				schemas = require("schemastore").yaml.schemas(),
-			},
-		},
-	})
-	lsp.enable("taplo", {
-		settings = {
-			evenBetterToml = {
-				schema = {
-					-- add additional schemas
-					associations = {
-						["example\\.toml$"] = "https://json.schemastore.org/example.json",
-					},
-				},
-			},
-		},
-	})
-	lsp.enable("emmet_language_server", {
-		settings = {
-			filetypes = {
-				"css",
-				"eruby",
-				"html",
-				"javascript",
-				"javascriptreact",
-				"less",
-				"pug",
-				"sass",
-				"scss",
-				"typescriptreact",
-				"vue",
-			},
-		},
-	})
-	lsp.enable("lemminx", {})
 end
 
 return L

@@ -1,0 +1,7 @@
+return {
+--    cmd = {},
+--    filetypes = {},
+--    settings = {},
+--    root_markers = {},
+--    capabilities = {},
+}

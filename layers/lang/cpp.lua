@@ -27,6 +27,6 @@ end
 function L.keybindings() end
 
 function L.complete()
-	lsp.enable("clangd", {})
+	vim.lsp.enable("clangd")
 end
 return L
