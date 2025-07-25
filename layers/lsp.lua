@@ -12,7 +12,6 @@ local L = {
 	conform_formatters = {},
 }
 
-local capabilities = nil
 local mason_opts = {
 	ui = {
 		check_outdated_packages_on_open = true,
@@ -326,6 +325,7 @@ function L.settings()
 		underline = true,
 		severity_sort = true,
 		virtual_text = false,
+		current_line = true,
 		virtual_lines = true,
 	}
 
@@ -356,8 +356,18 @@ function L.settings()
 		{ cmd.LYRDLSPSignatureHelp, vim.lsp.buf.signature_help },
 		{ cmd.LYRDLSPFindTypeDefinition, vim.lsp.buf.type_definition },
 		{ cmd.LYRDLSPRename, vim.lsp.buf.rename },
-		{ cmd.LYRDLSPGotoNextDiagnostic, vim.diagnostic.goto_next },
-		{ cmd.LYRDLSPGotoPrevDiagnostic, vim.diagnostic.goto_prev },
+		{
+			cmd.LYRDLSPGotoNextDiagnostic,
+			function()
+				vim.diagnostic.jump({ count = 1 })
+			end,
+		},
+		{
+			cmd.LYRDLSPGotoPrevDiagnostic,
+			function()
+				vim.diagnostic.jump({ count = -1 })
+			end,
+		},
 		{ cmd.LYRDLSPShowDocumentDiagnosticLocList, ":Trouble diagnostics toggle filter.buf=0" },
 		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":Trouble diagnostics toggle" },
 		{ cmd.LYRDViewLocationList, ":Trouble loclist toggle" },
