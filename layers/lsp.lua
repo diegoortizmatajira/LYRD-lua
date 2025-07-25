@@ -181,13 +181,6 @@ function L.plugins()
 			config = false,
 		},
 		{
-			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-			config = function()
-				require("lsp_lines").setup()
-			end,
-			opts = {},
-		},
-		{
 			"whoissethdaniel/mason-tool-installer.nvim",
 			config = false,
 			dependencies = { "williamboman/mason.nvim" },
