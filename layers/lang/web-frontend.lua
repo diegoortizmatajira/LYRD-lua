@@ -19,6 +19,8 @@ function L.preparation()
 		"node-debug2-adapter",
 		"vtsls",
 	})
+	lsp.format_with_lsp("vue", "vue_ls")
+	lsp.format_with_lsp("ts", "vtsls")
 end
 
 function L.settings() end
