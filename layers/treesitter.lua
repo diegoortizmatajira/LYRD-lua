@@ -2,7 +2,22 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Treesitter" }
+local L = {
+	name = "Treesitter",
+	required = {
+		"query",
+		"regex",
+		"bash",
+		"fish",
+		"diff",
+		"editorconfig",
+		"nginx",
+		"pem",
+		"tmux",
+		"vim",
+		"vimdoc",
+	},
+}
 
 function L.plugins()
 	setup.plugin({
@@ -46,32 +61,22 @@ function L.plugins()
 	})
 end
 
+--- Ensure that the parsers are installed
+--- @param parsers string|string[] List of parsers to ensure are installed
+function L.ensureParser(parsers)
+	if type(parsers) == "string" then
+		parsers = { parsers }
+	end
+	for _, parser in ipairs(parsers) do
+		if not vim.tbl_contains(L.required, parser) then
+			table.insert(L.required, parser)
+		end
+	end
+end
+
 function L.settings()
 	require("nvim-treesitter.configs").setup({
-		ensure_installed = {
-			"c",
-			"c_sharp",
-			"cpp",
-			"css",
-			"csv",
-			"go",
-			"http",
-			"json",
-			"java",
-			"lua",
-			"python",
-			"query",
-			"rust",
-			"javascript",
-			"typescript",
-			"vue",
-			"http",
-			"yaml",
-			"gomod",
-			"gosum",
-			"gotmpl",
-			"regex",
-		},
+		ensure_installed = L.required,
 		highlight = {
 			enable = true,
 		},

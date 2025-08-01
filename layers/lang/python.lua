@@ -61,6 +61,12 @@ function L.preparation()
 		"yapf",
 	})
 
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"python",
+		"htmldjango",
+	})
+
 	local null_ls = require("null-ls")
 
 	lsp.null_ls_register_sources({

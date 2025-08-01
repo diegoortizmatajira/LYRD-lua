@@ -226,6 +226,18 @@ function L.git_flow_publish(what)
 		)
 	end
 end
+
+function L.preparation()
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"gitattributes",
+		"gitcommit",
+		"gitignore",
+		"git_config",
+		"git_rebase",
+	})
+end
+
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },

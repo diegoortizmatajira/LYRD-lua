@@ -31,6 +31,12 @@ function L.preparation()
 			extra_filetypes = { "htmldjango" },
 		}),
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"html",
+		"css",
+		"scss",
+	})
 end
 
 function L.complete()

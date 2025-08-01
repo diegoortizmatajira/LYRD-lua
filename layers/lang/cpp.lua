@@ -16,6 +16,11 @@ function L.preparation()
 	lsp.format_with_conform({ "cpp", "c" }, {
 		"clang-format",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"c",
+		"cpp",
+	})
 end
 
 function L.settings()

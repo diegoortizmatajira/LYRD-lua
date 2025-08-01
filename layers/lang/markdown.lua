@@ -71,6 +71,11 @@ function L.preparation()
 	lsp.mason_ensure({
 		"marksman",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"markdown",
+		"mermaid",
+	})
 	lsp.register_code_actions({ "markdown" }, function(_)
 		local result = {}
 		-- Checks if the cursor is in a table

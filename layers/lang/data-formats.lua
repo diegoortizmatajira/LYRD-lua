@@ -26,6 +26,17 @@ function L.preparation()
 		"xmlformatter",
 		lsp_format = "prefer",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+	    "scheme",
+		"yaml",
+		"json",
+		"json5",
+		"jsonc",
+		"toml",
+		"xml",
+		"proto"
+	})
 end
 
 function L.settings() end

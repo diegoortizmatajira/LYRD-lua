@@ -22,6 +22,10 @@ function L.preparation()
 			["http"] = "http",
 		},
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"http",
+	})
 end
 
 function L.keybindings()

@@ -24,6 +24,10 @@ function L.preparation()
 			extra_args = { "--dialect", default_dialect }, -- change to your dialect
 		}),
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"sql",
+	})
 end
 
 function L.settings() end

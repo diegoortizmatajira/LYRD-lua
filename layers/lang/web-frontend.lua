@@ -37,6 +37,16 @@ function L.preparation()
 	})
 	lsp.format_with_lsp("vue", "vue_ls")
 	lsp.format_with_lsp("ts", "vtsls")
+
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"javascript",
+		"typescript",
+		"vue",
+		"tsx",
+		"angular",
+	})
+
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-vitest"))
 	test.configure_adapter(require("neotest-jest"))

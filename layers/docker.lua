@@ -13,6 +13,10 @@ function L.preparation()
 	lsp.mason_ensure({
 		"dockerfile-language-server",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"dockerfile",
+	})
 end
 
 function L.settings()

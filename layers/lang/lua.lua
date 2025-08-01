@@ -28,6 +28,13 @@ function L.preparation()
 		"stylua",
 	})
 	lsp.format_with_conform("lua", { "stylua" })
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"lua",
+		"luap",
+		"luau",
+		"luadoc",
+	})
 end
 
 function L.complete()

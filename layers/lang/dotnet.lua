@@ -192,6 +192,11 @@ function L.preparation()
 		"roslyn",
 		"csharpier",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"c_sharp",
+		"fsharp",
+	})
 	-- lsp.format_with_conform("cs", {
 	-- 	"csharpier",
 	-- 	lsp_format = "prefer",

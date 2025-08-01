@@ -17,6 +17,12 @@ function L.preparation()
 		"java-debug-adapter",
 		"google-java-format",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"java",
+		"javadoc",
+		"properties",
+	})
 	lsp.format_with_conform("java", {
 		"google-java-format",
 	})

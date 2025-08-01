@@ -76,6 +76,13 @@ function L.preparation()
 		"gotests",
 		"impl",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"go",
+		"gomod",
+		"gosum",
+		"gotmpl",
+	})
 
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({

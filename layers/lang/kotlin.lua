@@ -11,6 +11,10 @@ function L.preparation()
 	lsp.mason_ensure({
 		"kotlin-language-server",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"kotlin",
+	})
 end
 
 function L.settings() end

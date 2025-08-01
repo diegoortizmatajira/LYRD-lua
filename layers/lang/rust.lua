@@ -17,6 +17,10 @@ function L.preparation()
 	lsp.mason_ensure({
 		"rust-analyzer",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"rust",
+	})
 end
 
 function L.settings() end
