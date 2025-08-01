@@ -46,6 +46,7 @@ setup.load({
 		"LYRD.layers.lang.python",
 		"LYRD.layers.lang.rust",
 		"LYRD.layers.lang.sql",
+		"LYRD.layers.lang.data-formats",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
 		"LYRD.layers.extras",

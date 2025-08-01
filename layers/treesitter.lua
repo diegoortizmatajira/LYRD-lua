@@ -62,6 +62,7 @@ function L.settings()
 			"python",
 			"query",
 			"rust",
+			"javascript",
 			"typescript",
 			"vue",
 			"http",

@@ -6,8 +6,23 @@ local L = { name = "Web frontend" }
 function L.plugins()
 	setup.plugin({
 		{
+			"pangloss/vim-javascript",
+			init = function()
+				vim.g.javascript_plugin_jsdoc = 1
+				vim.g.javascript_plugin_ngdoc = 1
+				vim.g.javascript_plugin_flow = 1
+			end,
+			ft = { "js" },
+		},
+		{
 			"leafgarland/typescript-vim",
 			ft = { "ts", "tsx", "vue" },
+		},
+		{
+			"marilari88/neotest-vitest",
+		},
+		{
+			"nvim-neotest/neotest-jest",
 		},
 	})
 end
@@ -17,10 +32,14 @@ function L.preparation()
 		"vue-language-server",
 		"angular-language-server",
 		"node-debug2-adapter",
+		"eslint-lsp",
 		"vtsls",
 	})
 	lsp.format_with_lsp("vue", "vue_ls")
 	lsp.format_with_lsp("ts", "vtsls")
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-vitest"))
+	test.configure_adapter(require("neotest-jest"))
 end
 
 function L.settings() end
