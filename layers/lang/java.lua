@@ -6,7 +6,18 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = { name = "Java language" }
 
 function L.plugins()
-	setup.plugin({})
+	setup.plugin({
+		{
+			"eatgrass/maven.nvim",
+			cmd = { "Maven", "MavenExec" },
+			dependencies = "nvim-lua/plenary.nvim",
+			config = function()
+				require("maven").setup({
+					executable = "./mvnw",
+				})
+			end,
+		},
+	})
 end
 
 function L.preparation()
