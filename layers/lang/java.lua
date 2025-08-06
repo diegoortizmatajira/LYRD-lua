@@ -17,6 +17,10 @@ function L.plugins()
 				})
 			end,
 		},
+		{
+			"nvim-java/nvim-java",
+			opts = {},
+		},
 	})
 end
 
