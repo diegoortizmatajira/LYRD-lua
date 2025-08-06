@@ -31,7 +31,7 @@ function L.preparation()
 	lsp.mason_ensure({
 		"vue-language-server",
 		"angular-language-server",
-		"node-debug2-adapter",
+		"js-debug-adapter",
 		"eslint-lsp",
 		"vtsls",
 	})
