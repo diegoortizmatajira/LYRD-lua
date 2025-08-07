@@ -138,6 +138,7 @@ function L.keybindings()
 			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit },
+			{ "d", cmd.LYRDAIGenerateDocumentation },
 		}, icons.other.ia, { "x" }),
 		menu_header("i", "Images", {
 			{ "p", cmd.LYRDPasteImage },
