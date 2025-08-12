@@ -56,8 +56,8 @@ function L.plugins()
 			opts = {},
 		},
 		{
-			"nvim-neotest/neotest-go",
-			ft = "go", -- only load on go files
+			"fredrikaverpil/neotest-golang",
+			ft = "go",
 		},
 	})
 end
@@ -91,7 +91,7 @@ function L.preparation()
 		null_ls.builtins.code_actions.gomodifytags,
 	})
 	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-go"))
+	test.configure_adapter(require("neotest-golang"))
 end
 
 -- This function to detect go html templates in html files
