@@ -8,7 +8,7 @@ local L = {
 }
 local function setup_dap()
 	local dap = require("dap")
-	dap.adapters.codelldb = require("LYRD.configs.codelldb")
+	dap.adapters.codelldb = require("LYRD.shared.dap.codelldb")
 	local debug_configuration = {
 		{
 			name = "runit",
