@@ -390,10 +390,14 @@ function L.keybindings()
 			{ "Q", cmd.LYRDWindowForceCloseAll },
 		}, icons.action.exit),
 		menu_header("r", "Run", {
-			menu_header("r", "REPL", {
+			menu_header("R", "REPL", {
 				{ "v", cmd.LYRDReplView },
 				{ "r", cmd.LYRDReplRestart },
 			}, icons.other.command),
+			{ "r", cmd.LYRDTasksRun },
+			{ "v", cmd.LYRDTasksToggle },
+			{ "T", cmd.LYRDTasksConfigure },
+			{ "L", cmd.LYRDTasksConfigureLaunch },
 		}, icons.code.run),
 		menu_header("s", "Services", {
 			{ "d", cmd.LYRDDatabaseUI },

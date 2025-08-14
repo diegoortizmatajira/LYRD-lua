@@ -36,6 +36,9 @@ local L = {
 		highlighter = "󰸱 ",
 		filetree = "󰙅 ",
 		check = "✓",
+		task = "󰄴 ",
+		launch = " ",
+		eye = " ",
 	},
 	images = {
 		default = " ",
@@ -106,6 +109,7 @@ local L = {
 		repeat_once = "󰑘 ",
 		replace_text = " ",
 		replace_in_files = "󰬳 ",
+		run_task="󱖑 "
 	},
 	arrow = {
 		swap = " ",

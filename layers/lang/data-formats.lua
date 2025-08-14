@@ -7,6 +7,10 @@ function L.plugins()
 	setup.plugin({
 
 		{ "b0o/schemastore.nvim" },
+		{
+			"VPavliashvili/json-nvim",
+			ft = "json", -- only load for json filetype
+		},
 	})
 end
 
@@ -52,13 +56,8 @@ function L.preparation()
 		"yamlfmt",
 		"yamllint",
 	})
-	lsp.format_with_conform("json", {
-		"prettier",
-	})
-	lsp.format_with_conform("xml", {
-		"xmlformatter",
-		lsp_format = "prefer",
-	})
+	lsp.format_with_conform({ "json", "jsonc" }, { "prettier" })
+	lsp.format_with_conform("xml", { "xmlformatter", lsp_format = "prefer" })
 
 	lsp.null_ls_register_sources({
 		jsonlint(),
@@ -77,7 +76,15 @@ function L.preparation()
 	})
 end
 
-function L.settings() end
+function L.settings()
+	-- Set up filetype for JSON configuration files to accept comments
+	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+		pattern = { "launch.json", "tasks.json" },
+		callback = function()
+			vim.bo.filetype = "jsonc"
+		end,
+	})
+end
 
 function L.keybindings() end
 

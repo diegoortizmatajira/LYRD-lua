@@ -4,6 +4,17 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Tasks" }
 
+local function configure(filename)
+	return function()
+		-- check if the filename path exists, or create it otherwise, then open it
+		if vim.fn.filereadable(filename) == 0 then
+			vim.fn.mkdir(vim.fn.fnamemodify(filename, ":h"), "p")
+			-- Create an empty file if it doesn't exist
+			vim.fn.writefile({}, filename)
+		end
+		vim.cmd("edit " .. filename)
+	end
+end
 function L.plugins()
 	setup.plugin({
 		{
@@ -23,7 +34,12 @@ function L.plugins()
 end
 
 function L.settings()
-	commands.implement("*", {})
+	commands.implement("*", {
+		{ cmd.LYRDTasksToggle, ":OverseerToggle" },
+		{ cmd.LYRDTasksRun, ":OverseerRun" },
+		{ cmd.LYRDTasksConfigure, configure("./.vscode/tasks.json") },
+		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json") },
+	})
 end
 
 return L

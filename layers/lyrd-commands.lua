@@ -198,6 +198,10 @@ local L = {
 		LYRDPasteImage = Command:new("Paste image", nil, icons.images.add),
 		LYRDInsertImage = Command:new("Insert image", nil, icons.images.search),
 		LYRDHardModeToggle = Command:new("Toggle hard mode", nil, icons.action.toggle_on),
+		LYRDTasksToggle = Command:new("Toggle tasks view", nil, icons.other.eye),
+		LYRDTasksRun = Command:new("Run task", nil, icons.action.run_task),
+		LYRDTasksConfigure = Command:new("Configure tasks", nil, icons.other.task),
+		LYRDTasksConfigureLaunch = Command:new("Configure launch profile", nil, icons.other.launch),
 	},
 }
 
