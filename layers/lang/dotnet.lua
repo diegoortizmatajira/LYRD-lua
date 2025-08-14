@@ -6,7 +6,6 @@ local icons = require("LYRD.layers.icons")
 
 local L = {
 	name = "Dotnet languages: C#, F#, Vb",
-	debug_dll = nil,
 }
 
 local dotnet_languages = { "cs", "vb" }
@@ -28,38 +27,6 @@ local function get_secret_path(secret_guid)
 		path = secret_path
 	end
 	return path
-end
-
-local function rebuild_project(co, path)
-	local spinner = require("easy-dotnet.ui-modules.spinner").new()
-	spinner:start_spinner("Building")
-	vim.fn.jobstart(string.format("dotnet build %s", path), {
-		on_exit = function(_, return_code)
-			if return_code == 0 then
-				spinner:stop_spinner("Built successfully")
-			else
-				spinner:stop_spinner("Build failed with exit code " .. return_code, vim.log.levels.ERROR)
-				error("Build failed")
-			end
-			coroutine.resume(co)
-		end,
-	})
-	coroutine.yield()
-end
-
-function L.ensure_dll()
-	local dotnet = require("easy-dotnet")
-	if L.debug_dll ~= nil then
-		return L.debug_dll
-	end
-	local dll = dotnet.get_debug_dll()
-	L.debug_dll = dll
-	return dll
-end
-
-local function file_exists(path)
-	local stat = vim.loop.fs_stat(path)
-	return stat and stat.type == "file"
 end
 
 function L.plugins()
@@ -247,59 +214,8 @@ function L.settings()
 	})
 
 	-- DEBUG ADAPTER
-	local dap = require("dap")
-	dap.adapters.netcoredbg = {
-		type = "executable",
-		command = vim.fn.exepath("netcoredbg"),
-		args = { "--interpreter=vscode" },
-		options = {
-			detached = false,
-		},
-	}
-	dap.listeners.before["event_terminated"]["easy-dotnet"] = function()
-		L.debug_dll = nil
-	end
-	for _, lang in ipairs(dotnet_languages) do
-		if not dap.configurations[lang] then
-			dap.configurations[lang] = {
-				{
-					type = "netcoredbg",
-					name = "Launch file",
-					request = "launch",
-					env = function()
-						local dotnet = require("easy-dotnet")
-						local dll = L.ensure_dll()
-						if not dll then
-							error("No debug dll found, please build the project first.")
-						end
-						-- Last false value, causes the profile not to be selected automatically, but asked to be selected.
-						local vars =
-							dotnet.get_environment_variables(dll.project_name, dll.absolute_project_path, false)
-						return vars or nil
-					end,
-					program = function()
-						local dll = L.ensure_dll()
-						if not dll then
-							error("No debug dll found, please build the project first.")
-						end
-						local co = coroutine.running()
-						rebuild_project(co, dll.project_path)
-						if not file_exists(dll.target_path) then
-							error("Project has not been built, path: " .. dll.target_path)
-						end
-						return dll.target_path
-					end,
-					cwd = function()
-						local dll = L.ensure_dll()
-						if not dll then
-							error("No debug dll found, please build the project first.")
-						end
-						return dll.absolute_project_path
-					end,
-				},
-			}
-		end
-	end
+	local debugger = require("LYRD.shared.dap.netcoredbg")
+	debugger.setup(dotnet_languages)
 end
 
 function L.complete() end

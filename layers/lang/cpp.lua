@@ -6,36 +6,6 @@ local L = {
 	name = "C and C++",
 	filetypes = { "c", "cpp", "h" },
 }
-local function setup_dap()
-	local dap = require("dap")
-	dap.adapters.codelldb = require("LYRD.shared.dap.codelldb")
-	local debug_configuration = {
-		{
-			name = "runit",
-			type = "codelldb",
-			request = "launch",
-
-			program = function()
-				return vim.fn.input("", vim.fn.getcwd(), "file")
-			end,
-
-			args = { "--log_level=all" },
-			cwd = "${workspaceFolder}",
-			stopOnEntry = false,
-			terminal = "integrated",
-
-			pid = function()
-				local handle = io.popen("pgrep hw$")
-				local result = handle:read()
-				handle:close()
-				return result
-			end,
-		},
-	}
-	dap.configurations.cpp = debug_configuration
-	dap.configurations.c = debug_configuration
-	dap.configurations.h = debug_configuration
-end
 
 function L.plugins()
 	setup.plugin({
@@ -64,7 +34,8 @@ function L.preparation()
 end
 
 function L.settings()
-	setup_dap()
+	local debugger = require("LYRD.shared.dap.codelldb")
+	debugger.setup(L.filetypes)
 	commands.implement("*", {
 		-- { cmd.LYRDXXXX, ":XXXXX" },
 	})
