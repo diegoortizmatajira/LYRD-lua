@@ -21,6 +21,9 @@ function L.plugins()
 			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
 			opts = {
+				templates = {
+					"builtin",
+				},
 				task_list = {
 					direction = "bottom",
 					min_height = 25,
@@ -40,6 +43,9 @@ function L.settings()
 		{ cmd.LYRDTasksConfigure, configure("./.vscode/tasks.json") },
 		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json") },
 	})
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.cake"))
 end
 
 return L
