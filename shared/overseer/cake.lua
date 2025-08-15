@@ -13,7 +13,7 @@ local function get_cake_script(opts)
 	return vim.fs.find(script_file, { upward = true, type = "file", path = opts.dir })[1]
 end
 
-local function task_template(cwd)
+local function task_template(script_path, cwd)
 	---@type overseer.TemplateDefinition
 	return {
 		name = "Cake Frosting",
@@ -25,7 +25,7 @@ local function task_template(cwd)
 			args = { optional = true, type = "list", delimiter = " " },
 		},
 		builder = function(params)
-			local cmd = { "./" .. script_file }
+			local cmd = { script_path }
 			if params.target then
 				table.insert(cmd, "-t")
 				table.insert(cmd, params.target)
@@ -67,12 +67,12 @@ local provider = {
 			return
 		end
 		local cwd = script_path ~= nil and vim.fs.dirname(script_path) or opts.dir
-		local template = task_template(cwd)
+		local template = task_template(script_path, cwd)
 		local jid = vim.fn.jobstart({
-			"./" .. script_file,
+			script_path,
 			"--description",
 		}, {
-			cwd = script_path ~= nil and vim.fs.dirname(script_path) or opts.dir,
+			cwd = cwd,
 			stdout_buffered = true,
 			on_stdout = vim.schedule_wrap(function(_, output)
 				for _, line in ipairs(output) do
