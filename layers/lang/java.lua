@@ -18,7 +18,8 @@ function L.plugins()
 			end,
 		},
 		{
-			"nvim-java/nvim-java",
+			-- "nvim-java/nvim-java",
+			"diegoortizmatajira/nvim-java",
 			opts = {
 				spring_boot_tools = {
 					enable = true,
@@ -27,6 +28,9 @@ function L.plugins()
 				java_test = {
 					enable = true,
 					version = "0.43.1",
+				},
+				mason = {
+					disable_automatic_update = true,
 				},
 			},
 		},
