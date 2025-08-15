@@ -216,6 +216,7 @@ function L.keybindings()
 			{ "y", cmd.LYRDViewYankList },
 			{ "x", cmd.LYRDTerminalList },
 			{ "X", cmd.LYRDTerminal },
+			{ "w", cmd.LYRDTasksToggle },
 		}, icons.action.split_v),
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
