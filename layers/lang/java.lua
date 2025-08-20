@@ -4,7 +4,40 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local join = require("LYRD.utils").join_paths
 
-local L = { name = "Java language" }
+local L = {
+	name = "Java language",
+	root_files = {
+		".git",
+		"mvnw",
+		"gradlew",
+		"pom.xml",
+		"build.gradle",
+		"build.sbt",
+	},
+	plug_jar_map = {
+		["java-test"] = {
+			"junit-jupiter-api_*.jar",
+			"junit-jupiter-engine_*.jar",
+			"junit-jupiter-migrationsupport_*.jar",
+			"junit-jupiter-params_*.jar",
+			"junit-platform-commons_*.jar",
+			"junit-platform-engine_*.jar",
+			"junit-platform-launcher_*.jar",
+			"junit-platform-runner_*.jar",
+			"junit-platform-suite-api_*.jar",
+			"junit-platform-suite-commons_*.jar",
+			"junit-platform-suite-engine_*.jar",
+			"junit-vintage-engine_*.jar",
+			"org.apiguardian.api_*.jar",
+			"org.eclipse.jdt.junit4.runtime_*.jar",
+			"org.eclipse.jdt.junit5.runtime_*.jar",
+			"org.opentest4j_*.jar",
+			"com.microsoft.java.test.plugin-*.jar",
+		},
+		["java-debug-adapter"] = { "*.jar" },
+		["spring-boot-tools"] = { "jars/*.jar" },
+	},
+}
 
 local function get_workspace_path()
 	local project_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h")
@@ -22,36 +55,23 @@ end
 -- inlay hints, and completion settings.
 -- @return table A table containing the LSP configuration for Java.
 function L.get_lspconfig()
-	local root_files = {
-		".git",
-		"mvnw",
-		"gradlew",
-		"pom.xml",
-		"build.gradle",
-		"build.sbt",
-	}
 	local jdtls = require("jdtls")
 	local jdtls_install = vim.fn.expand(join("$MASON", "packages", "jdtls"))
 
 	local bundles = {}
 
-	-- Include java-test if installed
-	local java_test_install = vim.fn.expand(join("$MASON", "packages", "java-test"))
-	local java_test_bundle = vim.split(vim.fn.glob(join(java_test_install, "extension", "server", "*.jar")), "\n")
-	if java_test_bundle[1] ~= "" then
-		vim.list_extend(bundles, java_test_bundle)
-	end
-	-- Include java-debug-adapter if installed
-	local java_debug_install = vim.fn.expand(join("$MASON", "packages", "java-debug-adapter"))
-	local java_debug_bundle = vim.split(
-		vim.fn.glob(join(java_debug_install, "extension", "server", "com.microsoft.java.debug.plugin-*.jar")),
-		"\n"
-	)
-
-	if java_debug_bundle[1] ~= "" then
-		vim.list_extend(bundles, java_debug_bundle)
+	-- Includes all JAR files from the mason packages that match the specified patterns.
+	for mason_package, jars in pairs(L.plug_jar_map) do
+		local pkg_install = vim.fn.expand(join("$MASON", "packages", mason_package))
+		for _, jar_pattern in ipairs(jars) do
+			local pkg_bundle = vim.split(vim.fn.glob(join(pkg_install, "extension", "server", jar_pattern)), "\n")
+			if pkg_bundle[1] ~= "" then
+				vim.list_extend(bundles, pkg_bundle)
+			end
+		end
 	end
 
+	-- Configures the platform-specific settings for JDTLS.
 	local platform_config = join(jdtls_install, "config_linux")
 	if vim.fn.has("mac") == 1 then
 		platform_config = join(jdtls_install, "config_mac")
@@ -172,7 +192,7 @@ function L.get_lspconfig()
 				useBlocks = true,
 			},
 		},
-		root_dir = jdtls.setup.find_root(root_files),
+		root_dir = jdtls.setup.find_root(L.root_files),
 		flags = {
 			allow_incremental_sync = true,
 		},
