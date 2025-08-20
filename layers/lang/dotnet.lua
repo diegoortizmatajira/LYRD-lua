@@ -31,10 +31,6 @@ end
 
 function L.plugins()
 	setup.plugin({
-		-- {
-		-- 	"issafalcon/neotest-dotnet",
-		-- 	ft = dotnet_languages,
-		-- },
 		{
 			"nsidorenco/neotest-vstest",
 			ft = dotnet_languages,
@@ -170,7 +166,6 @@ function L.preparation()
 	-- })
 	lsp.format_with_lsp(dotnet_languages, "roslyn")
 	local test = require("LYRD.layers.test")
-	-- test.configure_adapter(require("neotest-dotnet"))
 	test.configure_adapter(require("neotest-vstest"))
 end
 
