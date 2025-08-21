@@ -231,16 +231,6 @@ end
 function L.plugins()
 	setup.plugin({
 		{
-			"eatgrass/maven.nvim",
-			cmd = { "Maven", "MavenExec" },
-			dependencies = "nvim-lua/plenary.nvim",
-			config = function()
-				require("maven").setup({
-					executable = "./mvnw",
-				})
-			end,
-		},
-		{
 			"mfussenegger/nvim-jdtls",
 			opts = false,
 		},
@@ -282,6 +272,9 @@ function L.settings()
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
 	})
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.maven"))
 end
 
 function L.complete()

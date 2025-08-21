@@ -211,6 +211,10 @@ function L.settings()
 	-- DEBUG ADAPTER
 	local debugger = require("LYRD.shared.dap.netcoredbg")
 	debugger.setup(dotnet_languages)
+
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.cake"))
 end
 
 function L.complete() end
