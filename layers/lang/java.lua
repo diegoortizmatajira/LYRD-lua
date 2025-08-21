@@ -243,14 +243,34 @@ end
 
 function L.settings()
 	commands.implement("java", {
-		-- { cmd.LYRDCodeBuildAll, ":JavaBuildBuildWorkspace" },
-		-- { cmd.LYRDTestFunc, ":JavaTestRunCurrentMethod" },
-		-- { cmd.LYRDTestSuite, ":JavaTestRunCurrentClass" },
+		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
+		-- {
+		-- 	cmd.LYRDTestFunc,
+		-- 	function()
+		-- 		require("jdtls").test_nearest_method()
+		-- 	end,
+		-- },
+		-- {
+		-- 	cmd.LYRDTestSuite,
+		-- 	function()
+		-- 		require("jdtls").test_class()
+		-- 	end,
+		-- },
 	})
 end
 
 function L.complete()
-	vim.lsp.enable("jdtls")
+	-- NOTE: Do not enable jdtls here using vim.lsp.enable("jdtls"), it will cause issues with the jdtls.nvim plugin.
+	local java_cmds = vim.api.nvim_create_augroup("java_cmds", { clear = true })
+	vim.api.nvim_create_autocmd("FileType", {
+		group = java_cmds,
+		pattern = { "java" },
+		desc = "Setup jdtls",
+		callback = function()
+			local config = L.get_lspconfig()
+			require("jdtls").start_or_attach(config)
+		end,
+	})
 end
 
 return L
