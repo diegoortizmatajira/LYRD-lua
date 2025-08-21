@@ -7,15 +7,16 @@ local utils = require("LYRD.utils")
 ---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
 
 ---@class LYRD.setup.Module
----@field name string
----@field condition? nil|boolean
----@field vscode_compatible? nil|boolean
----@field plugins? nil|fun():nil
----@field preparation? nil|fun():nil
----@field settings? nil|fun():nil
----@field keybindings? nil|fun():nil
----@field complete? nil|fun():nil
----@field healthcheck? nil|fun():nil
+---@field name string Name of the layer
+---@field condition? nil|boolean Condition to check if the layer should be loaded
+---@field vscode_compatible? nil|boolean If true, the layer is compatible with vscode
+---@field plugins? nil|fun():nil Function to load the plugins for the layer
+---@field preparation? nil|fun():nil Function to prepare the layer, called before settings
+---@field settings? nil|fun():nil Function to set the settings for the layer, called after preparation
+---@field keybindings? nil|fun():nil Function to set the keybindings for the layer, called after settings
+---@field complete? nil|fun():nil Function to complete the layer, called after keybindings
+---@field healthcheck? nil|fun():nil Function to check the health of the layer
+---@field run_once_per_filetype? nil|table<string|string[], fun():nil> Allows to define actions to run once per filetype
 
 local setup = {
 	configs_path = utils.get_lyrd_path() .. "/configs",
@@ -28,6 +29,9 @@ local setup = {
 		layers = {},
 	},
 }
+
+-- Is a dictionary to control filetype commands to run only once
+local run_once_per_file_type_execution = {}
 
 local function bootstrap_lazy()
 	-- Bootstrap lazy.nvim
@@ -137,6 +141,29 @@ function setup.load(s)
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.complete ~= nil then
 			layer.complete()
+		end
+	end
+	-- Initializes the index for the run_once_per_filetype commands
+	local file_type_commands_index = 0
+	for _, layer in ipairs(setup.config.loaded_layers) do
+		if layer.run_once_per_filetype ~= nil then
+			--- Create autocommands for each filetype command
+			for ft, command_callback in pairs(layer.run_once_per_filetype) do
+				file_type_commands_index = file_type_commands_index + 1
+				vim.api.nvim_create_autocmd("FileType", {
+					pattern = ft,
+					callback = function()
+						-- Ensure the command is run only once per file type
+						if run_once_per_file_type_execution[file_type_commands_index] then
+							return
+						end
+						-- Call the command function
+						command_callback()
+						-- Mark the command as executed
+						run_once_per_file_type_execution[file_type_commands_index] = true
+					end,
+				})
+			end
 		end
 	end
 end
