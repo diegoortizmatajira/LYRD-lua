@@ -37,6 +37,32 @@ local L = {
 		["java-debug-adapter"] = { "*.jar" },
 		["spring-boot-tools"] = { "jars/*.jar" },
 	},
+	default_runtimes = {
+		-- Note: the field `name` must be a valid `ExecutionEnvironment`,
+		-- you can find the list here:
+		-- https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+		{
+			name = "JavaSE-1.8",
+			path = "/usr/lib/jvm/java-8-openjdk",
+		},
+		{
+			name = "JavaSE-11",
+			path = "/usr/lib/jvm/java-11-openjdk",
+		},
+		{
+			name = "JavaSE-17",
+			path = "/usr/lib/jvm/java-17-openjdk",
+			default = true,
+		},
+		{
+			name = "JavaSE-21",
+			path = "/usr/lib/jvm/java-21-openjdk",
+		},
+		{
+			name = "JavaSE-24",
+			path = "/usr/lib/jvm/java-24-openjdk",
+		},
+	},
 }
 
 local function get_workspace_path()
@@ -83,8 +109,7 @@ function L.get_lspconfig()
 		data_dir = join(vim.fn.stdpath("cache"), "nvim-jdtls"),
 		java_agent = join(lombok_install, "lombok.jar"),
 		launcher_jar = vim.fn.glob(join(jdtls_install, "plugins", "org.eclipse.equinox.launcher_*.jar")),
-		runtimes = {},
-		bundles = bundles,
+		runtimes = L.default_runtimes,
 		workspace_path = get_workspace_path(),
 		jdtls_config = join(vim.fn.stdpath("cache"), "jdtls", "config"),
 	}
@@ -197,7 +222,7 @@ function L.get_lspconfig()
 			allow_incremental_sync = true,
 		},
 		init_options = {
-			bundles = paths.bundles,
+			bundles = bundles,
 			extendedClientCapabilities = jdtls.extendedClientCapabilities,
 		},
 	}
@@ -219,6 +244,14 @@ function L.plugins()
 			"mfussenegger/nvim-jdtls",
 			opts = false,
 		},
+		{
+			"rcasia/neotest-java",
+			ft = "java",
+			dependencies = {
+				"mfussenegger/nvim-jdtls",
+				"mfussenegger/nvim-dap",
+			},
+		},
 	})
 end
 
@@ -229,6 +262,8 @@ function L.preparation()
 		"java-test",
 		"java-debug-adapter",
 		"google-java-format",
+		"spring-boot-tools",
+		"openjdk-17",
 	})
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
@@ -239,23 +274,13 @@ function L.preparation()
 	lsp.format_with_conform("java", {
 		"google-java-format",
 	})
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-java"))
 end
 
 function L.settings()
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
-		-- {
-		-- 	cmd.LYRDTestFunc,
-		-- 	function()
-		-- 		require("jdtls").test_nearest_method()
-		-- 	end,
-		-- },
-		-- {
-		-- 	cmd.LYRDTestSuite,
-		-- 	function()
-		-- 		require("jdtls").test_class()
-		-- 	end,
-		-- },
 	})
 end
 
