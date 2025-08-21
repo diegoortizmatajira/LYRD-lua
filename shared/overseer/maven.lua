@@ -1,6 +1,7 @@
 local log = require("overseer.log")
 local overseer = require("overseer")
 
+local maven_default = "mvn"
 local maven_wrapper = "mvnw"
 
 ---@param opts overseer.SearchParams
@@ -66,7 +67,7 @@ local provider = {
 	end,
 	condition = {
 		callback = function(search)
-			if not get_mvnw(search) then
+			if not get_mvnw(search) and not vim.fn.executable(maven_default) then
 				return false, "Maven command not found"
 			end
 			if not (get_pom(search)) then
@@ -77,7 +78,7 @@ local provider = {
 	},
 	generator = function(opts, cb)
 		local pom_path = get_pom(opts)
-		local maven_cmd = get_mvnw(opts) or maven_wrapper
+		local maven_cmd = get_mvnw(opts) or maven_default
 		local cwd = pom_path ~= nil and vim.fs.dirname(pom_path) or opts.dir
 		local ret = {}
 		-- Adds a task to run Maven with custom parameters
