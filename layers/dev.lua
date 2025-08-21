@@ -8,6 +8,7 @@ local L = { name = "Development" }
 function L.plugins()
 	setup.plugin({
 		{
+			-- Adds support for commenting code with TODOs, FIXMEs, etc.
 			"folke/todo-comments.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {
@@ -17,12 +18,7 @@ function L.plugins()
 			},
 		},
 		{
-			"danymat/neogen",
-			opts = {
-				snippet_engine = "luasnip",
-			},
-		},
-		{
+			-- Adds support for viewing code outlines in a floating window
 			"stevearc/aerial.nvim",
 			opts = {
 				close_on_select = true,
@@ -34,27 +30,14 @@ function L.plugins()
 			},
 			cmd = { "AerialToggle" },
 		},
-		{ "norcalli/nvim-colorizer.lua" },
+		{
+			-- Adds support for viewing colors in color values in the editor
+			"norcalli/nvim-colorizer.lua",
+		},
 		{
 			"ellisonleao/dotenv.nvim",
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
-		},
-		{ -- This plugin
-			"zeioth/compiler.nvim",
-			cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
-			dependencies = { "stevearc/overseer.nvim", "nvim-telescope/telescope.nvim" },
-			opts = {},
-		},
-		{
-			"Zeioth/makeit.nvim",
-			cmd = { "MakeitOpen", "MakeitToggleResults", "MakeitRedo" },
-			dependencies = { "stevearc/overseer.nvim" },
-			opts = {},
-		},
-		{
-			"GustavEikaas/code-playground.nvim",
-			opts={}
 		},
 	})
 end
