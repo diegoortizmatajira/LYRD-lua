@@ -167,4 +167,14 @@ function L.generate_mapping(bufnr)
 	end)
 end
 
+function L.get_package(current_file)
+	current_file = current_file or vim.fn.expand("%")
+	local current_file_folder = vim.fn.fnamemodify(current_file, ":h")
+
+	-- package_name is the immediate parent directory of the current file
+	local package_name = vim.fn.fnamemodify(current_file_folder, ":t")
+	package_name, _ = string.gsub(package_name, "-", "_")
+	vim.notify("Found file package: " .. package_name, vim.log.levels.INFO)
+	return package_name
+end
 return L
