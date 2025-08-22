@@ -2,6 +2,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local lsp = require("LYRD.layers.lsp")
 
+---@class LYRD.setup.Module
 local L = { name = "Docker" }
 
 function L.toggle_lazydocker()
@@ -12,6 +13,11 @@ end
 function L.preparation()
 	lsp.mason_ensure({
 		"dockerfile-language-server",
+		"docker-compose-language-service",
+		"hadolint",
+	})
+	lsp.null_ls_register_sources({
+		require("null-ls.builtins.diagnostics.hadolint"),
 	})
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
@@ -22,6 +28,13 @@ end
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
+	})
+end
+
+function L.complete()
+	vim.lsp.enable({
+		"dockerls",
+		"docker_compose_language_service",
 	})
 end
 

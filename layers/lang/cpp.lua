@@ -25,14 +25,18 @@ function L.preparation()
 		"codelldb",
 		"clang-format",
 		"cpplint",
+		"cmakelint",
+		"cmake-language-server",
 	})
 	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
 	lsp.format_with_conform(L.filetypes, { "clang-format" })
 	lsp.null_ls_register_sources({
 		require("none-ls.diagnostics.cpplint"),
+		require("null-ls.builtins.diagnostics.cmake_lint"),
 	})
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
+		"cmake",
 		"c",
 		"cpp",
 	})
@@ -43,14 +47,18 @@ end
 function L.settings()
 	local debugger = require("LYRD.shared.dap.codelldb")
 	debugger.setup(L.filetypes)
-	commands.implement("*", {
-		-- { cmd.LYRDXXXX, ":XXXXX" },
-	})
+	-- local cmd = require("LYRD.layers.lyrd-commands").cmd
+	-- commands.implement("*", {
+	-- 	{ cmd.LYRDCodeAlternateFile, ":ClangdSwitchSourceHeader" },
+	-- })
 end
 
 function L.keybindings() end
 
 function L.complete()
-	vim.lsp.enable("clangd")
+	vim.lsp.enable({
+		"clangd",
+		"cmake",
+	})
 end
 return L
