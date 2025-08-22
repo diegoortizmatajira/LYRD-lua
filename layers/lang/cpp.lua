@@ -20,10 +20,10 @@ function L.preparation()
 	lsp.mason_ensure({
 		"clangd",
 		"codelldb",
-	})
-	lsp.format_with_conform(L.filetypes, {
 		"clang-format",
 	})
+	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
+	lsp.format_with_conform(L.filetypes, { "clang-format" })
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
 		"c",

@@ -247,11 +247,11 @@ end
 
 function L.preparation()
 	lsp.mason_ensure({
+		"clang-format",
 		"jdtls",
 		"lombok-nightly",
 		"java-test",
 		"java-debug-adapter",
-		"google-java-format",
 		"spring-boot-tools",
 		"openjdk-17",
 	})
@@ -261,9 +261,9 @@ function L.preparation()
 		"javadoc",
 		"properties",
 	})
-	lsp.format_with_conform("java", {
-		"google-java-format",
-	})
+
+	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
+	lsp.format_with_conform("java", { "clang-format" })
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-java"))
 end

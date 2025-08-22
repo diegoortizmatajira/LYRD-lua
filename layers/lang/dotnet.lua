@@ -160,6 +160,7 @@ function L.preparation()
 		"c_sharp",
 		"fsharp",
 	})
+	-- lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
 	-- lsp.format_with_conform("cs", {
 	-- 	"csharpier",
 	-- 	lsp_format = "prefer",

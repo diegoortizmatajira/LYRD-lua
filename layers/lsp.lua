@@ -9,6 +9,7 @@ local L = {
 	required_tools = {},
 	null_ls_sources = {},
 	null_ls_registered = {},
+	conform_formatters_by_ft = {},
 	conform_formatters = {},
 }
 
@@ -279,27 +280,8 @@ function L.settings()
 	})
 
 	require("conform").setup({
-		formatters_by_ft = L.conform_formatters,
-		formatters = {
-			--- TODO: Remove when conform supports this
-			csharpier = function()
-				local useDotnet = not vim.fn.executable("csharpier")
-				local command = useDotnet and "dotnet csharpier" or "csharpier"
-				local version_out = vim.fn.system(command .. " --version")
-				--NOTE: system command returns the command as the first line of the result, need to get the version number on the final line
-				local major_version = tonumber((version_out or ""):match("^(%d+)")) or 0
-				local is_new = major_version >= 1
-
-				local args = is_new and { "format", "$FILENAME" } or { "--write-stdout" }
-
-				return {
-					command = command,
-					args = args,
-					stdin = not is_new,
-					require_cwd = false,
-				}
-			end,
-		},
+		formatters_by_ft = L.conform_formatters_by_ft,
+		formatters = L.conform_formatters,
 		-- Set default options
 		default_format_opts = {
 			lsp_format = "fallback",
@@ -403,6 +385,13 @@ function L.register_code_actions(filetypes, fn)
 	})
 end
 
+--- Customizes the formatter for a given formatter name.
+--- @param formatter_name string Name of the formatter to customize
+--- @param custom_formatter table|function Custom formatter function
+function L.customize_formatter(formatter_name, custom_formatter)
+	L.conform_formatters[formatter_name] = custom_formatter
+end
+
 --- Configures the given LSP server to format buffers for a given filetype.
 --- @param filetype string|string[] filetype(s) to format
 --- @param lsp_name string name of the LSP server
@@ -417,10 +406,10 @@ end
 --- @param format_settings table Settings for the formatter
 function L.format_with_conform(filetype, format_settings)
 	if type(filetype) == "string" then
-		L.conform_formatters[filetype] = format_settings
+		L.conform_formatters_by_ft[filetype] = format_settings
 	elseif type(filetype) == "table" then
 		for _, ft in pairs(filetype) do
-			L.conform_formatters[ft] = format_settings
+			L.conform_formatters_by_ft[ft] = format_settings
 		end
 	end
 end
