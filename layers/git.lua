@@ -230,11 +230,11 @@ end
 function L.preparation()
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
+		"git_config",
+		"git_rebase",
 		"gitattributes",
 		"gitcommit",
 		"gitignore",
-		"git_config",
-		"git_rebase",
 	})
 end
 

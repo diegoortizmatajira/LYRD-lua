@@ -82,14 +82,15 @@ function L.preparation()
 		"gomod",
 		"gosum",
 		"gotmpl",
+		"gowork",
 	})
 
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.gofumpt,
-		null_ls.builtins.code_actions.impl,
 		null_ls.builtins.code_actions.gomodifytags,
+		null_ls.builtins.code_actions.impl,
 	})
+	lsp.format_with_conform("go", { "gofumpt", "goimports" })
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-golang"))
 end
