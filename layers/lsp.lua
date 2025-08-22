@@ -431,20 +431,4 @@ function L.format_handler(server_name)
 	end
 end
 
-function L.healthcheck()
-	vim.health.start(L.name .. " - Linters")
-	local lint = require("lint")
-	for ft, linters in pairs(lint.linters_by_ft) do
-		if #linters == 0 then
-			vim.health.warn("No linters configured for filetype: " .. ft)
-		else
-			vim.health.info(string.format("*%s*: %s.", ft, table.concat(linters, ", ")))
-			for _, linter in ipairs(linters) do
-				if not lint.linters[linter] then
-					vim.health.warn("Linter " .. linter .. " for filetype " .. ft .. " is not registered")
-				end
-			end
-		end
-	end
-end
 return L
