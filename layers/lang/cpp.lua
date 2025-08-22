@@ -10,7 +10,10 @@ local L = {
 function L.plugins()
 	setup.plugin({
 		{
-			"alfaix/neotest-gtest",
+			"nvimtools/none-ls-extras.nvim",
+		},
+		{
+			"orjangj/neotest-ctest",
 			ft = L.filetypes,
 		},
 	})
@@ -21,16 +24,20 @@ function L.preparation()
 		"clangd",
 		"codelldb",
 		"clang-format",
+		"cpplint",
 	})
 	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
 	lsp.format_with_conform(L.filetypes, { "clang-format" })
+	lsp.null_ls_register_sources({
+		require("none-ls.diagnostics.cpplint"),
+	})
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
 		"c",
 		"cpp",
 	})
 	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-gtest").setup({}))
+	test.configure_adapter(require("neotest-ctest").setup({}))
 end
 
 function L.settings()
