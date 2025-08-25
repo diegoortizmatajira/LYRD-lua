@@ -50,6 +50,14 @@ function L.preparation()
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-vitest"))
 	test.configure_adapter(require("neotest-jest"))
+
+	-- Enable treesitter for Angular HTML files
+	vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+		pattern = { "*.component.html", "*.container.html" },
+		callback = function()
+			vim.treesitter.start(nil, "angular")
+		end,
+	})
 end
 
 function L.settings() end
@@ -58,6 +66,7 @@ function L.complete()
 	vim.lsp.enable({
 		"vtsls",
 		"vue_ls",
+		"angularls",
 	})
 end
 
