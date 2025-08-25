@@ -146,6 +146,10 @@ local function format_buffer(args)
 	require("conform").format({ async = true, lsp_format = "fallback", range = range })
 end
 
+function L.get_pkg_path(pkg, ...)
+	return utils.join_paths(vim.fn.expand("$MASON"), "packages", pkg, ...)
+end
+
 function L.plugins()
 	setup.plugin({
 		{ "neovim/nvim-lspconfig" },

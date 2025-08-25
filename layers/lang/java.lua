@@ -82,13 +82,13 @@ end
 -- @return table A table containing the LSP configuration for Java.
 function L.get_lspconfig()
 	local jdtls = require("jdtls")
-	local jdtls_install = vim.fn.expand(join("$MASON", "packages", "jdtls"))
+	local jdtls_install = lsp.get_pkg_path("jdtls")
 
 	local bundles = {}
 
 	-- Includes all JAR files from the mason packages that match the specified patterns.
 	for mason_package, jars in pairs(L.plug_jar_map) do
-		local pkg_install = vim.fn.expand(join("$MASON", "packages", mason_package))
+		local pkg_install = lsp.get_pkg_path(mason_package)
 		for _, jar_pattern in ipairs(jars) do
 			local pkg_bundle = vim.split(vim.fn.glob(join(pkg_install, "extension", "server", jar_pattern)), "\n")
 			if pkg_bundle[1] ~= "" then
@@ -104,7 +104,7 @@ function L.get_lspconfig()
 	elseif vim.fn.has("win32") == 1 then
 		platform_config = join(jdtls_install, "config_win")
 	end
-	local lombok_install = vim.fn.expand(join("$MASON", "packages", "lombok-nightly"))
+	local lombok_install = lsp.get_pkg_path("lombok-nightly")
 	local paths = {
 		data_dir = join(vim.fn.stdpath("cache"), "nvim-jdtls"),
 		java_agent = join(lombok_install, "lombok.jar"),

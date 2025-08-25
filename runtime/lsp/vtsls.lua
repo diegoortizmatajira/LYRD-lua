@@ -1,4 +1,4 @@
-local join = require("LYRD.utils").join_paths
+local lsp = require("LYRD.layers.lsp")
 return {
 	filetypes = {
 		"vue",
@@ -15,23 +15,13 @@ return {
 				globalPlugins = {
 					{
 						name = "@vue/typescript-plugin",
-						location = join(
-							vim.fn.expand("$MASON"),
-							"packages",
-							"vue-language-server",
-							"node_modules",
-							"@vue",
-							"language-server"
-						),
-
+						location = lsp.get_pkg_path("vue-language-server", "node_modules", "@vue", "language-server"),
 						languages = { "vue" },
 						configNamespace = "typescript",
 					},
 					{
 						name = "@angular/language-server",
-						location = join(
-							vim.fn.expand("$MASON"),
-							"packages",
+						location = lsp.get_pkg_path(
 							"angular-language-server",
 							"node_modules",
 							"@angular",
