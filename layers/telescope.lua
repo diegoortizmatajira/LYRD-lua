@@ -42,6 +42,24 @@ function L.plugins()
 				"nvim-telescope/telescope-ui-select.nvim",
 			},
 		},
+		{
+			-- Adds support for viewing code outlines in a floating window
+			"stevearc/aerial.nvim",
+			opts = {
+				close_on_select = true,
+			},
+			-- Optional dependencies
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				"nvim-tree/nvim-web-devicons",
+				"nvim-telescope/telescope.nvim",
+			},
+			config = function(_, opts)
+				require("aerial").setup(opts)
+				local telescope = require("telescope")
+				telescope.load_extension("aerial")
+			end,
+		},
 	})
 end
 
@@ -90,6 +108,7 @@ function L.settings()
 		{ cmd.LYRDSearchHighlights, ":Telescope highlights" },
 		{ cmd.LYRDSearchCurrentString, ":Telescope grep_string" },
 		{ cmd.LYRDSearchCommands, ":Telescope commands" },
+		{ cmd.LYRDSearchSymbols, ":Telescope aerial" },
 		{ cmd.LYRDLSPFindReferences, ":Telescope lsp_references" },
 		{ cmd.LYRDLSPFindDocumentSymbols, ":Telescope lsp_document_symbols" },
 		{ cmd.LYRDLSPFindWorkspaceSymbols, ":Telescope lsp_workspace_symbols" },
@@ -99,6 +118,7 @@ function L.settings()
 		{ cmd.LYRDLSPFindDefinitions, ":Telescope lsp_definitions" },
 		{ cmd.LYRDResumeLastSearch, ":Telescope resume" },
 		{ cmd.LYRDCodeInsertSnippet, "Telescope luasnip" },
+		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
 	})
 end
 

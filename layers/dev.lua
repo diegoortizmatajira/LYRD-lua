@@ -18,19 +18,6 @@ function L.plugins()
 			},
 		},
 		{
-			-- Adds support for viewing code outlines in a floating window
-			"stevearc/aerial.nvim",
-			opts = {
-				close_on_select = true,
-			},
-			-- Optional dependencies
-			dependencies = {
-				"nvim-treesitter/nvim-treesitter",
-				"nvim-tree/nvim-web-devicons",
-			},
-			cmd = { "AerialToggle" },
-		},
-		{
 			-- Adds support for viewing colors in color values in the editor
 			"norcalli/nvim-colorizer.lua",
 		},
@@ -44,9 +31,6 @@ end
 
 function L.settings()
 	commands.implement("*", {
-		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
-		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
-		{ cmd.LYRDCodeAddDocumentation, ":Neogen" },
 	})
 end
 

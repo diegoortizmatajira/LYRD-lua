@@ -309,7 +309,7 @@ function L.keybindings()
 			{ ";", cmd.LYRDDebugToggleUI },
 			{ "/", cmd.LYRDDebugToggleRepl },
 		}, icons.debug.breakpoint),
-		menu_header("f", "Find", {
+		menu_header("s", "Search", {
 			{ ".", cmd.LYRDSearchFiles },
 			{ "b", cmd.LYRDSearchBuffers },
 			{ "g", cmd.LYRDSearchGitFiles },
@@ -321,11 +321,12 @@ function L.keybindings()
 			{ "t", cmd.LYRDTerminalList },
 			{ "/", cmd.LYRDSearchLiveGrep },
 			{ "f", cmd.LYRDSearchFiletypes },
-			{ "o", cmd.LYRDSearchColorSchemes },
+			{ "t", cmd.LYRDSearchColorSchemes },
 			{ "q", cmd.LYRDSearchQuickFixes },
 			{ "H", cmd.LYRDSearchHighlights },
 			{ ",", cmd.LYRDSearchCommands },
 			{ "s", cmd.LYRDSearchCurrentString },
+			{ "o", cmd.LYRDSearchSymbols },
 			{ "p", cmd.LYRDSearchRegisters },
 			{ "R", cmd.LYRDReplaceInFiles },
 			{ "r", cmd.LYRDReplace },
@@ -400,7 +401,7 @@ function L.keybindings()
 			{ "T", cmd.LYRDTasksConfigure },
 			{ "L", cmd.LYRDTasksConfigureLaunch },
 		}, icons.code.run),
-		menu_header("s", "Services", {
+		menu_header("<SPACE>", "Tools/Services", {
 			{ "d", cmd.LYRDDatabaseUI },
 			{ "c", cmd.LYRDContainersUI },
 			{ "f", cmd.LYRDViewFileExplorer },

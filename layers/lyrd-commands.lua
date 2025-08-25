@@ -132,6 +132,7 @@ local L = {
 		LYRDSearchQuickFixes = Command:new("Quick Fixes", nil, icons.diagnostic.search),
 		LYRDSearchRecentFiles = Command:new("Recent files", nil, icons.search.history),
 		LYRDSearchRegisters = Command:new("Registers", nil, icons.search.default),
+		LYRDSearchSymbols = Command:new("Symbols", nil, icons.search.default),
 		LYRDResumeLastSearch = Command:new("Resume last search", nil, icons.search.history),
 		LYRDSmartCoder = Command:new("Smart code generator", nil, icons.code.generate),
 		LYRDTerminalList = Command:new("View terminal list", nil, icons.search.layers),
