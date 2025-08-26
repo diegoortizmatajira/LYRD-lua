@@ -6,10 +6,7 @@ local icons = require("LYRD.layers.icons")
 ---@class LYRD.ui.special_type
 ---@field type_id string
 ---@field title? string
----@field keep_window? boolean
----@field keep_tab? boolean
 ---@field allow_saving? boolean
----@field allow_replacement? boolean
 ---@field prevent_closing? boolean
 ---
 local L = {
@@ -96,17 +93,37 @@ local function check_closing_conditions()
 	return nil
 end
 
---- Closes the current buffer while checking for specific conditions.
---- If the buffer matches a predefined special filename, filetype, or buffertype
---- and has the `prevent_closing` attribute set to true, it will not be closed.
---- Otherwise, it uses the "mini.bufremove" plugin to delete the buffer.
+--- Closes the current buffer while checking for any special conditions.
+---
+--- If the buffer is marked as `prevent_closing` in the `special_filenames`,
+--- `special_filetypes`, or `special_buffertypes` lists, the buffer will not
+--- be closed, and a warning will be displayed.
+---
+--- If the closed buffer is the last listed buffer, it will open the home page.
+---
+--- Requirements:
+--- - Relies on the `mini.bufremove` plugin for buffer deletion.
+--- - Executes `LYRDViewHomePage` command when no more buffers are visible.
 local function close_buffer()
 	local conditions = check_closing_conditions()
-	if conditions and conditions.prevent_closing then
-		vim.notify("This buffer cannot be closed", vim.log.levels.WARN)
-		return
+	if conditions then
+		if conditions.prevent_closing then
+			vim.notify("This buffer cannot be closed", vim.log.levels.WARN)
+			return
+		end
+		-- If the buffer is special, we just close the window
+		vim.cmd("close")
+	else
+		-- If it's a normal buffer, we close it properly
+		local is_last_buffer = vim.fn.len(vim.fn.getbufinfo({ buflisted = 1 })) == 1
+		local closed = require("mini.bufremove").delete(0, false)
+		if closed then
+			-- If no more buffers are visible, opens the home page
+			if is_last_buffer then
+				cmd.LYRDViewHomePage:execute()
+			end
+		end
 	end
-	require("mini.bufremove").delete(0, false)
 end
 
 function L.plugins()
