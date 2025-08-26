@@ -76,7 +76,14 @@ function L.preparation()
 	})
 end
 
-function L.settings() end
+function L.settings()
+	vim.filetype.add({
+		filename = {
+			["tasks.json"] = "jsonc",
+			["launch.json"] = "jsonc",
+		},
+	})
+end
 
 function L.keybindings() end
 

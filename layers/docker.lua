@@ -26,6 +26,12 @@ function L.preparation()
 end
 
 function L.settings()
+	vim.filetype.add({
+		pattern = {
+			["docker%-compose*%.yaml"] = "yaml.docker-compose",
+			["docker%-compose*%.yml"] = "yaml.docker-compose",
+		},
+	})
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
 	})
