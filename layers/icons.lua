@@ -109,7 +109,7 @@ local L = {
 		repeat_once = "󰑘 ",
 		replace_text = " ",
 		replace_in_files = "󰬳 ",
-		run_task="󱖑 "
+		run_task = "󱖑 ",
 	},
 	arrow = {
 		swap = " ",
