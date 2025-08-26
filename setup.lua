@@ -112,37 +112,27 @@ end
 --- @param s LYRD.setup.Settings settings object
 function setup.load(s)
 	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
-	---@type LYRD.setup.Module[]
-	for _, layer in ipairs(setup.config.layers) do
+	vim.tbl_map(function(layer)
+		---@type LYRD.setup.Module
 		local L = require(layer)
 		--- Checks if the layer meets the condition to be loaded
 		if should_load_layer(L) then
 			table.insert(setup.config.loaded_layers, L)
 		end
-	end
+	end, setup.config.layers)
 
 	-- Process each layer
 	load_plugins()
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.preparation ~= nil then
-			layer.preparation()
+	-- Define the stages to be called in order
+	local stages = { "preparation", "settings", "keybindings", "complete" }
+	vim.tbl_map(function(stage_function_name)
+		--- Call the stage callback for each layer if it exists
+		for _, layer in ipairs(setup.config.loaded_layers) do
+			if layer[stage_function_name] ~= nil then
+				layer[stage_function_name]()
+			end
 		end
-	end
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.settings ~= nil then
-			layer.settings()
-		end
-	end
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.keybindings ~= nil then
-			layer.keybindings()
-		end
-	end
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.complete ~= nil then
-			layer.complete()
-		end
-	end
+	end, stages)
 	-- Initializes the index for the run_once_per_filetype commands
 	local file_type_commands_index = 0
 	for _, layer in ipairs(setup.config.loaded_layers) do
