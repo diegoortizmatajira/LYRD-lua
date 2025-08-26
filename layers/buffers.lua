@@ -96,78 +96,17 @@ local function check_closing_conditions()
 	return nil
 end
 
-local function get_listed_buffers()
-	local listed_buffers = {}
-	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.bo[bufnr].buflisted then
-			table.insert(listed_buffers, bufnr)
-		end
-	end
-	return listed_buffers
-end
-
---- Closes the buffer without removing the window
-local function close_buffer(options)
-	local function finalize(final_command, param)
-		if final_command then
-			local command_str = final_command
-			if options and options.bang then
-				command_str = command_str .. "!"
-			end
-			if param then
-				command_str = command_str .. " " .. param
-			end
-			vim.cmd(command_str)
-		end
-		local bufnr = vim.api.nvim_get_current_buf()
-		local name = vim.api.nvim_buf_get_name(bufnr)
-
-		if vim.bo[bufnr].filetype ~= "alpha" and name == "" then
-			vim.cmd([[:Alpha | bd#]])
-		end
-	end
+--- Closes the current buffer while checking for specific conditions.
+--- If the buffer matches a predefined special filename, filetype, or buffertype
+--- and has the `prevent_closing` attribute set to true, it will not be closed.
+--- Otherwise, it uses the "mini.bufremove" plugin to delete the buffer.
+local function close_buffer()
 	local conditions = check_closing_conditions()
-	-- If the buffer is a special buffer, close it
-	if conditions then
-		if conditions.prevent_closing then
-			finalize()
-			return
-		end
-		if not conditions.keep_tab then
-			-- If there are more than one tab, close the current tab
-			local tabs = vim.api.nvim_list_tabpages()
-			if #tabs > 1 then
-				finalize("tabclose")
-				return
-			end
-		end
-		if not conditions.keep_window then
-			-- If there are more than one window, close the current window
-			local windows = vim.api.nvim_tabpage_list_wins(0)
-			if #windows > 1 then
-				finalize("close")
-				return
-			end
-		end
+	if conditions and conditions.prevent_closing then
+		vim.notify("This buffer cannot be closed", vim.log.levels.WARN)
+		return
 	end
-	-- Gets the current buffer number
-	local bufnr = vim.api.nvim_get_current_buf()
-	-- Selects the next buffer to prevent the window from getting closed
-	vim.cmd("bnext")
-	local alternate_bufnr = vim.api.nvim_get_current_buf()
-	-- If there is no alternate buffer, create a new empty buffer to prevent the window from getting closed
-	if alternate_bufnr == bufnr then
-		vim.cmd("enew")
-		-- alternate_bufnr = vim.api.nvim_get_current_buf()
-	end
-	-- If the buffer to be closed is in multiple windows, set the alternate buffer
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		local buf_number = vim.api.nvim_win_get_buf(win)
-		if buf_number == bufnr then
-			vim.api.nvim_win_set_buf(win, alternate_bufnr)
-		end
-	end
-	finalize("bdelete", bufnr)
+	require("mini.bufremove").delete(0, false)
 end
 
 function L.plugins()
@@ -177,6 +116,10 @@ function L.plugins()
 			opts = {
 				hide_tabline = false,
 			},
+		},
+		{
+			"echasnovski/mini.bufremove",
+			version = "*",
 		},
 	})
 end
