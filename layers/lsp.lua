@@ -103,6 +103,16 @@ local plugged_capabilities = function()
 		lineFoldingOnly = true,
 	}
 
+	result.textDocument = result.textDocument or {}
+	result.textDocument.codeLens = {
+		dynamicRegistration = true,
+		resolveProvider = true,
+	}
+
+	result.workspace = result.workspace or {}
+	result.workspace.codeLens = {
+		refreshSupport = true,
+	}
 	return result
 end
 
