@@ -39,7 +39,6 @@ function L.plugins()
 				"nvim-telescope/telescope.nvim",
 			},
 			lazy = false,
-			branch = "regexp", -- This is the regexp branch, use this for the new version
 			opts = {
 				name = { "venv", ".venv" },
 			},
