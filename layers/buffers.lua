@@ -93,6 +93,15 @@ local function check_closing_conditions()
 	return nil
 end
 
+local open_starter_if_empty_buffer = function()
+	local buf_id = vim.api.nvim_get_current_buf()
+	local is_empty = vim.api.nvim_buf_get_name(buf_id) == "" and vim.bo[buf_id].filetype == ""
+	if not is_empty then
+		return
+	end
+	cmd.LYRDViewHomePage:execute()
+end
+
 --- Closes the current buffer while checking for any special conditions.
 ---
 --- If the buffer is marked as `prevent_closing` in the `special_filenames`,
@@ -115,13 +124,9 @@ local function close_buffer()
 		vim.cmd("close")
 	else
 		-- If it's a normal buffer, we close it properly
-		local is_last_buffer = vim.fn.len(vim.fn.getbufinfo({ buflisted = 1 })) == 1
 		local closed = require("mini.bufremove").delete(0, false)
 		if closed then
-			-- If no more buffers are visible, opens the home page
-			if is_last_buffer then
-				cmd.LYRDViewHomePage:execute()
-			end
+			open_starter_if_empty_buffer()
 		end
 	end
 end
