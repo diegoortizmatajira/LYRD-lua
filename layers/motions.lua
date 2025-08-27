@@ -54,9 +54,10 @@ function L.keybindings()
 	mappings.keys({
 		{ { "n", "v" }, "<Leader>w", c("HopWord"), { desc = "Go to word" } },
 		{ { "n", "v" }, "gl", c("HopLine"), { desc = "Go to line" } },
+		{ { "n", "v" }, "gL", c("HopLineStart"), { desc = "Go to line" } },
 		{ { "n", "v" }, "g/", c("HopPattern"), { desc = "Go to pattern" } },
 		{ { "n", "v" }, "s", "<cmd>HopChar1<CR>" },
-		{ { "n", "v" }, "S", "<cmd>HopChar2<CR>" },
+		{ { "n", "v" }, "S", "<cmd>HopChar1MW<CR>" },
 	})
 	vim.keymap.set("", "f", function()
 		hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
