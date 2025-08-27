@@ -14,11 +14,16 @@ function L.preparation()
 	lsp.mason_ensure({
 		"dockerfile-language-server",
 		"docker-compose-language-service",
-		"hadolint",
 	})
-	lsp.null_ls_register_sources({
-		require("null-ls.builtins.diagnostics.hadolint"),
-	})
+	-- Configure hadolint only if platform is Linux
+	if vim.fn.has("linux") == 1 then
+		lsp.mason_ensure({
+			"hadolint",
+		})
+		lsp.null_ls_register_sources({
+			require("null-ls.builtins.diagnostics.hadolint"),
+		})
+	end
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
 		"dockerfile",
