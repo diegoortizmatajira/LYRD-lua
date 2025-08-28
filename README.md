@@ -7,20 +7,20 @@
 - [UI Features](#ui-features)
 - [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Supported Programming Languages](#supported-programming-languages)
-    * [CMake](#cmake)
-    * [C and C++](#c-and-c)
-    * [CSV](#csv)
-    * [Data Formats](#data-formats)
-    * [Go](#go)
-    * [Java](#java)
-    * [Kotlin](#kotlin)
-    * [Lua](#lua)
-    * [Markdown](#markdown)
-    * [.NET (C#, F#, VB)](#net-c%23-f%23-vb)
-    * [Python](#python)
-    * [Rust](#rust)
-    * [Web Frontend](#web-frontend)
-    * [Web Standards](#web-standards)
+  - [CMake](#cmake)
+  - [C and C++](#c-and-c)
+  - [CSV](#csv)
+  - [Data Formats](#data-formats)
+  - [Go](#go)
+  - [Java](#java)
+  - [Kotlin](#kotlin)
+  - [Lua](#lua)
+  - [Markdown](#markdown)
+  - [.NET languages](#net-languages)
+  - [Python](#python)
+  - [Rust](#rust)
+  - [Web Frontend](#web-frontend)
+  - [Web Standards](#web-standards)
 - [Centralized IDE Functionalities](#centralized-ide-functionalities)
 - [AI Integration](#ai-integration)
 - [Installation](#installation)
@@ -181,8 +181,9 @@ flow.
   - Enhanced rendering with `MeanderingProgrammer/markdown.nvim`.
   - Formatting tools: `prettier`, `markdown-toc`.
 
-### .NET (C#, F#, VB)
+### .NET languages
 
+- **Languages**: C#, F#, Vb.net
 - **Key Features**:
   - Language Servers: `roslyn`, `netcoredbg`.
   - Debugging through `netcoredbg`.
@@ -228,7 +229,9 @@ flow.
 
 ## Centralized IDE Functionalities
 
-LYRD centralizes essential IDE functionalities to ensure streamlined and cohesive workflows. The following modules play a key role in providing a rich development experience:
+LYRD centralizes essential IDE functionalities to ensure streamlined and
+cohesive workflows. The following modules play a key role in providing a rich
+development experience:
 
 - **Test Management** (`test.lua`): Simplifies running and managing tests
   across supported languages.

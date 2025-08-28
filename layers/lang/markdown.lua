@@ -66,6 +66,7 @@ function L.preparation()
 				end
 			end
 		end,
+		args = { "--bullets", "-", "-i", "$FILENAME" },
 	})
 	lsp.customize_formatter("markdownlint-cli2", {
 		condition = function(_, ctx)
