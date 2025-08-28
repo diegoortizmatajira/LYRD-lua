@@ -345,7 +345,7 @@ function L.keybindings()
 					{ "f", cmd.LYRDGitFlowReleaseFinish },
 					{ "p", cmd.LYRDGitFlowReleasePublish },
 				}),
-				menu_header("r", "Hotfix", {
+				menu_header("h", "Hotfix", {
 					{ "s", cmd.LYRDGitFlowHotfixStart },
 					{ "f", cmd.LYRDGitFlowHotfixFinish },
 					{ "p", cmd.LYRDGitFlowHotfixPublish },
