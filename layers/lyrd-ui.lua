@@ -100,7 +100,7 @@ local file_formatter = function(grouping, exclude_sections)
 				local parts = vim.split(unit.string, "|")
 				local icon = icons.get_file_icon(parts[1] or unit.string)
 				local icon_unit = {
-					string = " " .. icon.icon .. "  ",
+					string = icon.icon .. "  ",
 					type = "item_icon",
 					hl = icon.hl,
 					-- Use `_item` instead of `item` because it is better to be 'private'
