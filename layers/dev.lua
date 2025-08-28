@@ -8,6 +8,7 @@ local L = { name = "Development" }
 function L.plugins()
 	setup.plugin({
 		{
+			-- Adds support for commenting code with TODOs, FIXMEs, etc.
 			"folke/todo-comments.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {
@@ -17,53 +18,19 @@ function L.plugins()
 			},
 		},
 		{
-			"danymat/neogen",
-			opts = {
-				snippet_engine = "luasnip",
-			},
+			-- Adds support for viewing colors in color values in the editor
+			"norcalli/nvim-colorizer.lua",
 		},
-		{
-			"stevearc/aerial.nvim",
-			opts = {
-				close_on_select = true,
-			},
-			-- Optional dependencies
-			dependencies = {
-				"nvim-treesitter/nvim-treesitter",
-				"nvim-tree/nvim-web-devicons",
-			},
-			cmd = { "AerialToggle" },
-		},
-		{ "norcalli/nvim-colorizer.lua" },
 		{
 			"ellisonleao/dotenv.nvim",
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
-		},
-		{ -- This plugin
-			"zeioth/compiler.nvim",
-			cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
-			dependencies = { "stevearc/overseer.nvim", "nvim-telescope/telescope.nvim" },
-			opts = {},
-		},
-		{
-			"Zeioth/makeit.nvim",
-			cmd = { "MakeitOpen", "MakeitToggleResults", "MakeitRedo" },
-			dependencies = { "stevearc/overseer.nvim" },
-			opts = {},
-		},
-		{
-			"GustavEikaas/code-playground.nvim",
-			opts={}
 		},
 	})
 end
 
 function L.settings()
 	commands.implement("*", {
-		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
-		{ cmd.LYRDCodeMakeTasks, ":MakeitOpen" },
-		{ cmd.LYRDCodeAddDocumentation, ":Neogen" },
 	})
 end
 

@@ -13,7 +13,21 @@ function L.plugins()
 		{
 			"mfussenegger/nvim-dap",
 			config = function()
-				require("dap").set_log_level("info")
+				local dap = require("dap")
+				local dapui = require("dapui")
+				dap.set_log_level("info")
+				dap.listeners.before.attach.dapui_config = function()
+					dapui.open()
+				end
+				dap.listeners.before.launch.dapui_config = function()
+					dapui.open()
+				end
+				dap.listeners.before.event_terminated.dapui_config = function()
+					dapui.close()
+				end
+				dap.listeners.before.event_exited.dapui_config = function()
+					dapui.close()
+				end
 				require("overseer").enable_dap()
 			end,
 			dependencies = {
@@ -36,6 +50,7 @@ function L.plugins()
 					-- Display controls in this element
 					element = "repl",
 					icons = {
+						disconnect = icons.debug.disconnect,
 						pause = icons.debug.pause,
 						play = icons.debug.play,
 						step_into = icons.debug.step_into,
@@ -58,21 +73,21 @@ function L.plugins()
 				layouts = {
 					{
 						elements = {
-							{ id = "scopes", size = 0.33 },
-							{ id = "breakpoints", size = 0.17 },
-							{ id = "stacks", size = 0.25 },
-							{ id = "watches", size = 0.25 },
-						},
-						size = 0.33,
-						position = "right",
-					},
-					{
-						elements = {
-							{ id = "repl", size = 0.45 },
-							{ id = "console", size = 0.55 },
+							{ id = "scopes", size = 0.5 },
+							{ id = "watches", size = 0.5 },
 						},
 						size = 0.27,
 						position = "bottom",
+					},
+					{
+						elements = {
+							{ id = "stacks", size = 0.2 },
+							{ id = "breakpoints", size = 0.2 },
+							{ id = "repl", size = 0.1 },
+							{ id = "console", size = 0.5 },
+						},
+						size = 0.33,
+						position = "right",
 					},
 				},
 				floating = {

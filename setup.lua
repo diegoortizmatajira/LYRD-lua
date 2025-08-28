@@ -7,15 +7,16 @@ local utils = require("LYRD.utils")
 ---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
 
 ---@class LYRD.setup.Module
----@field name string
----@field condition? nil|boolean
----@field vscode_compatible? nil|boolean
----@field plugins? nil|fun():nil
----@field preparation? nil|fun():nil
----@field settings? nil|fun():nil
----@field keybindings? nil|fun():nil
----@field complete? nil|fun():nil
----@field healthcheck? nil|fun():nil
+---@field name string Name of the layer
+---@field condition? nil|boolean Condition to check if the layer should be loaded
+---@field vscode_compatible? nil|boolean If true, the layer is compatible with vscode
+---@field plugins? nil|fun():nil Function to load the plugins for the layer
+---@field preparation? nil|fun():nil Function to prepare the layer, called before settings
+---@field settings? nil|fun():nil Function to set the settings for the layer, called after preparation
+---@field keybindings? nil|fun():nil Function to set the keybindings for the layer, called after settings
+---@field complete? nil|fun():nil Function to complete the layer, called after keybindings
+---@field healthcheck? nil|fun():nil Function to check the health of the layer
+---@field run_once_per_filetype? nil|table<string|string[], fun():nil> Allows to define actions to run once per filetype
 
 local setup = {
 	configs_path = utils.get_lyrd_path() .. "/configs",
@@ -29,6 +30,19 @@ local setup = {
 	},
 }
 
+-- Is a dictionary to control filetype commands to run only once
+local run_once_per_file_type_execution = {}
+
+--- Bootstraps the Lazy.nvim plugin manager.
+---
+--- This function ensures that the Lazy.nvim plugin manager is installed and
+--- available for use. If Lazy.nvim is not already installed, it will be cloned
+--- from its Git repository. The function also updates the runtime path to include
+--- the Lazy.nvim directory.
+---
+--- If the cloning process fails, an error message is displayed, and the program
+--- exits. This ensures that Lazy.nvim is set up correctly before being used to
+--- manage plugins.
 local function bootstrap_lazy()
 	-- Bootstrap lazy.nvim
 	local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -48,7 +62,15 @@ local function bootstrap_lazy()
 	vim.opt.rtp:prepend(lazypath)
 end
 
---- Calls the plugin method for each layer
+--- Initializes and configures plugins for the Neovim environment.
+---
+--- This function first ensures that the Lazy.nvim plugin manager is bootstrapped
+--- and available. It then iterates through the loaded layers in the configuration,
+--- invoking the `plugins` method for each layer to load its specific plugins.
+---
+--- After setting up the layers' plugins, the function configures the Lazy.nvim
+--- plugin manager with various settings, including plugin specifications, update
+--- checking, performance optimizations, and lockfile management.
 local function load_plugins()
 	bootstrap_lazy()
 
@@ -88,6 +110,14 @@ local function load_plugins()
 	})
 end
 
+--- Determines whether a layer should be loaded based on its conditions.
+---
+--- This function evaluates the conditions defined within the layer metadata to decide
+--- whether the layer should be loaded or not. It considers general conditions, as well
+--- as specific checks for compatibility with VSCode.
+---
+--- @param layer LYRD.setup.Module The layer to evaluate for loading.
+--- @return boolean True if the layer should be loaded; otherwise, false.
 local function should_load_layer(layer)
 	if layer.condition == nil then
 		layer.condition = true
@@ -104,39 +134,62 @@ local function should_load_layer(layer)
 	return true
 end
 
---- Calls the sequence of methods to initialize for each layer
---- @param s LYRD.setup.Settings settings object
+--- Loads and initializes the LYRD setup configuration.
+---
+--- This function accepts a setup table that defines the layers, plugins, and commands to be used.
+--- It evaluates each layer to check its loading conditions and processes its stages in the
+--- following order: `preparation`, `settings`, `keybindings`, and `complete`. For each layer,
+--- the respective functions are called if they are defined.
+---
+--- Additionally, this function handles `run_once_per_filetype` commands for layers. These
+--- commands are associated with specified filetypes and are ensured to execute only once
+--- per filetype. Autocommands are created dynamically to manage these filetype-specific actions.
+---
+--- @param s LYRD.setup.Settings The setup configuration table containing layers, plugins, and commands.
 function setup.load(s)
 	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
-	---@type LYRD.setup.Module[]
-	for _, layer in ipairs(setup.config.layers) do
+	vim.tbl_map(function(layer)
+		---@type LYRD.setup.Module
 		local L = require(layer)
 		--- Checks if the layer meets the condition to be loaded
 		if should_load_layer(L) then
 			table.insert(setup.config.loaded_layers, L)
 		end
-	end
+	end, setup.config.layers)
 
 	-- Process each layer
 	load_plugins()
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.preparation ~= nil then
-			layer.preparation()
+	-- Define the stages to be called in order
+	local stages = { "preparation", "settings", "keybindings", "complete" }
+	vim.tbl_map(function(stage_function_name)
+		--- Call the stage callback for each layer if it exists
+		for _, layer in ipairs(setup.config.loaded_layers) do
+			if layer[stage_function_name] ~= nil then
+				layer[stage_function_name]()
+			end
 		end
-	end
+	end, stages)
+	-- Initializes the index for the run_once_per_filetype commands
+	local file_type_commands_index = 0
 	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.settings ~= nil then
-			layer.settings()
-		end
-	end
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.keybindings ~= nil then
-			layer.keybindings()
-		end
-	end
-	for _, layer in ipairs(setup.config.loaded_layers) do
-		if layer.complete ~= nil then
-			layer.complete()
+		if layer.run_once_per_filetype ~= nil then
+			--- Create autocommands for each filetype command
+			for ft, command_callback in pairs(layer.run_once_per_filetype) do
+				file_type_commands_index = file_type_commands_index + 1
+				vim.api.nvim_create_autocmd("FileType", {
+					pattern = ft,
+					callback = function()
+						-- Ensure the command is run only once per file type
+						if run_once_per_file_type_execution[file_type_commands_index] then
+							return
+						end
+						-- Call the command function
+						command_callback()
+						-- Mark the command as executed
+						run_once_per_file_type_execution[file_type_commands_index] = true
+					end,
+				})
+			end
 		end
 	end
 end

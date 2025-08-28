@@ -6,52 +6,67 @@ local L = { name = "Web frontend" }
 function L.plugins()
 	setup.plugin({
 		{
+			"pangloss/vim-javascript",
+			init = function()
+				vim.g.javascript_plugin_jsdoc = 1
+				vim.g.javascript_plugin_ngdoc = 1
+				vim.g.javascript_plugin_flow = 1
+			end,
+			ft = { "js" },
+		},
+		{
 			"leafgarland/typescript-vim",
 			ft = { "ts", "tsx", "vue" },
+		},
+		{
+			"marilari88/neotest-vitest",
+		},
+		{
+			"nvim-neotest/neotest-jest",
 		},
 	})
 end
 
 function L.preparation()
 	lsp.mason_ensure({
-		"typescript-language-server",
 		"vue-language-server",
+		"angular-language-server",
+		"js-debug-adapter",
+		"eslint-lsp",
+		"vtsls",
+	})
+	lsp.format_with_lsp("vue", "vue_ls")
+	lsp.format_with_lsp("ts", "vtsls")
+
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"javascript",
+		"typescript",
+		"vue",
+		"tsx",
+		"angular",
+	})
+
+	local test = require("LYRD.layers.test")
+	test.configure_adapter(require("neotest-vitest"))
+	test.configure_adapter(require("neotest-jest"))
+
+	-- Enable treesitter for Angular HTML files
+	vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+		pattern = { "*.component.html", "*.container.html" },
+		callback = function()
+			vim.treesitter.start(nil, "angular")
+		end,
 	})
 end
 
 function L.settings() end
 
 function L.complete()
-	lsp.enable("ts_ls", {
-		filetypes = {
-			"javascript",
-			"javascriptreact",
-			"javascript.jsx",
-			"typescript",
-			"typescriptreact",
-			"typescript.tsx",
-			"vue",
-		},
-		init_options = {
-			plugins = {
-				{
-					name = "@vue/typescript-plugin",
-					location = vim.fn.stdpath("data")
-						.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
-
-					languages = { "vue" },
-				},
-			},
-		},
-		settings = {},
-	})
-	lsp.enable("volar", {
-		init_options = {
-			vue = {
-				hybridMode = true,
-			},
-		},
-		settings = {},
+	vim.lsp.enable({
+		"vtsls",
+		"vue_ls",
+		"angularls",
 	})
 end
 

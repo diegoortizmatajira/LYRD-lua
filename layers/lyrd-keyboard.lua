@@ -138,6 +138,7 @@ function L.keybindings()
 			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit },
+			{ "d", cmd.LYRDAIGenerateDocumentation },
 		}, icons.other.ia, { "x" }),
 		menu_header("i", "Images", {
 			{ "p", cmd.LYRDPasteImage },
@@ -215,6 +216,7 @@ function L.keybindings()
 			{ "y", cmd.LYRDViewYankList },
 			{ "x", cmd.LYRDTerminalList },
 			{ "X", cmd.LYRDTerminal },
+			{ "w", cmd.LYRDTasksToggle },
 		}, icons.action.split_v),
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
@@ -307,7 +309,7 @@ function L.keybindings()
 			{ ";", cmd.LYRDDebugToggleUI },
 			{ "/", cmd.LYRDDebugToggleRepl },
 		}, icons.debug.breakpoint),
-		menu_header("f", "Find", {
+		menu_header("s", "Search", {
 			{ ".", cmd.LYRDSearchFiles },
 			{ "b", cmd.LYRDSearchBuffers },
 			{ "g", cmd.LYRDSearchGitFiles },
@@ -319,11 +321,13 @@ function L.keybindings()
 			{ "t", cmd.LYRDTerminalList },
 			{ "/", cmd.LYRDSearchLiveGrep },
 			{ "f", cmd.LYRDSearchFiletypes },
-			{ "o", cmd.LYRDSearchColorSchemes },
+			{ "t", cmd.LYRDSearchColorSchemes },
 			{ "q", cmd.LYRDSearchQuickFixes },
 			{ "H", cmd.LYRDSearchHighlights },
 			{ ",", cmd.LYRDSearchCommands },
-			{ "s", cmd.LYRDSearchCurrentString },
+			{ "S", cmd.LYRDSearchCurrentString },
+			{ "s", cmd.LYRDSearchSnippets },
+			{ "o", cmd.LYRDSearchSymbols },
 			{ "p", cmd.LYRDSearchRegisters },
 			{ "R", cmd.LYRDReplaceInFiles },
 			{ "r", cmd.LYRDReplace },
@@ -341,7 +345,7 @@ function L.keybindings()
 					{ "f", cmd.LYRDGitFlowReleaseFinish },
 					{ "p", cmd.LYRDGitFlowReleasePublish },
 				}),
-				menu_header("r", "Hotfix", {
+				menu_header("h", "Hotfix", {
 					{ "s", cmd.LYRDGitFlowHotfixStart },
 					{ "f", cmd.LYRDGitFlowHotfixFinish },
 					{ "p", cmd.LYRDGitFlowHotfixPublish },
@@ -389,15 +393,20 @@ function L.keybindings()
 			{ "Q", cmd.LYRDWindowForceCloseAll },
 		}, icons.action.exit),
 		menu_header("r", "Run", {
-			menu_header("r", "REPL", {
+			menu_header("R", "REPL", {
 				{ "v", cmd.LYRDReplView },
 				{ "r", cmd.LYRDReplRestart },
 			}, icons.other.command),
+			{ "r", cmd.LYRDTasksRun },
+			{ "v", cmd.LYRDTasksToggle },
+			{ "T", cmd.LYRDTasksConfigure },
+			{ "L", cmd.LYRDTasksConfigureLaunch },
 		}, icons.code.run),
-		menu_header("s", "Services", {
+		menu_header("<SPACE>", "Tools/Services", {
 			{ "d", cmd.LYRDDatabaseUI },
 			{ "c", cmd.LYRDContainersUI },
 			{ "f", cmd.LYRDViewFileExplorer },
+			{ "F", cmd.LYRDViewFileExplorerAlt },
 			{ "g", cmd.LYRDGitUI },
 			{ "k", cmd.LYRDKubernetesUI },
 			{ "t", cmd.LYRDTerminal },

@@ -1,0 +1,44 @@
+# Compiler and flags
+CC = gcc
+# Last flag (-g) is for debugging, remove it for production builds
+CFLAGS = -Wall -Wextra -pedantic -std=c99 -g
+
+# Directories
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+
+TEST_DIR = tests
+TEST_TARGET = $(BIN_DIR)/test_app
+
+# Source and object files
+SRCS = $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+DEPS = $(OBJS:$(OBJ_DIR)/%.o=$(OBJ_DIR)/%.d)
+TARGET = $(BIN_DIR)/app
+
+all: $(TARGET) $(TEST_TARGET)
+
+$(TARGET): $(OBJS)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.d: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -MM $< -MF $@ -MT $(OBJ_DIR)/$*.o
+
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR) $(TEST_TARGET)
+
+$(TEST_TARGET): $(TEST_DIR)/test_math.c $(OBJ_DIR)/math.o
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
+
+-include $(DEPS)
+
+.PHONY: all clean
+

@@ -9,10 +9,10 @@ local L = {
 	required_tools = {},
 	null_ls_sources = {},
 	null_ls_registered = {},
+	conform_formatters_by_ft = {},
 	conform_formatters = {},
 }
 
-local capabilities = nil
 local mason_opts = {
 	ui = {
 		check_outdated_packages_on_open = true,
@@ -61,10 +61,9 @@ local mason_opts = {
 	-- The registries to source packages from. Accepts multiple entries. Should a package with the same name exist in
 	-- multiple registries, the registry listed first will be used.
 	registries = {
-		"lua:mason-registry.index",
+		"github:crashdummyy/mason-registry",
 		"github:nvim-java/mason-registry",
 		"github:mason-org/mason-registry",
-		"github:crashdummyy/mason-registry",
 	},
 
 	-- The provider implementations to use for resolving supplementary package metadata (e.g., all available versions).
@@ -104,6 +103,16 @@ local plugged_capabilities = function()
 		lineFoldingOnly = true,
 	}
 
+	result.textDocument = result.textDocument or {}
+	result.textDocument.codeLens = {
+		dynamicRegistration = true,
+		resolveProvider = true,
+	}
+
+	result.workspace = result.workspace or {}
+	result.workspace.codeLens = {
+		refreshSupport = true,
+	}
 	return result
 end
 
@@ -147,6 +156,10 @@ local function format_buffer(args)
 	require("conform").format({ async = true, lsp_format = "fallback", range = range })
 end
 
+function L.get_pkg_path(pkg, ...)
+	return utils.join_paths(vim.fn.expand("$MASON"), "packages", pkg, ...)
+end
+
 function L.plugins()
 	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
@@ -166,6 +179,9 @@ function L.plugins()
 		},
 		{
 			"nvimtools/none-ls.nvim",
+			dependencies = {
+				"nvimtools/none-ls-extras.nvim",
+			},
 			config = false,
 		},
 		{
@@ -176,13 +192,6 @@ function L.plugins()
 				"nvimtools/none-ls.nvim",
 			},
 			config = false,
-		},
-		{
-			"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-			config = function()
-				require("lsp_lines").setup()
-			end,
-			opts = {},
 		},
 		{
 			"whoissethdaniel/mason-tool-installer.nvim",
@@ -249,30 +258,19 @@ end
 function L.preparation()
 	add_mason_bin_to_path()
 	L.mason_ensure({
-		"angular-language-server",
 		"bash-language-server",
-		"clang-format",
-		"css-lsp",
-		"dockerfile-language-server",
 		"editorconfig-checker",
-		"emmet-ls",
-		"eslint-lsp",
-		"firefox-debug-adapter",
-		"marksman",
-		"taplo",
-		"lemminx",
-		"node-debug2-adapter",
-		"sql-formatter",
-		"sqlls",
 		"vim-language-server",
-		"yamlfmt",
-		"yamllint",
-		"yapf",
 	})
 	setup_default_providers()
 end
 
 function L.settings()
+	local lspconfig = require("lspconfig")
+	lspconfig.util.default_config = vim.tbl_extend("force", lspconfig.util.default_config, {
+		capabilities = plugged_capabilities(),
+	})
+
 	require("mason").setup(mason_opts) -- Recommended not to lazy load
 	require("mason-tool-installer").setup({
 		ensure_installed = L.required_tools,
@@ -296,27 +294,8 @@ function L.settings()
 	})
 
 	require("conform").setup({
-		formatters_by_ft = L.conform_formatters,
-		formatters = {
-			--- TODO: Remove when conform supports this
-			csharpier = function()
-				local useDotnet = not vim.fn.executable("csharpier")
-				local command = useDotnet and "dotnet csharpier" or "csharpier"
-				local version_out = vim.fn.system(command .. " --version")
-				--NOTE: system command returns the command as the first line of the result, need to get the version number on the final line
-				local major_version = tonumber((version_out or ""):match("^(%d+)")) or 0
-				local is_new = major_version >= 1
-
-				local args = is_new and { "format", "$FILENAME" } or { "--write-stdout" }
-
-				return {
-					command = command,
-					args = args,
-					stdin = not is_new,
-					require_cwd = false,
-				}
-			end,
-		},
+		formatters_by_ft = L.conform_formatters_by_ft,
+		formatters = L.conform_formatters,
 		-- Set default options
 		default_format_opts = {
 			lsp_format = "fallback",
@@ -341,6 +320,7 @@ function L.settings()
 		underline = true,
 		severity_sort = true,
 		virtual_text = false,
+		current_line = true,
 		virtual_lines = true,
 	}
 
@@ -371,8 +351,18 @@ function L.settings()
 		{ cmd.LYRDLSPSignatureHelp, vim.lsp.buf.signature_help },
 		{ cmd.LYRDLSPFindTypeDefinition, vim.lsp.buf.type_definition },
 		{ cmd.LYRDLSPRename, vim.lsp.buf.rename },
-		{ cmd.LYRDLSPGotoNextDiagnostic, vim.diagnostic.goto_next },
-		{ cmd.LYRDLSPGotoPrevDiagnostic, vim.diagnostic.goto_prev },
+		{
+			cmd.LYRDLSPGotoNextDiagnostic,
+			function()
+				vim.diagnostic.jump({ count = 1 })
+			end,
+		},
+		{
+			cmd.LYRDLSPGotoPrevDiagnostic,
+			function()
+				vim.diagnostic.jump({ count = -1 })
+			end,
+		},
 		{ cmd.LYRDLSPShowDocumentDiagnosticLocList, ":Trouble diagnostics toggle filter.buf=0" },
 		{ cmd.LYRDLSPShowWorkspaceDiagnosticLocList, ":Trouble diagnostics toggle" },
 		{ cmd.LYRDViewLocationList, ":Trouble loclist toggle" },
@@ -380,15 +370,6 @@ function L.settings()
 		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
 		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
 	})
-end
-
-function L.enable(server, options)
-	if capabilities == nil then
-		capabilities = plugged_capabilities()
-	end
-	options = options or {}
-	options.capabilities = options.capabilities or capabilities
-	require("lspconfig")[server].setup(options)
 end
 
 function L.mason_ensure(tools)
@@ -418,6 +399,13 @@ function L.register_code_actions(filetypes, fn)
 	})
 end
 
+--- Customizes the formatter for a given formatter name.
+--- @param formatter_name string Name of the formatter to customize
+--- @param custom_formatter table|function Custom formatter function
+function L.customize_formatter(formatter_name, custom_formatter)
+	L.conform_formatters[formatter_name] = custom_formatter
+end
+
 --- Configures the given LSP server to format buffers for a given filetype.
 --- @param filetype string|string[] filetype(s) to format
 --- @param lsp_name string name of the LSP server
@@ -428,10 +416,16 @@ function L.format_with_lsp(filetype, lsp_name)
 end
 
 --- Configures the given LSP server to format buffers for a given filetype.
---- @param filetype string filetype to format
+--- @param filetype string | string[] filetype(s) to format
 --- @param format_settings table Settings for the formatter
 function L.format_with_conform(filetype, format_settings)
-	L.conform_formatters[filetype] = format_settings
+	if type(filetype) == "string" then
+		L.conform_formatters_by_ft[filetype] = format_settings
+	elseif type(filetype) == "table" then
+		for _, ft in pairs(filetype) do
+			L.conform_formatters_by_ft[ft] = format_settings
+		end
+	end
 end
 
 function L.complete()

@@ -8,6 +8,7 @@ local L = {
 		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia, true),
 		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
 		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia, true),
+		LYRDAIGenerateDocumentation = Command:new("Document current element with AI", nil, icons.other.ia, true),
 		LYRDBreakLine = Command:new(
 			"Break current line",
 			":s/[,(]/&\r/ge|:noh|:'[,']normal==",
@@ -131,6 +132,8 @@ local L = {
 		LYRDSearchQuickFixes = Command:new("Quick Fixes", nil, icons.diagnostic.search),
 		LYRDSearchRecentFiles = Command:new("Recent files", nil, icons.search.history),
 		LYRDSearchRegisters = Command:new("Registers", nil, icons.search.default),
+		LYRDSearchSymbols = Command:new("Symbols", nil, icons.search.default),
+		LYRDSearchSnippets = Command:new("Snippets", nil, icons.code.snippet),
 		LYRDResumeLastSearch = Command:new("Resume last search", nil, icons.search.history),
 		LYRDSmartCoder = Command:new("Smart code generator", nil, icons.code.generate),
 		LYRDTerminalList = Command:new("View terminal list", nil, icons.search.layers),
@@ -197,6 +200,10 @@ local L = {
 		LYRDPasteImage = Command:new("Paste image", nil, icons.images.add),
 		LYRDInsertImage = Command:new("Insert image", nil, icons.images.search),
 		LYRDHardModeToggle = Command:new("Toggle hard mode", nil, icons.action.toggle_on),
+		LYRDTasksToggle = Command:new("Toggle tasks view", nil, icons.other.eye),
+		LYRDTasksRun = Command:new("Run task", nil, icons.action.run_task),
+		LYRDTasksConfigure = Command:new("Configure tasks", nil, icons.other.task),
+		LYRDTasksConfigureLaunch = Command:new("Configure launch profile", nil, icons.other.launch),
 	},
 }
 

@@ -1,8 +1,7 @@
-local M = {}
-
 local uv = vim.loop
-
-local path_sep = uv.os_uname().version:match("Windows") and "\\" or "/"
+local M = {
+	path_sep = uv.os_uname().version:match("Windows") and "\\" or "/",
+}
 
 --- Gets lyrd path
 function M.get_lyrd_path()
@@ -12,7 +11,7 @@ end
 --- Joins paths
 --- @param ... any
 function M.join_paths(...)
-	local result = table.concat({ ... }, path_sep)
+	local result = table.concat({ ... }, M.path_sep)
 	return result
 end
 

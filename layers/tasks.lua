@@ -4,17 +4,60 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = { name = "Tasks" }
 
+local function configure(filename)
+	return function()
+		-- check if the filename path exists, or create it otherwise, then open it
+		if vim.fn.filereadable(filename) == 0 then
+			vim.fn.mkdir(vim.fn.fnamemodify(filename, ":h"), "p")
+			-- Create an empty file if it doesn't exist
+			vim.fn.writefile({}, filename)
+		end
+		vim.cmd("edit " .. filename)
+	end
+end
 function L.plugins()
 	setup.plugin({
 		{
 			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
 			opts = {
+				templates = {
+					"builtin",
+				},
 				task_list = {
 					direction = "bottom",
 					min_height = 25,
 					max_height = 25,
 					default_detail = 1,
+					-- Set keymap to false to remove default behavior
+					-- You can add custom keymaps here as well (anything vim.keymap.set accepts)
+					bindings = {
+						["?"] = "ShowHelp",
+						["g?"] = "ShowHelp",
+						["<CR>"] = "RunAction",
+						["<C-e>"] = "Edit",
+						["o"] = "Open",
+						["<C-v>"] = "OpenVsplit",
+						["<C-s>"] = "OpenSplit",
+						["<C-f>"] = "OpenFloat",
+						["<C-q>"] = "OpenQuickFix",
+						["p"] = "TogglePreview",
+						["<C-l>"] = false,
+						["<C-h>"] = false,
+						["<C-o>"] = "IncreaseDetail",
+						["<C-y>"] = "DecreaseDetail",
+						["L"] = "IncreaseAllDetail",
+						["H"] = "DecreaseAllDetail",
+						["["] = "DecreaseWidth",
+						["]"] = "IncreaseWidth",
+						["{"] = "PrevTask",
+						["}"] = "NextTask",
+						["<C-k>"] = false,
+						["<C-j>"] = false,
+						["<C-u>"] = "ScrollOutputUp",
+						["<C-i>"] = "ScrollOutputDown",
+						["q"] = "Close",
+					},
 				},
 				dap = false,
 			},
@@ -23,7 +66,12 @@ function L.plugins()
 end
 
 function L.settings()
-	commands.implement("*", {})
+	commands.implement("*", {
+		{ cmd.LYRDTasksToggle, ":OverseerToggle" },
+		{ cmd.LYRDTasksRun, ":OverseerRun" },
+		{ cmd.LYRDTasksConfigure, configure("./.vscode/tasks.json") },
+		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json") },
+	})
 end
 
 return L

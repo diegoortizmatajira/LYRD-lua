@@ -212,6 +212,8 @@ end
 
 function L.settings()
 	commands.implement("*", {
+		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
+		{ cmd.LYRDAIGenerateDocumentation, ":AvanteEdit Generate documentation for the current element." },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{
 			cmd.LYRDAIAsk,

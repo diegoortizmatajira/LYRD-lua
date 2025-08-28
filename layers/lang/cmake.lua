@@ -8,6 +8,11 @@ function L.preparation()
 	lsp.mason_ensure({
 		"cmake-language-server",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"make",
+		"cmake",
+	})
 end
 
 function L.settings()
@@ -28,7 +33,7 @@ end
 function L.keybindings() end
 
 function L.complete()
-	lsp.enable("cmake", {})
+	vim.lsp.enable("cmake")
 end
 
 return L

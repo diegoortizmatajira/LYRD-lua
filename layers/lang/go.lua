@@ -56,8 +56,8 @@ function L.plugins()
 			opts = {},
 		},
 		{
-			"nvim-neotest/neotest-go",
-			ft = "go", -- only load on go files
+			"fredrikaverpil/neotest-golang",
+			ft = "go",
 		},
 	})
 end
@@ -76,15 +76,23 @@ function L.preparation()
 		"gotests",
 		"impl",
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"go",
+		"gomod",
+		"gosum",
+		"gotmpl",
+		"gowork",
+	})
 
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.gofumpt,
-		null_ls.builtins.code_actions.impl,
 		null_ls.builtins.code_actions.gomodifytags,
+		null_ls.builtins.code_actions.impl,
 	})
+	lsp.format_with_conform("go", { "gofumpt", "goimports" })
 	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-go"))
+	test.configure_adapter(require("neotest-golang"))
 end
 
 -- This function to detect go html templates in html files
@@ -124,14 +132,7 @@ function L.settings()
 end
 
 function L.complete()
-	lsp.enable("gopls", {
-		settings = {
-			gopls = {
-				gofumpt = true,
-				buildFlags = { "-tags=wireinject,integration" },
-			},
-		},
-	})
+	vim.lsp.enable("gopls")
 end
 
 local function ends_with(str, ending)

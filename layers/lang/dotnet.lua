@@ -4,11 +4,11 @@ local lsp = require("LYRD.layers.lsp")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
-local L = { name = "Dotnet languages: C#, F#, Vb" }
+local L = {
+	name = "Dotnet languages: C#, F#, Vb",
+}
 
 local dotnet_languages = { "cs", "vb" }
-
--- local omnisharp_settings = require("LYRD.configs.omnisharp")
 
 local function get_secret_path(secret_guid)
 	if secret_guid == nil then
@@ -32,7 +32,7 @@ end
 function L.plugins()
 	setup.plugin({
 		{
-			"issafalcon/neotest-dotnet",
+			"nsidorenco/neotest-vstest",
 			ft = dotnet_languages,
 		},
 		{
@@ -155,12 +155,19 @@ function L.preparation()
 		"roslyn",
 		"csharpier",
 	})
-	lsp.format_with_conform("cs", {
-		"csharpier",
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"c_sharp",
+		"fsharp",
 	})
-	-- lsp.format_with_lsp(dotnet_languages, "roslyn")
+	-- lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
+	-- lsp.format_with_conform("cs", {
+	-- 	"csharpier",
+	-- 	lsp_format = "prefer",
+	-- })
+	lsp.format_with_lsp(dotnet_languages, "roslyn")
 	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-dotnet"))
+	test.configure_adapter(require("neotest-vstest"))
 end
 
 function L.settings()
@@ -203,30 +210,12 @@ function L.settings()
 	})
 
 	-- DEBUG ADAPTER
-	local dap = require("dap")
-	dap.adapters.netcoredbg = {
-		type = "executable",
-		command = vim.fn.exepath("netcoredbg"),
-		args = { "--interpreter=vscode" },
-		options = {
-			detached = false,
-		},
-	}
-	for _, lang in ipairs({ "cs", "fsharp", "vb" }) do
-		if not dap.configurations[lang] then
-			dap.configurations[lang] = {
-				{
-					type = "netcoredbg",
-					name = "Launch file",
-					request = "launch",
-					program = function()
-						return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/", "file")
-					end,
-					cwd = "${workspaceFolder}",
-				},
-			}
-		end
-	end
+	local debugger = require("LYRD.shared.dap.netcoredbg")
+	debugger.setup(dotnet_languages)
+
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.cake"))
 end
 
 function L.complete() end

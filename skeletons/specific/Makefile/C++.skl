@@ -1,0 +1,50 @@
+# Compiler and flags
+CXX = g++
+# Last flag (-g) is for debugging, remove it for production builds
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -I./include -MMD -MP -g
+
+# Directories
+SRC_DIR = ./src/
+OBJ_DIR = ./obj
+BIN_DIR = ./bin
+
+# Source and object files
+SOURCES = $(wildcard $(SRC_DIR)*.cpp) $(wildcard ./test/*.cpp)
+OBJECTS = $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)/%.o,$(wildcard $(SRC_DIR)*.cpp))
+TEST_OBJECTS = $(patsubst ./test/%.cpp,$(OBJ_DIR)/%.o,$(wildcard ./test/*.cpp))
+
+# Dependency files
+DEPS = $(OBJECTS:.o=.d) $(TEST_OBJECTS:.o=.d)
+
+# Output
+TARGET = $(BIN_DIR)/app
+
+# Default target
+all: $(TARGET) test
+-include $(DEPS)
+test: $(TEST_OBJECTS) obj/math.o
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/test $^ -lgtest -lgtest_main -pthread
+
+# Compile test files to object files
+$(OBJ_DIR)/%.o: ./test/%.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Link objects to create the executable
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# Compile source files to object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)%.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean up build files
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+# Phony targets
+.PHONY: all clean
+

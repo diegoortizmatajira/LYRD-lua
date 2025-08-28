@@ -13,6 +13,8 @@ function L.preparation()
 	local default_dialect = "tsql"
 	lsp.mason_ensure({
 		"sqlfluff",
+		"sql-formatter",
+		"sqlls",
 	})
 	lsp.null_ls_register_sources({
 		null_ls.builtins.diagnostics.sqlfluff.with({
@@ -22,12 +24,16 @@ function L.preparation()
 			extra_args = { "--dialect", default_dialect }, -- change to your dialect
 		}),
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"sql",
+	})
 end
 
 function L.settings() end
 
 function L.complete()
-	lsp.enable("sqlls")
+	vim.lsp.enable("sqlls")
 end
 
 return L

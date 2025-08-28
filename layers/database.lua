@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local lsp = require("LYRD.layers.lsp")
 
 local L = { name = "Database" }
 
@@ -49,6 +50,8 @@ function L.plugins()
 		{ "muniftanjim/nui.nvim" },
 	})
 end
+
+function L.preparation() end
 
 function L.settings()
 	commands.implement("*", {

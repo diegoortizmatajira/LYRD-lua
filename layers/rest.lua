@@ -22,6 +22,10 @@ function L.preparation()
 			["http"] = "http",
 		},
 	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"http",
+	})
 end
 
 function L.keybindings()
@@ -36,6 +40,33 @@ function L.keybindings()
 		{ "n", "[", [[<Cmd>lua require("kulala").jump_prev()<CR>]], { desc = "Previous request" } },
 		{ "n", "]", [[<Cmd>lua require("kulala").jump_next()<CR>]], { desc = "Next request" } },
 	})
+end
+
+--- Returns the closest environment file for the current working directory. Starts with the current file directory and checks parent directories until it finds the file or reaches the root.
+function L.get_closest_environment_file()
+	local env_file = "http-client.env.json"
+
+	local function file_exists(path)
+		---@diagnostic disable-next-line: undefined-field
+		local stat = vim.loop.fs_stat(path)
+		return stat and stat.type == "file"
+	end
+
+	local buf_dir = vim.fn.expand("%:p:h")
+	local current_dir = buf_dir
+
+	while current_dir ~= nil and current_dir ~= "" do
+		local env_file_path = current_dir .. "/" .. env_file
+		if file_exists(env_file_path) then
+			return env_file_path
+		end
+
+		-- Move up one directory level
+		current_dir = current_dir:match("^(.*)/")
+	end
+
+	-- Return the default path in the current working directory if not found
+	return vim.fn.getcwd() .. "/" .. env_file
 end
 
 function L.settings()
@@ -55,17 +86,12 @@ function L.settings()
 		{
 			cmd.LYRDCodeSelectEnvironment,
 			function()
-				local env_file = "http-client.env.json"
-				---@diagnostic disable-next-line: undefined-field
-				local cwd = vim.loop.cwd()
-				local env_file_path = cwd .. "/" .. env_file
-
+				local env_file_path = L.get_closest_environment_file()
 				local function file_exists(path)
 					---@diagnostic disable-next-line: undefined-field
 					local stat = vim.loop.fs_stat(path)
 					return stat and stat.type == "file"
 				end
-
 				--- Creates the environment file if it does not exist
 				if not file_exists(env_file_path) then
 					local file = io.open(env_file_path, "w")
@@ -74,7 +100,7 @@ function L.settings()
 						file:close()
 						vim.cmd("edit " .. env_file_path)
 					else
-						print("Error: Could not create " .. env_file)
+						print("Error: Could not create " .. env_file_path)
 					end
 				else
 					require("kulala").set_selected_env()

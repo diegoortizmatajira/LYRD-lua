@@ -1,0 +1,32 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  event = string.gsub(basename, "Handler", "Event")
+
+  return { 
+      type_name = basename,
+      event_type_name = event,
+      namespace = generator.get_namespace(name),
+      _cursor = { 6, 5 }
+    }
+end
+---
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Scrutor;
+
+namespace ${namespace};
+
+[ServiceDescriptor]
+public class ${type_name}(
+    ILogger<${type_name}> logger
+) 
+: INotificationHandler<${event_type_name}>
+{
+    public Task Handle(${event_type_name} request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+}

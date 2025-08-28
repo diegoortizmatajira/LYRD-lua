@@ -28,27 +28,17 @@ function L.preparation()
 		"stylua",
 	})
 	lsp.format_with_conform("lua", { "stylua" })
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"lua",
+		"luap",
+		"luau",
+		"luadoc",
+	})
 end
 
 function L.complete()
-	lsp.enable("lua_ls", {
-		settings = {
-			Lua = {
-				runtime = {
-					-- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-					version = "LuaJIT",
-					-- Setup your lua path
-					path = vim.split(package.path, ";"),
-				},
-				diagnostics = {
-					-- Get the language server to recognize the `vim` global
-					globals = { "vim", "awesome", "client", "mouse" },
-				},
-				-- Do not send telemetry data containing a randomized but unique identifier
-				telemetry = { enable = false },
-			},
-		},
-	})
+	vim.lsp.enable("lua_ls")
 end
 
 return L

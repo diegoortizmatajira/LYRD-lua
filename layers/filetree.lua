@@ -112,6 +112,7 @@ function L.plugins()
 							},
 						},
 					},
+					group_empty = true,
 				},
 				hijack_directories = {
 					enable = true,
