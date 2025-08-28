@@ -80,7 +80,6 @@ local file_formatter = function(grouping, exclude_sections)
 					n_item = per_section and 0 or n_item
 				end
 
-				local section_index = per_section and string.format("%d", n_section) or ""
 				local rbracket_unit = {
 
 					string = "[",
@@ -127,7 +126,7 @@ local file_formatter = function(grouping, exclude_sections)
 				table.insert(content[c.line], c.unit + 3, icon_unit)
 				table.insert(content[c.line], c.unit + 4, path_unit)
 				table.insert(content[c.line], c.unit + 5, filename_unit)
-				unit.string = ("%s%s"):format(section_index, n_item)
+				unit.string = ("%d"):format(n_section * 10 + n_item)
 				n_item = n_item + 1
 			end
 		end
@@ -248,7 +247,7 @@ function L.plugins()
 						starter.gen_hook.adding_bullet(),
 						file_formatter("section", { "Common actions" }),
 						starter.gen_hook.padding(3, 2),
-						starter.gen_hook.aligning("center", "center"),
+						-- starter.gen_hook.aligning("center", "center"),
 					},
 				})
 				-- Map `j` and `k` to navigate items
