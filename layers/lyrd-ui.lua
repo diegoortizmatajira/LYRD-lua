@@ -10,6 +10,8 @@ local L = {
 
 local ext_app_term = nil -- Store the terminal object
 
+local lyrd_ui_group = vim.api.nvim_create_augroup("LYRD-ui", {})
+
 local function combine_ascii_art(base, new, from_line)
 	for i = 1, #new, 1 do
 		base[from_line + i] = base[from_line + i] .. new[i]
@@ -57,82 +59,6 @@ end
 function L.notify(message, level, options)
 	local notify = require("notify")
 	notify(message, level, options)
-end
-
-local file_formatter = function(grouping, exclude_sections)
-	grouping = grouping or "all"
-	exclude_sections = exclude_sections or {}
-	local per_section = grouping == "section"
-
-	return function(content, _)
-		local cur_section, n_section, n_item = 0, -1, 0
-		local coords = MiniStarter.content_coords(content, "item")
-
-		for _, c in ipairs(coords) do
-			local unit = content[c.line][c.unit]
-			local item = unit.item
-
-			if not vim.tbl_contains(exclude_sections, item.section) then
-				if cur_section ~= item.section then
-					cur_section = item.section
-					-- Cycle through lower case letters
-					n_section = n_section + 1
-					n_item = per_section and 0 or n_item
-				end
-
-				local rbracket_unit = {
-
-					string = "[",
-					type = "item_bracket",
-					hl = "@tag",
-					-- Use `_item` instead of `item` because it is better to be 'private'
-					_item = unit.item,
-				}
-				local lbracket_unit = {
-
-					string = "] ",
-					type = "item_bracket",
-					hl = "@tag",
-					-- Use `_item` instead of `item` because it is better to be 'private'
-					_item = unit.item,
-				}
-				local parts = vim.split(unit.string, "|")
-				local icon = icons.get_file_icon(parts[1] or unit.string)
-				local icon_unit = {
-					string = icon.icon .. "  ",
-					type = "item_icon",
-					hl = icon.hl,
-					-- Use `_item` instead of `item` because it is better to be 'private'
-					_item = unit.item,
-				}
-				local path_unit = {
-
-					string = #parts == 2 and parts[2] or "",
-					type = "item_text",
-					hl = "@comment",
-					-- Use `_item` instead of `item` because it is better to be 'private'
-					_item = unit.item,
-				}
-				local filename_unit = {
-
-					string = parts[1] or unit.string,
-					type = "item_text",
-					hl = "MiniStarterItem",
-					-- Use `_item` instead of `item` because it is better to be 'private'
-					_item = unit.item,
-				}
-				table.insert(content[c.line], c.unit, rbracket_unit)
-				table.insert(content[c.line], c.unit + 2, lbracket_unit)
-				table.insert(content[c.line], c.unit + 3, icon_unit)
-				table.insert(content[c.line], c.unit + 4, path_unit)
-				table.insert(content[c.line], c.unit + 5, filename_unit)
-				unit.string = ("%d"):format(n_section * 10 + n_item)
-				n_item = n_item + 1
-			end
-		end
-
-		return content
-	end
 end
 
 function L.plugins()
@@ -222,9 +148,100 @@ function L.plugins()
 			version = "*",
 			config = function()
 				local starter = require("mini.starter")
+				--- customizes how the file path is appendned to the item text (aligned with file_formatter function for splitting)
 				local show_path = function(path)
 					return string.format("|%s%s", vim.fn.fnamemodify(path, ":~:.:h"), utils.path_sep)
 				end
+				--- custom file formatter to show brackets, icons and paths using different highlight groups
+				local file_formatter = function(grouping, exclude_sections)
+					grouping = grouping or "all"
+					exclude_sections = exclude_sections or {}
+					local per_section = grouping == "section"
+
+					return function(content, _)
+						local cur_section, n_section, n_item = 0, -1, 0
+						local coords = MiniStarter.content_coords(content, "item")
+
+						for _, c in ipairs(coords) do
+							local unit = content[c.line][c.unit]
+							local item = unit.item
+
+							if not vim.tbl_contains(exclude_sections, item.section) then
+								if cur_section ~= item.section then
+									cur_section = item.section
+									-- Cycle through lower case letters
+									n_section = n_section + 1
+									n_item = per_section and 0 or n_item
+								end
+
+								local rbracket_unit = {
+
+									string = "[",
+									type = "item_bracket",
+									hl = "@tag",
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								local lbracket_unit = {
+
+									string = "] ",
+									type = "item_bracket",
+									hl = "@tag",
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								local parts = vim.split(unit.string, "|")
+								local icon = icons.get_file_icon(parts[1] or unit.string)
+								local icon_unit = {
+									string = icon.icon .. "  ",
+									type = "item_icon",
+									hl = icon.hl,
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								local path_unit = {
+
+									string = #parts == 2 and parts[2] or "",
+									type = "item_text",
+									hl = "@comment",
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								local filename_unit = {
+
+									string = parts[1] or unit.string,
+									type = "item_text",
+									hl = "MiniStarterItem",
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								table.insert(content[c.line], c.unit, rbracket_unit)
+								table.insert(content[c.line], c.unit + 2, lbracket_unit)
+								table.insert(content[c.line], c.unit + 3, icon_unit)
+								table.insert(content[c.line], c.unit + 4, path_unit)
+								table.insert(content[c.line], c.unit + 5, filename_unit)
+								unit.string = ("%d"):format(n_section * 10 + n_item)
+								n_item = n_item + 1
+							end
+						end
+
+						return content
+					end
+				end
+				-- Overrides to match a better color scheme
+				local function set_matching_ministarter_colorscheme()
+					-- Highlight groups to match the current colorscheme
+					vim.api.nvim_set_hl(0, "MiniStarterItemPrefix", { link = "Constant" })
+					vim.api.nvim_set_hl(0, "MiniStarterHeader", { link = "Type" })
+					vim.api.nvim_set_hl(0, "MiniStarterQuery", { link = "Constant" })
+					-- vim.api.nvim_set_hl(0, "MiniStarterCurrent", { link = "MiniStarterItem" })
+					-- vim.api.nvim_set_hl(0, "MiniStarterFooter", { link = "Title" })
+					-- vim.api.nvim_set_hl(0, "MiniStarterInactive", { link = "Comment" })
+					-- vim.api.nvim_set_hl(0, "MiniStarterItem", { link = "Normal" })
+					-- vim.api.nvim_set_hl(0, "MiniStarterItemBullet", { link = "Delimiter" })
+					-- vim.api.nvim_set_hl(0, "MiniStarterSection", { link = "Delimiter" })
+				end
+				--- Sets up the mini.starter with custom options
 				starter.setup({
 					--- Include only numbers and specific letters for common actions to allow j/k navigation
 					query_updaters = "ewq0123456789",
@@ -243,6 +260,7 @@ function L.plugins()
 						-- Use this if you set up 'mini.sessions'
 						-- starter.sections.sessions(5, true),
 					},
+					footer = "LYRD® Neovim by Diego Ortiz. 2023",
 					content_hooks = {
 						starter.gen_hook.adding_bullet(),
 						file_formatter("section", { "Common actions" }),
@@ -250,38 +268,24 @@ function L.plugins()
 						-- starter.gen_hook.aligning("center", "center"),
 					},
 				})
+				set_matching_ministarter_colorscheme()
+				--- Ensure colors match on colorscheme change
+				vim.api.nvim_create_autocmd(
+					"ColorScheme",
+					{ group = lyrd_ui_group, callback = set_matching_ministarter_colorscheme, desc = "Ensure colors" }
+				)
 				-- Map `j` and `k` to navigate items
-				local group = vim.api.nvim_create_augroup("MiniStarterJK", {})
 				vim.api.nvim_create_autocmd("User", {
-					group = group,
+					group = lyrd_ui_group,
 					pattern = "MiniStarterOpened",
+					--stylua: ignore
 					callback = function()
-						vim.api.nvim_buf_set_keymap(
-							0,
-							"n",
-							"j",
-							"<Cmd>lua MiniStarter.update_current_item('next')<CR>",
-							{ noremap = true, silent = true }
-						)
-						vim.api.nvim_buf_set_keymap(
-							0,
-							"n",
-							"k",
-							"<Cmd>lua MiniStarter.update_current_item('prev')<CR>",
-							{ noremap = true, silent = true }
-						)
+						vim.api.nvim_buf_del_keymap(0, "n", "<C-p>")
+						vim.api.nvim_buf_del_keymap(0, "n", "<C-n>")
+						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", { noremap = true, silent = true })
+						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", { noremap = true, silent = true })
 					end,
 				})
-				-- Highlight groups to match the current colorscheme
-				vim.api.nvim_set_hl(0, "MiniStarterItemPrefix", { link = "@constant", default = true })
-				vim.api.nvim_set_hl(0, "MiniStarterHeader", { link = "@type", default = true })
-				vim.api.nvim_set_hl(0, "MiniStarterQuery", { link = "@constant", default = true })
-				-- vim.api.nvim_set_hl(0, "MiniStarterCurrent", { link = "MiniStarterItem" })
-				-- vim.api.nvim_set_hl(0, "MiniStarterFooter", { link = "Title" })
-				-- vim.api.nvim_set_hl(0, "MiniStarterInactive", { link = "Comment" })
-				-- vim.api.nvim_set_hl(0, "MiniStarterItem", { link = "Normal" })
-				-- vim.api.nvim_set_hl(0, "MiniStarterItemBullet", { link = "Delimiter" })
-				-- vim.api.nvim_set_hl(0, "MiniStarterSection", { link = "Delimiter" })
 			end,
 		},
 		{
