@@ -1,4 +1,9 @@
 {
+  "toc": {
+    "prefix": "toc",
+    "body": "\n<!-- toc -->\n",
+    "description": "Table of Contents"
+  },
   "sec": {
     "prefix": "sec",
     "body": "# ${1:Section Name} #\n$0",
