@@ -350,25 +350,22 @@ end
 
 function L.settings()
 	-- The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-	local ui_sync_fromstart_group = vim.api.nvim_create_augroup("ui_sync_fromstart", {})
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {
-		group = ui_sync_fromstart_group,
+		group = lyrd_ui_group,
 		pattern = { "*" },
 		command = ":syntax sync maxlines=200",
 	})
 
 	-- Remember cursor position
-	local ui_remember_cursor_position_group = vim.api.nvim_create_augroup("ui_remember_cursor_position", {})
 	vim.api.nvim_create_autocmd({ "BufReadPost" }, {
-		group = ui_remember_cursor_position_group,
+		group = lyrd_ui_group,
 		pattern = { "*" },
 		command = [[if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif]],
 	})
 
 	-- Highlight the yanked text
-	local ui_highlight_yank_group = vim.api.nvim_create_augroup("ui_highlight_yank_group", {})
 	vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-		group = ui_highlight_yank_group,
+		group = lyrd_ui_group,
 		pattern = "*",
 		callback = function()
 			vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
