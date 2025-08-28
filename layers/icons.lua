@@ -266,6 +266,7 @@ local L = {
 		notebook = " ",
 		symlink = " ",
 		scratch = "󱞁 ",
+		lua = " ",
 	},
 	chevron = {
 		right = " ",
@@ -385,13 +386,36 @@ function L.icon(icon_text, highlight, color)
 	}
 end
 
-function L.filetype_icon()
+function L.get_filetype_icon(ft)
 	local devicons = require("nvim-web-devicons")
-	local icon, icon_highlight = devicons.get_icon_by_filetype(vim.bo.filetype)
+	local icon, icon_highlight = devicons.get_icon_by_filetype(ft)
 	if not icon then
 		icon, icon_highlight = devicons.get_icon_by_filetype("default")
 	end
 	return { icon = icon, hl = icon_highlight }
+end
+
+function L.filetype_icon()
+	return L.get_filetype_icon(vim.bo.filetype)
+end
+
+--- @param fn string file name or path
+--- @return string
+local function get_extension(fn)
+	local basename = vim.fs.basename(fn)
+	local match = basename:match("^.+(%..+)$")
+	local ext = ""
+	if match ~= nil then
+		ext = match:sub(2)
+	end
+	return ext
+end
+
+function L.get_file_icon(filename)
+	local ext = get_extension(filename)
+	local devicons = require("nvim-web-devicons")
+	local icon, hl = devicons.get_icon(filename, ext, { default = true })
+	return { icon = icon, hl = hl }
 end
 
 return L
