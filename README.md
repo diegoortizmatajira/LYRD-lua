@@ -84,6 +84,10 @@ minimizes conflicts between layers and plugins.
   - Automatically remembers and restores the last cursor position in files.
 - **Yank Highlighting**:
   - Visual feedback when text is yanked, improving usability.
+- **Autocompletion**:
+  - LSP completions (functions, variables, types, etc.)
+  - Code snippet support
+  - AI code completion
 
 ## Keyboard-Driven Workflow
 
@@ -192,6 +196,9 @@ flow.
   - Virtual environment management with `venv-selector.nvim`.
   - Debugging support through `nvim-dap-python`.
   - Testing Framework: `neotest-python`.
+  - Jupyter Notebooks: Includes support for Jupyter notebooks in Neovim buffers
+    with execution capabilities, powered by plugins such as `iron.nvim`,
+    `NotebookNavigator.nvim`, and `jupytext.nvim`.
 
 ### Rust
 
@@ -221,9 +228,7 @@ flow.
 
 ## Centralized IDE Functionalities
 
-LYRD centralizes essential IDE functionalities to ensure streamlined and
-cohesive workflows. The following modules play a key role in providing a rich
-development experience:
+LYRD centralizes essential IDE functionalities to ensure streamlined and cohesive workflows. The following modules play a key role in providing a rich development experience:
 
 - **Test Management** (`test.lua`): Simplifies running and managing tests
   across supported languages.
@@ -241,6 +246,27 @@ development experience:
   directly from Neovim.
 - **Syntax Highlighting** (`treesitter.lua`): Leverages Treesitter for advanced
   syntax highlighting and parsing.
+- **Task Management** (`tasks.lua`): Includes robust task management
+  capabilities through `overseer.nvim`. It supports a variety of task types
+  out-of-the-box, including VSCode tasks, Make, Mage (go), Maven, and Cake
+  Frosting (dotnet), enabling developers to seamlessly configure and monitor
+  their workflows.
+- **External Tool Integrations**:
+  - **Docker** (`docker.lua`): Provides seamless integration with Docker
+    through language servers for Dockerfile and Docker Compose. It includes
+    support for linting with `hadolint` and a terminal-based UI powered by
+    `lazydocker`.
+  - **Kubernetes** (`kubernetes.lua`): Enables interaction with Kubernetes
+    clusters using `k9s` for cluster management and Helm support for
+    configuration.
+  - **File Tree** (`filetree.lua`): Features the `nvim-tree` plugin for
+    enhanced file browsing, with additional support for terminal-based file
+    managers like `yazi`.
+  - **Tmux** (`tmux.lua`): Integrates with Tmux for seamless pane navigation
+    and manipulation using `vim-tmux-navigator` and `smart-splits.nvim`.
+  - **Fuzzy Finder** (`telescope.lua`): Offers advanced file and content search
+    capabilities enhanced by `telescope-fzf-native`. It supports a wide range of
+    integrations, including LSP features, code outlines, and snippet selection.
 
 This centralized approach ensures that developers can access all essential
 tools and features without needing to switch contexts or install additional
