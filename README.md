@@ -3,7 +3,9 @@
 <!-- toc -->
 
 - [Summary](#summary)
+- [Abstractions and Extensibility](#abstractions-and-extensibility)
 - [UI Features](#ui-features)
+- [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Supported Programming Languages](#supported-programming-languages)
     * [CMake](#cmake)
     * [C and C++](#c-and-c)
@@ -19,6 +21,8 @@
     * [Rust](#rust)
     * [Web Frontend](#web-frontend)
     * [Web Standards](#web-standards)
+- [Centralized IDE Functionalities](#centralized-ide-functionalities)
+- [AI Integration](#ai-integration)
 - [Installation](#installation)
 
 <!-- tocstop -->
@@ -29,6 +33,32 @@ LYRD is a Neovim configuration focusing on improved developer workflows and
 custom UI enhancements. It provides features such as advanced notifications,
 syntax highlighting, terminal integration, and session management. It also
 supports easy navigation, file search, and command customization.
+
+## Abstractions and Extensibility
+
+LYRD is designed with abstractions in layers, commands, and keybindings to
+enhance maintainability and extensibility:
+
+- **Layered Architecture**:
+  - Each layer encapsulates specific functionality, such as language support,
+    UI enhancements, or tools.
+  - Layers have lifecycle methods (`preparation`, `settings`, `keybindings`,
+    `complete`) for modular configuration.
+- **Command Abstractions**:
+  - Custom commands are implemented to standardize functionality across layers.
+  - For example, commands like `LYRDCodeRun`, `LYRDCodeBuild`, and `LYRDTest`
+    offer consistent workflows.
+- **Keybinding Management**:
+  - Keybindings are defined per layer, ensuring that they remain
+    context-specific and modular.
+  - Layers can register file-type-specific actions to run only once per file
+    type, ensuring efficiency.
+- **Plugin Management**:
+  - Plugins are defined and scoped per layer, allowing for lazy loading and
+    reducing startup time.
+
+This design ensures that the configuration is easy to extend and maintain, and
+minimizes conflicts between layers and plugins.
 
 ## UI Features
 
@@ -54,6 +84,28 @@ supports easy navigation, file search, and command customization.
   - Automatically remembers and restores the last cursor position in files.
 - **Yank Highlighting**:
   - Visual feedback when text is yanked, improving usability.
+
+## Keyboard-Driven Workflow
+
+LYRD emphasizes a keyboard-driven workflow, offering developers an efficient
+and intuitive way to interact with Neovim. Key features include:
+
+- **Feature-Based Grouping**:
+  - Keybindings are logically grouped by features, ensuring consistency and
+    reducing cognitive load for developers.
+- **Ease of Memorization**:
+  - Mnemonic and descriptive keybinding patterns make them easy to remember,
+    even for complex workflows.
+- **Enhanced by Plugins**:
+  - Plugins like `which-key.nvim` provide on-the-fly keybinding descriptions
+    and organize them visually, making it easier to discover and use them.
+- **Descriptive Icons**:
+  - Integration with plugins ensures that keybindings are accompanied by
+    meaningful icons, improving usability and aesthetics.
+
+This approach ensures that developers can focus on their tasks without needing
+to frequently consult documentation, enhancing productivity and maintaining
+flow.
 
 ## Supported Programming Languages
 
@@ -166,6 +218,67 @@ supports easy navigation, file search, and command customization.
   - Prettier integration for formatting.
   - Treesitter support for HTML, CSS, and SCSS.
   - Autotag plugin for easier HTML tag management.
+
+## Centralized IDE Functionalities
+
+LYRD centralizes essential IDE functionalities to ensure streamlined and
+cohesive workflows. The following modules play a key role in providing a rich
+development experience:
+
+- **Test Management** (`test.lua`): Simplifies running and managing tests
+  across supported languages.
+- **Debugging** (`debug.lua`): Offers integrated debugging capabilities with
+  support for language-specific adapters.
+- **Code Completion** (`completion.lua`): Enhances code completion using
+  language servers and custom logic.
+- **Development Tools** (`dev.lua`): Houses tools for rapid development, such
+  as code generation and refactoring utilities.
+- **File Templates** (`file_templates.lua`): Facilitates the creation of
+  boilerplate code or standardized file structures.
+- **Git Integration** (`git.lua`): Provides Git-related features like diff
+  viewing, staging, and committing changes.
+- **REST Client** (`rest.lua`): Enables testing and interacting with REST APIs
+  directly from Neovim.
+- **Syntax Highlighting** (`treesitter.lua`): Leverages Treesitter for advanced
+  syntax highlighting and parsing.
+
+This centralized approach ensures that developers can access all essential
+tools and features without needing to switch contexts or install additional
+plugins unnecessarily.
+
+## AI Integration
+
+LYRD integrates AI-powered tools to enhance the development workflow. These
+integrations allow developers to:
+
+- **Ask Questions**:
+  - Use commands to query AI assistants for code-related help directly within
+    Neovim.
+- **Edit Files**:
+  - Apply AI suggestions to refactor or edit existing code blocks efficiently.
+- **Use Agents**:
+  - Leverage agents to implement or refactor functionality, reducing manual
+    effort.
+- **Generate Documentation**:
+  - Automatically create detailed documentation for code blocks using keyboard
+    shortcuts, saving time and ensuring consistency.
+
+These features are powered by plugins such as `Avante.nvim` and others,
+offering flexibility and customization for different AI providers like Copilot,
+Codeium, and Tabnine. Developers can benefit from:
+
+- Auto-suggestions for code completion, with options to accept, dismiss, or
+  navigate suggestions using configurable keybindings.
+- Enhanced commands like:
+  - `:LYRDSmartCoder` for AI-assisted editing.
+  - `:LYRDAIGenerateDocumentation` to automatically generate documentation for
+    the current element.
+  - `:LYRDAIAssistant` to toggle AI functionality.
+  - `:LYRDAIAsk` to ask AI questions interactively.
+  - `:LYRDAIEdit` to invoke AI-powered editing directly.
+
+This integration ensures streamlined workflows and boosts productivity by
+leveraging the capabilities of advanced AI systems.
 
 ## Installation
 
