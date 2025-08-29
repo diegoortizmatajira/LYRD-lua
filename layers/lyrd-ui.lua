@@ -61,6 +61,14 @@ function L.notify(message, level, options)
 	notify(message, level, options)
 end
 
+local function macro_recording()
+	local reg = vim.fn.reg_recording()
+	if reg ~= "" then
+		return "Recording @" .. reg
+	end
+	return ""
+end
+
 function L.plugins()
 	setup.plugin({
 		{
@@ -122,13 +130,12 @@ function L.plugins()
 			"nvim-lualine/lualine.nvim",
 			opts = {
 				sections = {
-					lualine_c = {
-						"filename",
-					},
-					lualine_x = {
-						"tabnine",
-						"filetype",
-					},
+					lualine_a = { "mode" },
+					lualine_b = { "branch", "diff", "diagnostics" },
+					lualine_c = { macro_recording, "filename" },
+					lualine_x = { "encoding", "fileformat", "filetype" },
+					lualine_y = { "progress" },
+					lualine_z = { "location" },
 				},
 				tabline = {
 					lualine_a = { "buffers" },

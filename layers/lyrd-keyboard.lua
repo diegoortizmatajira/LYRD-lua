@@ -127,7 +127,6 @@ function L.keybindings()
 		{ "n", "go", c([[call append(line('.'), '')]]), { desc = "Insert line below cursor" } },
 		{ "n", "gr", cmd.LYRDLSPFindReferences },
 		{ "n", "gt", cmd.LYRDLSPFindTypeDefinition },
-		{ "n", "q", "<nop>" },
 		{ "n", "s", "<nop>" },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-S-f>", cmd.LYRDBufferFormat },
