@@ -39,6 +39,7 @@ local L = {
 		task = "󰄴 ",
 		launch = " ",
 		eye = " ",
+		macro = "󱃸 ",
 	},
 	images = {
 		default = " ",

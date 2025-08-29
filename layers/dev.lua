@@ -1,5 +1,4 @@
 local setup = require("LYRD.setup")
-local icons = require("LYRD.layers.icons")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
@@ -26,11 +25,24 @@ function L.plugins()
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
 		},
+		{
+			"jesseleite/nvim-macroni",
+			lazy = false,
+			opts = {
+				-- All of your `setup(opts)` and saved macros will go here
+			},
+		},
 	})
 end
 
 function L.settings()
 	commands.implement("*", {
+		{
+			cmd.LYRDSearchMacros,
+			function()
+				require("telescope").extensions.macroni.saved_macros()
+			end,
+		},
 	})
 end
 
