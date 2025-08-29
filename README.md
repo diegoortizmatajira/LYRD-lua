@@ -63,7 +63,8 @@ minimizes conflicts between layers and plugins.
 ## UI Features
 
 - **Advanced Notifications**:
-  - Integrated with `nvim-notify` for compact and visually appealing notifications.
+  - Integrated with `nvim-notify` for compact and visually appealing
+    notifications.
 - **Command Palette**:
   - Enhanced with `folke/noice.nvim` for streamlined command-line and popup
     menu visuals.
@@ -71,11 +72,13 @@ minimizes conflicts between layers and plugins.
   - Managed by `nvim-lualine/lualine.nvim` with customizable sections and
     buffer/tabs display.
 - **Startup Screen**:
-  - Provided by `mini.starter` with recent files, workspaces, and common actions.
+  - Provided by `mini.starter` with recent files, workspaces, and common
+    actions.
 - **Floating Terminals**:
   - Powered by `toggleterm.nvim` for custom commands in a floating pane.
 - **Scratch Buffers**:
-  - Managed with `scratch.nvim` for temporary and easily accessible notes or code.
+  - Managed with `scratch.nvim` for temporary and easily accessible notes or
+    code.
 - **File Search and Replace**:
   - Enhanced by `nvim-spectre` for project-wide search and replace.
 - **Focus Mode**:
@@ -313,12 +316,10 @@ leveraging the capabilities of advanced AI systems.
 
 Clone the repository into your Neovim config folder
 
-```bash
-git clone https://github.com/diegoortizmatajira/LYRD-lua.git ~/.config/nvim/lua/LYRD
-```
+````bash git clone https://github.com/diegoortizmatajira/LYRD-lua.git
+~/.config/nvim/lua/LYRD ```
 
 Create a symbolic link to the lua init script.
 
-```bash
-ln -s ~/.config/nvim/lua/LYRD/root-init.lua ~/.config/nvim/init.lua
-```
+```bash ln -s ~/.config/nvim/lua/LYRD/root-init.lua ~/.config/nvim/init.lua ```
+````

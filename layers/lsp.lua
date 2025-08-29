@@ -144,18 +144,6 @@ local function exclude_lsp_lines_from_filetypes(filetypes)
 	end
 end
 
-local function format_buffer(args)
-	local range = nil
-	if args and args.count ~= -1 then
-		local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
-		range = {
-			start = { args.line1, 0 },
-			["end"] = { args.line2, end_line:len() },
-		}
-	end
-	require("conform").format({ async = true, lsp_format = "fallback", range = range })
-end
-
 function L.get_pkg_path(pkg, ...)
 	return utils.join_paths(vim.fn.expand("$MASON"), "packages", pkg, ...)
 end
@@ -337,7 +325,7 @@ function L.settings()
 
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
-		{ cmd.LYRDBufferFormat, format_buffer },
+		{ cmd.LYRDBufferFormat, L.conform_format_handler() },
 		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
 		{ cmd.LYRDLSPFindCodeActions, require("actions-preview").code_actions },
 		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
@@ -409,22 +397,31 @@ end
 --- Configures the given LSP server to format buffers for a given filetype.
 --- @param filetype string|string[] filetype(s) to format
 --- @param lsp_name string name of the LSP server
-function L.format_with_lsp(filetype, lsp_name)
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.format_with_lsp(filetype, lsp_name, pre_logic, post_logic)
 	commands.implement(filetype, {
-		{ cmd.LYRDBufferFormat, L.format_handler(lsp_name) },
+		{ cmd.LYRDBufferFormat, L.lsp_format_handler(lsp_name, pre_logic, post_logic) },
 	})
 end
 
 --- Configures the given LSP server to format buffers for a given filetype.
 --- @param filetype string | string[] filetype(s) to format
 --- @param format_settings table Settings for the formatter
-function L.format_with_conform(filetype, format_settings)
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.format_with_conform(filetype, format_settings, pre_logic, post_logic)
 	if type(filetype) == "string" then
 		L.conform_formatters_by_ft[filetype] = format_settings
 	elseif type(filetype) == "table" then
 		for _, ft in pairs(filetype) do
 			L.conform_formatters_by_ft[ft] = format_settings
 		end
+	end
+	if pre_logic or post_logic then
+		commands.implement(filetype, {
+			{ cmd.LYRDBufferFormat, L.conform_format_handler(pre_logic, post_logic) },
+		})
 	end
 end
 
@@ -433,15 +430,49 @@ function L.complete()
 	vim.diagnostic.config({ virtual_text = false })
 end
 
-function L.format_handler(server_name)
+--- Returns a handler that format using the given lsp
+--- @param server_name string name of the LSP server
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.lsp_format_handler(server_name, pre_logic, post_logic)
 	-- Returns a handler that format using the given lsp
 	return function()
+		if pre_logic then
+			pre_logic()
+		end
 		vim.lsp.buf.format({
 			filter = function(client)
 				return client.name == server_name
 			end,
 			async = false,
 		})
+		if post_logic then
+			post_logic()
+		end
+	end
+end
+
+--- Returns a handler that format using conform plugin
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.conform_format_handler(pre_logic, post_logic)
+	-- Returns a handler that format using the given lsp
+	return function(args)
+		if pre_logic then
+			pre_logic()
+		end
+		local range = nil
+		if args and args.count ~= -1 then
+			local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+			range = {
+				start = { args.line1, 0 },
+				["end"] = { args.line2, end_line:len() },
+			}
+		end
+		require("conform").format({ async = true, lsp_format = "fallback", range = range })
+		if post_logic then
+			post_logic()
+		end
 	end
 end
 

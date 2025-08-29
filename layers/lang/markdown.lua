@@ -71,19 +71,27 @@ function L.preparation()
 	lsp.customize_formatter("markdownlint-cli2", {
 		condition = function(_, ctx)
 			local diag = vim.tbl_filter(function(d)
-				return d.source == "markdownlint"
+				return d.source == "markdownlint-cli2"
 			end, vim.diagnostic.get(ctx.buf))
 			return #diag > 0
 		end,
 	})
-	lsp.format_with_conform({ "markdown", "markdown.mdx" }, { "prettier", "markdownlint-cli2", "markdown-toc" })
+	--- Configures multiple formatters for markdown files, but first it will run a custom function to reflow the text.
+	lsp.format_with_conform(
+		{ "markdown", "markdown.mdx" },
+		{ "prettier", "markdownlint-cli2", "markdown-toc" },
+		function()
+			-- Reflow the text first
+			vim.cmd("normal! gggwG")
+		end
+	)
 	lsp.null_ls_register_sources({
 		require("null-ls.builtins.diagnostics.markdownlint_cli2"),
 	})
 end
 
 function L.complete()
-	vim.lsp.enable("markdown")
+	vim.lsp.enable("marksman")
 end
 
 return L
