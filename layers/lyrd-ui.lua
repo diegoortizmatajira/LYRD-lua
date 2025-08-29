@@ -173,7 +173,44 @@ function L.plugins()
 							local unit = content[c.line][c.unit]
 							local item = unit.item
 
-							if not vim.tbl_contains(exclude_sections, item.section) then
+							local rbracket_unit = {
+								string = "[",
+								type = "item_bracket",
+								hl = "@tag",
+								-- Use `_item` instead of `item` because it is better to be 'private'
+								_item = unit.item,
+							}
+							local lbracket_unit = {
+
+								string = "] ",
+								type = "item_bracket",
+								hl = "@tag",
+								-- Use `_item` instead of `item` because it is better to be 'private'
+								_item = unit.item,
+							}
+							if vim.tbl_contains(exclude_sections, item.section) then
+								local parts = vim.split(unit.string, "|")
+								local icon_unit = {
+									string = (#parts > 1 and parts[2] or "") .. " ",
+									type = "item_icon",
+									hl = "MiniStarterItem",
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								local text_unit = {
+
+									string = #parts == 3 and parts[3] or "",
+									type = "item_text",
+									hl = "MiniStarterItem",
+									-- Use `_item` instead of `item` because it is better to be 'private'
+									_item = unit.item,
+								}
+								table.insert(content[c.line], c.unit, rbracket_unit)
+								table.insert(content[c.line], c.unit + 2, lbracket_unit)
+								table.insert(content[c.line], c.unit + 3, icon_unit)
+								table.insert(content[c.line], c.unit + 4, text_unit)
+								unit.string = parts[1] or unit.string
+							else
 								if cur_section ~= item.section then
 									cur_section = item.section
 									-- Cycle through lower case letters
@@ -181,22 +218,6 @@ function L.plugins()
 									n_item = per_section and 0 or n_item
 								end
 
-								local rbracket_unit = {
-
-									string = "[",
-									type = "item_bracket",
-									hl = "@tag",
-									-- Use `_item` instead of `item` because it is better to be 'private'
-									_item = unit.item,
-								}
-								local lbracket_unit = {
-
-									string = "] ",
-									type = "item_bracket",
-									hl = "@tag",
-									-- Use `_item` instead of `item` because it is better to be 'private'
-									_item = unit.item,
-								}
 								local parts = vim.split(unit.string, "|")
 								local icon = icons.get_file_icon(parts[1] or unit.string)
 								local icon_unit = {
@@ -255,13 +276,21 @@ function L.plugins()
 					evaluate_single = true,
 					header = header(),
 					items = {
-						{ name = "e. Edit new buffer", action = "enew", section = "Common actions" },
 						{
-							name = "w. Select workspace",
+							name = string.format("e|%s|Edit new buffer", icons.file.new),
+							action = "enew",
+							section = "Common actions",
+						},
+						{
+							name = string.format("w|%s|Select workspace", icons.other.workspace),
 							action = "Telescope workspaces",
 							section = "Common actions",
 						},
-						{ name = "q. Quit Neovim", action = "qall", section = "Common actions" },
+						{
+							name = string.format("q|%s|Quit Neovim", icons.action.exit),
+							action = "qall",
+							section = "Common actions",
+						},
 						starter.sections.recent_files(10, true, show_path),
 						starter.sections.recent_files(10, false, show_path),
 						-- Use this if you set up 'mini.sessions'
