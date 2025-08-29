@@ -61,7 +61,6 @@ function L.preparation()
 	})
 end
 
-
 function L.complete()
 	vim.lsp.enable({
 		"vtsls",

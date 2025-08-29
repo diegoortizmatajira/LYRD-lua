@@ -219,5 +219,4 @@ function L.settings()
 	overseer.register_template(require("LYRD.shared.overseer.cake"))
 end
 
-
 return L
