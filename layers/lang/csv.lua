@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 
+---@type LYRD.setup.Module
 local L = { name = "CSV" }
 
 function L.preparation()
@@ -9,6 +10,7 @@ function L.preparation()
 		"tsv",
 	})
 end
+
 function L.plugins()
 	setup.plugin({
 		{

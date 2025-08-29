@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
+---@type LYRD.setup.Module
 local L = { name = "Data formats json, yaml, toml, xml" }
 
 function L.plugins()
@@ -84,8 +85,6 @@ function L.settings()
 		},
 	})
 end
-
-function L.keybindings() end
 
 function L.complete()
 	vim.lsp.enable({

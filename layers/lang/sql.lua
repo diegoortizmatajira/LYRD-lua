@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
+---@type LYRD.setup.Module
 local L = { name = "SQL Language" }
 
 function L.plugins()
@@ -30,7 +31,6 @@ function L.preparation()
 	})
 end
 
-function L.settings() end
 
 function L.complete()
 	vim.lsp.enable("sqlls")

@@ -1,7 +1,7 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
 
+---@type LYRD.setup.Module
 local L = {
 	name = "C and C++",
 	filetypes = { "c", "cpp", "h" },
@@ -47,13 +47,7 @@ end
 function L.settings()
 	local debugger = require("LYRD.shared.dap.codelldb")
 	debugger.setup(L.filetypes)
-	-- local cmd = require("LYRD.layers.lyrd-commands").cmd
-	-- commands.implement("*", {
-	-- 	{ cmd.LYRDCodeAlternateFile, ":ClangdSwitchSourceHeader" },
-	-- })
 end
-
-function L.keybindings() end
 
 function L.complete()
 	vim.lsp.enable({

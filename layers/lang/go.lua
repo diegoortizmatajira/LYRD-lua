@@ -1,12 +1,25 @@
 local setup = require("LYRD.setup")
-local utils = require("LYRD.utils")
 local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+---@type LYRD.setup.Module
 local L = { name = "Go language" }
 
+local function ends_with(str, ending)
+	return ending == "" or str:sub(-#ending) == ending
+end
+
+--  run :GoBuild or :GoTestCompile based on the go file
+local function build_go_files()
+	local file = vim.fn.expand("%")
+	if ends_with(file, "_test.go") then
+		vim.fn["go#test#Test"](0, 1)
+	else
+		vim.fn["go#cmd#Build"](0)
+	end
+end
 function L.plugins()
 	setup.plugin({
 		{
@@ -24,32 +37,6 @@ function L.plugins()
 			ft = { "go", "gomod" },
 			build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
 		},
-		-- {
-		-- 	"fatih/vim-go",
-		-- 	ft = "go", -- only load on go files
-		-- 	init = function()
-		-- 		vim.g.go_list_type = "quickfix"
-		-- 		vim.g.go_fmt_command = "gopls"
-		-- 		vim.g.go_gopls_gofumpt = 1
-		-- 		vim.g.go_fmt_fail_silently = 1
-		-- 		vim.g.go_def_mapping_enabled = 0
-		-- 		vim.g.go_doc_popup_window = 1
-		-- 		vim.g.go_highlight_types = 1
-		-- 		vim.g.go_highlight_fields = 1
-		-- 		vim.g.go_highlight_functions = 1
-		-- 		vim.g.go_highlight_methods = 1
-		-- 		vim.g.go_highlight_operators = 1
-		-- 		vim.g.go_highlight_build_constraints = 1
-		-- 		vim.g.go_highlight_structs = 1
-		-- 		vim.g.go_highlight_generate_tags = 1
-		-- 		vim.g.go_highlight_space_tab_error = 0
-		-- 		vim.g.go_highlight_array_whitespace_error = 0
-		-- 		vim.g.go_highlight_trailing_whitespace_error = 0
-		-- 		vim.g.go_highlight_extra_types = 1
-		-- 		vim.g.go_debug_breakpoint_sign_text = ">"
-		-- 	end,
-		-- 	build = ":GoUpdateBinaries",
-		-- },
 		{
 			"leoluz/nvim-dap-go",
 			ft = "go", -- only load on go files
@@ -104,7 +91,7 @@ end
 
 function L.settings()
 	commands.implement("go", {
-		{ cmd.LYRDCodeBuild, L.build_go_files },
+		{ cmd.LYRDCodeBuild, build_go_files },
 		{ cmd.LYRDCodeRun, ":GoRun" },
 		{ cmd.LYRDTest, ":GoTest" },
 		{ cmd.LYRDTestCoverage, ":GoCoverageToggle" },
@@ -133,20 +120,6 @@ end
 
 function L.complete()
 	vim.lsp.enable("gopls")
-end
-
-local function ends_with(str, ending)
-	return ending == "" or str:sub(-#ending) == ending
-end
-
---  run :GoBuild or :GoTestCompile based on the go file
-function L.build_go_files()
-	local file = vim.fn.expand("%")
-	if ends_with(file, "_test.go") then
-		vim.fn["go#test#Test"](0, 1)
-	else
-		vim.fn["go#cmd#Build"](0)
-	end
 end
 
 return L

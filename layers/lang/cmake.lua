@@ -1,5 +1,6 @@
 local lsp = require("LYRD.layers.lsp")
 
+---@type LYRD.setup.Module
 local L = { name = "CMake Language" }
 
 function L.plugins() end
@@ -29,8 +30,6 @@ function L.settings()
 		command = [[setlocal filetype=cmake]],
 	})
 end
-
-function L.keybindings() end
 
 function L.complete()
 	vim.lsp.enable("cmake")

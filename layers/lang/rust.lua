@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
+---@type LYRD.setup.Module
 local L = { name = "Rust Language" }
 
 function L.plugins()

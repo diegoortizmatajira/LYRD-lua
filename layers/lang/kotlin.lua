@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
+---@type LYRD.setup.Module
 local L = { name = "Kotlin Language" }
 
 function L.plugins()
@@ -67,8 +68,6 @@ function L.settings()
 		},
 	}
 end
-
-function L.keybindings() end
 
 function L.complete()
 	vim.lsp.enable("kotlin_language_server")

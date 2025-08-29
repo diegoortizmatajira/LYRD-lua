@@ -3,10 +3,11 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+---@type LYRD.setup.Module
 local L = { name = "Python language" }
 
 -- Opens the .env file in the current directory
-function L.open_dotenv()
+local function open_dotenv()
 	vim.cmd("e .env")
 end
 
@@ -92,7 +93,7 @@ function L.settings()
 	commands.implement("python", {
 		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
-		{ cmd.LYRDCodeSecrets, L.open_dotenv },
+		{ cmd.LYRDCodeSecrets, open_dotenv },
 		{ cmd.LYRDCodeRunSelection, ":LYRDReplNotebookRunCellAndMove" },
 	})
 end

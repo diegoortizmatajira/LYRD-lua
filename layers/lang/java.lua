@@ -4,6 +4,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local join = require("LYRD.utils").join_paths
 
+---@type LYRD.setup.Module
 local L = {
 	name = "Java language",
 	root_files = {
@@ -80,7 +81,7 @@ end
 -- Additionally, it defines LSP settings for formatting, code generation,
 -- inlay hints, and completion settings.
 -- @return table A table containing the LSP configuration for Java.
-function L.get_lspconfig()
+local function get_lspconfig()
 	local jdtls = require("jdtls")
 	local jdtls_install = lsp.get_pkg_path("jdtls")
 
@@ -285,7 +286,7 @@ function L.complete()
 		pattern = { "java" },
 		desc = "Setup jdtls",
 		callback = function()
-			local config = L.get_lspconfig()
+			local config = get_lspconfig()
 			require("jdtls").start_or_attach(config)
 		end,
 	})

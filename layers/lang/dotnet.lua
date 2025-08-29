@@ -4,6 +4,7 @@ local lsp = require("LYRD.layers.lsp")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@type LYRD.setup.Module
 local L = {
 	name = "Dotnet languages: C#, F#, Vb",
 }
@@ -218,6 +219,5 @@ function L.settings()
 	overseer.register_template(require("LYRD.shared.overseer.cake"))
 end
 
-function L.complete() end
 
 return L
