@@ -86,22 +86,6 @@ function L.settings()
 		{ cmd.LYRDTestCoverageSummary, ":CoverageSummary" },
 		{ cmd.LYRDTestCoverage, ":CoverageToggle" },
 	})
-
-	-- Creates an autocommand to enable q to close test panels
-	local group = vim.api.nvim_create_augroup("NeotestConfig", {})
-	for _, ft in ipairs({ "output", "attach", "summary" }) do
-		vim.api.nvim_create_autocmd("FileType", {
-			pattern = "neotest-" .. ft,
-			group = group,
-			callback = function(opts)
-				vim.keymap.set("n", "q", function()
-					pcall(vim.api.nvim_win_close, 0, true)
-				end, {
-					buffer = opts.buf,
-				})
-			end,
-		})
-	end
 end
 
 function L.complete()

@@ -47,6 +47,9 @@ function L.plugins()
 			"stevearc/aerial.nvim",
 			opts = {
 				close_on_select = true,
+				layout = {
+					default_direction = "right",
+				},
 			},
 			-- Optional dependencies
 			dependencies = {
