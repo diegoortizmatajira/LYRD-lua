@@ -45,15 +45,26 @@ local function task_with_params(maven_cmd, cwd)
 	return {
 		name = "maven (with custom params)",
 		priority = 60,
+		params = {
+			parameters = {
+				name = "Parameters",
+				desc = "List of parameters for Maven",
+				long_desc = "A list of parameters to pass to the Maven command. Separate multiple parameters with spaces.",
+				type = "list",
+				subtype = {
+					type = "string",
+				},
+				delimiter = " ",
+			},
+		},
 		builder = function(params)
 			local cmd = { maven_cmd }
 
 			---@type overseer.TaskDefinition
 			local task = { cmd = cmd, cwd = cwd }
 
-			local mvn_params = vim.fn.input("Maven params: ")
-			if mvn_params then
-				task.args = vim.split(mvn_params, " ", { trimempty = true })
+			if params and params.parameters then
+				task.args = params.parameters
 			end
 			return task
 		end,
