@@ -1,13 +1,13 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.ui.special_type
 ---@field type_id string
 ---@field title? string
 ---@field allow_saving? boolean
 ---@field prevent_closing? boolean
+---@field map_q? boolean
 ---
 local L = {
 	name = "Buffers",
@@ -30,14 +30,14 @@ local L = {
 		{ type_id = "NvimTree", title = "Explorer" },
 		{ type_id = "OverseerList" },
 		{ type_id = "aerial", title = "Outline" },
-		{ type_id = "alpha", prevent_closing = true },
 		{ type_id = "code-stdout", title = "Playground output" },
 		{ type_id = "copilot-chat", title = "AI Chat" },
 		{ type_id = "dbout" },
 		{ type_id = "dbui", title = "Database" },
 		{ type_id = "fugitive" },
 		{ type_id = "gitcommit" },
-		{ type_id = "help" },
+		{ type_id = "help", map_q = true },
+		{ type_id = "lazyterm" },
 		{ type_id = "http_response" },
 		{ type_id = "lazy" },
 		{ type_id = "lazy" },
@@ -53,22 +53,6 @@ local L = {
 		{ type_id = "terminal" },
 	},
 }
-
--- Gets the list of buffers that will have a title in their sidebar
-local function get_buffer_offsets()
-	local result = {}
-	for _, value in pairs(L.special_filetypes) do
-		if value.title then
-			table.insert(result, {
-				filetype = value.type_id,
-				text = value.title,
-				highlight = "PanelHeading",
-				padding = 1,
-			})
-		end
-	end
-	return result
-end
 
 local function check_closing_conditions()
 	local buffer_number = vim.api.nvim_get_current_buf()
@@ -172,6 +156,24 @@ end
 
 function L.keybindings() end
 
-function L.complete() end
+function L.map_q_for_closing_ft(ft)
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = ft,
+		callback = function()
+			vim.keymap.set("n", "q", cmd.LYRDBufferClose:shortcut(), {
+				buffer = true,
+				desc = "Close",
+				silent = true,
+			})
+		end,
+	})
+end
+function L.complete()
+	for _, item in pairs(L.special_filetypes) do
+		if item.map_q then
+			L.map_q_for_closing_ft(item.type_id)
+		end
+	end
+end
 
 return L
