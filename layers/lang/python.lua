@@ -48,6 +48,13 @@ function L.plugins()
 		{
 			"raimon49/requirements.txt.vim",
 		},
+		{
+			"benomahony/uv.nvim",
+			opts = {
+				picker_integration = true,
+				keymaps = false,
+			},
+		},
 	})
 end
 
@@ -95,6 +102,12 @@ function L.settings()
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
 		{ cmd.LYRDCodeSecrets, open_dotenv },
 		{ cmd.LYRDCodeRunSelection, ":LYRDReplNotebookRunCellAndMove" },
+		{
+			cmd.LYRDCodeTooling,
+			function()
+				require("uv").pick_uv_commands()
+			end,
+		},
 	})
 end
 
