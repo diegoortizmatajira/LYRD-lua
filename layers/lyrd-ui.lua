@@ -193,7 +193,7 @@ function L.plugins()
 								local icon_unit = {
 									string = (#parts > 1 and parts[2] or "") .. " ",
 									type = "item_icon",
-									hl = "MiniStarterItem",
+									hl = "Function",
 									-- Use `_item` instead of `item` because it is better to be 'private'
 									_item = unit.item,
 								}
