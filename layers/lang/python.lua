@@ -109,6 +109,9 @@ function L.settings()
 			end,
 		},
 	})
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.python_tasks"))
 end
 
 function L.complete()
