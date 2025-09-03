@@ -1,53 +1,51 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local lsp = require("LYRD.layers.lsp")
+local join = require("LYRD.utils").join_paths
 
 local L = { name = "Database" }
+
+local function get_workspace_path()
+	local project_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h")
+	local project_path_hash = string.gsub(project_path, "[/\\:+-]", "_")
+
+	local result = join(setup.data_path, "dbee-workspaces", project_path_hash)
+	-- Create the directory if it doesn't exist
+	vim.fn.mkdir(result, "p")
+	return result
+end
 
 function L.plugins()
 	setup.plugin({
 		{
-			"kristijanhusak/vim-dadbod-ui",
+			"kndndrj/nvim-dbee",
 			dependencies = {
-				{
-					"tpope/vim-dadbod",
-					lazy = true,
-				},
-				{
-					"kristijanhusak/vim-dadbod-completion",
-					ft = { "sql", "mysql", "plsql" },
-					lazy = true,
-				}, -- Optional
+				"muniftanjim/nui.nvim",
 			},
-			cmd = {
-				"DBUI",
-				"DBUIToggle",
-				"DBUIAddConnection",
-				"DBUIFindBuffer",
-			},
-			init = function()
-				vim.g.db_ui_use_nerd_fonts = 1
-				vim.g.db_ui_execute_on_save = 0
-				vim.g.db_ui_table_helpers = {
-					postgresql = {
-						["Preview data"] = [[select * from "{table}" limit 10]],
-						Count = [[select count(*) from "{table}"]],
+			build = function()
+				-- Install tries to automatically detect the install method.
+				-- if it fails, try calling it with one of these parameters:
+				--    "curl", "wget", "bitsadmin", "go"
+				require("dbee").install()
+			end,
+			config = function()
+				require("dbee").setup({
+					sources = {
+						require("dbee.sources").EnvSource:new("DBEE_CONNECTIONS"),
+						require("dbee.sources").FileSource:new(vim.fn.stdpath("state") .. "/dbee/persistence.json"),
+						require("dbee.sources").FileSource:new(get_workspace_path() .. "/dbee/workspace.json"),
 					},
-					sqlite = {
-						["Preview data"] = [[select * from "{table}" limit 10]],
-						Count = [[select count(*) from "{table}"]],
-					},
-				}
+				})
 			end,
 		},
-
 		{
-			"kristijanhusak/vim-dadbod-completion",
-			ft = { "sql", "mysql", "plsql" },
-			lazy = true,
+			"mattiasmts/cmp-dbee",
+			dependencies = {
+				{ "kndndrj/nvim-dbee" },
+			},
+			ft = "sql", -- optional but good to have
+			opts = {}, -- needed
 		},
-		{ "muniftanjim/nui.nvim" },
 	})
 end
 
@@ -55,7 +53,7 @@ function L.preparation() end
 
 function L.settings()
 	commands.implement("*", {
-		{ cmd.LYRDDatabaseUI, ":DBUIToggle" },
+		{ cmd.LYRDDatabaseUI, ":Dbee toggle" },
 	})
 	commands.implement("sql", {
 		{ cmd.LYRDCodeRun, ":%DB" },

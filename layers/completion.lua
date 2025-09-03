@@ -251,6 +251,7 @@ function L.plugins()
 						{ name = "codeium" },
 						{ name = "cmp_tabnine" },
 						{ name = "easy-dotnet" },
+						{ name = "cmp-dbee" },
 					}, {
 						{ name = "buffer" },
 						{ name = "path" },
