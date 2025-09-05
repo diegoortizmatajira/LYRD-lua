@@ -69,6 +69,10 @@ local function macro_recording()
 	return ""
 end
 
+local function current_database()
+	return require("db-cli-adapter").get_current_db_connection()
+end
+
 function L.plugins()
 	setup.plugin({
 		{
@@ -129,6 +133,14 @@ function L.plugins()
 		{
 			"nvim-lualine/lualine.nvim",
 			opts = {
+				tabline = {
+					lualine_a = { "buffers" },
+					lualine_b = {},
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = { current_database },
+					lualine_z = { "tabs" },
+				},
 				sections = {
 					lualine_a = { "mode" },
 					lualine_b = { "branch", "diff", "diagnostics" },
@@ -136,14 +148,6 @@ function L.plugins()
 					lualine_x = { "encoding", "fileformat", "filetype" },
 					lualine_y = { "progress" },
 					lualine_z = { "location" },
-				},
-				tabline = {
-					lualine_a = { "buffers" },
-					lualine_b = {},
-					lualine_c = {},
-					lualine_x = {},
-					lualine_y = {},
-					lualine_z = { "tabs" },
 				},
 			},
 			dependencies = {

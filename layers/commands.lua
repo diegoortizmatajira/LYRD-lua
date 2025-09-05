@@ -191,9 +191,9 @@ end
 --- @param opts? ShortCutOptions Options for the generated shortcut
 function L.command_shortcut(commandName, opts)
 	local sequence = commandName
-	if opts and opts.range then
-		sequence = "'<,'>" .. sequence
-	end
+	-- if opts and opts.range then
+	-- 	sequence = "'<,'>" .. sequence
+	-- end
 	sequence = "<cmd>" .. sequence .. "<CR>"
 	if opts and opts.escape then
 		sequence = "<ESC>" .. sequence

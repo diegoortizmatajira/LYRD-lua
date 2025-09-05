@@ -35,6 +35,7 @@ local L = {
 		{ type_id = "dbout" },
 		{ type_id = "dbui", title = "Database" },
 		{ type_id = "fugitive" },
+		{ type_id = "db-cli-sidebar", map_q = true },
 		{ type_id = "gitcommit" },
 		{ type_id = "help", map_q = true },
 		{ type_id = "http_response" },

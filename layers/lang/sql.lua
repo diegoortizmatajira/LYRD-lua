@@ -11,7 +11,7 @@ end
 function L.preparation()
 	-- Configures the null language server
 	local null_ls = require("null-ls")
-	local default_dialect = "tsql"
+	local default_dialect = "ansi"
 	lsp.mason_ensure({
 		"sqlfluff",
 		"sql-formatter",
