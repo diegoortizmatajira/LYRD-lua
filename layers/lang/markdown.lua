@@ -80,10 +80,11 @@ function L.preparation()
 	lsp.format_with_conform(
 		{ "markdown", "markdown.mdx" },
 		{ "prettier", "markdownlint-cli2", "markdown-toc" },
-		function()
-			-- Reflow the text first
-			vim.cmd("normal! gggwG")
-		end
+		nil
+		-- function()
+		-- 	-- Reflow the text first
+		-- 	vim.cmd("normal! gggwG")
+		-- end
 	)
 	lsp.null_ls_register_sources({
 		require("null-ls.builtins.diagnostics.markdownlint_cli2"),
