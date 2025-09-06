@@ -50,6 +50,7 @@ setup.load({
 		"LYRD.layers.lang.data-formats",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
+		"LYRD.layers.static-website",
 		"LYRD.layers.extras",
 		"LYRD.layers.media",
 		"LYRD.layers.neovide", -- Neovide settings
