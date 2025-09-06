@@ -21,6 +21,7 @@ local utils = require("LYRD.utils")
 local setup = {
 	configs_path = utils.get_lyrd_path() .. "/configs",
 	runtime_path = utils.get_lyrd_path() .. "/runtime",
+	data_path = vim.fn.stdpath("data") .. "/lyrd",
 	---@type LYRD.setup.Settings
 	config = {
 		commands = {},
