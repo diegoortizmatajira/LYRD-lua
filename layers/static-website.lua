@@ -7,4 +7,10 @@ function L.settings()
 	overseer.register_template(require("LYRD.shared.overseer.hugo"))
 end
 
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("hugo")
+end
+
 return L

@@ -26,6 +26,7 @@ function L.settings()
 	})
 	commands.implement({ "sql", "db-cli-sidebar" }, {
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },
+		{ cmd.LYRDCodeSecrets, ":DbCliEditConnection" },
 	})
 end
 
