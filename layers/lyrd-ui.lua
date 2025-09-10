@@ -350,17 +350,6 @@ function L.plugins()
 			dependencies = { "nvim-telescope/telescope.nvim" },
 		},
 		{
-			"stevearc/dressing.nvim",
-			opts = {
-				input = {
-					-- Set to false to disable the vim.ui.input implementation
-					enabled = true,
-					prompt_align = "center",
-					relative = "editor",
-				},
-			},
-		},
-		{
 			"LintaoAmons/scratch.nvim",
 			opts = {
 				use_telescope = true,

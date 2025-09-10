@@ -142,7 +142,6 @@ local L = {
 local function avante_dependencies()
 	local result = {
 
-		"stevearc/dressing.nvim",
 		"nvim-lua/plenary.nvim",
 		"muniftanjim/nui.nvim",
 		--- The below dependencies are optional,
