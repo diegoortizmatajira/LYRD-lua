@@ -9,8 +9,8 @@ local L = {
 
 function L.plugins()
 	setup.plugin({
-		"nvim-lua/popup.nvim",
-		"nvim-lua/plenary.nvim",
+		{ "nvim-lua/popup.nvim" },
+		{ "nvim-lua/plenary.nvim" },
 		{
 			"nvim-telescope/telescope-fzf-native.nvim",
 			config = function()
