@@ -2,7 +2,10 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Telescope" }
+local L = {
+	name = "Telescope",
+	use_frecency = true,
+}
 
 function L.plugins()
 	setup.plugin({
@@ -41,6 +44,19 @@ function L.plugins()
 				"nvim-telescope/telescope-fzf-native.nvim",
 				"nvim-telescope/telescope-ui-select.nvim",
 			},
+		},
+		{
+			"nvim-telescope/telescope-frecency.nvim",
+			-- install the latest stable version
+			version = "*",
+			opts = {
+				show_filter_column = false,
+			},
+			enabled = L.use_frecency,
+			config = function(_, opts)
+				require("telescope-frecency").setup(opts)
+				require("telescope").load_extension("frecency")
+			end,
 		},
 		{
 			-- Adds support for viewing code outlines in a floating window
@@ -90,7 +106,7 @@ end
 
 function L.settings()
 	commands.implement("*", {
-		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
+		{ cmd.LYRDSearchFiles, L.use_frecency and ":Telescope frecency workspace=CWD" or "Telescope find_files" },
 		{
 			cmd.LYRDSearchAllFiles,
 			function()
