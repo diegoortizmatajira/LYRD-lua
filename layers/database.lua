@@ -19,10 +19,12 @@ function L.preparation() end
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDDatabaseUI, ":DbCliSidebarToggle" },
+		{ cmd.LYRDDatabaseOutput, ":DbCliOutputToggle" },
 	})
 	commands.implement("sql", {
 		{ cmd.LYRDCodeRun, ":DbCliRunBuffer" },
 		{ cmd.LYRDCodeRunSelection, ":DbCliRunAtCursor" },
+		{ cmd.LYRDCodeQuerySelection, ":DbCliRunAtCursorCsv" },
 	})
 	commands.implement({ "sql", "db-cli-sidebar" }, {
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },
