@@ -74,10 +74,19 @@ function Command:execute()
 		return
 	end
 
-	local implementation = self.implementations[filetype]
-	if implementation then
-		L.execute_implementation(implementation)
-	elseif self.default_implementation then
+	-- Some filetypes are compound, like "javascript.react". In those cases, we try to find an implementation for each part.
+	local split_filetypes = vim.split(filetype, ".", { plain = true })
+	for _, ft in ipairs(split_filetypes) do
+		local implementation = self.implementations[ft]
+		if implementation then
+			-- If an implementation is found for one of the parts, we execute it and return.
+			L.execute_implementation(implementation)
+			return
+		end
+	end
+
+	-- If no implementation was found for any filetype part, we try the default implementation.
+	if self.default_implementation then
 		L.execute_implementation(self.default_implementation)
 	else
 		vim.notify(
