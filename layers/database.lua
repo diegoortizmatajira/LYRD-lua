@@ -55,6 +55,9 @@ function L.settings()
 		{ cmd.LYRDDatabaseUI, ":DbCliSidebarToggle" },
 		{ cmd.LYRDDatabaseOutput, ":DbCliOutputToggle" },
 	})
+	commands.implement("csv", {
+		{ cmd.LYRDToggleBufferDecorations, ":CsvViewToggle" },
+	})
 	commands.implement("sql", {
 		{ cmd.LYRDCodeRun, ":DbCliRunBuffer" },
 		{ cmd.LYRDCodeRunSelection, ":DbCliRunAtCursor" },

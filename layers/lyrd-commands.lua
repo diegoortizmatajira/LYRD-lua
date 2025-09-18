@@ -207,6 +207,7 @@ local L = {
 		LYRDTasksRun = Command:new("Run task", nil, icons.action.run_task),
 		LYRDTasksConfigure = Command:new("Configure tasks", nil, icons.other.task),
 		LYRDTasksConfigureLaunch = Command:new("Configure launch profile", nil, icons.other.launch),
+		LYRDToggleBufferDecorations = Command:new("Toggle buffer decorations", nil, icons.action.toggle_on),
 	},
 }
 

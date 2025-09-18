@@ -224,6 +224,7 @@ function L.keybindings()
 		{ "c", cmd.LYRDBufferClose },
 		{ "f", cmd.LYRDBufferFormat },
 		{ "j", cmd.LYRDSmartCoder },
+		{ "k", cmd.LYRDToggleBufferDecorations },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
 		{ "t", cmd.LYRDApplyNextTheme },
 		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
