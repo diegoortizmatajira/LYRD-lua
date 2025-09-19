@@ -120,6 +120,36 @@ local function close_buffer()
 	end
 end
 
+--- Moves to the previous buffer while checking for any special conditions.
+---
+--- If the current buffer matches conditions specified in the `special_filenames`,
+--- `special_filetypes`, or `special_buffertypes` lists, the operation to move
+--- to the previous buffer will be skipped.
+---
+--- This function ensures that special buffers remain unaffected by navigation.
+local function buffer_prev()
+	local conditions = check_closing_conditions()
+	if conditions then
+		return
+	end
+	vim.cmd("bprevious")
+end
+
+--- Moves to the next buffer while checking for any special conditions.
+---
+--- If the current buffer matches conditions specified in the `special_filenames`,
+--- `special_filetypes`, or `special_buffertypes` lists, the operation to move
+--- to the next buffer will be skipped.
+---
+--- This function ensures that special buffers remain unaffected by navigation.
+local function buffer_next()
+	local conditions = check_closing_conditions()
+	if conditions then
+		return
+	end
+	vim.cmd("bnext")
+end
+
 function L.plugins()
 	setup.plugin({
 		{
@@ -140,6 +170,8 @@ function L.preparation() end
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDBufferClose, close_buffer },
+		{ cmd.LYRDBufferNext, buffer_next },
+		{ cmd.LYRDBufferPrev, buffer_prev },
 		{ cmd.LYRDBufferCloseAll, ":bufdo " .. cmd.LYRDBufferClose.name },
 		{ cmd.LYRDBufferForceClose, ":" .. cmd.LYRDBufferClose.name .. "!" },
 		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },

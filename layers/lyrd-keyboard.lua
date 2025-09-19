@@ -31,7 +31,9 @@ function L.plugins()
 		{
 			-- Navigates using brackets (buffers, diagnostics, etc.)
 			"echasnovski/mini.bracketed",
-			opts = {},
+			opts = {
+				buffer = { suffix = "" }, -- disable buffer navigation (handled manually)
+			},
 		},
 		{
 			-- Text operators g=: evaluate, gx: exchange, multiply: gm, sort: gs, replace with register: gr
@@ -84,6 +86,10 @@ end
 
 function L.keybindings()
 	mappings.keys({
+		-- Manual brackaeted mappings for buffers to override mini.bracketed defaults
+		{ "n", "[b", cmd.LYRDBufferPrev },
+		{ "n", "]b", cmd.LYRDBufferNext },
+		-- Manual bindings
 		{ "i", "<C-s>", cmd.LYRDBufferSave },
 		{ "i", "<M-C-[>", cmd.LYRDBufferPrev },
 		{ "i", "<M-C-]>", cmd.LYRDBufferNext },
