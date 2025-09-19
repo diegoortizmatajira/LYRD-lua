@@ -1,5 +1,4 @@
 local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
 
 ---@type LYRD.setup.Module
 local L = { name = "SQL Language" }
@@ -9,31 +8,6 @@ function L.plugins()
 end
 
 function L.preparation()
-	-- Configures the null language server
-	local null_ls = require("null-ls")
-	local default_dialect = "ansi"
-	lsp.mason_ensure({
-		"sqlfluff",
-		"sql-formatter",
-		"sqlls",
-	})
-	lsp.null_ls_register_sources({
-		null_ls.builtins.diagnostics.sqlfluff.with({
-			extra_args = { "--dialect", default_dialect }, -- change to your dialect
-		}),
-		null_ls.builtins.formatting.sqlfluff.with({
-			extra_args = { "--dialect", default_dialect }, -- change to your dialect
-		}),
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"sql",
-	})
-end
-
-
-function L.complete()
-	vim.lsp.enable("sqlls")
 end
 
 return L

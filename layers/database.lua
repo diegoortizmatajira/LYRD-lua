@@ -1,8 +1,12 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local lsp = require("LYRD.layers.lsp")
 
-local L = { name = "Database" }
+local L = {
+	name = "Database",
+	default_dialect = "ansi",
+}
 
 function L.plugins()
 	setup.plugin({
@@ -48,7 +52,27 @@ function L.plugins()
 	})
 end
 
-function L.preparation() end
+function L.preparation()
+	-- Configures the null language server
+	local null_ls = require("null-ls")
+	lsp.mason_ensure({
+		"sqlfluff",
+		"sql-formatter",
+		"sqlls",
+	})
+	lsp.null_ls_register_sources({
+		null_ls.builtins.diagnostics.sqlfluff.with({
+			extra_args = { "--dialect", L.default_dialect }, -- change to your dialect
+		}),
+		null_ls.builtins.formatting.sqlfluff.with({
+			extra_args = { "--dialect", L.default_dialect }, -- change to your dialect
+		}),
+	})
+	local ts = require("LYRD.layers.treesitter")
+	ts.ensureParser({
+		"sql",
+	})
+end
 
 function L.settings()
 	commands.implement("*", {
@@ -67,6 +91,10 @@ function L.settings()
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },
 		{ cmd.LYRDCodeSecrets, ":DbCliEditConnection" },
 	})
+end
+
+function L.complete()
+	vim.lsp.enable("sqlls")
 end
 
 return L
