@@ -26,6 +26,11 @@ function L.plugins()
 					},
 				},
 			},
+			config = function(_, opts)
+				-- Use the default connection change handler from the db-cli-adapter configuration
+				opts.connection_change_handler = require("db-cli-adapter.config").sqls_connection_change_handler
+				require("db-cli-adapter").setup(opts)
+			end,
 		},
 		{
 			"hat0uma/csvview.nvim",
@@ -58,7 +63,7 @@ function L.preparation()
 	lsp.mason_ensure({
 		"sqlfluff",
 		"sql-formatter",
-		"sqlls",
+		"sqls",
 	})
 	lsp.null_ls_register_sources({
 		null_ls.builtins.diagnostics.sqlfluff.with({
@@ -94,7 +99,7 @@ function L.settings()
 end
 
 function L.complete()
-	vim.lsp.enable("sqlls")
+	vim.lsp.enable("sqls")
 end
 
 return L
