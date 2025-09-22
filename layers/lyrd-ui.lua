@@ -350,13 +350,8 @@ function L.plugins()
 			dependencies = { "nvim-telescope/telescope.nvim" },
 		},
 		{
-			"LintaoAmons/scratch.nvim",
-			opts = {
-				use_telescope = true,
-				file_picker = "telescope",
-				filetypes = { "lua", "js", "sh", "ts", "json", "yaml", "txt" },
-			},
-			event = "VeryLazy",
+			"diegoortizmatajira/workspace-scratch-files.nvim",
+			opts = {},
 		},
 		{
 			"nvim-pack/nvim-spectre",
@@ -408,9 +403,9 @@ function L.settings()
 				require("mini.starter").open()
 			end,
 		},
-		{ cmd.LYRDScratchNew, ":ScratchWithName" },
-		{ cmd.LYRDScratchOpen, ":ScratchOpen" },
-		{ cmd.LYRDScratchSearch, ":ScratchOpenFzf" },
+		{ cmd.LYRDScratchNew, ":ScratchNew" },
+		{ cmd.LYRDScratchOpen, ":ScratchSearch" },
+		{ cmd.LYRDScratchSearch, ":ScratchSearch" },
 		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },
 		{ cmd.LYRDTerminalList, ":TermSelect" },

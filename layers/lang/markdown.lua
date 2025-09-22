@@ -1,5 +1,7 @@
 local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.setup.Module
 local L = { name = "Markdown" }
@@ -88,6 +90,12 @@ function L.preparation()
 	)
 	lsp.null_ls_register_sources({
 		require("null-ls.builtins.diagnostics.markdownlint_cli2"),
+	})
+end
+
+function L.settings()
+	commands.implement("markdown", {
+		{ cmd.LYRDToggleBufferDecorations, ":RenderMarkdown toggle" },
 	})
 end
 
