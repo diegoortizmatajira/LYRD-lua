@@ -351,6 +351,7 @@ function L.plugins()
 		},
 		{
 			"diegoortizmatajira/workspace-scratch-files.nvim",
+			-- dir = "/home/diegoortizmatajira/Development/contrib/workspace-scratch-files.nvim",
 			opts = {},
 		},
 		{
