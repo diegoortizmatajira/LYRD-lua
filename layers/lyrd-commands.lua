@@ -179,6 +179,7 @@ local L = {
 		LYRDContainersUI = Command:new("Running containers UI", nil, icons.other.docker),
 		LYRDKubernetesUI = Command:new("Kubernetes UI", nil, icons.other.kubernetes),
 		LYRDScratchNew = Command:new("Create a new scratch", nil, icons.file.scratch),
+		LYRDScratchDelete= Command:new("Delete an scratch file", nil, icons.action.delete),
 		LYRDScratchOpen = Command:new("Select scratch file to open", nil, icons.search.files),
 		LYRDScratchSearch = Command:new("Search inside scratches", nil, icons.search.lines),
 		LYRDReplace = Command:new("Search and replace in current file", nil, icons.action.replace_text),

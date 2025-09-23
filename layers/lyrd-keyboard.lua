@@ -180,6 +180,7 @@ function L.keybindings()
 			{ "f", cmd.LYRDScratchSearch },
 			{ "n", cmd.LYRDScratchNew },
 			{ "s", cmd.LYRDScratchOpen },
+			{ "d", cmd.LYRDScratchDelete },
 		}, icons.file.scratch),
 		menu_header("r", "Refactors", {
 			{ "f", cmd.LYRDCodeRefactor },

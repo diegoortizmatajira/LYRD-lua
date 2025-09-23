@@ -405,6 +405,7 @@ function L.settings()
 		},
 		{ cmd.LYRDScratchNew, ":ScratchNew" },
 		{ cmd.LYRDScratchOpen, ":ScratchSearch" },
+		{ cmd.LYRDScratchDelete, ":ScratchDelete" },
 		{ cmd.LYRDScratchSearch, ":ScratchSearch" },
 		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },

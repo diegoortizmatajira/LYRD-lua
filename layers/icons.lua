@@ -111,6 +111,7 @@ local L = {
 		replace_text = " ",
 		replace_in_files = "󰬳 ",
 		run_task = "󱖑 ",
+		delete = "󰗨 ",
 	},
 	arrow = {
 		swap = " ",
