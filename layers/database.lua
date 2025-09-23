@@ -12,7 +12,7 @@ function L.plugins()
 	setup.plugin({
 		{
 			"diegoortizmatajira/db-cli-adapter.nvim",
-			dir = "/home/diegoortizmatajira/Development/contrib/db-cli-adapter.nvim",
+			-- dir = "/home/diegoortizmatajira/Development/contrib/db-cli-adapter.nvim",
 			--- @class DbCliAdapter.Config
 			opts = {
 				output = {
