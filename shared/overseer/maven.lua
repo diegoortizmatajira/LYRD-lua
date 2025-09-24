@@ -28,9 +28,19 @@ local function task_template(maven_cmd, cwd)
 		},
 		builder = function(params)
 			local cmd = { maven_cmd }
+			local env = {}
+			local java_home = os.getenv("JAVA_HOME")
+			if java_home then
+				-- If JAVA_HOME is set in the environment, pass it to the task environment
+				env.JAVA_HOME = java_home
+			end
 
 			---@type overseer.TaskDefinition
-			local task = { cmd = cmd, cwd = cwd }
+			local task = {
+				cmd = cmd,
+				cwd = cwd,
+				env = env,
+			}
 
 			if params.args then
 				task.args = params.args

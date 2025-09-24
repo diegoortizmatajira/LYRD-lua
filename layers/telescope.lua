@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 local L = {
 	name = "Telescope",
-	use_frecency = true,
+	use_frecency = false,
 }
 
 function L.plugins()
