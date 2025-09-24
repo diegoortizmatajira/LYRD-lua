@@ -374,6 +374,11 @@ function L.plugins()
 						color = "#81e043",
 						name = "Log",
 					},
+					["java"] = {
+						icon = "",
+						color = "#CC3E44",
+						name = "Java",
+					},
 				},
 			},
 		},
