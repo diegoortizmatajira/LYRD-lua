@@ -12,7 +12,8 @@ local L = {
 	vscode_compatible = true,
 	ai_keys = {
 		-- Accept the current completion.
-		accept = "<C-l>",
+		-- accept = "<C-l>",
+		accept = "<Right>",
 		-- Accept the next word.
 		accept_word = "<C-Right>",
 		-- Accept the next line.
