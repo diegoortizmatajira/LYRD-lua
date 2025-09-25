@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local utils = require("LYRD.utils")
 
 local L = {
 	name = "Treesitter",
@@ -74,7 +75,103 @@ function L.ensureParser(parsers)
 	end
 end
 
+--- Retrieves matches from a parsed Treesitter query based on the specified parameters.
+---
+--- @param query_string string The Treesitter query string to be parsed.
+--- @param lang string The language of the current buffer.
+--- @param node_capture_name string The name of the capture group to filter matches.
+--- @param filter_func? fun(match: TSNode[], captures: string[]):boolean A function to filter matches. Receives the match and captures as arguments.
+--- @param map_func? fun(match: TSNode[], captures: string[]):any A function to transform the captured node. Receives the match and captures as arguments.
+--- @param max_results number|nil The maximum number of results to return.
+---
+--- @return table A list of captured nodes that match the query, filtered and transformed as specified.
+function L.get_matches(query_string, lang, node_capture_name, filter_func, map_func, max_results)
+	local ts_utils = require("nvim-treesitter.ts_utils")
+	local ts_query = require("vim.treesitter.query")
+
+	local bufnr = vim.api.nvim_get_current_buf()
+
+	-- Parse the query
+	local query = ts_query.parse(lang, query_string)
+
+	-- Get the root syntax tree node
+	local root = ts_utils.get_root_for_position(unpack(vim.api.nvim_win_get_cursor(0)))
+	if not root then
+		return ""
+	end
+
+	local results = {}
+	local count = 0
+	-- Iterate over matches
+	for _, match, _ in query:iter_matches(root, bufnr, 0, -1) do
+		if not filter_func or filter_func(match, query.captures) then
+			local mapped_result = map_func and map_func(match, query.captures) or match
+			if mapped_result then
+				table.insert(results, mapped_result)
+				count = count + 1
+				if max_results and count >= max_results then
+					break
+				end
+			end
+		end
+	end
+	return results
+end
+
+function L.get_match_texts(query_string, lang, node_capture_name, text_capture_name) end
+
+--- Gets the text of the capture at the cursor position
+--- @param query_string string The treesitter query string
+--- @param lang string The language of the current buffer
+--- @param node_capture_name string The name of the capture that contains the node to check
+--- @param text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
+--- @return string The text of the capture at the cursor position, or an empty string if not found
+function L.get_match_text_at_cursor(query_string, lang, node_capture_name, text_capture_name)
+	if not text_capture_name then
+		text_capture_name = node_capture_name
+	end
+	local ts_utils = require("nvim-treesitter.ts_utils")
+	local ts_query = require("vim.treesitter.query")
+
+	local bufnr = vim.api.nvim_get_current_buf()
+
+	-- Parse the query
+	local query = ts_query.parse(lang, query_string)
+	local capture_index = utils.index_of(query.captures, node_capture_name)
+	if not capture_index then
+		vim.notify("Capture name '" .. node_capture_name .. "' not found in query.", vim.log.levels.WARN)
+		return ""
+	end
+	local text_capture_index = utils.index_of(query.captures, text_capture_name)
+	if not text_capture_index then
+		vim.notify("Capture name '" .. text_capture_name .. "' not found in query.", vim.log.levels.WARN)
+		return ""
+	end
+
+	-- Get the root syntax tree node
+	local root = ts_utils.get_root_for_position(unpack(vim.api.nvim_win_get_cursor(0)))
+	if not root then
+		return ""
+	end
+
+	local node_at_cursor = vim.treesitter.get_node()
+	if not node_at_cursor then
+		return ""
+	end
+
+	-- Iterate over matches
+	for _, match, _ in query:iter_matches(root, bufnr, 0, -1) do
+		local captured_node = match[capture_index][1]
+		if captured_node == node_at_cursor or vim.treesitter.is_ancestor(captured_node, node_at_cursor) then
+			captured_node = match[text_capture_index][1]
+			return vim.treesitter.get_node_text(captured_node, bufnr)
+		end
+	end
+	return ""
+end
+
 function L.settings()
+	---@diagnostic disable-next-line: missing-fields
 	require("nvim-treesitter.configs").setup({
 		ensure_installed = L.required,
 		highlight = {
