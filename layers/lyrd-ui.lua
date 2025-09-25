@@ -355,11 +355,10 @@ function L.plugins()
 			opts = {},
 		},
 		{
-			"nvim-pack/nvim-spectre",
+			"MagicDuck/grug-far.nvim",
+			-- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
+			-- additional lazy config to defer loading is not really needed...
 			opts = {},
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-			},
 		},
 		{
 			"folke/twilight.nvim",
@@ -414,15 +413,10 @@ function L.settings()
 		{
 			cmd.LYRDReplace,
 			function()
-				require("spectre").open_file_search({ select_word = true })
+				require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } })
 			end,
 		},
-		{
-			cmd.LYRDReplaceInFiles,
-			function()
-				require("spectre").toggle()
-			end,
-		},
+		{ cmd.LYRDReplaceInFiles, ":GrugFar" },
 	})
 end
 
