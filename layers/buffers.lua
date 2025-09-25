@@ -38,8 +38,8 @@ local L = {
 		{ type_id = "dbout" },
 		{ type_id = "dbui", title = "Database" },
 		{ type_id = "fugitive" },
-		{ type_id = "db-cli-sidebar" },
 		{ type_id = "gitcommit" },
+		{ type_id = "grug-far", map_q = true },
 		{ type_id = "help", map_q = true },
 		{ type_id = "http_response" },
 		{ type_id = "lazy" },
@@ -109,14 +109,18 @@ local function close_buffer()
 			vim.notify("This buffer cannot be closed", vim.log.levels.WARN)
 			return
 		end
-		-- If the buffer is special, we just close the window
-		vim.cmd("close")
-	else
-		-- If it's a normal buffer, we close it properly
-		local closed = require("mini.bufremove").delete(0, false)
-		if closed then
-			open_starter_if_empty_buffer()
+		-- If the buffer is special, we just close the window unlless it is the last one
+		-- (meaning no other buffer is visible)
+		local wins = vim.api.nvim_list_wins()
+		if #wins > 1 then
+			vim.cmd("close")
+			return
 		end
+	end
+	-- If it's a normal buffer, we close it properly
+	local closed = require("mini.bufremove").delete(0, false)
+	if closed then
+		open_starter_if_empty_buffer()
 	end
 end
 
