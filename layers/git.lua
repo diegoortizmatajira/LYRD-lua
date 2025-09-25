@@ -56,6 +56,12 @@ function L.plugins()
 						["<c-s>"] = false,
 						["<c-a>"] = "StageAll",
 					},
+					commit_editor = {
+						["<c-s>"] = "Submit",
+					},
+					commit_editor_I = {
+						["<c-s>"] = "Submit",
+					},
 				},
 			},
 		},
