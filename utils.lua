@@ -30,9 +30,15 @@ function M.include_in_system_path(path_to_add, append)
 	end
 end
 
---- Checks if a list contains an item
---- @param list table
---- @param item any
+--- Checks if a list contains a specific item.
+---
+--- This function iterates over the provided list and checks if the given
+--- item exists within it. If the item is found, it returns `true`; otherwise, 
+--- it returns `false`.
+---
+--- @param list table The list to search through.
+--- @param item any The item to look for in the list.
+--- @return boolean `true` if the item is found, `false` otherwise.
 function M.contains(list, item)
 	for _, str in ipairs(list) do
 		if str == item then
@@ -40,6 +46,24 @@ function M.contains(list, item)
 		end
 	end
 	return false
+end
+
+--- Finds the index of a value in an array.
+--- 
+--- This function iterates over the provided array and checks if the specified value 
+--- is present. If found, it returns the index of the value. If the value is not found,
+--- the function returns `nil`.
+---
+--- @param array table The array to search through.
+--- @param value any The value to find in the array.
+--- @return number|nil The index of the value if found, or `nil` otherwise.
+function M.index_of(array, value)
+	for i, v in ipairs(array) do
+		if v == value then
+			return i
+		end
+	end
+	return nil -- si no se encuentra el valor
 end
 
 --- Retrieves the visually selected text in the current buffer.
@@ -83,4 +107,5 @@ function M.get_visual_selection(bufnr)
 	local lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col + 1, {})
 	return table.concat(lines, "\n")
 end
+
 return M

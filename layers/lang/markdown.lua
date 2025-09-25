@@ -47,7 +47,6 @@ function L.plugins()
 end
 
 function L.preparation()
-	-- Registers code actions in NULL LS
 	local lsp = require("LYRD.layers.lsp")
 	lsp.mason_ensure({
 		"prettier",

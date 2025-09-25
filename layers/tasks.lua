@@ -15,6 +15,44 @@ local function configure(filename)
 		vim.cmd("edit " .. filename)
 	end
 end
+
+--- @class TaskRequest
+--- @field cmd string
+--- @field args string[]
+--- @field env table<string, string>?
+--- @field cwd string?
+--- @field name string
+--- @field open_in_split boolean?
+--- @field focus boolean?
+
+--- Runs a task in a terminal
+--- @param opts TaskRequest
+function L.run_task(opts)
+	-- Use overseer.nvim to run the command and show output in a terminal window
+	local overseer = require("overseer")
+	overseer
+		.new_task({
+			cmd = opts.cmd,
+			args = opts.args,
+			env = opts.env,
+			cwd = opts.cwd,
+			name = opts.name,
+			strategy = "terminal",
+			components = opts.open_in_split and {
+				{
+					"open_output",
+					direction = "dock",
+					focus = opts.focus or false,
+					on_complete = "always",
+				},
+				"default",
+			} or {
+				"default",
+			},
+		})
+		:start()
+end
+
 function L.plugins()
 	setup.plugin({
 		{
