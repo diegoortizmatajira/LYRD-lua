@@ -7,6 +7,12 @@ local L = {
 	unicode = {
 		lightbulb = "💡",
 	},
+	cloud = {
+		cloud = "󰅟 ",
+		docker = "󰡨 ",
+		container = " ",
+		service = "󰲋 ",
+	},
 	other = {
 		briefcase = " ",
 		code = " ",

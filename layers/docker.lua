@@ -2,11 +2,18 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local lsp = require("LYRD.layers.lsp")
 local ts = require("LYRD.layers.treesitter")
+local icons = require("LYRD.layers.icons")
+require("LYRD.utils.signs")
+local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.Docker: LYRD.setup.Module
 local L = {
 	name = "Docker",
 	docker_compose_filetype = "yaml.docker-compose",
+	docker_compose_file_patterns = {
+		"docker%-compose*%.yaml",
+		"docker%-compose*%.yml",
+	},
 	focus_terminal_on_run = true,
 	ts_compose_services_query = [[
 (block_mapping_pair
@@ -17,7 +24,23 @@ local L = {
     ) @service-node) 
   ) 
 )]],
+	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
 }
+
+local function docker_compose_refesh_service_signs()
+	local service_rows = ts.get_matches(L.ts_compose_services_query, "yaml", nil, function(match, captures)
+		local index = utils.index_of(captures, "service-name")
+		if index then
+			local row, _, _, _ = vim.treesitter.get_node_range(match[index][1])
+			return row + 1
+		end
+	end)
+	local bufnr = vim.api.nvim_get_current_buf()
+	L.docker_compose_service_sign:clear(bufnr)
+	for _, row in ipairs(service_rows) do
+		L.docker_compose_service_sign:place(bufnr, row)
+	end
+end
 
 function L.toggle_lazydocker()
 	local ui = require("LYRD.layers.lyrd-ui")
@@ -156,27 +179,37 @@ local function docker_compose_generate_actions()
 		"stop",
 		"up",
 	}
-	local current_service_actions = {}
-	local service_at_cursor = L.docker_compose_get_service_at_cursor()
-	if service_at_cursor ~= "" then
-		current_service_actions = vim.tbl_map(function(c)
+	--- Accumulate all actions
+	local result = {
+		{ title = "Refresh service status", action = docker_compose_refesh_service_signs },
+	}
+	--- Generate actions for all services
+	result = vim.list_extend(
+		result,
+		vim.tbl_map(function(c)
 			return {
-				title = prefix .. string.format("[%s] %s service", service_at_cursor, c),
+				title = prefix .. string.format("%s all services", c),
 				action = function()
-					L.docker_compose_execute_service(service_at_cursor, c)
+					L.docker_compose_execute(c)
 				end,
 			}
-		end, docker_service_commands)
+		end, docker_file_commands)
+	)
+	--- Add current service actions if any
+	local service_at_cursor = L.docker_compose_get_service_at_cursor()
+	if service_at_cursor ~= "" then
+		result = vim.list_extend(
+			result,
+			vim.tbl_map(function(c)
+				return {
+					title = prefix .. string.format("[%s] %s service", service_at_cursor, c),
+					action = function()
+						L.docker_compose_execute_service(service_at_cursor, c)
+					end,
+				}
+			end, docker_service_commands)
+		)
 	end
-	local result = vim.tbl_map(function(c)
-		return {
-			title = prefix .. string.format("%s all services", c),
-			action = function()
-				L.docker_compose_execute(c)
-			end,
-		}
-	end, docker_file_commands)
-	result = vim.list_extend(result, current_service_actions)
 	return result
 end
 
@@ -202,15 +235,19 @@ function L.preparation()
 end
 
 function L.settings()
+	-- Filetype detection for docker-compose files
+	local patterns = {}
+	vim.tbl_map(function(p)
+		patterns[p] = L.docker_compose_filetype
+	end, L.docker_compose_file_patterns)
 	vim.filetype.add({
-		pattern = {
-			["docker%-compose*%.yaml"] = L.docker_compose_filetype,
-			["docker%-compose*%.yml"] = L.docker_compose_filetype,
-		},
+		pattern = patterns,
 	})
+	-- Command implementations
 	commands.implement(L.docker_compose_filetype, {
 		{ cmd.LYRDCodeRunSelection, L.docker_compose_run_service_at_cursor },
 		{ cmd.LYRDCodeRun, L.docker_compose_execute },
+		{ cmd.LYRDToggleBufferDecorations, docker_compose_refesh_service_signs },
 	})
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
