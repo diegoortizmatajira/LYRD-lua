@@ -3,7 +3,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local lsp = require("LYRD.layers.lsp")
 local ts = require("LYRD.layers.treesitter")
 
----@class LYRD.setup.Module
+---@class LYRD.layer.Docker: LYRD.setup.Module
 local L = {
 	name = "Docker",
 	docker_compose_filetype = "yaml.docker-compose",
