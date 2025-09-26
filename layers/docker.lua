@@ -28,6 +28,7 @@ local L = {
 }
 
 local function docker_compose_refesh_service_signs()
+    -- Gets all the line numbers where services are defined in the docker-compose file
 	local service_rows = ts.get_matches(L.ts_compose_services_query, "yaml", nil, function(match, captures)
 		local index = utils.index_of(captures, "service-name")
 		if index then
@@ -76,11 +77,14 @@ local function docker_compose_task(command, service)
 		table.insert(args, service)
 	end
 	local tasks = require("LYRD.layers.tasks")
+	--- get the current working directory as the folder where the current file is located
+	local cwd = vim.fn.expand("%:p:h")
+
 	tasks.run_task({
 		name = "Docker Compose",
 		cmd = "docker",
 		args = vim.list_extend({ "compose" }, args),
-		cwd = vim.fn.getcwd(),
+		cwd = cwd,
 		open_in_split = true,
 		focus = L.focus_terminal_on_run,
 	})
