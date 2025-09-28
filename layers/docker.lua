@@ -13,6 +13,8 @@ local L = {
 	docker_compose_file_patterns = {
 		"docker%-compose*%.yaml",
 		"docker%-compose*%.yml",
+		"compose*%.yaml",
+		"compose*%.yml",
 	},
 	focus_terminal_on_run = true,
 	ts_compose_services_query = [[
@@ -28,7 +30,7 @@ local L = {
 }
 
 local function docker_compose_refesh_service_signs()
-    -- Gets all the line numbers where services are defined in the docker-compose file
+	-- Gets all the line numbers where services are defined in the docker-compose file
 	local service_rows = ts.get_matches(L.ts_compose_services_query, "yaml", nil, function(match, captures)
 		local index = utils.index_of(captures, "service-name")
 		if index then
