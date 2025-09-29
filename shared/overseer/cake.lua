@@ -75,8 +75,9 @@ local provider = {
 			cwd = cwd,
 			stdout_buffered = true,
 			on_stdout = vim.schedule_wrap(function(_, output)
-				for _, line in ipairs(output) do
-					if #line > 0 then
+				for i, line in ipairs(output) do
+					-- Skip the first two lines which are just informational
+					if #line > 0 and i > 2 then
 						local task_name, description = line:match("^(%w+)%s+(.*)")
 						if task_name ~= nil then
 							local override = {
