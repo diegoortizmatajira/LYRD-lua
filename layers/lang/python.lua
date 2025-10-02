@@ -16,15 +16,15 @@ function L.plugins()
 		-- {
 		-- 	"mfussenegger/nvim-dap-python",
 		-- 	dependencies = { "mfussenegger/nvim-dap" },
-		-- 	config = function()
-		-- 		require("dap-python").setup()
-		-- 		table.insert(require("dap").configurations.python, {
-		-- 			type = "python",
-		-- 			request = "launch",
-		-- 			name = "My custom launch configuration",
-		-- 			program = "${file}",
-		-- 		})
-		-- 	end,
+		-- 		config = function()
+		-- 			require("dap-python").setup()
+		-- 			table.insert(require("dap").configurations.python, {
+		-- 				type = "python",
+		-- 				request = "launch",
+		-- 				name = "My custom launch configuration",
+		-- 				program = "${file}",
+		-- 			})
+		-- 		end,
 		-- 	ft = "python",
 		-- },
 		{
