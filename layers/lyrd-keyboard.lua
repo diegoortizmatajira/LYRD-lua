@@ -400,6 +400,7 @@ function L.keybindings()
 			{ "i", cmd.LYRDPluginsInstall },
 			{ "u", cmd.LYRDPluginsUpdate },
 			{ "c", cmd.LYRDPluginsClean },
+			{ "l", cmd.LYRDEditLocalConfig },
 		}, icons.other.briefcase),
 		menu_header("q", "Quit", {
 			{ ".", cmd.LYRDWindowClose },
