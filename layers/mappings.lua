@@ -5,6 +5,7 @@ local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
 local c = require("LYRD.layers.commands").command_shortcut
 
+---@class LYRD.layer.Mappings: LYRD.setup.Module
 local L = {
 	name = "Mappings",
 	vscode_compatible = true,

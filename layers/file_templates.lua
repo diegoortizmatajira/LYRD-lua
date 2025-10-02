@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local utils = require("LYRD.utils")
 
+---@class LYRD.layer.FileTemplates: LYRD.setup.Module
 local L = {
 	name = "File templates",
 	ignore_filetypes = { "dbout" },

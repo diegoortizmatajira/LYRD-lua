@@ -4,7 +4,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local join = require("LYRD.utils").join_paths
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Java: LYRD.setup.Module
 local L = {
 	name = "Java language",
 	root_files = {

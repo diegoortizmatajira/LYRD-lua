@@ -1,7 +1,7 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Cpp: LYRD.setup.Module
 local L = {
 	name = "C and C++",
 	filetypes = { "c", "cpp", "h" },

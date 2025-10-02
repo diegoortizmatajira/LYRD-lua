@@ -4,6 +4,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.LSP: LYRD.setup.Module
 local L = {
 	name = "LSP",
 	required_tools = {},

@@ -1,6 +1,7 @@
 local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 
+---@class LYRD.layer.Neovide: LYRD.setup.Module
 local L = { name = "Neovide" }
 
 function L.plugins()

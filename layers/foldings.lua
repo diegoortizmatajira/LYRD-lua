@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.Foldings: LYRD.setup.Module
 local L = { name = "Foldings" }
 
 function L.plugins()

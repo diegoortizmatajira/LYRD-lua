@@ -1,3 +1,4 @@
+---@class LYRD.layer.Clipboard: LYRD.setup.Module
 local L = {
 	name = "Clipboard",
 }

@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.Completion: LYRD.setup.Module
 local L = { name = "Completion" }
 
 local kind_icons = {

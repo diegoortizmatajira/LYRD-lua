@@ -1,7 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.DataFormats: LYRD.setup.Module
 local L = { name = "Data formats json, yaml, toml, xml" }
 
 function L.plugins()

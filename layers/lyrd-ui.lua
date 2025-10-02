@@ -4,6 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 local utils = require("LYRD.utils")
 
+---@class LYRD.layer.LYRDUI: LYRD.setup.Module
 local L = {
 	name = "LYRD UI",
 }

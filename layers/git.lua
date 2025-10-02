@@ -4,6 +4,7 @@ local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.Git: LYRD.setup.Module
 local L = {
 	name = "Git",
 	git_flow_base_command = "git", -- default to 'gh', but it can be 'git'

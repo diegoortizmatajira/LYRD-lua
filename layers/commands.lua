@@ -1,5 +1,6 @@
 local utils = require("LYRD.utils")
 
+---@class LYRD.layer.Commands: LYRD.setup.Module
 local L = {
 	name = "Commands",
 	vscode_compatible = true,

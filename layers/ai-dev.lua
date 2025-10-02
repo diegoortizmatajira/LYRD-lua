@@ -121,7 +121,7 @@ local ai_providers = {
 	},
 }
 
----@diagnostic disable-next-line: unused-function
+--- @diagnostic disable-next-line: unused-local, unused-function
 local function completion_provider()
 	---@diagnostic disable-next-line: undefined-field
 	local uname = vim.loop.os_uname()
@@ -132,6 +132,7 @@ local function completion_provider()
 	end
 end
 
+---@class LYRD.layer.AIDev: LYRD.setup.Module
 local L = {
 	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,
@@ -186,6 +187,19 @@ function L.plugins()
 					mux = {
 						backend = "tmux",
 						enabled = true,
+					},
+				},
+				keys = {
+					{
+						"<tab>",
+						function()
+							-- if there is a next edit, jump to it, otherwise apply it if any
+							if not require("sidekick").nes_jump_or_apply() then
+								return "<Tab>" -- fallback to normal tab
+							end
+						end,
+						expr = true,
+						desc = "Goto/Apply Next Edit Suggestion",
 					},
 				},
 			},

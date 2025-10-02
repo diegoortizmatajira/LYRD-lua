@@ -1,6 +1,6 @@
 local lsp = require("LYRD.layers.lsp")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Cmake: LYRD.setup.Module
 local L = { name = "CMake Language" }
 
 function L.plugins() end

@@ -3,7 +3,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Python: LYRD.setup.Module
 local L = { name = "Python language" }
 
 -- Opens the .env file in the current directory
@@ -13,19 +13,20 @@ end
 
 function L.plugins()
 	setup.plugin({
-		{
-			"mfussenegger/nvim-dap-python",
-			config = function()
-				require("dap-python").setup()
-				table.insert(require("dap").configurations.python, {
-					type = "python",
-					request = "launch",
-					name = "My custom launch configuration",
-					program = "${file}",
-				})
-			end,
-			ft = "python",
-		},
+		-- {
+		-- 	"mfussenegger/nvim-dap-python",
+		-- 	dependencies = { "mfussenegger/nvim-dap" },
+		-- 	config = function()
+		-- 		require("dap-python").setup()
+		-- 		table.insert(require("dap").configurations.python, {
+		-- 			type = "python",
+		-- 			request = "launch",
+		-- 			name = "My custom launch configuration",
+		-- 			program = "${file}",
+		-- 		})
+		-- 	end,
+		-- 	ft = "python",
+		-- },
 		{
 			"nvim-neotest/neotest-python",
 			ft = "python",
@@ -36,7 +37,6 @@ function L.plugins()
 			dependencies = {
 				"neovim/nvim-lspconfig",
 				"mfussenegger/nvim-dap",
-				"mfussenegger/nvim-dap-python", --optional
 				"nvim-telescope/telescope.nvim",
 			},
 			lazy = false,

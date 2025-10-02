@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local mappings = require("LYRD.layers.mappings")
 
+---@class LYRD.layer.Rest: LYRD.setup.Module
 local L = { name = "REST Client" }
 
 function L.plugins()

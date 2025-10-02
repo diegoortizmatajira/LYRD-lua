@@ -4,7 +4,7 @@ local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Go: LYRD.setup.Module
 local L = { name = "Go language" }
 
 local function ends_with(str, ending)

@@ -3,7 +3,7 @@ local icons = require("LYRD.layers.icons")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.setup.Module
+---@class LYRD.layer.lang.Markdown: LYRD.setup.Module
 local L = { name = "Markdown" }
 
 function L.plugins()

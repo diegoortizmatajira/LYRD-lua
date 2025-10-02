@@ -1,7 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Kotlin: LYRD.setup.Module
 local L = { name = "Kotlin Language" }
 
 function L.plugins()

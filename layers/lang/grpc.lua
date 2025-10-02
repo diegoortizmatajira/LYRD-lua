@@ -1,6 +1,6 @@
 local setup = require("LYRD.setup")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Grpc: LYRD.setup.Module
 local L = { name = "Grpc and Protobuffers" }
 
 function L.plugins()

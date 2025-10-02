@@ -3,6 +3,8 @@ local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local utils = require("LYRD.utils")
+
+---@class LYRD.layer.Snippets: LYRD.setup.Module
 local L = {
 	name = "Snippets",
 	snippets_path = utils.get_lyrd_path() .. "/snippets",

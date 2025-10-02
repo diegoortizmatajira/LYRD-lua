@@ -1,7 +1,7 @@
 local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Lua: LYRD.setup.Module
 local L = {
 	name = "Lua Language",
 }

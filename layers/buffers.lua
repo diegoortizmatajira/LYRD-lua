@@ -8,7 +8,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 ---@field allow_saving? boolean
 ---@field prevent_closing? boolean
 ---@field map_q? boolean
----
+
+---@class LYRD.layer.Buffers: LYRD.setup.Module
 local L = {
 	name = "Buffers",
 

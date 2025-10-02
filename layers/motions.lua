@@ -3,6 +3,7 @@ local mappings = require("LYRD.layers.mappings")
 local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 
+---@class LYRD.layer.Motions: LYRD.setup.Module
 local L = {
 	name = "Motions",
 	vscode_compatible = true,
@@ -60,15 +61,19 @@ function L.keybindings()
 		{ { "n", "v" }, "S", "<cmd>HopChar1MW<CR>" },
 	})
 	vim.keymap.set("", "f", function()
+		--- @diagnostic disable-next-line: missing-fields
 		hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
 	end, { remap = true })
 	vim.keymap.set("", "F", function()
+		--- @diagnostic disable-next-line: missing-fields
 		hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
 	end, { remap = true })
 	vim.keymap.set("", "t", function()
+		--- @diagnostic disable-next-line: missing-fields
 		hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })
 	end, { remap = true })
 	vim.keymap.set("", "T", function()
+		--- @diagnostic disable-next-line: missing-fields
 		hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
 	end, { remap = true })
 end

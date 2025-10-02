@@ -7,6 +7,7 @@ local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.LYRDKeyboard: LYRD.setup.Module
 local L = {
 	name = "LYRD Keyboard",
 	vscode_compatible = true,

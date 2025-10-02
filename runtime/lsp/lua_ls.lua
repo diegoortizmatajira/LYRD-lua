@@ -10,6 +10,7 @@ return {
 					"awesome",
 					"client",
 					"mouse",
+					"require",
 				},
 			},
 			telemetry = {

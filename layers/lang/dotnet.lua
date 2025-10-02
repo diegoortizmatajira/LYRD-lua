@@ -4,7 +4,7 @@ local lsp = require("LYRD.layers.lsp")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Dotnet: LYRD.setup.Module
 local L = {
 	name = "Dotnet languages: C#, F#, Vb",
 }

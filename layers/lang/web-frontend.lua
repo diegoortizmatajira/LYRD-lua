@@ -1,7 +1,7 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.WebFrontend: LYRD.setup.Module
 local L = { name = "Web frontend" }
 
 function L.plugins()

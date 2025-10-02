@@ -1,6 +1,7 @@
 local commands = require("LYRD.layers.commands")
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.LYRDCommands: LYRD.setup.Module
 local L = {
 	name = "LYRD Commands",
 	vscode_compatible = true,

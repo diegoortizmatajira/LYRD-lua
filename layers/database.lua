@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local lsp = require("LYRD.layers.lsp")
 
+---@class LYRD.layer.Database: LYRD.setup.Module
 local L = {
 	name = "Database",
 	default_dialect = "ansi",

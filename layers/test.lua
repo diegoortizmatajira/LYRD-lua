@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+---@class LYRD.layer.Test: LYRD.setup.Module
 local L = { name = "Test", test_adapters = {} }
 
 function L.plugins()

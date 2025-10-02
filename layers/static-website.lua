@@ -1,4 +1,6 @@
----@type LYRD.setup.Module
+local setup = require("LYRD.setup")
+
+---@class LYRD.layer.StaticWebSite: LYRD.setup.Module
 local L = { name = "Static web sites" }
 
 function L.settings()

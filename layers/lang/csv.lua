@@ -1,6 +1,6 @@
 local setup = require("LYRD.setup")
 
----@type LYRD.setup.Module
+---@class LYRD.layer.lang.Csv: LYRD.setup.Module
 local L = { name = "CSV" }
 
 function L.preparation()
