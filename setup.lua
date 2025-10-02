@@ -35,6 +35,8 @@ local setup = {
 	},
 }
 
+vim.fn.mkdir(setup.data_path, "p")
+
 -- Is a dictionary to control filetype commands to run only once
 local run_once_per_file_type_execution = {}
 
