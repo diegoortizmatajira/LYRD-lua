@@ -144,6 +144,7 @@ function L.keybindings()
 			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit },
+			{ "c", cmd.LYRDAICli },
 			{ "d", cmd.LYRDAIGenerateDocumentation },
 		}, icons.other.ia, { "x" }),
 		menu_header("i", "Images", {

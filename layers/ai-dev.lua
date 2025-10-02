@@ -179,25 +179,15 @@ function L.plugins()
 			dependencies = avante_dependencies(),
 		},
 		{
-			"olimorris/codecompanion.nvim",
+			"folke/sidekick.nvim",
 			opts = {
-				strategies = {
-					strategies = {
-						chat = {
-							adapter = "copilot",
-						},
-						inline = {
-							adapter = "copilot",
-						},
-						cmd = {
-							adapter = "copilot",
-						},
+				-- add any options here
+				cli = {
+					mux = {
+						backend = "tmux",
+						enabled = true,
 					},
 				},
-			},
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"nvim-treesitter/nvim-treesitter",
 			},
 		},
 	})
@@ -214,6 +204,7 @@ function L.settings()
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, ":AvanteEdit Generate documentation for the current element." },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
+		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{
 			cmd.LYRDAIAsk,
 			function()

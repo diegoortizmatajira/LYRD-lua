@@ -18,7 +18,7 @@ function SignItem:place(bufnr, line)
 end
 
 function SignItem:unplace(bufnr, line)
-	vim.fn.sign_unplace(self.sign_group, { buffer = bufnr, id = 0, lnum = line })
+	vim.fn.sign_unplace(self.sign_group, { buffer = bufnr, lnum = line })
 end
 
 function SignItem:toggle(bufnr, line)
