@@ -124,7 +124,7 @@ end
 ---     print(service)
 --- end
 function L.docker_compose_get_services()
-	local services = ts.get_all_match_text(L.ts_compose_services_query, "yaml", "service-node", "service-name")
+	local services = ts.get_match_texts(L.ts_compose_services_query, "yaml", "service-node", "service-name")
 	return services
 end
 
