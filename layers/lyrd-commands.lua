@@ -212,7 +212,7 @@ local L = {
 		LYRDTasksConfigure = Command:new("Configure tasks", nil, icons.other.task),
 		LYRDTasksConfigureLaunch = Command:new("Configure launch profile", nil, icons.other.launch),
 		LYRDToggleBufferDecorations = Command:new("Toggle buffer decorations", nil, icons.action.toggle_on),
-		LYRDEditLocalConfig = Command:new("Edit local config", ":e " .. setup.local_config_path, icons.other.wrench),
+		LYRDEditLocalConfig = Command:new("Edit local config", setup.edit_local_config, icons.other.wrench),
 	},
 }
 

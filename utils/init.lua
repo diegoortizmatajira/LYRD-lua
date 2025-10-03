@@ -33,7 +33,7 @@ end
 --- Checks if a list contains a specific item.
 ---
 --- This function iterates over the provided list and checks if the given
---- item exists within it. If the item is found, it returns `true`; otherwise, 
+--- item exists within it. If the item is found, it returns `true`; otherwise,
 --- it returns `false`.
 ---
 --- @param list table The list to search through.
@@ -49,8 +49,8 @@ function M.contains(list, item)
 end
 
 --- Finds the index of a value in an array.
---- 
---- This function iterates over the provided array and checks if the specified value 
+---
+--- This function iterates over the provided array and checks if the specified value
 --- is present. If found, it returns the index of the value. If the value is not found,
 --- the function returns `nil`.
 ---
@@ -106,6 +106,41 @@ function M.get_visual_selection(bufnr)
 	end
 	local lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col + 1, {})
 	return table.concat(lines, "\n")
+end
+
+--- Safely requires a module and executes a function with it.
+--- @param mod_name string The name of the module to require.
+--- @param func fun(module) The function to execute with the required module.
+function M.with_safe_require(mod_name, func)
+	local ok, mod = pcall(require, mod_name)
+	if not ok then
+		vim.notify("Module " .. mod_name .. " not loaded properly", vim.log.levels.WARN)
+		return
+	end
+	func(mod)
+end
+
+
+--- Opens a file if it exists, or creates it with the given content if it doesn't.
+--- It also ensures that the directory structure for the file exists.
+--- @param file_path string The path of the file to open or create.
+--- @param content? string The content to write to the file if it needs to be created.
+function M.open_or_create_file(file_path, content)
+    local dir = vim.fn.fnamemodify(file_path, ":h")
+    if vim.fn.isdirectory(dir) == 0 then
+        vim.fn.mkdir(dir, "p")
+    end
+    if vim.fn.filereadable(file_path) == 0 then
+        local file = io.open(file_path, "w")
+        if file then
+            file:write(content or "")
+            file:close()
+        else
+            vim.notify("Could not create file: " .. file_path, vim.log.levels.ERROR)
+            return
+        end
+    end
+    vim.cmd("edit " .. file_path)
 end
 
 return M

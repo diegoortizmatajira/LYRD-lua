@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
+local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.lang.WebFrontend: LYRD.setup.Module
 local L = { name = "Web frontend" }
@@ -49,8 +50,12 @@ function L.preparation()
 	})
 
 	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-vitest"))
-	test.configure_adapter(require("neotest-jest"))
+	utils.with_safe_require("neotest-vitest", function(neotest_vitest)
+		test.configure_adapter(neotest_vitest)
+	end)
+	utils.with_safe_require("neotest-jest", function(neotest_jest)
+		test.configure_adapter(neotest_jest)
+	end)
 
 	-- Enable treesitter for Angular HTML files
 	vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {

@@ -154,6 +154,10 @@ local function read_local_config()
 	end
 end
 
+function setup.edit_local_config()
+	utils.open_or_create_file(setup.local_config_path)
+end
+
 --- Loads and initializes the LYRD setup configuration.
 ---
 --- This function accepts a setup table that defines the layers, plugins, and commands to be used.

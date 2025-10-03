@@ -2,13 +2,14 @@ local lsp = require("LYRD.layers.lsp")
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.lang.Python: LYRD.setup.Module
 local L = { name = "Python language" }
 
 -- Opens the .env file in the current directory
 local function open_dotenv()
-	vim.cmd("e .env")
+	utils.open_or_create_file(".env")
 end
 
 function L.plugins()

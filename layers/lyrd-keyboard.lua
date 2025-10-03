@@ -394,7 +394,7 @@ function L.keybindings()
 			{ "s", cmd.LYRDTestCoverageSummary },
 			{ "v", cmd.LYRDTestSummary },
 		}, icons.code.test),
-		menu_header("p", "Packages", {
+		menu_header("p", "Preferences", {
 			{ "t", cmd.LYRDToolManager },
 			{ "p", cmd.LYRDPluginManager },
 			{ "i", cmd.LYRDPluginsInstall },
