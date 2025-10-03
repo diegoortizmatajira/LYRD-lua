@@ -144,9 +144,9 @@ function L.keybindings()
 		menu_header("a", "Artificial Intelligence", {
 			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
-			{ "e", cmd.LYRDAIEdit },
+			{ "e", cmd.LYRDAIEdit, { "x" } },
 			{ "c", cmd.LYRDAICli },
-			{ "d", cmd.LYRDAIGenerateDocumentation },
+			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
 		}, icons.other.ia, { "x" }),
 		menu_header("i", "Images", {
 			{ "p", cmd.LYRDPasteImage },

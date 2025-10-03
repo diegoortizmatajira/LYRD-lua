@@ -138,6 +138,10 @@ local L = {
 	avante_provider = ai_providers.COPILOT,
 	-- completion_provider = completion_provider(),
 	completion_provider = ai_providers.COPILOT,
+	documentation_prompt = [[
+	Ensure the current element is well documented by generating or updating its
+	documentation annotations to reflect the current code.
+	]],
 }
 
 local function avante_dependencies()
@@ -156,6 +160,13 @@ local function avante_dependencies()
 		table.insert(result, "zbirenbaum/copilot.lua")
 	end
 	return result
+end
+
+local function edit_with_prompt(prompt)
+	return function(opts)
+		opts = opts or {}
+		require("avante.api").edit(prompt or vim.trim(opts.args), opts.line1, opts.line2)
+	end
 end
 
 function L.plugins()
@@ -179,34 +190,34 @@ function L.plugins()
 			-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
 			dependencies = avante_dependencies(),
 		},
-		-- {
-		-- 	"folke/sidekick.nvim",
-		-- 	opts = {
-		-- 		-- add any options here
-		-- 		cli = {
-		-- 			mux = {
-		-- 				backend = "tmux",
-		-- 				enabled = true,
-		-- 			},
-		-- 		},
-		-- 		nes = {
-		-- 			enabled = false,
-		-- 		},
-		-- 		keys = {
-		-- 			{
-		-- 				"<tab>",
-		-- 				function()
-		-- 					-- if there is a next edit, jump to it, otherwise apply it if any
-		-- 					if not require("sidekick").nes_jump_or_apply() then
-		-- 						return "<Tab>" -- fallback to normal tab
-		-- 					end
-		-- 				end,
-		-- 				expr = true,
-		-- 				desc = "Goto/Apply Next Edit Suggestion",
-		-- 			},
-		-- 		},
-		-- 	},
-		-- },
+		{
+			"folke/sidekick.nvim",
+			opts = {
+				-- add any options here
+				cli = {
+					mux = {
+						backend = "tmux",
+						enabled = true,
+					},
+				},
+				nes = {
+					enabled = false,
+				},
+				keys = {
+					{
+						"<tab>",
+						function()
+							-- if there is a next edit, jump to it, otherwise apply it if any
+							if not require("sidekick").nes_jump_or_apply() then
+								return "<Tab>" -- fallback to normal tab
+							end
+						end,
+						expr = true,
+						desc = "Goto/Apply Next Edit Suggestion",
+					},
+				},
+			},
+		},
 	})
 	if L.avante_provider == L.completion_provider then
 		setup.plugin(L.avante_provider.plugins(true))
@@ -219,7 +230,7 @@ end
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
-		{ cmd.LYRDAIGenerateDocumentation, ":AvanteEdit Generate documentation for the current element." },
+		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{
