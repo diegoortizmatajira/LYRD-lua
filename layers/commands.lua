@@ -14,16 +14,16 @@ local L = {
 ---@class Command
 ---@field name? string|nil Name of the command.
 ---@field desc string Command description.
----@field default_implementation? string|function|nil Default implementation.
+---@field default_implementation? string|fun(opts?: table)|nil Default implementation.
 ---@field icon string|nil Icon to show for the command.
 ---@field range? boolean|nil Indicates whether the command can be applied to a range of text.
 ---@field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
----@field implementations table<string, string|function> Implementations per filetype.
+---@field implementations table<string, string|fun(opts?: table)> Implementations per filetype.
 Command = {}
 
 --- Constructor
 ---@param desc string Command description.
----@param default_implementation? string|function|nil Default implementation.
+---@param default_implementation? string|fun(opts?: table)|nil Default implementation.
 ---@param icon? string|nil Icon to show for the command.
 ---@param range? boolean|nil Indicates whether the command can be applied to a range of text.
 ---@return Command
@@ -42,7 +42,7 @@ end
 
 --- Implements the command for one or many file types.
 ---@param filetype string A filetype.
----@param implementation string|function An implementation of the command.
+---@param implementation string|fun(opts?: table) An implementation of the command.
 function Command:implement_for_filetype(filetype, implementation)
 	if filetype == "*" then
 		self.default_implementation = implementation
@@ -53,7 +53,7 @@ end
 
 --- Implements the command for one or many file types.
 ---@param target string|string[] One filetype or a list of filetypes.
----@param implementation string|function An implementation of the command.
+---@param implementation string|fun(opts?: table) An implementation of the command.
 function Command:implement_for(target, implementation)
 	if type(target) == "string" then
 		self:implement_for_filetype(target, implementation)
@@ -67,7 +67,9 @@ function Command:implement_for(target, implementation)
 end
 
 --- Executes the command implementation corresponding to the current file type or the default one if no specific implementation is available.
-function Command:execute()
+--- If no implementation is found, a warning is shown.
+--- @param opts? table Options for the command execution.
+function Command:execute(opts)
 	-- Looks for the current file type command implementation
 	local filetype = vim.bo.filetype
 	if not filetype then
@@ -79,7 +81,7 @@ function Command:execute()
 	local implementation = self.implementations[filetype]
 	if implementation then
 		-- If an implementation is found, we execute it and return.
-		L.execute_implementation(implementation)
+		L.execute_implementation(implementation, opts)
 		return
 	end
 
@@ -91,7 +93,7 @@ function Command:execute()
 			implementation = self.implementations[ft]
 			if implementation then
 				-- If an implementation is found for one of the parts, we execute it and return.
-				L.execute_implementation(implementation)
+				L.execute_implementation(implementation, opts)
 				return
 			end
 		end
@@ -99,7 +101,7 @@ function Command:execute()
 
 	-- If no implementation was found for full filetype or any filetype part, we try the default implementation.
 	if self.default_implementation then
-		L.execute_implementation(self.default_implementation)
+		L.execute_implementation(self.default_implementation, opts)
 	else
 		vim.notify(
 			string.format([[Command '%s' has not been implemented for the filetype '%s']], self.name, filetype),
@@ -113,8 +115,8 @@ end
 function Command:register_with_name(command_name)
 	self.name = command_name
 	L.commands[self.name] = self
-	vim.api.nvim_create_user_command(command_name, function()
-		self:execute()
+	vim.api.nvim_create_user_command(command_name, function(opts)
+		self:execute(opts)
 	end, { desc = self.desc, range = self.range })
 end
 
@@ -137,9 +139,10 @@ function Command:as_vim_command(mode)
 end
 
 --- Executes a command instance
----@param implementation string|function|Command
+---@param implementation string|fun(opts?: table)|Command
+---@param opts? table Options for the command execution.
 ---@return boolean
-function L.execute_implementation(implementation)
+function L.execute_implementation(implementation, opts)
 	if type(implementation) == "string" and implementation ~= "" then
 		---Executes a command
 		---@param command string
@@ -151,20 +154,20 @@ function L.execute_implementation(implementation)
 		end
 		return true
 	elseif type(implementation) == "function" then
-		implementation()
+		implementation(opts)
 		return true
 	elseif type(implementation) == "table" and implementation.name then
-		L.execute_implementation(":" .. implementation.name)
+		L.execute_implementation(":" .. implementation.name, opts)
 	end
 	return false
 end
 
 ---@class LYRD.commands.settings
----@field commands table<string, table<string, string|function>>
+---@field commands table<string, table<string, string|fun(opts?: table)>>
 
 ---@class LYRD.commands.implementation
 ---@field [1] Command
----@field [2] string|function
+---@field [2] string|fun(opts?: table)
 
 --- Prints a list of commands that don't have an implementation (default or per filetype)
 function L.list_unimplemented()
