@@ -1,6 +1,6 @@
 local utils = require("LYRD.utils")
 
----@class LYRD.layer.Commands: LYRD.setup.Module
+--- @class LYRD.layer.Commands: LYRD.setup.Module
 local L = {
 	name = "Commands",
 	vscode_compatible = true,
@@ -11,22 +11,24 @@ local L = {
 --- @field range? boolean Indicates the shorcut uses current selection.
 --- @field escape? boolean Indicates the shorcut includes <ESC> before running the command.
 
----@class Command
----@field name? string|nil Name of the command.
----@field desc string Command description.
----@field default_implementation? string|fun(opts?: table)|nil Default implementation.
----@field icon string|nil Icon to show for the command.
----@field range? boolean|nil Indicates whether the command can be applied to a range of text.
----@field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
----@field implementations table<string, string|fun(opts?: table)> Implementations per filetype.
+--- @alias CommandImplementation string|fun(opts?: table)
+
+--- @class Command
+--- @field name? string Name of the command.
+--- @field desc string Command description.
+--- @field default_implementation? CommandImplementation Default implementation.
+--- @field icon string|nil Icon to show for the command.
+--- @field range? boolean Indicates whether the command can be applied to a range of text.
+--- @field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
+--- @field implementations table<string, CommandImplementation> Implementations per filetype.
 Command = {}
 
 --- Constructor
----@param desc string Command description.
----@param default_implementation? string|fun(opts?: table)|nil Default implementation.
----@param icon? string|nil Icon to show for the command.
----@param range? boolean|nil Indicates whether the command can be applied to a range of text.
----@return Command
+--- @param desc string Command description.
+--- @param default_implementation? CommandImplementation Default implementation.
+--- @param icon? string Icon to show for the command.
+--- @param range? boolean Indicates whether the command can be applied to a range of text.
+--- @return Command
 function Command:new(desc, default_implementation, icon, range, leave_insert_mode)
 	local o = setmetatable({}, self)
 	self.__index = self
@@ -41,8 +43,8 @@ function Command:new(desc, default_implementation, icon, range, leave_insert_mod
 end
 
 --- Implements the command for one or many file types.
----@param filetype string A filetype.
----@param implementation string|fun(opts?: table) An implementation of the command.
+--- @param filetype string A filetype.
+--- @param implementation CommandImplementation An implementation of the command.
 function Command:implement_for_filetype(filetype, implementation)
 	if filetype == "*" then
 		self.default_implementation = implementation
@@ -52,8 +54,8 @@ function Command:implement_for_filetype(filetype, implementation)
 end
 
 --- Implements the command for one or many file types.
----@param target string|string[] One filetype or a list of filetypes.
----@param implementation string|fun(opts?: table) An implementation of the command.
+--- @param target string|string[] One filetype or a list of filetypes.
+--- @param implementation CommandImplementation An implementation of the command.
 function Command:implement_for(target, implementation)
 	if type(target) == "string" then
 		self:implement_for_filetype(target, implementation)
@@ -111,7 +113,7 @@ function Command:execute(opts)
 end
 
 --- Registers the command with the given name, and links the execute method to it.
----@param command_name string Name for the command to be created
+--- @param command_name string Name for the command to be created
 function Command:register_with_name(command_name)
 	self.name = command_name
 	L.commands[self.name] = self
@@ -139,13 +141,13 @@ function Command:as_vim_command(mode)
 end
 
 --- Executes a command instance
----@param implementation string|fun(opts?: table)|Command
----@param opts? table Options for the command execution.
----@return boolean
+--- @param implementation CommandImplementation|Command
+--- @param opts? table Options for the command execution.
+--- @return boolean
 function L.execute_implementation(implementation, opts)
 	if type(implementation) == "string" and implementation ~= "" then
 		---Executes a command
-		---@param command string
+		--- @param command string
 		local ok, _ = pcall(function(command)
 			return vim.cmd(command)
 		end, implementation)
@@ -162,12 +164,12 @@ function L.execute_implementation(implementation, opts)
 	return false
 end
 
----@class LYRD.commands.settings
----@field commands table<string, table<string, string|fun(opts?: table)>>
+--- @class LYRD.commands.settings
+--- @field commands table<string, table<string, CommandImplementation>>
 
----@class LYRD.commands.implementation
----@field [1] Command
----@field [2] string|fun(opts?: table)
+--- @class LYRD.commands.implementation
+--- @field [1] Command
+--- @field [2] CommandImplementation
 
 --- Prints a list of commands that don't have an implementation (default or per filetype)
 function L.list_unimplemented()
@@ -191,8 +193,8 @@ function L.list_implemented()
 end
 
 ---Registers a set of commands for a specific filetype
----@param filetype string|string[]
----@param commands LYRD.commands.implementation[]
+--- @param filetype string|string[]
+--- @param commands LYRD.commands.implementation[]
 function L.implement(filetype, commands)
 	for _, command_info in ipairs(commands) do
 		local cmd, implementation = unpack(command_info)
@@ -204,7 +206,7 @@ function L.implement(filetype, commands)
 end
 
 ---Registers a set of commands
----@param commands table<string, Command> dictionary with the list of commands to be registered.
+--- @param commands table<string, Command> dictionary with the list of commands to be registered.
 function L.register(commands)
 	for command_name, definition in pairs(commands) do
 		definition:register_with_name(command_name)
@@ -227,9 +229,9 @@ function L.command_shortcut(commandName, opts)
 end
 
 --- This function return a handler function which will execute the given callback function with the given arguments.
----@param callback function to be executed with the given arguments
----@vararg any list of arguments to be passed to the callback function
----@return function
+--- @param callback function to be executed with the given arguments
+--- @vararg any list of arguments to be passed to the callback function
+--- @return function
 function L.handler(callback, ...)
 	local params = { ... }
 	return function()
