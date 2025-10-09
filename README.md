@@ -1,325 +1,926 @@
-# LYRD (Layered) config for Neovim
+# LYRD (Layered) - A Complete Development Environment for Neovim
 
 <!-- toc -->
 
-- [Summary](#summary)
-- [Abstractions and Extensibility](#abstractions-and-extensibility)
-- [UI Features](#ui-features)
-- [Keyboard-Driven Workflow](#keyboard-driven-workflow)
-- [Supported Programming Languages](#supported-programming-languages)
-  - [CMake](#cmake)
-  - [C and C++](#c-and-c)
-  - [CSV](#csv)
-  - [Data Formats](#data-formats)
-  - [Go](#go)
-  - [Java](#java)
-  - [Kotlin](#kotlin)
-  - [Lua](#lua)
-  - [Markdown](#markdown)
-  - [.NET languages](#net-languages)
+- [What is LYRD?](#what-is-lyrd)
+- [Why Use LYRD?](#why-use-lyrd)
+- [How LYRD Works: The Layer Architecture](#how-lyrd-works-the-layer-architecture)
+- [Core Features That Improve Your Workflow](#core-features-that-improve-your-workflow)
+  - [Smart Editor Basics](#smart-editor-basics)
+  - [Beautiful and Informative Interface](#beautiful-and-informative-interface)
+  - [Intelligent Code Assistance](#intelligent-code-assistance)
+  - [Powerful Search and Navigation](#powerful-search-and-navigation)
+  - [Git Integration](#git-integration)
+  - [Testing Made Easy](#testing-made-easy)
+  - [Debugging](#debugging)
+  - [Task Automation](#task-automation)
+  - [AI-Powered Development](#ai-powered-development)
+  - [Code Snippets and Templates](#code-snippets-and-templates)
+  - [Container and Cloud Development](#container-and-cloud-development)
+  - [Interactive Programming (REPL)](#interactive-programming-repl)
+  - [REST API Testing](#rest-api-testing)
+  - [Database Management](#database-management)
+- [Language Support](#language-support)
   - [Python](#python)
+  - [JavaScript/TypeScript and Web Development](#javascripttypescript-and-web-development)
+  - [Java](#java)
+  - [.NET (C#, F#, VB.NET)](#net-c-f-vbnet)
+  - [Go](#go)
   - [Rust](#rust)
-  - [Web Frontend](#web-frontend)
-  - [Web Standards](#web-standards)
-- [Centralized IDE Functionalities](#centralized-ide-functionalities)
-- [AI Integration](#ai-integration)
+  - [C and C++](#c-and-c)
+  - [Other Languages](#other-languages)
+- [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Installation](#installation)
+- [Configuration](#configuration)
 
 <!-- tocstop -->
 
-## Summary
+## What is LYRD?
 
-LYRD is a Neovim configuration focusing on improved developer workflows and
-custom UI enhancements. It provides features such as advanced notifications,
-syntax highlighting, terminal integration, and session management. It also
-supports easy navigation, file search, and command customization.
+LYRD (Layered neovim) transforms Neovim into a complete, modern development environment that rivals popular IDEs like VS Code, IntelliJ, or PyCharm. It's designed for developers who want the speed and efficiency of Neovim combined with the features of a full-featured IDE.
 
-## Abstractions and Extensibility
+Think of LYRD as a carefully curated collection of the best tools and features for software development, all working together seamlessly. Whether you're writing Python, JavaScript, Java, Rust, or any other language, LYRD provides the tools you need without the bloat.
 
-LYRD is designed with abstractions in layers, commands, and keybindings to
-enhance maintainability and extensibility:
+## Why Use LYRD?
 
-- **Layered Architecture**:
-  - Each layer encapsulates specific functionality, such as language support,
-    UI enhancements, or tools.
-  - Layers have lifecycle methods (`preparation`, `settings`, `keybindings`,
-    `complete`) for modular configuration.
-- **Command Abstractions**:
-  - Custom commands are implemented to standardize functionality across layers.
-  - For example, commands like `LYRDCodeRun`, `LYRDCodeBuild`, and `LYRDTest`
-    offer consistent workflows.
-- **Keybinding Management**:
-  - Keybindings are defined per layer, ensuring that they remain
-    context-specific and modular.
-  - Layers can register file-type-specific actions to run only once per file
-    type, ensuring efficiency.
-- **Plugin Management**:
-  - Plugins are defined and scoped per layer, allowing for lazy loading and
-    reducing startup time.
+**For Beginners**: LYRD provides a ready-to-use development environment. You don't need to spend weeks researching and configuring plugins - everything is set up and working out of the box.
 
-This design ensures that the configuration is easy to extend and maintain, and
-minimizes conflicts between layers and plugins.
+**For Experienced Developers**: LYRD offers a modular architecture that's easy to customize. You can enable or disable specific features, add your own configurations, and maintain your workflow without fighting against the system.
 
-## UI Features
+**Key Benefits**:
+- **Save Time**: No need to configure everything from scratch
+- **Stay Focused**: All your development tools in one place
+- **Work Faster**: Keyboard-driven workflow means less mouse usage
+- **Code Smarter**: AI assistance, intelligent completions, and refactoring tools
+- **Debug Easier**: Integrated debugging for multiple languages
+- **Test Confidently**: Built-in test runners and coverage reports
+- **Version Control**: Powerful Git integration right in your editor
 
-- **Advanced Notifications**:
-  - Integrated with `nvim-notify` for compact and visually appealing
-    notifications.
-- **Command Palette**:
-  - Enhanced with `folke/noice.nvim` for streamlined command-line and popup
-    menu visuals.
-- **Status Line and Tabline**:
-  - Managed by `nvim-lualine/lualine.nvim` with customizable sections and
-    buffer/tabs display.
-- **Startup Screen**:
-  - Provided by `mini.starter` with recent files, workspaces, and common
-    actions.
-- **Floating Terminals**:
-  - Powered by `toggleterm.nvim` for custom commands in a floating pane.
-- **Scratch Buffers**:
-  - Managed with `scratch.nvim` for temporary and easily accessible notes or
-    code.
-- **File Search and Replace**:
-  - Enhanced by `nvim-spectre` for project-wide search and replace.
-- **Focus Mode**:
-  - Enabled by `twilight.nvim` for distraction-free coding sessions.
-- **Cursor Position Memory**:
-  - Automatically remembers and restores the last cursor position in files.
-- **Yank Highlighting**:
-  - Visual feedback when text is yanked, improving usability.
-- **Autocompletion**:
-  - LSP completions (functions, variables, types, etc.)
-  - Code snippet support
-  - AI code completion
+## How LYRD Works: The Layer Architecture
+
+LYRD is built using a **layer system** - think of it like building blocks that you can stack together. Each layer adds a specific feature or capability to your editor.
+
+**What makes this powerful?**
+
+1. **Modular Design**: Each feature (like Python support, Git integration, or AI assistance) lives in its own layer. This means:
+   - Features don't interfere with each other
+   - You can disable features you don't need
+   - Adding new features is straightforward
+
+2. **Smart Loading**: LYRD only loads the features you're actually using. For example:
+   - Python tools only load when you open a Python file
+   - Database tools only load when you need them
+   - This keeps Neovim fast and responsive
+
+3. **Consistent Experience**: All features work the same way across different languages. For example:
+   - `LYRDCodeRun` runs your code regardless of the language
+   - `LYRDTest` runs tests whether you're writing Python, Java, or JavaScript
+   - `LYRDDebug` starts debugging in any supported language
+
+4. **Easy Customization**: Don't like a feature? You can:
+   - Skip specific layers in a simple configuration file
+   - Override settings without modifying the core files
+   - Add your own layers for custom functionality
+
+## Core Features That Improve Your Workflow
+
+### Smart Editor Basics
+
+**What it does**: Sets up Neovim with sensible defaults that professional developers expect.
+
+**How it helps you**:
+- **Remember where you were**: Automatically returns to the last position when you reopen a file
+- **See what you're doing**: Highlights the current line so you never lose your place
+- **Undo forever**: Keeps undo history even after closing files
+- **Smart indentation**: Automatically matches the indentation style of your project
+- **No distractions**: Hides unnecessary UI elements but shows important information
+- **Clipboard integration**: Copy and paste between Neovim and other applications seamlessly
+
+**Real-world benefit**: You spend less time on manual setup and more time writing code. The editor "just works" the way you expect it to.
+
+### Beautiful and Informative Interface
+
+**What it does**: Provides a modern, clean interface with helpful visual feedback.
+
+**Components**:
+- **Status Line**: Shows important information at a glance (current file, Git branch, language server status, errors/warnings)
+- **Startup Screen**: Quick access to recent files and common actions when you open Neovim
+- **Notification System**: Clean, non-intrusive notifications for operations (saves, builds, errors)
+- **Command Palette**: Beautiful command interface that shows what commands are available as you type
+- **Floating Terminals**: Pop-up terminals that don't disturb your layout
+- **Focus Mode**: Dims everything except the current code block for distraction-free coding
+
+**How it helps you**:
+- **Stay informed**: See Git status, errors, and file information without running commands
+- **Look professional**: A polished interface makes your work environment more enjoyable
+- **Reduce cognitive load**: Visual indicators help you understand what's happening without reading text
+- **Quick access**: The startup screen gets you to your work faster
+
+**Real-world benefit**: You know what's happening in your project at all times without cluttering your screen. The interface gets out of your way but provides information when you need it.
+
+### Intelligent Code Assistance
+
+**What it does**: Provides smart code completions, error detection, and code navigation for all supported languages.
+
+**Features**:
+- **Auto-completion**: Suggests functions, variables, and methods as you type
+- **Error detection**: Highlights problems in your code as you write
+- **Go to definition**: Jump to where a function or variable is defined with one keystroke
+- **Find references**: See everywhere a function is used in your project
+- **Hover documentation**: View function signatures and documentation without leaving your editor
+- **Code actions**: Get suggestions for fixing problems or improving code
+- **Auto-formatting**: Automatically format your code to follow style guidelines
+- **Refactoring**: Safely rename variables, extract functions, and reorganize code
+
+**How it helps you**:
+- **Write code faster**: Completions save typing and reduce typos
+- **Catch bugs early**: See errors as you type, not when you run the code
+- **Understand code better**: Jump to definitions and see documentation instantly
+- **Maintain code quality**: Automatic formatting keeps your code clean and consistent
+- **Refactor confidently**: Change code structure without breaking things
+
+**Real-world benefit**: You write better code faster. The editor acts like a pair programming partner, catching mistakes and suggesting improvements as you work.
+
+### Powerful Search and Navigation
+
+**What it does**: Helps you find files, code, and information quickly in large projects.
+
+**Capabilities**:
+- **Fuzzy file finder**: Type part of a filename and instantly see matches
+- **Project-wide search**: Find text across all files in your project
+- **Code outline**: See the structure of your current file (functions, classes, etc.)
+- **Symbol search**: Find any function or class in your project by name
+- **Recent files**: Quickly reopen files you were just working on
+- **Bookmarks**: Mark important locations in your code and jump back to them
+- **File browser**: Visual tree of your project structure
+
+**How it helps you**:
+- **Navigate large projects**: Find what you need in seconds, not minutes
+- **No more memorizing paths**: Fuzzy search means you don't need to remember exact filenames
+- **Understand structure**: See how your project is organized at a glance
+- **Context switching**: Quickly jump between related files
+- **Work faster**: Less time searching means more time coding
+
+**Real-world benefit**: In a project with thousands of files, you can find anything you need in 2-3 keystrokes. No more hunting through directories or using grep commands.
+
+### Git Integration
+
+**What it does**: Brings Git version control directly into your editor.
+
+**Features**:
+- **Visual Git interface**: See and manage your Git repository in a beautiful interface
+- **Line-by-line change indicators**: See which lines you've modified, added, or deleted
+- **Blame annotations**: See who wrote each line of code and when
+- **Diff viewing**: Compare different versions of your files side-by-side
+- **Commit from editor**: Stage changes and create commits without leaving Neovim
+- **Branch management**: Create, switch, and merge branches visually
+- **Conflict resolution**: Resolve merge conflicts with clear visual indicators
+
+**How it helps you**:
+- **Stay in flow**: No need to switch to terminal for Git operations
+- **Understand changes**: Immediately see what you've modified
+- **Track history**: Quickly see who made changes and why
+- **Resolve conflicts easily**: Visual tools make merge conflicts less scary
+- **Commit more often**: Easy commits encourage better version control habits
+
+**Real-world benefit**: You maintain better version control because it's effortless. You can review changes, create meaningful commits, and manage branches without breaking your concentration.
+
+### Testing Made Easy
+
+**What it does**: Runs your tests and shows results directly in your editor.
+
+**Capabilities**:
+- **Run individual tests**: Test just the function you're working on
+- **Run test files**: Test an entire file with one command
+- **Run test suites**: Run all tests in your project
+- **Visual test results**: See which tests passed or failed with clear indicators
+- **Test coverage**: See which parts of your code are tested
+- **Watch mode**: Automatically rerun tests when you save files
+- **Debug tests**: Step through failing tests to understand why they fail
+
+**Supported test frameworks**:
+- Python: pytest, unittest
+- JavaScript/TypeScript: Jest, Vitest
+- Java: JUnit, TestNG
+- Go: go test
+- Rust: cargo test
+- And more...
+
+**How it helps you**:
+- **Faster feedback**: See test results immediately after changes
+- **Confidence in changes**: Know if your code works before pushing
+- **Find bugs faster**: Visual indicators show exactly which tests fail
+- **Better coverage**: See untested code and write tests for it
+- **TDD workflow**: Write tests and code together seamlessly
+
+**Real-world benefit**: Testing becomes part of your normal workflow instead of a separate step. You catch bugs earlier and ship more reliable code.
+
+### Debugging
+
+**What it does**: Lets you pause your code, inspect variables, and step through execution line by line.
+
+**Features**:
+- **Breakpoints**: Pause code execution at specific lines
+- **Step through code**: Execute one line at a time to understand flow
+- **Variable inspection**: See the value of any variable at any point
+- **Call stack**: Understand how your code got to the current point
+- **Conditional breakpoints**: Pause only when specific conditions are met
+- **Debug console**: Run code and commands while debugging
+- **Visual debugging**: All debugging tools in a clear, organized interface
+
+**Supported languages**:
+- Python (debugpy)
+- JavaScript/TypeScript (Node.js debugger)
+- Java (java-debug-adapter)
+- .NET (netcoredbg)
+- Go (delve)
+- Rust (lldb/codelldb)
+- C/C++ (lldb/codelldb)
+
+**How it helps you**:
+- **Understand bugs**: See exactly what your code is doing when it fails
+- **Fix issues faster**: No more adding print statements everywhere
+- **Learn code**: Step through unfamiliar code to understand how it works
+- **Catch edge cases**: Use conditional breakpoints to debug rare scenarios
+- **Complex debugging**: Handle multi-threaded and asynchronous code
+
+**Real-world benefit**: Debugging that would take hours with print statements takes minutes with a proper debugger. You understand your code better and fix bugs with confidence.
+
+### Task Automation
+
+**What it does**: Manages and runs all your project's build, test, and deployment tasks.
+
+**Capabilities**:
+- **VSCode tasks**: Import and run tasks from VS Code's tasks.json
+- **Build systems**: Support for Make, Maven, Gradle, Cargo, npm scripts, and more
+- **Custom tasks**: Define your own tasks for any project-specific needs
+- **Task monitoring**: See task output in real-time
+- **Task history**: Rerun recent tasks with one command
+- **Parallel execution**: Run multiple tasks simultaneously
+- **Task templates**: Pre-configured tasks for common operations
+
+**Examples of tasks**:
+- Build your project
+- Run development servers
+- Execute database migrations
+- Deploy to staging/production
+- Generate documentation
+- Run code quality checks
+- Clean build artifacts
+
+**How it helps you**:
+- **Consistent workflows**: Same task system across all projects
+- **No memorizing commands**: Run complex commands with simple shortcuts
+- **Automation**: Set up automated workflows for common operations
+- **Visibility**: See what's running and monitor progress
+- **Efficiency**: Run multiple tasks without opening multiple terminals
+
+**Real-world benefit**: Complex projects with many build steps become manageable. You can build, test, and deploy with a few keystrokes instead of typing long commands.
+
+### AI-Powered Development
+
+**What it does**: Integrates AI assistants to help you write, understand, and improve code.
+
+**AI Provider Options**:
+- GitHub Copilot
+- Codeium
+- TabNine
+
+**Capabilities**:
+- **Code suggestions**: Get AI-powered completions as you type
+- **Smart context**: AI understands your project and suggests relevant code
+- **Ask questions**: Get explanations about code directly in your editor
+- **Generate documentation**: Auto-create comments and documentation
+- **Code explanations**: Understand complex code with AI explanations
+- **Refactoring suggestions**: Get AI recommendations for improving code
+- **Bug fixes**: AI suggests fixes for errors and issues
+
+**How it helps you**:
+- **Learn faster**: AI explains unfamiliar code and concepts
+- **Write faster**: AI suggests entire code blocks, not just completions
+- **Better documentation**: Auto-generated docs save time and improve code quality
+- **Fewer bugs**: AI catches potential issues before they become problems
+- **Stay in flow**: Get help without searching documentation or Stack Overflow
+
+**Real-world benefit**: It's like having an expert developer looking over your shoulder, offering suggestions and catching mistakes. You write better code faster, especially in unfamiliar areas.
+
+### Code Snippets and Templates
+
+**What it does**: Provides reusable code templates and file scaffolding.
+
+**Features**:
+- **Code snippets**: Quick templates for common code patterns
+- **Language-specific snippets**: Optimized snippets for each programming language
+- **File templates**: Start new files with proper structure
+- **Custom snippets**: Create your own templates for repeated code
+- **Smart placeholders**: Jump between fillable parts of a template
+- **Template browser**: Search and preview available snippets
+
+**Available templates**:
+- Python: Classes, Pydantic models, SQLAlchemy models, FastAPI endpoints
+- Java: Classes, Records, Interfaces, Enums
+- C#: Classes, Interfaces, MediatR handlers
+- Go: Structs, Interfaces, Test files
+- And many more...
+
+**How it helps you**:
+- **Consistent code**: Templates ensure you follow patterns correctly
+- **Save typing**: Generate boilerplate code instantly
+- **Reduce errors**: Templates include correct structure and imports
+- **Learn patterns**: Templates show the right way to structure code
+- **Custom workflows**: Create templates for your team's patterns
+
+**Real-world benefit**: You spend less time writing repetitive boilerplate and more time on the unique parts of your application. New files start with the right structure automatically.
+
+### Container and Cloud Development
+
+**What it does**: Integrates with Docker, Docker Compose, and Kubernetes for container-based development.
+
+**Docker Features**:
+- **Dockerfile support**: Syntax highlighting and language server for Dockerfiles
+- **Docker Compose**: Full support for compose files with service visualization
+- **Linting**: Catch Dockerfile problems with hadolint
+- **LazyDocker integration**: Visual Docker management in a terminal UI
+- **Quick actions**: Start, stop, and manage containers from your editor
+
+**Kubernetes Features**:
+- **k9s integration**: Full-featured Kubernetes cluster management
+- **Helm support**: Work with Helm charts and templates
+- **YAML validation**: Ensure your Kubernetes configs are correct
+- **Quick deployment**: Deploy and manage apps from your editor
+
+**How it helps you**:
+- **Faster development**: Manage containers without leaving your editor
+- **Catch issues early**: Linting prevents deployment problems
+- **Visual management**: See your containers and clusters clearly
+- **Simplified workflows**: Common Docker/K8s operations are just keystrokes away
+- **DevOps integration**: Bridge development and deployment seamlessly
+
+**Real-world benefit**: Container-based development becomes as smooth as local development. You can develop, test, and deploy containerized apps efficiently.
+
+### Interactive Programming (REPL)
+
+**What it does**: Lets you run code interactively and see results immediately.
+
+**Features**:
+- **Language REPLs**: Interactive shells for supported languages
+- **Code execution**: Send code from your editor to the REPL
+- **Jupyter notebooks**: Work with notebooks directly in Neovim
+- **Cell-based execution**: Run code in chunks like Jupyter
+- **Variable inspection**: See values of variables after execution
+- **Plot visualization**: View charts and graphs from your code
+
+**Supported**:
+- Python (IPython, Jupyter)
+- JavaScript/Node.js
+- And more...
+
+**How it helps you**:
+- **Rapid experimentation**: Try ideas instantly without full program runs
+- **Interactive debugging**: Test functions and see results immediately
+- **Data science**: Work with data and visualizations interactively
+- **Learning**: Experiment with new libraries and features
+- **Prototyping**: Build and test ideas quickly
+
+**Real-world benefit**: Perfect for data science, scientific computing, and learning new technologies. You get instant feedback on your code without context switching.
+
+### REST API Testing
+
+**What it does**: Test HTTP APIs directly from your editor without external tools.
+
+**Features**:
+- **HTTP client**: Send requests to APIs and see responses
+- **Request builder**: Define requests in simple text format
+- **Variable support**: Use variables for API keys, endpoints, etc.
+- **Response viewing**: See formatted JSON, XML, and other responses
+- **Save requests**: Keep a library of API requests in your project
+- **Environment support**: Switch between dev, staging, and production
+
+**How it helps you**:
+- **No Postman needed**: Test APIs without leaving your editor
+- **Version control**: Save API requests in Git with your code
+- **Faster testing**: Quick iterations when developing APIs
+- **Documentation**: API requests serve as examples in your codebase
+- **Team sharing**: Share API requests with your team
+
+**Real-world benefit**: API development becomes faster because you can write code and test it immediately in the same window. Your API requests become documentation.
+
+### Database Management
+
+**What it does**: Connect to databases, run queries, and manage data from your editor.
+
+**Features**:
+- **Database connections**: Connect to PostgreSQL, MySQL, SQLite, MongoDB, and more
+- **Query execution**: Run SQL queries and see results
+- **Table browsing**: View database structure and data
+- **Result formatting**: See query results in easy-to-read tables
+- **Query history**: Review and rerun previous queries
+- **Multiple connections**: Switch between different databases
+
+**How it helps you**:
+- **No separate tools**: Manage databases without leaving your editor
+- **Faster development**: Write code and test database queries together
+- **Query prototyping**: Test queries before putting them in code
+- **Data inspection**: Quickly check database state while debugging
+- **Learning SQL**: Experiment with queries and see results immediately
+
+**Real-world benefit**: Database work integrates into your normal workflow. You can develop features that touch the database without constantly switching between tools.
 
 ## Keyboard-Driven Workflow
 
-LYRD emphasizes a keyboard-driven workflow, offering developers an efficient
-and intuitive way to interact with Neovim. Key features include:
+LYRD is designed for developers who want to keep their hands on the keyboard. Mouse usage is optional - everything can be done with keyboard shortcuts.
 
-- **Feature-Based Grouping**:
-  - Keybindings are logically grouped by features, ensuring consistency and
-    reducing cognitive load for developers.
-- **Ease of Memorization**:
-  - Mnemonic and descriptive keybinding patterns make them easy to remember,
-    even for complex workflows.
-- **Enhanced by Plugins**:
-  - Plugins like `which-key.nvim` provide on-the-fly keybinding descriptions
-    and organize them visually, making it easier to discover and use them.
-- **Descriptive Icons**:
-  - Integration with plugins ensures that keybindings are accompanied by
-    meaningful icons, improving usability and aesthetics.
+**Why keyboard shortcuts matter**:
+- **Speed**: Keyboard shortcuts are faster than reaching for the mouse
+- **Flow**: Stay focused on your code without breaking concentration
+- **Ergonomics**: Less mouse usage means less wrist strain
+- **Productivity**: Professional developers using keyboard shortcuts are measurably faster
 
-This approach ensures that developers can focus on their tasks without needing
-to frequently consult documentation, enhancing productivity and maintaining
-flow.
+**How LYRD makes shortcuts easy**:
 
-## Supported Programming Languages
+1. **Two Main Leaders**: 
+   - **`,` (comma)** - Main leader for quick actions and panels
+   - **`<Space>`** - Secondary leader for organized feature menus
 
-### CMake
+2. **Logical Grouping**: Shortcuts are organized by purpose under `<Space>`:
+   - `<Space>b` - **B**uffer operations (save, close, split)
+   - `<Space>c` - **C**ode actions (run, build, format, generate)
+   - `<Space>d` - **D**ebugging (start, breakpoints, step through)
+   - `<Space>g` - **G**it operations (status, commit, diff, blame)
+   - `<Space>s` - **S**earch (files, text, symbols, commands)
+   - `<Space>t` - **T**esting (run tests, coverage, debug tests)
+   - `<Space>r` - **R**un tasks and REPL
 
-- **Key Features**:
-  - Supported Language Server: `cmake-language-server`.
-  - Treesitter parsers for `make` and `cmake`.
-  - Automatic filetype detection for `CMakeLists.txt`.
+3. **Quick Access with `,`**: Common operations without menu navigation:
+   - `,f` - Format current buffer
+   - `,x` - Run code selection
+   - `,X` - Run entire file
+   - `,c` - Close buffer
+   - `,[` and `,]` - Navigate between buffers
+   - `,<Space>` - Clear search highlights
 
-### C and C++
+4. **Function Keys**: Standard IDE-style shortcuts:
+   - `F2` - Toggle file tree
+   - `F3` - Show test summary
+   - `F4` - View code outline
+   - `F5` - Start/continue debugging
+   - `F9` - Toggle breakpoint
+   - `F10` - Debug step over
+   - `F11` - Debug step into
+   - `F12` - Debug step out
 
-- **Key Features**:
-  - Language Servers: `clangd`, `codelldb`.
-  - Formatters: `clang-format`.
-  - Testing Frameworks: `neotest-ctest`.
-  - Debugging support for C and C++ projects.
+5. **Quick Search**: Direct shortcuts for common searches:
+   - `<Ctrl-p>` - Find files (fuzzy search)
+   - `<Ctrl-t>` - Search in files (live grep)
+   - `<Ctrl-f>` - Resume last search
 
-### CSV
+6. **LSP Navigation**: Quick code intelligence shortcuts:
+   - `gd` - Go to definition
+   - `gr` - Find references
+   - `gi` - Go to implementation
+   - `gt` - Go to type definition
+   - `K` - Show hover documentation
+   - `<Alt-Enter>` or `<Ctrl-.>` - Code actions
+   - `<Ctrl-r><Ctrl-r>` - Rename symbol
 
-- **Key Features**:
-  - Treesitter parsers for `csv` and `tsv`.
-  - Plugin: `csvview.nvim` for enhanced CSV viewing.
+7. **Discoverable**: Built-in helper shows available shortcuts
+   - Press leader key (`,` or `<Space>`) and wait a moment
+   - A popup shows all available shortcuts and what they do
+   - No need to memorize everything at once
+   - Learn gradually as you use features
 
-### Data Formats
+8. **Consistent Across Languages**: Same shortcuts work in all languages
+   - `<Space>cx` always runs your code
+   - `<Space>tt` always runs tests
+   - `<Space>bf` always formats code
+   - Learn once, use everywhere
 
-- **Key Features**:
-  - Supported formats: JSON, YAML, TOML, XML.
-  - LSP Servers for JSON (`json-lsp`), YAML, and XML.
-  - Formatters: `prettier`, `xmlformatter`.
-  - Validation tools: `yamllint`, `jsonlint`.
+**Example workflow** (finding and editing a function):
+1. `<Ctrl-p>` - Open file finder (or `<Space>s.`)
+2. Type part of filename
+3. `Enter` - Open file
+4. `<Space>so` - Find symbol in file
+5. Type function name
+6. `Enter` - Jump to function
+7. Make your edits
+8. `,f` - Format code
+9. `<Space>tt` - Run tests
+10. `<Space>gs` - Check Git status
 
-### Go
+All of this takes seconds and never requires moving your hands from the keyboard.
 
-- **Key Features**:
-  - Language Server: `gopls`.
-  - Treesitter parsers: `go`, `gomod`, `gosum`, `gotmpl`.
-  - Debugging support using `nvim-dap-go`.
-  - Code generation and refactoring tools: `gomodifytags`, `impl`.
-  - Testing Framework: `neotest-golang`.
+**Learning curve**: Don't worry about memorizing everything at once. The built-in helper (which-key) shows you what shortcuts are available. Start with the basics:
+- `<Ctrl-p>` or `<Space>s.` - Find files
+- `<Ctrl-t>` or `<Space>s/` - Search in files
+- `<Space>cx` - Run code
+- `<Space>tt` - Run tests
+- `<Space>gs` - Git status
 
-### Java
+As you work, you'll naturally discover and learn more shortcuts. Press `<Space>` or `,` and pause to see what's available!
 
-- **Key Features**:
-  - Language Server: `jdtls`.
-  - Testing Frameworks: `neotest-java`.
-  - Debugging support through `java-debug-adapter`.
-  - Managed runtimes and project-specific configurations.
+## Language Support
 
-### Kotlin
-
-- **Key Features**:
-  - Language Server: `kotlin-language-server`.
-  - Formatter: `ktlint`.
-  - Debugging support with `kotlin-debug-adapter`.
-
-### Lua
-
-- **Key Features**:
-  - Language Server: `sumneko_lua`.
-  - Treesitter support for Lua grammar and syntax.
-  - Rich debugging support with external tools.
-
-### Markdown
-
-- **Key Features**:
-  - Language Servers: `marksman`, `markdownlint-cli2`.
-  - Treesitter parsers: `markdown`, `mermaid`.
-  - Enhanced rendering with `MeanderingProgrammer/markdown.nvim`.
-  - Formatting tools: `prettier`, `markdown-toc`.
-
-### .NET languages
-
-- **Languages**: C#, F#, Vb.net
-- **Key Features**:
-  - Language Servers: `roslyn`, `netcoredbg`.
-  - Debugging through `netcoredbg`.
-  - Test adapters: `neotest-vstest`.
+LYRD provides comprehensive support for many programming languages. Each language layer includes everything you need: syntax highlighting, code completion, error detection, formatting, debugging, and testing.
 
 ### Python
 
-- **Key Features**:
-  - Language Servers: `pyright`, `ruff`.
-  - Treesitter support for Python and Django HTML.
-  - Virtual environment management with `venv-selector.nvim`.
-  - Debugging support through `nvim-dap-python`.
-  - Testing Framework: `neotest-python`.
-  - Jupyter Notebooks: Includes support for Jupyter notebooks in Neovim buffers
-    with execution capabilities, powered by plugins such as `iron.nvim`,
-    `NotebookNavigator.nvim`, and `jupytext.nvim`.
+**What you get**:
+- **Language Servers**: Pyright (type checking) and Ruff (fast linting and formatting)
+- **Virtual Environments**: Automatic detection and switching between Python environments
+- **Testing**: Run pytest and unittest tests with visual results
+- **Debugging**: Full debugging support with breakpoints and variable inspection
+- **Jupyter Notebooks**: Work with notebooks directly in Neovim
+- **REPL**: Interactive Python/IPython shell for experimentation
+- **Package Management**: Integration with uv for fast package management
+- **Code Quality**: Pylint integration with customizable rules
+
+**How it helps you**:
+- Develop Django, Flask, FastAPI applications with full IDE support
+- Data science work with Jupyter integration
+- Catch type errors before running code
+- Fast, accurate code completions
+- Instant feedback on code quality
+
+**Perfect for**: Web development, data science, scripting, automation, machine learning
+
+### JavaScript/TypeScript and Web Development
+
+**What you get**:
+- **Language Servers**: VTSLS for TypeScript/JavaScript, Vue Language Server, Angular LS
+- **Frameworks**: First-class support for React, Vue, Angular
+- **Testing**: Jest and Vitest test runners with visual results
+- **Debugging**: Debug Node.js and browser code
+- **Formatting**: Prettier integration for consistent code style
+- **Package Management**: npm, yarn, pnpm support
+- **HTML/CSS**: Emmet support for rapid HTML writing
+- **Auto-tags**: Automatic closing tags for HTML/JSX
+
+**How it helps you**:
+- Build modern web applications with full TypeScript support
+- Instant error detection catches bugs as you type
+- Component-based development with framework-specific tools
+- Fast refactoring across multiple files
+- Test-driven development with visual test runners
+
+**Perfect for**: Frontend development, full-stack JavaScript, Node.js applications, modern web frameworks
+
+### Java
+
+**What you get**:
+- **Language Server**: Eclipse JDT.LS (the same engine as VS Code)
+- **Testing**: JUnit and TestNG support with visual test runner
+- **Debugging**: Full debugging with Java Debug Adapter
+- **Build Tools**: Maven and Gradle integration
+- **Code Generation**: Generate getters, setters, constructors, and more
+- **Refactoring**: Rename, extract method, extract variable, and more
+- **Project Management**: Automatic classpath detection and management
+
+**How it helps you**:
+- Enterprise Java development with IDE-quality support
+- Spring Boot development with all the tools you need
+- Automatic import management
+- Quick fixes for common problems
+- Seamless Maven/Gradle builds
+
+**Perfect for**: Enterprise applications, Spring Boot, Android development, backend services
+
+### .NET (C#, F#, VB.NET)
+
+**What you get**:
+- **Language Server**: Roslyn (Microsoft's official language server)
+- **Testing**: VSTest integration with visual results
+- **Debugging**: netcoredbg for full debugging support
+- **Code Generation**: Create classes, interfaces, MediatR patterns
+- **Formatting**: CSharpier for consistent code style
+- **Project Management**: Solution and project file support
+- **NuGet**: Package management integration
+
+**How it helps you**:
+- ASP.NET Core development with full IntelliSense
+- CQRS patterns with MediatR templates
+- Entity Framework integration
+- Quick navigation in large solutions
+- Cross-platform .NET development
+
+**Perfect for**: Web APIs, microservices, desktop applications, game development with Unity
+
+### Go
+
+**What you get**:
+- **Language Server**: gopls (official Go language server)
+- **Testing**: go test integration with visual results
+- **Debugging**: delve debugger integration
+- **Code Generation**: struct tags, interface implementation, test files
+- **Formatting**: gofmt/goimports automatic formatting
+- **Build Tools**: go build, go mod support
+- **Refactoring**: gorename, goimpl for safe refactoring
+
+**How it helps you**:
+- Fast, efficient Go development
+- Automatic imports management
+- Generate boilerplate code (tags, tests, etc.)
+- Concurrent code debugging
+- Microservices development
+
+**Perfect for**: Microservices, command-line tools, cloud applications, concurrent systems
 
 ### Rust
 
-- **Key Features**:
-  - Language Servers: `rust-analyzer`, `bacon_ls`.
-  - Testing Frameworks: `rustaceanvim.neotest`.
-  - Debugging support through `codelldb`.
-  - Crate management with `crates.nvim`.
+**What you get**:
+- **Language Server**: rust-analyzer (best-in-class Rust tooling)
+- **Testing**: cargo test integration
+- **Debugging**: lldb/codelldb for debugging
+- **Crate Management**: crates.nvim for dependency management
+- **Build Tools**: Cargo integration with visual feedback
+- **Compiler Errors**: Clear, actionable error messages
+- **Bacon**: Continuous compilation in the background
 
-### Web Frontend
+**How it helps you**:
+- Write safe, fast Rust code with excellent tooling
+- Understand complex compiler errors
+- Manage dependencies easily
+- Test-driven development
+- Systems programming with confidence
 
-- **Languages and Frameworks**: JavaScript, TypeScript, Vue, Angular.
-- **Key Features**:
-  - Language Servers for JavaScript (vtsls), Vue (vue_ls), Angular (angularls).
-  - Treesitter support for JavaScript, TypeScript, Vue, TSX, and Angular.
-  - Specialized testing adapters for Vitest and Jest.
-  - Enhanced syntax highlighting for Angular HTML files.
+**Perfect for**: Systems programming, WebAssembly, CLI tools, performance-critical applications
 
-### Web Standards
+### C and C++
 
-- **Languages and Frameworks**: HTML, CSS, SCSS, Emmet.
-- **Key Features**:
-  - Language Servers for HTML, CSS, and Emmet.
-  - Prettier integration for formatting.
-  - Treesitter support for HTML, CSS, and SCSS.
-  - Autotag plugin for easier HTML tag management.
+**What you get**:
+- **Language Server**: clangd for C/C++ intelligence
+- **Debugging**: lldb/codelldb integration
+- **Testing**: CTest integration
+- **Formatting**: clang-format for consistent style
+- **Build Systems**: CMake, Make support
+- **Header/Source**: Quick switching between headers and source files
 
-## Centralized IDE Functionalities
+**How it helps you**:
+- Modern C++ development with C++20 support
+- Navigate large C/C++ codebases
+- Understand complex types and templates
+- Debug memory issues
+- Cross-platform development
 
-LYRD centralizes essential IDE functionalities to ensure streamlined and
-cohesive workflows. The following modules play a key role in providing a rich
-development experience:
+**Perfect for**: Systems programming, game development, embedded systems, performance-critical code
 
-- **Test Management** (`test.lua`): Simplifies running and managing tests
-  across supported languages.
-- **Debugging** (`debug.lua`): Offers integrated debugging capabilities with
-  support for language-specific adapters.
-- **Code Completion** (`completion.lua`): Enhances code completion using
-  language servers and custom logic.
-- **Development Tools** (`dev.lua`): Houses tools for rapid development, such
-  as code generation and refactoring utilities.
-- **File Templates** (`file_templates.lua`): Facilitates the creation of
-  boilerplate code or standardized file structures.
-- **Git Integration** (`git.lua`): Provides Git-related features like diff
-  viewing, staging, and committing changes.
-- **REST Client** (`rest.lua`): Enables testing and interacting with REST APIs
-  directly from Neovim.
-- **Syntax Highlighting** (`treesitter.lua`): Leverages Treesitter for advanced
-  syntax highlighting and parsing.
-- **Task Management** (`tasks.lua`): Includes robust task management
-  capabilities through `overseer.nvim`. It supports a variety of task types
-  out-of-the-box, including VSCode tasks, Make, Mage (go), Maven, and Cake
-  Frosting (dotnet), enabling developers to seamlessly configure and monitor
-  their workflows.
-- **External Tool Integrations**:
-  - **Docker** (`docker.lua`): Provides seamless integration with Docker
-    through language servers for Dockerfile and Docker Compose. It includes
-    support for linting with `hadolint` and a terminal-based UI powered by
-    `lazydocker`.
-  - **Kubernetes** (`kubernetes.lua`): Enables interaction with Kubernetes
-    clusters using `k9s` for cluster management and Helm support for
-    configuration.
-  - **File Tree** (`filetree.lua`): Features the `nvim-tree` plugin for
-    enhanced file browsing, with additional support for terminal-based file
-    managers like `yazi`.
-  - **Tmux** (`tmux.lua`): Integrates with Tmux for seamless pane navigation
-    and manipulation using `vim-tmux-navigator` and `smart-splits.nvim`.
-  - **Fuzzy Finder** (`telescope.lua`): Offers advanced file and content search
-    capabilities enhanced by `telescope-fzf-native`. It supports a wide range of
-    integrations, including LSP features, code outlines, and snippet selection.
+### Other Languages
 
-This centralized approach ensures that developers can access all essential
-tools and features without needing to switch contexts or install additional
-plugins unnecessarily.
+**Kotlin**:
+- Android development
+- Spring Boot with Kotlin
+- Multiplatform projects
 
-## AI Integration
+**Lua**:
+- Neovim plugin development
+- Game development (Love2D, etc.)
+- Embedded scripting
 
-LYRD integrates AI-powered tools to enhance the development workflow. These
-integrations allow developers to:
+**Markdown**:
+- Beautiful rendering in the editor
+- Table of contents generation
+- Mermaid diagrams
+- Live preview
 
-- **Ask Questions**:
-  - Use commands to query AI assistants for code-related help directly within
-    Neovim.
-- **Edit Files**:
-  - Apply AI suggestions to refactor or edit existing code blocks efficiently.
-- **Use Agents**:
-  - Leverage agents to implement or refactor functionality, reducing manual
-    effort.
-- **Generate Documentation**:
-  - Automatically create detailed documentation for code blocks using keyboard
-    shortcuts, saving time and ensuring consistency.
+**SQL**:
+- Multiple database support
+- Query execution and results
+- Syntax highlighting for various SQL dialects
 
-These features are powered by plugins such as `Avante.nvim` and others,
-offering flexibility and customization for different AI providers like Copilot,
-Codeium, and Tabnine. Developers can benefit from:
+**Data Formats** (JSON, YAML, TOML, XML):
+- Schema validation
+- Formatting and linting
+- Quick navigation in large files
 
-- Auto-suggestions for code completion, with options to accept, dismiss, or
-  navigate suggestions using configurable keybindings.
-- Enhanced commands like:
-  - `:LYRDSmartCoder` for AI-assisted editing.
-  - `:LYRDAIGenerateDocumentation` to automatically generate documentation for
-    the current element.
-  - `:LYRDAIAssistant` to toggle AI functionality.
-  - `:LYRDAIAsk` to ask AI questions interactively.
-  - `:LYRDAIEdit` to invoke AI-powered editing directly.
+**CMake**:
+- Build system support
+- Syntax highlighting and completion
 
-This integration ensures streamlined workflows and boosts productivity by
-leveraging the capabilities of advanced AI systems.
+**gRPC/Protocol Buffers**:
+- .proto file support
+- Code generation integration
+
+**CSV/TSV**:
+- Column-based viewing
+- Easy navigation in data files
 
 ## Installation
 
-Clone the repository into your Neovim config folder
+### Prerequisites
 
-````bash git clone https://github.com/diegoortizmatajira/LYRD-lua.git
-~/.config/nvim/lua/LYRD ```
+- **Neovim 0.10.0 or higher**: LYRD requires a recent version of Neovim
+- **Git**: For cloning the repository and managing plugins
+- **A Nerd Font**: For icons to display correctly (recommended: JetBrains Mono Nerd Font, FiraCode Nerd Font, or Hack Nerd Font)
+- **ripgrep**: For fast text searching (`<Space>s/` and `<Ctrl-t>`)
+- **fd**: For fast file finding (optional but recommended)
+- **Node.js**: Required for many language servers
+- **Python 3**: Required for Python development and some plugins
 
-Create a symbolic link to the lua init script.
+### Basic Installation
 
-```bash ln -s ~/.config/nvim/lua/LYRD/root-init.lua ~/.config/nvim/init.lua ```
-````
+1. **Backup your existing Neovim configuration** (if you have one):
+   ```bash
+   mv ~/.config/nvim ~/.config/nvim.backup
+   mv ~/.local/share/nvim ~/.local/share/nvim.backup
+   mv ~/.local/state/nvim ~/.local/state/nvim.backup
+   mv ~/.cache/nvim ~/.cache/nvim.backup
+   ```
+
+2. **Clone LYRD into your Neovim config folder**:
+   ```bash
+   git clone https://github.com/diegoortizmatajira/LYRD-lua.git ~/.config/nvim/lua/LYRD
+   ```
+
+3. **Create a symbolic link to the init script**:
+   ```bash
+   ln -s ~/.config/nvim/lua/LYRD/root-init.lua ~/.config/nvim/init.lua
+   ```
+
+4. **Launch Neovim**:
+   ```bash
+   nvim
+   ```
+
+5. **Wait for plugins to install**: On first launch, LYRD will automatically:
+   - Install the Lazy.nvim plugin manager
+   - Download and install all configured plugins
+   - This may take a few minutes depending on your internet connection
+
+6. **Restart Neovim**: After the initial installation completes, restart Neovim to ensure everything is loaded correctly.
+
+### Post-Installation
+
+**Install Language Tools**:
+
+LYRD will prompt you to install language servers and tools as needed. You can also manually install tools:
+
+1. Open Neovim
+2. Press `<Space>pt` - This opens Mason (the tool manager)
+3. Browse and install the tools you need:
+   - Press `i` to install a tool
+   - Press `u` to update a tool
+   - Press `X` to uninstall a tool
+
+**Common tools to install**:
+- Python: `pyright`, `ruff`, `debugpy`
+- JavaScript/TypeScript: `typescript-language-server`, `prettier`
+- Java: `jdtls`, `java-debug-adapter`
+- Go: `gopls`, `delve`
+- Rust: `rust-analyzer`, `codelldb`
+- C/C++: `clangd`, `clang-format`
+
+**Verify Installation**:
+
+Run the health check to see if everything is working:
+```vim
+:checkhealth LYRD
+```
+
+This will show you:
+- Which features are working correctly
+- Missing dependencies
+- Recommended installations
+
+## Configuration
+
+### Local Configuration File
+
+LYRD allows you to customize settings without modifying the core files. Your personal configuration is stored in:
+
+```
+~/.local/share/nvim/lyrd/lyrd-local.lua
+```
+
+To edit your local configuration:
+1. Press `<Space>pl` in Neovim
+2. Or manually create/edit the file
+
+### Skipping Layers
+
+If you don't need certain features, you can skip loading specific layers. In your local config file:
+
+```lua
+return {
+    skip_layers = {
+        "LYRD.layers.ai-dev",      -- Skip AI features
+        "LYRD.layers.docker",      -- Skip Docker integration
+        "LYRD.layers.kubernetes",  -- Skip Kubernetes features
+    }
+}
+```
+
+**Common layers you might want to skip**:
+- `LYRD.layers.ai-dev` - AI-powered coding assistance
+- `LYRD.layers.docker` - Docker integration
+- `LYRD.layers.kubernetes` - Kubernetes tools
+- `LYRD.layers.database` - Database management
+- `LYRD.layers.repl` - Interactive REPL/Jupyter support
+- `LYRD.layers.lang.java` - Java support
+- `LYRD.layers.lang.dotnet` - .NET support
+- `LYRD.layers.lang.rust` - Rust support
+
+Skipping unused layers reduces startup time and memory usage.
+
+### Customizing Keybindings
+
+While LYRD's default keybindings are well thought out, you can override them in your local config or add your own mappings directly in Neovim:
+
+```lua
+-- In your local config or in Neovim
+vim.keymap.set('n', '<your-key>', '<your-command>', { desc = 'Your description' })
+```
+
+### AI Provider Configuration
+
+LYRD supports multiple AI providers. By default, it's configured for GitHub Copilot, but you can switch providers or disable AI features entirely.
+
+To configure AI settings, you can modify the AI layer settings in your local configuration or check the `ai-dev.lua` layer for provider options (Copilot, Codeium, TabNine).
+
+### Theme Customization
+
+LYRD comes with multiple themes. To cycle through themes:
+- Press `,t` or `<Space>vt`
+
+To apply the current theme permanently, press `<Space>vT`
+
+### Project-Specific Settings
+
+For project-specific configurations, you can create a `.nvim.lua` file in your project root with custom settings. This is useful for:
+- Project-specific tasks
+- Custom commands
+- Environment variables
+- Build configurations
+
+### Updating LYRD
+
+To update LYRD to the latest version:
+
+```bash
+cd ~/.config/nvim/lua/LYRD
+git pull
+```
+
+Then in Neovim, update plugins:
+1. Press `<Space>pu` - Update all plugins
+2. Restart Neovim
+
+### Troubleshooting
+
+**Plugins not loading?**
+- Run `:Lazy sync` to reinstall plugins
+- Check `:checkhealth lazy`
+
+**Language features not working?**
+- Install the language server via Mason: `<Space>pt`
+- Check `:LspInfo` to see if the server is running
+- Run `:checkhealth lsp`
+
+**Performance issues?**
+- Skip unused layers (see Configuration above)
+- Disable AI features if not needed
+- Check for large files (LYRD disables some features for files >5MB)
+
+**Icons not showing?**
+- Install a Nerd Font and configure your terminal to use it
+- Check `:checkhealth` for icon-related issues
+
+### Getting Help
+
+- **In-editor help**: Press `<Space>?` to see buffer-specific keymaps
+- **Command palette**: Press `<Space>s,` to search all available commands
+- **Mason tools**: Press `<Space>pt` to manage language servers and tools
+- **Health check**: Run `:checkhealth LYRD` to diagnose issues
+
+### Learning Resources
+
+**Start small**: Focus on learning a few commands at a time:
+1. **Week 1**: File navigation (`<Ctrl-p>`, `<Ctrl-t>`, file tree with `F2`)
+2. **Week 2**: Code navigation (`gd`, `gr`, `K` for hover info)
+3. **Week 3**: Running and testing (`<Space>cx`, `<Space>tt`)
+4. **Week 4**: Git integration (`<Space>gs`, `<Space>gc`)
+5. **Week 5**: Debugging (`F5`, `F9`, `F10`)
+
+**Explore gradually**: Press `<Space>` or `,` and pause to see what commands are available. The which-key popup will show you all options with descriptions.
+
+**Customize to your needs**: Don't be afraid to skip features you don't use and add your own customizations.
+
+---
+
+## Contributing
+
+LYRD is open for contributions! If you:
+- Find bugs
+- Want to add features
+- Have suggestions for improvements
+- Want to add support for new languages
+
+Feel free to open issues or pull requests on the GitHub repository.
+
+## License
+
+LYRD is released under the MIT License. See the LICENSE file in the repository for details.
+
+---
+
+**LYRD® Neovim by Diego Ortiz. 2023-2025**
+
+Transform your Neovim into a complete development environment. Code faster, debug smarter, and stay in your flow.
