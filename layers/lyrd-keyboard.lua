@@ -413,7 +413,7 @@ function L.keybindings()
 				{ "r", cmd.LYRDReplRestart },
 			}, icons.other.command),
 			{ "r", cmd.LYRDTasksRun },
-			{ "v", cmd.LYRDTasksToggle },
+			{ "t", cmd.LYRDTasksToggle },
 			{ "T", cmd.LYRDTasksConfigure },
 			{ "L", cmd.LYRDTasksConfigureLaunch },
 		}, icons.code.run),
