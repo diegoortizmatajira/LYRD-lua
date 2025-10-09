@@ -33,11 +33,18 @@ end
 
 function L.settings()
 	-- Called only when all adapters have been collected into L.test_adapters
-	require("neotest").setup({
+	local neotest = require("neotest")
+	--- @diagnostic disable-next-line: missing-fields
+	neotest.setup({
 		adapters = L.test_adapters,
 		output = {
 			enabled = true, -- Enable output
 			open_on_run = true, -- Automatically open the output window
+		},
+		consumers = {
+		    --- uses overseer to run tests
+			--- @diagnostic disable-next-line: assign-type-mismatch
+			overseer = require("neotest.consumers.overseer"),
 		},
 	})
 	commands.implement("*", {
