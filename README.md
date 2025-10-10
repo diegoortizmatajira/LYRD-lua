@@ -630,6 +630,9 @@ Mouse usage is optional - everything can be done with keyboard shortcuts.
 
 All of this takes seconds and never requires moving your hands from the keyboard.
 
+For a detailed list of commands with their corresponding keybindings see [LYRD
+Commands Reference](/docs/commands.md).
+
 **Learning curve**: Don't worry about memorizing everything at once. The
 built-in helper (which-key) shows you what shortcuts are available. Start with
 the basics:
