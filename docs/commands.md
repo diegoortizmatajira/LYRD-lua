@@ -13,25 +13,25 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDAIEdit`                            | Edit with AI                            | `<Leader>ae`                                                   | `*`                         |
 | `LYRDAIGenerateDocumentation`           | Document current element with AI        | `<Leader>ad`                                                   | `*`                         |
 | `LYRDApplyCurrentTheme`                 | Apply current theme                     | `<Space>vT`                                                    | `*`                         |
-| `LYRDApplyNextTheme`                    | Apply next favorite theme               | `<Leader>.t`<br>`<Space>vt`                                    | `*`                         |
-| `LYRDBufferClose`                       | Close buffer                            | `<Leader>.c`<br>`<Space>bd`                                    | `*`<br>`http`               |
+| `LYRDApplyNextTheme`                    | Apply next favorite theme               | `<Leader>t`<br>`<Space>vt`                                     | `*`                         |
+| `LYRDBufferClose`                       | Close buffer                            | `<Leader>c`<br>`<Space>bd`                                     | `*`<br>`http`               |
 | `LYRDBufferCloseAll`                    | Close all buffers                       | `<Space>bx`                                                    | `*`                         |
 | `LYRDBufferCopy`                        | Copy whole buffer to clipboard          | `<Space>bY`                                                    | `default`                   |
 | `LYRDBufferForceClose`                  | Force close buffer                      | `<Space>bD`                                                    | `*`                         |
 | `LYRDBufferForceCloseAll`               | Force close all buffers                 | `<Space>bX`                                                    | `default`                   |
-| `LYRDBufferFormat`                      | Format document                         | `<Leader>.f`<br>`<M-S-f>`<br>`<Space>bf`                       | `*`<br>`go`                 |
+| `LYRDBufferFormat`                      | Format document                         | `<Leader>f`<br>`<M-S-f>`<br>`<Space>bf`                        | `*`<br>`go`                 |
 | `LYRDBufferJumpToLast`                  | Jump to last buffer                     | -                                                              | `default`                   |
 | `LYRDBufferNew`                         | New empty buffer                        | `<Space>be`                                                    | `default`                   |
-| `LYRDBufferNext`                        | Next buffer                             | `<Leader>.]`<br>`<M-C-]>`<br>`<Space>bn`<br>`]b`               | `*`                         |
+| `LYRDBufferNext`                        | Next buffer                             | `<Leader>]`<br>`<M-C-]>`<br>`<Space>bn`<br>`]b`                | `*`                         |
 | `LYRDBufferPaste`                       | Paste clipboard to whole buffer         | `<Space>bP`                                                    | `default`                   |
-| `LYRDBufferPrev`                        | Previous Buffer                         | `<Leader>.[`<br>`<M-C-[>`<br>`<Space>bp`<br>`[b`               | `*`                         |
+| `LYRDBufferPrev`                        | Previous Buffer                         | `<Leader>[`<br>`<M-C-[>`<br>`<Space>bp`<br>`[b`                | `*`                         |
 | `LYRDBufferSave`                        | Save current file                       | `<C-s>`<br>`<Space>bs`                                         | `default`                   |
 | `LYRDBufferSaveAll`                     | Save all files                          | `<Space>bS`                                                    | `default`                   |
 | `LYRDBufferSetReadOnly`                 | Toggle read only mode                   | `<Space>bw`                                                    | `default`                   |
-| `LYRDBufferSplitH`                      | Horizonal split                         | `<Leader>.<Leader>h`<br>`<Space>bh`                            | `*`                         |
-| `LYRDBufferSplitV`                      | Vertical split                          | `<Leader>.<Leader>v`<br>`<Space>bv`                            | `*`                         |
+| `LYRDBufferSplitH`                      | Horizonal split                         | `<Leader><Leader>h`<br>`<Space>bh`                             | `*`                         |
+| `LYRDBufferSplitV`                      | Vertical split                          | `<Leader><Leader>v`<br>`<Space>bv`                             | `*`                         |
 | `LYRDBufferToggleWrap`                  | Toggle line wrap                        | `<M-z>`<br>`<Space>vw`                                         | `default`                   |
-| `LYRDClearSearchHighlights`             | Clear search highlights                 | `<Leader>.<Space>`                                             | `default`                   |
+| `LYRDClearSearchHighlights`             | Clear search highlights                 | `<Leader><Space>`                                              | `default`                   |
 | `LYRDCodeAddDocumentation`              | Add documentation                       | `<Space>cd`                                                    | `default`                   |
 | `LYRDCodeAlternateFile`                 | Toggle alternate file                   | `<Space>ct`                                                    | `go`                        |
 | `LYRDCodeBuild`                         | Build                                   | `<C-M-b>`<br>`<Space>cB`                                       | `go`                        |
@@ -47,17 +47,17 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDCodeProduceGetter`                 | Generate getters code                   | `<Space>cgg`                                                   | `go`                        |
 | `LYRDCodeProduceMapping`                | Generate mappings code                  | `<Space>cgm`                                                   | `go`                        |
 | `LYRDCodeProduceSetter`                 | Generate setters code                   | `<Space>cgs`                                                   | `go`                        |
-| `LYRDCodeQuerySelection`                | Run selected query                      | `<Leader>.y`                                                   | `sql`                       |
+| `LYRDCodeQuerySelection`                | Run selected query                      | `<Leader>y`                                                    | `sql`                       |
 | `LYRDCodeRefactor`                      | Refactor                                | `<C-r><C-f>`<br>`<Leader>rf`<br>`<Space>cr`                    | `*`                         |
 | `LYRDCodeRestorePackages`               | Restore packages                        | `<Space>cp`                                                    | `default`                   |
-| `LYRDCodeRun`                           | Run                                     | `<Leader>.X`<br>`<Space>cx`                                    | `go`<br>`http`<br>`sql`     |
-| `LYRDCodeRunSelection`                  | Run selection code                      | `<Leader>.x`<br>`<S-CR>`                                       | `http`<br>`python`<br>`sql` |
+| `LYRDCodeRun`                           | Run                                     | `<Leader>X`<br>`<Space>cx`                                     | `go`<br>`http`<br>`sql`     |
+| `LYRDCodeRunSelection`                  | Run selection code                      | `<Leader>x`<br>`<S-CR>`                                        | `http`<br>`python`<br>`sql` |
 | `LYRDCodeSecrets`                       | Edit Secrets                            | `<Space>cS`                                                    | `python`                    |
 | `LYRDCodeSelectEnvironment`             | Select environment                      | `<Space>ce`                                                    | `http`<br>`python`          |
 | `LYRDCodeTooling`                       | Tooling                                 | `<Space>cc`                                                    | `python`                    |
 | `LYRDContainersUI`                      | Running containers UI                   | `<Space><SPACE>c`                                              | `*`                         |
-| `LYRDDatabaseOutput`                    | Database Output                         | `<Leader>.<Leader>b`                                           | `*`                         |
-| `LYRDDatabaseUI`                        | Database UI                             | `<Leader>.<Leader>s`<br>`<Space><SPACE>d`                      | `*`                         |
+| `LYRDDatabaseOutput`                    | Database Output                         | `<Leader><Leader>b`                                            | `*`                         |
+| `LYRDDatabaseUI`                        | Database UI                             | `<Leader><Leader>s`<br>`<Space><SPACE>d`                       | `*`                         |
 | `LYRDDebugBreakpoint`                   | Toggle breakpoint                       | `<F9>`<br>`<Leader>gb`<br>`<Space>db`                          | `*`                         |
 | `LYRDDebugContinue`                     | Continue                                | `<F5>`<br>`<Leader>gd`<br>`<Space>dk`                          | `*`                         |
 | `LYRDDebugStart`                        | Start debug session                     | `<Leader>gg`<br>`<S-F5>`<br>`<Space>dy`                        | `*`                         |
@@ -66,8 +66,8 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDDebugStepOver`                     | Step over                               | `<F10>`<br>`<Leader>gf`<br>`<Space>dl`                         | `*`                         |
 | `LYRDDebugStop`                         | Stop                                    | `<Leader>ge`<br>`<Space>dh`                                    | `*`                         |
 | `LYRDDebugToggleRepl`                   | Toggle Debug Repl                       | `<Space>d/`                                                    | `*`                         |
-| `LYRDDebugToggleUI`                     | Debug UI                                | `<Leader>.<Leader>g`<br>`<Space>d;`                            | `*`                         |
-| `LYRDDiagnosticLinesToggle`             | Toggle diagnostic lines                 | `<Leader>.d`<br>`<Space>cl`                                    | `*`                         |
+| `LYRDDebugToggleUI`                     | Debug UI                                | `<Leader><Leader>g`<br>`<Space>d;`                             | `*`                         |
+| `LYRDDiagnosticLinesToggle`             | Toggle diagnostic lines                 | `<Leader>d`<br>`<Space>cl`                                     | `*`                         |
 | `LYRDEditLocalConfig`                   | Edit local config                       | `<Space>pl`                                                    | `default`                   |
 | `LYRDGitBrowseOnWeb`                    | Browse line on web                      | `<Space>gx`                                                    | `*`                         |
 | `LYRDGitCheckoutDev`                    | Checkout Develop branch                 | `<Space>gfD`                                                   | `*`                         |
@@ -115,22 +115,22 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDLSPGotoPrevDiagnostic`             | Goto Previous Diagnostic                | `<M-PageUp>`                                                   | `*`                         |
 | `LYRDLSPHoverInfo`                      | Show hover information                  | `K`                                                            | `*`                         |
 | `LYRDLSPRename`                         | Rename symbol                           | `<C-r><C-r>`<br>`<Leader>rn`                                   | `*`                         |
-| `LYRDLSPShowDocumentDiagnosticLocList`  | Document diagnostics                    | `<Leader>.<Leader>d`                                           | `*`                         |
-| `LYRDLSPShowWorkspaceDiagnosticLocList` | Workspace diagnostics                   | `<Leader>.<Leader>D`                                           | `*`                         |
+| `LYRDLSPShowDocumentDiagnosticLocList`  | Document diagnostics                    | `<Leader><Leader>d`                                            | `*`                         |
+| `LYRDLSPShowWorkspaceDiagnosticLocList` | Workspace diagnostics                   | `<Leader><Leader>D`                                            | `*`                         |
 | `LYRDLSPSignatureHelp`                  | Signature help                          | `<C-S-k>`                                                      | `*`                         |
 | `LYRDLSPToggleLens`                     | Toggle Code Lens                        | -                                                              | `*`                         |
 | `LYRDPaneNavigateDown`                  | Navigate to panel below                 | `<C-j>`                                                        | `*`                         |
 | `LYRDPaneNavigateLeft`                  | Navigate to panel left                  | `<C-h>`                                                        | `*`                         |
 | `LYRDPaneNavigateRight`                 | Navigate to panel right                 | `<C-l>`                                                        | `*`                         |
 | `LYRDPaneNavigateUp`                    | Navigate to panel up                    | `<C-k>`                                                        | `*`                         |
-| `LYRDPaneResizeDown`                    | Resize to panel below                   | `<Leader>.<Leader>rj`                                          | `*`                         |
-| `LYRDPaneResizeLeft`                    | Resize to panel left                    | `<Leader>.<Leader>rh`                                          | `*`                         |
-| `LYRDPaneResizeRight`                   | Resize to panel right                   | `<Leader>.<Leader>rl`                                          | `*`                         |
-| `LYRDPaneResizeUp`                      | Resize to panel up                      | `<Leader>.<Leader>rk`                                          | `*`                         |
-| `LYRDPaneSwapDown`                      | Swap to panel below                     | `<Leader>.<Leader>sj`                                          | `*`                         |
-| `LYRDPaneSwapLeft`                      | Swap to panel left                      | `<Leader>.<Leader>sh`                                          | `*`                         |
-| `LYRDPaneSwapRight`                     | Swap to panel right                     | `<Leader>.<Leader>sl`                                          | `*`                         |
-| `LYRDPaneSwapUp`                        | Swap to panel up                        | `<Leader>.<Leader>sk`                                          | `*`                         |
+| `LYRDPaneResizeDown`                    | Resize to panel below                   | `<Leader><Leader>rj`                                           | `*`                         |
+| `LYRDPaneResizeLeft`                    | Resize to panel left                    | `<Leader><Leader>rh`                                           | `*`                         |
+| `LYRDPaneResizeRight`                   | Resize to panel right                   | `<Leader><Leader>rl`                                           | `*`                         |
+| `LYRDPaneResizeUp`                      | Resize to panel up                      | `<Leader><Leader>rk`                                           | `*`                         |
+| `LYRDPaneSwapDown`                      | Swap to panel below                     | `<Leader><Leader>sj`                                           | `*`                         |
+| `LYRDPaneSwapLeft`                      | Swap to panel left                      | `<Leader><Leader>sh`                                           | `*`                         |
+| `LYRDPaneSwapRight`                     | Swap to panel right                     | `<Leader><Leader>sl`                                           | `*`                         |
+| `LYRDPaneSwapUp`                        | Swap to panel up                        | `<Leader><Leader>sk`                                           | `*`                         |
 | `LYRDPasteImage`                        | Paste image                             | `<Leader>ip`                                                   | `default`                   |
 | `LYRDPluginManager`                     | Plugin Manager                          | `<Space>pp`                                                    | `default`                   |
 | `LYRDPluginsClean`                      | Clean plugins                           | `<Space>pc`                                                    | `default`                   |
@@ -157,7 +157,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDSearchAllFiles`                    | Find all files                          | `<C-S-p>`<br>`<M-C-p>`                                         | `*`                         |
 | `LYRDSearchBufferLines`                 | Lines                                   | `<Space>sl`                                                    | `*`                         |
 | `LYRDSearchBufferTags`                  | Tags                                    | `<Space>sg`                                                    | `*`                         |
-| `LYRDSearchBuffers`                     | Search buffers                          | `<Leader>.<Leader>/`<br>`<Space>b/`<br>`<Space>sb`             | `*`                         |
+| `LYRDSearchBuffers`                     | Search buffers                          | `<Leader><Leader>/`<br>`<Space>b/`<br>`<Space>sb`              | `*`                         |
 | `LYRDSearchColorSchemes`                | Color Schemes                           | `<Space>st`                                                    | `*`                         |
 | `LYRDSearchCommandHistory`              | Recent comands                          | `<Space>sc`                                                    | `*`                         |
 | `LYRDSearchCommands`                    | Commands                                | `<Space>s,`                                                    | `*`                         |
@@ -174,13 +174,13 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDSearchRegisters`                   | Registers                               | `<Space>sp`                                                    | `*`                         |
 | `LYRDSearchSnippets`                    | Snippets                                | `<Space>ss`                                                    | `*`                         |
 | `LYRDSearchSymbols`                     | Symbols                                 | `<Space>so`                                                    | `*`                         |
-| `LYRDSmartCoder`                        | Smart code generator                    | `<Leader>.j`                                                   | `*`                         |
+| `LYRDSmartCoder`                        | Smart code generator                    | `<Leader>j`                                                    | `*`                         |
 | `LYRDTasksConfigure`                    | Configure tasks                         | `<Space>rT`                                                    | `*`                         |
 | `LYRDTasksConfigureLaunch`              | Configure launch profile                | `<Space>rL`                                                    | `*`                         |
 | `LYRDTasksRun`                          | Run task                                | `<Space>rr`                                                    | `*`                         |
-| `LYRDTasksToggle`                       | Toggle tasks view                       | `<Leader>.<Leader>w`<br>`<Space>rt`                            | `*`                         |
-| `LYRDTerminal`                          | Terminal                                | `<Leader>.<Leader>X`<br>`<Space><SPACE>t`                      | `*`                         |
-| `LYRDTerminalList`                      | View terminal list                      | `<Leader>.<Leader>x`<br>`<Space><SPACE>T`<br>`<Space>sT`       | `*`                         |
+| `LYRDTasksToggle`                       | Toggle tasks view                       | `<Leader><Leader>w`<br>`<Space>rt`                             | `*`                         |
+| `LYRDTerminal`                          | Terminal                                | `<Leader><Leader>X`<br>`<Space><SPACE>t`                       | `*`                         |
+| `LYRDTerminalList`                      | View terminal list                      | `<Leader><Leader>x`<br>`<Space><SPACE>T`<br>`<Space>sT`        | `*`                         |
 | `LYRDTest`                              | Test everything                         | `<Space>tt`                                                    | `*`<br>`go`                 |
 | `LYRDTestCoverage`                      | Toggle Test Coverage                    | `<Space>tc`                                                    | `*`<br>`go`                 |
 | `LYRDTestCoverageSummary`               | View Test Coverage Summary              | `<Space>ts`                                                    | `*`                         |
@@ -188,26 +188,26 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDTestFile`                          | Test current file                       | `<Space>tb`                                                    | `*`                         |
 | `LYRDTestFunc`                          | Test current function                   | `<Space>tf`                                                    | `*`                         |
 | `LYRDTestLast`                          | Repeat last test                        | `<Space>th`                                                    | `*`                         |
-| `LYRDTestOutput`                        | View test output                        | `<Leader>.<Leader>T`                                           | `*`                         |
+| `LYRDTestOutput`                        | View test output                        | `<Leader><Leader>T`                                            | `*`                         |
 | `LYRDTestSuite`                         | Test suite                              | `<Space>ts`                                                    | `*`                         |
-| `LYRDTestSummary`                       | View test summary                       | `<F3>`<br>`<Leader>.<Leader>t`<br>`<Space>tv`                  | `*`                         |
-| `LYRDToggleBufferDecorations`           | Toggle buffer decorations               | `<Leader>.k`                                                   | `csv`<br>`markdown`         |
+| `LYRDTestSummary`                       | View test summary                       | `<F3>`<br>`<Leader><Leader>t`<br>`<Space>tv`                   | `*`                         |
+| `LYRDToggleBufferDecorations`           | Toggle buffer decorations               | `<Leader>k`                                                    | `csv`<br>`markdown`         |
 | `LYRDToolManager`                       | Tool Manager                            | `<Space>pt`                                                    | `*`                         |
-| `LYRDViewCodeOutline`                   | View code outline                       | `<F4>`<br>`<Leader>.<Leader>o`                                 | `*`                         |
-| `LYRDViewFileExplorer`                  | File Explorer                           | `<Leader>.<Leader>e`<br>`<Space><SPACE>f`                      | `*`                         |
-| `LYRDViewFileExplorerAlt`               | File Explorer (Alternative)             | `<Leader>.<Leader>E`<br>`<Space><SPACE>F`                      | `*`                         |
-| `LYRDViewFileTree`                      | File Tree                               | `<F2>`<br>`<Leader>.<Leader>f`                                 | `*`                         |
+| `LYRDViewCodeOutline`                   | View code outline                       | `<F4>`<br>`<Leader><Leader>o`                                  | `*`                         |
+| `LYRDViewFileExplorer`                  | File Explorer                           | `<Leader><Leader>e`<br>`<Space><SPACE>f`                       | `*`                         |
+| `LYRDViewFileExplorerAlt`               | File Explorer (Alternative)             | `<Leader><Leader>E`<br>`<Space><SPACE>F`                       | `*`                         |
+| `LYRDViewFileTree`                      | File Tree                               | `<F2>`<br>`<Leader><Leader>f`                                  | `*`                         |
 | `LYRDViewFocusMode`                     | Focus mode                              | `<Space>vf`                                                    | `*`                         |
-| `LYRDViewHomePage`                      | Home page                               | `<Leader>.<Leader>.`<br>`<Space>v.`                            | `*`                         |
-| `LYRDViewLocationList`                  | Location list                           | `<Leader>.<Leader>l`                                           | `*`                         |
-| `LYRDViewQuickFixList`                  | QuickFix                                | `<Leader>.<Leader>q`                                           | `*`                         |
-| `LYRDViewRegisters`                     | Registers                               | `<Leader>.<Leader>R`                                           | `default`                   |
-| `LYRDViewTreeSitterPlayground`          | TreeSitter playground                   | `<Leader>.<Leader>P`                                           | `*`                         |
-| `LYRDViewYankList`                      | Yank list                               | `<Leader>.<Leader>y`                                           | `default`                   |
+| `LYRDViewHomePage`                      | Home page                               | `<Leader><Leader>`<br>`<Space>v.`                              | `*`                         |
+| `LYRDViewLocationList`                  | Location list                           | `<Leader><Leader>l`                                            | `*`                         |
+| `LYRDViewQuickFixList`                  | QuickFix                                | `<Leader><Leader>q`                                            | `*`                         |
+| `LYRDViewRegisters`                     | Registers                               | `<Leader><Leader>R`                                            | `default`                   |
+| `LYRDViewTreeSitterPlayground`          | TreeSitter playground                   | `<Leader><Leader>P`                                            | `*`                         |
+| `LYRDViewYankList`                      | Yank list                               | `<Leader><Leader>y`                                            | `default`                   |
 | `LYRDWindowClose`                       | Close window                            | `<Space>q.`                                                    | `default`                   |
 | `LYRDWindowCloseAll`                    | Close all                               | -                                                              | `default`                   |
 | `LYRDWindowForceCloseAll`               | Force Quit                              | `<Space>qQ`<br>`<Space>qq`                                     | `default`                   |
-| `LYRDWindowZoom`                        | Toggles zoom in the selected window     | `<Leader>.<Enter>`                                             | `*`                         |
+| `LYRDWindowZoom`                        | Toggles zoom in the selected window     | `<Leader><Enter>`                                              | `*`                         |
 
 ## Notes
 
