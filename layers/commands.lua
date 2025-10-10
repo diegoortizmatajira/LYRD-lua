@@ -7,6 +7,13 @@ local L = {
 	--- @type table<string, Command>
 	commands = {},
 }
+
+function L.wrap(fn)
+	return function()
+		return fn()
+	end
+end
+
 --- @class ShortCutOptions
 --- @field range? boolean Indicates the shorcut uses current selection.
 --- @field escape? boolean Indicates the shorcut includes <ESC> before running the command.

@@ -12,6 +12,7 @@ local L = {
 	null_ls_registered = {},
 	conform_formatters_by_ft = {},
 	conform_formatters = {},
+	enable_usage_hints = true,
 }
 
 local mason_opts = {
@@ -149,20 +150,7 @@ function L.get_pkg_path(pkg, ...)
 	return utils.join_paths(vim.fn.expand("$MASON"), "packages", pkg, ...)
 end
 
-local function usage_highlights()
-	local function h(name)
-		return vim.api.nvim_get_hl(0, { name = name })
-	end
-
-	-- hl-groups can have any name
-	vim.api.nvim_set_hl(0, "SymbolUsageRounding", { fg = h("CursorLine").bg, italic = true })
-	vim.api.nvim_set_hl(0, "SymbolUsageContent", { bg = h("CursorLine").bg, fg = h("Comment").fg, italic = true })
-	vim.api.nvim_set_hl(0, "SymbolUsageRef", { fg = h("Function").fg, bg = h("CursorLine").bg, italic = true })
-	vim.api.nvim_set_hl(0, "SymbolUsageDef", { fg = h("Type").fg, bg = h("CursorLine").bg, italic = true })
-	vim.api.nvim_set_hl(0, "SymbolUsageImpl", { fg = h("@keyword").fg, bg = h("CursorLine").bg, italic = true })
-end
-
-local function text_format(symbol)
+local function usage_text_format(symbol)
 	local res = {}
 
 	local round_start = { "", "SymbolUsageRounding" }
@@ -171,44 +159,39 @@ local function text_format(symbol)
 	-- Indicator that shows if there are any other symbols in the same line
 	local stacked_functions_content = symbol.stacked_count > 0 and ("+%s"):format(symbol.stacked_count) or ""
 
+	table.insert(res, round_start)
+
 	if symbol.references then
 		local usage = symbol.references <= 1 and "usage" or "usages"
 		local num = symbol.references == 0 and "no" or symbol.references
-		table.insert(res, round_start)
 		table.insert(res, { "󰌹 ", "SymbolUsageRef" })
 		table.insert(res, { ("%s %s"):format(num, usage), "SymbolUsageContent" })
-		table.insert(res, round_end)
 	end
 
 	if symbol.definition then
 		if #res > 0 then
-			table.insert(res, { " ", "NonText" })
+			table.insert(res, { " ", "SymbolUsageContent" })
 		end
-		table.insert(res, round_start)
 		table.insert(res, { "󰳽 ", "SymbolUsageDef" })
 		table.insert(res, { symbol.definition .. " defs", "SymbolUsageContent" })
-		table.insert(res, round_end)
 	end
 
 	if symbol.implementation then
 		if #res > 0 then
-			table.insert(res, { " ", "NonText" })
+			table.insert(res, { " ", "SymbolUsageContent" })
 		end
-		table.insert(res, round_start)
 		table.insert(res, { "󰡱 ", "SymbolUsageImpl" })
 		table.insert(res, { symbol.implementation .. " impls", "SymbolUsageContent" })
-		table.insert(res, round_end)
 	end
 
 	if stacked_functions_content ~= "" then
 		if #res > 0 then
-			table.insert(res, { " ", "NonText" })
+			table.insert(res, { " ", "SymbolUsageContent" })
 		end
-		table.insert(res, round_start)
 		table.insert(res, { " ", "SymbolUsageImpl" })
 		table.insert(res, { stacked_functions_content, "SymbolUsageContent" })
-		table.insert(res, round_end)
 	end
+	table.insert(res, round_end)
 
 	return res
 end
@@ -308,15 +291,31 @@ function L.plugins()
 		},
 		{
 			"Wansmer/symbol-usage.nvim",
+			enabled = L.enable_usage_hints,
 			event = "LspAttach", -- need run before LspAttach if you use nvim 0.9. On 0.10 use 'LspAttach'
 			opts = {
 				---@type lsp.SymbolKind[] Symbol kinds what need to be count (see `lsp.SymbolKind`)
 				kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface, SymbolKind.Class },
-				text_format = text_format,
+				text_format = usage_text_format,
 				references = { enabled = true, include_declaration = false },
 				definition = { enabled = true },
 				implementation = { enabled = true },
 			},
+			init = function()
+				local function h(name)
+					return vim.api.nvim_get_hl(0, { name = name })
+				end
+
+				-- hl-groups can have any name
+				-- Stylua will mess up the formatting here, so disable it
+                -- stylua: ignore start
+				vim.api.nvim_set_hl(0, "SymbolUsageRounding", { fg = h("CursorLine").bg, italic = true })
+				vim.api.nvim_set_hl( 0, "SymbolUsageContent", { bg = h("CursorLine").bg, fg = h("Comment").fg, italic = true })
+				vim.api.nvim_set_hl( 0, "SymbolUsageRef", { fg = h("Function").fg, bg = h("CursorLine").bg, italic = true })
+				vim.api.nvim_set_hl(0, "SymbolUsageDef", { fg = h("Type").fg, bg = h("CursorLine").bg, italic = true })
+				vim.api.nvim_set_hl( 0, "SymbolUsageImpl", { fg = h("@keyword").fg, bg = h("CursorLine").bg, italic = true })
+				-- stylua: ignore end
+			end,
 		},
 	})
 end
@@ -329,7 +328,6 @@ function L.preparation()
 		"vim-language-server",
 	})
 	setup_default_providers()
-	usage_highlights()
 end
 
 function L.settings()
@@ -413,19 +411,19 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
 		{ cmd.LYRDBufferFormat, L.conform_format_handler() },
-		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
-		{ cmd.LYRDLSPFindCodeActions, require("actions-preview").code_actions },
-		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
-		{ cmd.LYRDLSPFindLineDiagnostics, vim.diagnostic.show_line_diagnostics },
+		{ cmd.LYRDLSPFindReferences, commands.wrap(vim.lsp.buf.references) },
+		{ cmd.LYRDLSPFindCodeActions, commands.wrap(require("actions-preview").code_actions) },
+		{ cmd.LYRDLSPFindRangeCodeActions, commands.wrap(vim.lsp.buf.range_code_action) },
+		{ cmd.LYRDLSPFindLineDiagnostics, commands.wrap(vim.diagnostic.show_line_diagnostics) },
 		{ cmd.LYRDLSPFindDocumentDiagnostics, ":Trouble diagnostics toggle filter.buf=0" },
 		{ cmd.LYRDLSPFindWorkspaceDiagnostics, ":Trouble diagnostics toggle" },
-		{ cmd.LYRDLSPFindImplementations, vim.lsp.buf.implementation },
-		{ cmd.LYRDLSPFindDefinitions, vim.lsp.buf.definition },
-		{ cmd.LYRDLSPFindDeclaration, vim.lsp.buf.declaration },
-		{ cmd.LYRDLSPHoverInfo, vim.lsp.buf.hover },
-		{ cmd.LYRDLSPSignatureHelp, vim.lsp.buf.signature_help },
-		{ cmd.LYRDLSPFindTypeDefinition, vim.lsp.buf.type_definition },
-		{ cmd.LYRDLSPRename, vim.lsp.buf.rename },
+		{ cmd.LYRDLSPFindImplementations, commands.wrap(vim.lsp.buf.implementation) },
+		{ cmd.LYRDLSPFindDefinitions, commands.wrap(vim.lsp.buf.definition) },
+		{ cmd.LYRDLSPFindDeclaration, commands.wrap(vim.lsp.buf.declaration) },
+		{ cmd.LYRDLSPHoverInfo, commands.wrap(vim.lsp.buf.hover) },
+		{ cmd.LYRDLSPSignatureHelp, commands.wrap(vim.lsp.buf.signature_help) },
+		{ cmd.LYRDLSPFindTypeDefinition, commands.wrap(vim.lsp.buf.type_definition) },
+		{ cmd.LYRDLSPRename, commands.wrap(vim.lsp.buf.rename) },
 		{
 			cmd.LYRDLSPGotoNextDiagnostic,
 			function()
