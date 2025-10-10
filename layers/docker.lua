@@ -249,11 +249,14 @@ function L.settings()
 	vim.filetype.add({
 		pattern = patterns,
 	})
+
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.register_decoration_togglers(L.docker_compose_filetype, { docker_compose_refesh_service_signs })
+
 	-- Command implementations
 	commands.implement(L.docker_compose_filetype, {
 		{ cmd.LYRDCodeRunSelection, L.docker_compose_run_service_at_cursor },
 		{ cmd.LYRDCodeRun, L.docker_compose_execute },
-		{ cmd.LYRDToggleBufferDecorations, docker_compose_refesh_service_signs },
 	})
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },

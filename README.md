@@ -956,7 +956,7 @@ This will show you:
 LYRD allows you to customize settings without modifying the core files. Your
 personal configuration is stored in:
 
-```
+```bash
 ~/.local/share/nvim/lyrd/lyrd-local.lua
 ```
 

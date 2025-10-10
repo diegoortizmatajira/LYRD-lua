@@ -5,8 +5,10 @@ local icons = require("LYRD.layers.icons")
 local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.LYRDUI: LYRD.setup.Module
+--- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype
 local L = {
 	name = "LYRD UI",
+	decoration_togglers = {},
 }
 
 local ext_app_term = nil -- Store the terminal object
@@ -72,6 +74,41 @@ end
 
 local function current_database()
 	return require("db-cli-adapter").get_current_db_connection()
+end
+
+--- Registers implementations for toggling UI decorations for a specific filetype.
+--- @param filetype string|string[] The filetype for which to register the togglers.
+--- @param implementations CommandImplementation[] List of implementations to register.
+function L.register_decoration_togglers(filetype, implementations)
+	if type(filetype) == "string" then
+		filetype = { filetype }
+	end
+	vim.tbl_map(function(ft)
+		if not L.decoration_togglers[ft] then
+			L.decoration_togglers[ft] = {}
+		end
+		for _, impl in ipairs(implementations) do
+			table.insert(L.decoration_togglers[ft], impl)
+		end
+	end, filetype)
+end
+
+--- Toggles UI decorations for the current buffer based on its filetype.
+--- @param opts? table|nil Optional options to pass to the command implementations.
+function L.toggle_decorations(opts)
+	local function run_for_filetype(filetype)
+		local togglers = L.decoration_togglers[filetype]
+		if not togglers then
+			return false
+		end
+		for _, impl in ipairs(togglers) do
+			commands.execute_implementation(impl, opts)
+		end
+		return true
+	end
+	local ft = vim.bo.filetype
+	run_for_filetype(ft)
+	run_for_filetype("*") -- Run for global togglers as well
 end
 
 function L.plugins()
@@ -418,6 +455,7 @@ function L.settings()
 			end,
 		},
 		{ cmd.LYRDReplaceInFiles, ":GrugFar" },
+		{ cmd.LYRDToggleBufferDecorations, L.toggle_decorations },
 	})
 end
 

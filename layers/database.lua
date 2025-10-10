@@ -81,12 +81,12 @@ function L.preparation()
 end
 
 function L.settings()
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.register_decoration_togglers("sql", { ":CsvViewToggle" })
+
 	commands.implement("*", {
 		{ cmd.LYRDDatabaseUI, ":DbCliSidebarToggle" },
 		{ cmd.LYRDDatabaseOutput, ":DbCliOutputToggle" },
-	})
-	commands.implement("csv", {
-		{ cmd.LYRDToggleBufferDecorations, ":CsvViewToggle" },
 	})
 	commands.implement("sql", {
 		{ cmd.LYRDCodeRun, ":DbCliRunBuffer" },

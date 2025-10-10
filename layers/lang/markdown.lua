@@ -93,9 +93,8 @@ function L.preparation()
 end
 
 function L.settings()
-	commands.implement("markdown", {
-		{ cmd.LYRDToggleBufferDecorations, ":RenderMarkdown toggle" },
-	})
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
 end
 
 function L.complete()
