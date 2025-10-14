@@ -3,144 +3,21 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local keyboard = require("LYRD.layers.lyrd-keyboard")
 
---- @class ai_provider
---- @field name string Name of the provider
---- @field plugins fun(suggestion_enabled: boolean): table function that returns a list of plugins for the provider, taking a boolean parameter
-
---- @type table<string,ai_provider>
 local ai_providers = {
-	COPILOT = {
-		name = "copilot",
-		plugins = function(suggestion_enabled)
-			return {
-				{
-					"zbirenbaum/copilot.lua",
-					opts = {
-						suggestion = {
-							enabled = true,
-							auto_trigger = suggestion_enabled,
-							hide_during_completion = true,
-							debounce = 75,
-							keymap = suggestion_enabled and {
-								accept = keyboard.ai_keys.accept,
-								accept_word = keyboard.ai_keys.accept_word,
-								accept_line = keyboard.ai_keys.accept_line,
-								next = keyboard.ai_keys.next,
-								prev = keyboard.ai_keys.prev,
-								dismiss = keyboard.ai_keys.clear,
-							},
-							copilot_model = "", -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
-						},
-					},
-					cmd = "Copilot",
-					event = "InsertEnter",
-				},
-			}
-		end,
-	},
-	CODEIUM = {
-		name = "codeium",
-		plugins = function(suggestion_enabled)
-			return {
-				{
-					"Exafunction/codeium.nvim",
-					opts = {
-						virtual_text = {
-							enabled = suggestion_enabled,
-							-- Set to true if you never want completions to be shown automatically.
-							manual = false,
-							-- A mapping of filetype to true or false, to enable virtual text.
-							filetypes = {},
-							-- Whether to enable virtual text of not for filetypes not specifically listed above.
-							default_filetype_enabled = true,
-							-- How long to wait (in ms) before requesting completions after typing stops.
-							idle_delay = 75,
-							-- Priority of the virtual text. This usually ensures that the completions appear on top of
-							-- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
-							-- desired.
-							virtual_text_priority = 65535,
-							-- Set to false to disable all key bindings for managing completions.
-							map_keys = suggestion_enabled,
-							-- The key to press when hitting the accept keybinding but no completion is showing.
-							-- Defaults to \t normally or <c-n> when a popup is showing.
-							accept_fallback = nil,
-							-- Key bindings for managing completions in virtual text mode.
-							key_bindings = {
-								-- Accept the current completion.
-								accept = keyboard.ai_keys.accept,
-								-- Accept the next word.
-								accept_word = keyboard.ai_keys.accept_word,
-								-- Accept the next line.
-								accept_line = keyboard.ai_keys.accept_line,
-								-- Clear the virtual text.
-								clear = keyboard.ai_keys.clear,
-								-- Cycle to the next completion.
-								next = keyboard.ai_keys.next,
-								-- Cycle to the previous completion.
-								prev = keyboard.ai_keys.prev,
-							},
-						},
-						enable_cmp_source = true,
-					},
-					dependencies = {
-						"nvim-lua/plenary.nvim",
-					},
-				},
-			}
-		end,
-	},
-	TABNINE = {
-		name = "tabnine",
-		plugins = function(_)
-			return {
-				{
-					"codota/tabnine-nvim",
-					opts = {
-						disable_auto_comment = true,
-						accept_keymap = keyboard.ai_keys.accept,
-						dismiss_keymap = keyboard.ai_keys.clear,
-						debounce_ms = 800,
-						suggestion_color = { gui = "#808080", cterm = 244 },
-						exclude_filetypes = { "TelescopePrompt", "NvimTree" },
-						log_file_path = nil, -- absolute path to Tabnine log file
-						ignore_certificate_errors = false,
-					},
-					main = "tabnine",
-					build = "./dl_binaries.sh",
-				},
-				{
-					"tzachar/cmp-tabnine",
-					build = "./install.sh",
-					dependencies = {
-						"hrsh7th/nvim-cmp",
-						"codota/tabnine-nvim",
-					},
-				},
-			}
-		end,
-	},
+	COPILOT = "copilot",
+	CODEIUM = "codeium",
+	TABNINE = "tabnine",
 }
-
---- @diagnostic disable-next-line: unused-local, unused-function
-local function completion_provider()
-	---@diagnostic disable-next-line: undefined-field
-	local uname = vim.loop.os_uname()
-	if uname.sysname == "Darwin" then
-		return ai_providers.COPILOT
-	else
-		return ai_providers.CODEIUM
-	end
-end
 
 ---@class LYRD.layer.AIDev: LYRD.setup.Module
 local L = {
 	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,
-	-- completion_provider = completion_provider(),
 	completion_provider = ai_providers.COPILOT,
 	documentation_prompt = [[
 	Ensure the current element is well documented by generating or updating its
-	documentation annotations to reflect the current code.
+	documentation annotations to reflect the current code. Do not add or modify
+	child elements documentation.
 	]],
 }
 
@@ -171,6 +48,104 @@ end
 
 function L.plugins()
 	setup.plugin({
+
+		{
+			"zbirenbaum/copilot.lua",
+			--- Gets loaded if either avante or completion provider is copilot
+			enabled = L.avante_provider == ai_providers.COPILOT or L.completion_provider == ai_providers.COPILOT,
+			opts = {
+				suggestion = {
+					enabled = true,
+					auto_trigger = L.completion_provider == ai_providers.COPILOT,
+					hide_during_completion = true,
+					debounce = 75,
+					keymap = L.completion_provider == ai_providers.COPILOT and {
+						accept = keyboard.ai_keys.accept,
+						accept_word = keyboard.ai_keys.accept_word,
+						accept_line = keyboard.ai_keys.accept_line,
+						next = keyboard.ai_keys.next,
+						prev = keyboard.ai_keys.prev,
+						dismiss = keyboard.ai_keys.clear,
+					},
+					copilot_model = "", -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
+				},
+			},
+			cmd = "Copilot",
+			event = "InsertEnter",
+		},
+		{
+			"Exafunction/codeium.nvim",
+			--- Only gets loaded if completion provider is codeium
+			enabled = L.completion_provider == ai_providers.CODEIUM,
+			opts = {
+				virtual_text = {
+					enabled = true,
+					-- Set to true if you never want completions to be shown automatically.
+					manual = false,
+					-- A mapping of filetype to true or false, to enable virtual text.
+					filetypes = {},
+					-- Whether to enable virtual text of not for filetypes not specifically listed above.
+					default_filetype_enabled = true,
+					-- How long to wait (in ms) before requesting completions after typing stops.
+					idle_delay = 75,
+					-- Priority of the virtual text. This usually ensures that the completions appear on top of
+					-- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
+					-- desired.
+					virtual_text_priority = 65535,
+					-- Set to false to disable all key bindings for managing completions.
+					map_keys = true,
+					-- The key to press when hitting the accept keybinding but no completion is showing.
+					-- Defaults to \t normally or <c-n> when a popup is showing.
+					accept_fallback = nil,
+					-- Key bindings for managing completions in virtual text mode.
+					key_bindings = {
+						-- Accept the current completion.
+						accept = keyboard.ai_keys.accept,
+						-- Accept the next word.
+						accept_word = keyboard.ai_keys.accept_word,
+						-- Accept the next line.
+						accept_line = keyboard.ai_keys.accept_line,
+						-- Clear the virtual text.
+						clear = keyboard.ai_keys.clear,
+						-- Cycle to the next completion.
+						next = keyboard.ai_keys.next,
+						-- Cycle to the previous completion.
+						prev = keyboard.ai_keys.prev,
+					},
+				},
+				enable_cmp_source = true,
+			},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+			},
+		},
+		{
+			"codota/tabnine-nvim",
+			--- Only gets loaded if completion provider is tabnine
+			enabled = L.completion_provider == ai_providers.TABNINE,
+			opts = {
+				disable_auto_comment = true,
+				accept_keymap = keyboard.ai_keys.accept,
+				dismiss_keymap = keyboard.ai_keys.clear,
+				debounce_ms = 800,
+				suggestion_color = { gui = "#808080", cterm = 244 },
+				exclude_filetypes = { "TelescopePrompt", "NvimTree" },
+				log_file_path = nil, -- absolute path to Tabnine log file
+				ignore_certificate_errors = false,
+			},
+			main = "tabnine",
+			build = "./dl_binaries.sh",
+		},
+		{
+			"tzachar/cmp-tabnine",
+			--- Only gets loaded if completion provider is tabnine
+			enabled = L.completion_provider == ai_providers.TABNINE,
+			build = "./install.sh",
+			dependencies = {
+				"hrsh7th/nvim-cmp",
+				"codota/tabnine-nvim",
+			},
+		},
 		{
 			"yetone/avante.nvim",
 			event = "VeryLazy",
@@ -178,8 +153,8 @@ function L.plugins()
 			version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
 			-- version = "v0.0.20",
 			opts = {
-				provider = L.avante_provider.name,
-				auto_suggestions_provider = L.avante_provider.name,
+				provider = L.avante_provider,
+				auto_suggestions_provider = L.avante_provider,
 				mapping = {
 					ask = false,
 					edit = false,
@@ -219,12 +194,6 @@ function L.plugins()
 			},
 		},
 	})
-	if L.avante_provider == L.completion_provider then
-		setup.plugin(L.avante_provider.plugins(true))
-	else
-		setup.plugin(L.avante_provider.plugins(false))
-		setup.plugin(L.completion_provider.plugins(true))
-	end
 end
 
 function L.settings()
