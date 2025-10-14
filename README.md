@@ -1111,7 +1111,7 @@ for details.
 
 ---
 
-**LYRD® Neovim by Diego Ortiz. 2023-2025**
+LYRD® Neovim by Diego Ortiz. 2023-2025
 
 Transform your Neovim into a complete development environment. Code faster,
 debug smarter, and stay in your flow.

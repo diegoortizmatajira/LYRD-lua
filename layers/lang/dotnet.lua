@@ -153,7 +153,7 @@ end
 function L.preparation()
 	lsp.mason_ensure({
 		"netcoredbg",
-		"roslyn",
+		-- "roslyn",
 		"csharpier",
 	})
 	local ts = require("LYRD.layers.treesitter")
@@ -166,7 +166,7 @@ function L.preparation()
 	-- 	"csharpier",
 	-- 	lsp_format = "prefer",
 	-- })
-	lsp.format_with_lsp(dotnet_languages, "roslyn")
+	-- lsp.format_with_lsp(dotnet_languages, "roslyn")
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-vstest"))
 end

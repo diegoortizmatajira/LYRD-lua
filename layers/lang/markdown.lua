@@ -43,6 +43,17 @@ function L.plugins()
 				"nvim-tree/nvim-web-devicons",
 			}, -- if you prefer nvim-web-devicons
 		},
+		{
+			"Nedra1998/nvim-mdlink",
+			opts = {
+				max_depth = 5,
+				keymap = true,
+				cmp = true,
+			},
+			dependencies = {
+				"hrsh7th/nvim-cmp",
+			},
+		},
 	})
 end
 

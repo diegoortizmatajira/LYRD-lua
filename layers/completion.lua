@@ -253,6 +253,7 @@ function L.plugins()
 						{ name = "cmp_tabnine" },
 						{ name = "easy-dotnet" },
 						{ name = "cmp-dbee" },
+						{ name = "mdlink" },
 					}, {
 						{ name = "buffer" },
 						{ name = "path" },
