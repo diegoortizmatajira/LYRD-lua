@@ -197,23 +197,14 @@ function L.plugins()
 end
 
 function L.settings()
+	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
-		{
-			cmd.LYRDAIAsk,
-			function()
-				require("avante.api").ask()
-			end,
-		},
-		{
-			cmd.LYRDAIEdit,
-			function()
-				require("avante.api").edit()
-			end,
-		},
+		{ cmd.LYRDAIAsk, wrap(require("avante.api").ask) },
+		{ cmd.LYRDAIEdit, wrap(require("avante.api").edit) },
 	})
 end
 
