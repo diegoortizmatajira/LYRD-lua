@@ -168,6 +168,7 @@ function L.settings()
 		numhl = "DiagnosticSignWarn",
 	})
 
+	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
 		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
@@ -176,7 +177,7 @@ function L.settings()
 		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
-		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
+		{ cmd.LYRDDebugToggleUI, wrap(require("dapui").toggle) },
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end

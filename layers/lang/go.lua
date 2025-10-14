@@ -90,6 +90,7 @@ local function DetectGoHtmlTmpl()
 end
 
 function L.settings()
+	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("go", {
 		{ cmd.LYRDCodeBuild, build_go_files },
 		{ cmd.LYRDCodeRun, ":GoRun" },
@@ -102,9 +103,9 @@ function L.settings()
 		{ cmd.LYRDCodeImplementInterface, "GoImpl" },
 		{ cmd.LYRDCodeFillStructure, ":GoFillStruct" },
 		{ cmd.LYRDCodeGenerate, ":GoGenerate" },
-		{ cmd.LYRDCodeProduceGetter, generator.generate_getters },
-		{ cmd.LYRDCodeProduceSetter, generator.generate_setters },
-		{ cmd.LYRDCodeProduceMapping, generator.generate_mapping },
+		{ cmd.LYRDCodeProduceGetter, wrap(generator.generate_getters) },
+		{ cmd.LYRDCodeProduceSetter, wrap(generator.generate_setters) },
+		{ cmd.LYRDCodeProduceMapping, wrap(generator.generate_mapping) },
 	})
 
 	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {

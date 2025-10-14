@@ -251,8 +251,9 @@ function L.settings()
 			},
 		},
 	})
+	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
-		{ cmd.LYRDCodeRefactor, require("refactoring").select_refactor },
+		{ cmd.LYRDCodeRefactor, wrap(require("refactoring").select_refactor) },
 		{ cmd.LYRDViewTreeSitterPlayground, ":TSPlaygroundToggle" },
 	})
 end
