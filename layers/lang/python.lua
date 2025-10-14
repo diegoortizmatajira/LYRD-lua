@@ -14,20 +14,20 @@ end
 
 function L.plugins()
 	setup.plugin({
-		-- {
-		-- 	"mfussenegger/nvim-dap-python",
-		-- 	dependencies = { "mfussenegger/nvim-dap" },
-		-- 		config = function()
-		-- 			require("dap-python").setup()
-		-- 			table.insert(require("dap").configurations.python, {
-		-- 				type = "python",
-		-- 				request = "launch",
-		-- 				name = "My custom launch configuration",
-		-- 				program = "${file}",
-		-- 			})
-		-- 		end,
-		-- 	ft = "python",
-		-- },
+		{
+			"mfussenegger/nvim-dap-python",
+			dependencies = { "mfussenegger/nvim-dap" },
+			config = function()
+				require("dap-python").setup()
+				table.insert(require("dap").configurations.python, {
+					type = "python",
+					request = "launch",
+					name = "My custom launch configuration",
+					program = "${file}",
+				})
+			end,
+			ft = "python",
+		},
 		{
 			"nvim-neotest/neotest-python",
 			ft = "python",
