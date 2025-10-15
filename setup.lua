@@ -22,10 +22,10 @@ local utils = require("LYRD.utils")
 ---@field run_once_per_filetype? nil|table<string|string[], fun():nil> Allows to define actions to run once per filetype
 
 local setup = {
-	configs_path = utils.get_lyrd_path() .. "/configs",
-	runtime_path = utils.get_lyrd_path() .. "/runtime",
-	data_path = vim.fn.stdpath("data") .. "/lyrd",
-	local_config_path = vim.fn.stdpath("data") .. "/lyrd/lyrd-local.lua",
+	configs_path = utils.get_lyrd_path("configs"),
+	runtime_path = utils.get_lyrd_path("runtime"),
+	data_path = utils.get_lyrd_data_path(),
+	local_config_path = utils.get_lyrd_data_path("lyrd-local.lua"),
 	---@type LYRD.setup.Settings
 	config = {
 		commands = {},
@@ -52,7 +52,7 @@ local run_once_per_file_type_execution = {}
 --- manage plugins.
 local function bootstrap_lazy()
 	-- Bootstrap lazy.nvim
-	local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+	local lazypath = utils.join_paths(vim.fn.stdpath("data"), "lazy", "lazy.nvim")
 	if not (vim.uv or vim.loop).fs_stat(lazypath) then
 		local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 		local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
@@ -113,7 +113,7 @@ local function load_plugins()
 		-- Enable luarocks if installed.
 		rocks = { enabled = vim.fn.executable("luarocks") == 1 },
 		-- We don't use this, so create it in a disposable place.
-		lockfile = vim.fn.stdpath("cache") .. "/lazy-lock.json",
+		lockfile = utils.join_paths(vim.fn.stdpath("cache"), "lazy-lock.json"),
 	})
 end
 

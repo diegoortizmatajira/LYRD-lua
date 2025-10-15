@@ -12,7 +12,7 @@ function L.plugins()
 		{
 			"Futarimiti/spooky.nvim",
 			opts = {
-				directory = utils.get_lyrd_path() .. "/skeletons",
+				directory = utils.get_lyrd_path("skeletons"),
 				case_sensitive = false,
 				auto_use_only = false,
 				ui = {

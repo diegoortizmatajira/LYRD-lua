@@ -3,13 +3,46 @@ local M = {
 	path_sep = uv.os_uname().version:match("Windows") and "\\" or "/",
 }
 
---- Gets lyrd path
-function M.get_lyrd_path()
-	return vim.fn.stdpath("config") .. "/lua/LYRD"
+--- Gets the path to the LYRD directory or a specific subdirectory within it.
+---
+--- This function constructs and returns the path to the LYRD directory
+--- located within the Neovim configuration folder. If a `sub_path` is
+--- provided, it appends the subdirectory to the base path.
+---
+--- @param sub_path? string The optional subdirectory path to append to the LYRD path.
+--- @return string The constructed path to the LYRD directory or the specified subdirectory.
+function M.get_lyrd_path(sub_path)
+	local base_path = M.join_paths(vim.fn.stdpath("config"), "lua", "LYRD")
+	if sub_path then
+		return M.join_paths(base_path, sub_path)
+	end
+	return base_path
 end
 
---- Joins paths
---- @param ... any
+--- Gets the path to the data directory or a specific subdirectory within it.
+---
+--- This function constructs and returns the path to the data directory
+--- used by LYRD within the Neovim data folder. If a `sub_path` is provided,
+--- it appends the subdirectory to the base path.
+---
+--- @param sub_path? string The optional subdirectory path to append to the data path.
+--- @return string The constructed path to the data directory or the specified subdirectory.
+function M.get_lyrd_data_path(sub_path)
+	local base_path = M.join_paths(vim.fn.stdpath("data"), "lyrd")
+	if sub_path then
+		return M.join_paths(base_path, sub_path)
+	end
+	return base_path
+end
+
+--- Joins multiple path segments into a single path.
+---
+--- This function concatenates the provided arguments using the appropriate
+--- path separator for the operating system. It ensures that the resulting
+--- string represents a valid file system path.
+---
+--- @param ... string Multiple path segments to join.
+--- @return string The joined file system path.
 function M.join_paths(...)
 	local result = table.concat({ ... }, M.path_sep)
 	return result
@@ -120,27 +153,26 @@ function M.with_safe_require(mod_name, func)
 	func(mod)
 end
 
-
 --- Opens a file if it exists, or creates it with the given content if it doesn't.
 --- It also ensures that the directory structure for the file exists.
 --- @param file_path string The path of the file to open or create.
 --- @param content? string The content to write to the file if it needs to be created.
 function M.open_or_create_file(file_path, content)
-    local dir = vim.fn.fnamemodify(file_path, ":h")
-    if vim.fn.isdirectory(dir) == 0 then
-        vim.fn.mkdir(dir, "p")
-    end
-    if vim.fn.filereadable(file_path) == 0 then
-        local file = io.open(file_path, "w")
-        if file then
-            file:write(content or "")
-            file:close()
-        else
-            vim.notify("Could not create file: " .. file_path, vim.log.levels.ERROR)
-            return
-        end
-    end
-    vim.cmd("edit " .. file_path)
+	local dir = vim.fn.fnamemodify(file_path, ":h")
+	if vim.fn.isdirectory(dir) == 0 then
+		vim.fn.mkdir(dir, "p")
+	end
+	if vim.fn.filereadable(file_path) == 0 then
+		local file = io.open(file_path, "w")
+		if file then
+			file:write(content or "")
+			file:close()
+		else
+			vim.notify("Could not create file: " .. file_path, vim.log.levels.ERROR)
+			return
+		end
+	end
+	vim.cmd("edit " .. file_path)
 end
 
 return M

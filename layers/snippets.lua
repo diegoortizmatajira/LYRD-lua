@@ -7,7 +7,7 @@ local utils = require("LYRD.utils")
 ---@class LYRD.layer.Snippets: LYRD.setup.Module
 local L = {
 	name = "Snippets",
-	snippets_path = utils.get_lyrd_path() .. "/snippets",
+	snippets_path = utils.get_lyrd_path("snippets"),
 }
 
 function L.plugins()

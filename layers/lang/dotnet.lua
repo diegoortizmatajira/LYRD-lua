@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
+local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.lang.Dotnet: LYRD.setup.Module
 local L = {
@@ -18,14 +19,9 @@ local function get_secret_path(secret_guid)
 	local path = ""
 	local home_dir = vim.fn.expand("~")
 	if require("easy-dotnet.extensions").isWindows() then
-		local secret_path = home_dir
-			.. "\\AppData\\Roaming\\Microsoft\\UserSecrets\\"
-			.. secret_guid
-			.. "\\secrets.json"
-		path = secret_path
+		path = utils.join_paths(home_dir, "AppData", "Roaming", "Microsoft", "UserSecrets", secret_guid, "secrets.json")
 	else
-		local secret_path = home_dir .. "/.microsoft/usersecrets/" .. secret_guid .. "/secrets.json"
-		path = secret_path
+		path = utils.join_paths(home_dir, ".microsoft", "usersecrets", secret_guid, "secrets.json")
 	end
 	return path
 end
@@ -161,12 +157,11 @@ function L.preparation()
 		"c_sharp",
 		"fsharp",
 	})
-	-- lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
-	-- lsp.format_with_conform("cs", {
-	-- 	"csharpier",
-	-- 	lsp_format = "prefer",
-	-- })
-	-- lsp.format_with_lsp(dotnet_languages, "roslyn")
+	lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
+	lsp.format_with_conform("cs", {
+		"csharpier",
+		lsp_format = "prefer",
+	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-vstest"))
 end
