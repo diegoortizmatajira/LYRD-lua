@@ -9,7 +9,7 @@ local L = { name = "Markdown" }
 function L.plugins()
 	setup.plugin({
 		{
-			"MeanderingProgrammer/markdown.nvim",
+			"MeanderingProgrammer/render-markdown.nvim",
 			main = "render-markdown",
 			ft = { "markdown", "Avante", "codecompanion" },
 			opts = {

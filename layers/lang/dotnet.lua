@@ -46,6 +46,9 @@ function L.plugins()
 				"nvim-telescope/telescope.nvim",
 			},
 			opts = {
+				lsp = {
+					enabled = false,
+				},
 				test_runner = {
 					---@type "split" | "float" | "buf"
 					viewmode = "float",
@@ -149,7 +152,7 @@ end
 function L.preparation()
 	lsp.mason_ensure({
 		"netcoredbg",
-		-- "roslyn",
+		"roslyn",
 		"csharpier",
 	})
 	local ts = require("LYRD.layers.treesitter")
@@ -164,6 +167,9 @@ function L.preparation()
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-vstest"))
+	-- DEBUG ADAPTER
+	local debugger = require("LYRD.shared.dap.netcoredbg")
+	debugger.setup(dotnet_languages)
 end
 
 function L.settings()
@@ -205,13 +211,13 @@ function L.settings()
 		},
 	})
 
-	-- DEBUG ADAPTER
-	local debugger = require("LYRD.shared.dap.netcoredbg")
-	debugger.setup(dotnet_languages)
-
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
 	overseer.register_template(require("LYRD.shared.overseer.cake"))
+end
+
+function L.complete()
+	vim.lsp.enable("roslyn")
 end
 
 return L
