@@ -1,9 +1,41 @@
 local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 local utils = require("LYRD.utils")
+local commands = require("LYRD.layers.commands")
 
 ---@class LYRD.layer.lang.WebFrontend: LYRD.setup.Module
-local L = { name = "Web frontend" }
+local L = {
+	name = "Web frontend",
+	focus_terminal_on_run = true,
+	ts_root_markers = {
+		"package.json",
+		"tsconfig.json",
+		"jsconfig.json",
+		".git",
+	},
+}
+
+--- Executes the NPM build command in the project's root directory.
+--- Ensures that NPM is installed and available in the system PATH before running.
+--- Determines the working directory using configured root markers or defaults to the current directory.
+--- Runs the "npm run build" command in a terminal split, with focus behavior configurable.
+function L.run_npm_build()
+	if vim.fn.executable("npm") == 0 then
+		vim.notify("NPM is not installed or not found in PATH", vim.log.levels.ERROR)
+		return
+	end
+	local tasks = require("LYRD.layers.tasks")
+	--- get the current working directory as the folder where the current file is located
+	local cwd = utils.find_root_dir(L.ts_root_markers) or vim.fn.getcwd()
+	tasks.run_task({
+		name = "NPM Build",
+		cmd = "npm",
+		args = { "run", "build" },
+		cwd = cwd,
+		open_in_split = true,
+		focus = L.focus_terminal_on_run,
+	})
+end
 
 function L.plugins()
 	setup.plugin({
@@ -63,6 +95,15 @@ function L.preparation()
 		callback = function()
 			vim.treesitter.start(nil, "angular")
 		end,
+	})
+end
+
+function L.settings()
+	local wrap = require("LYRD.layers.commands").wrap
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+	commands.implement({ "typescript", "vue" }, {
+		{ cmd.LYRDCodeBuild, wrap(L.run_npm_build) },
+		{ cmd.LYRDCodeBuildAll, wrap(L.run_npm_build) },
 	})
 end
 

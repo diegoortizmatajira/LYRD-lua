@@ -175,4 +175,30 @@ function M.open_or_create_file(file_path, content)
 	vim.cmd("edit " .. file_path)
 end
 
+--- Finds the root directory of a project based on specific markers.
+---
+--- This function searches for a set of specified root markers (e.g., '.git', 'init.lua')
+--- starting from the directory of the current buffer and traversing upwards.
+--- It stops searching when it reaches the home directory or identifies one of the markers.
+---
+--- @param root_markers string|string[] A list of file names or patterns that indicate the root directory.
+--- @return string|nil The path to the root directory if found, or `nil` otherwise.
+function M.find_root_dir(root_markers)
+	local path = vim.api.nvim_buf_get_name(0) -- current buffer path
+	local dir = vim.fs.dirname(path)
+
+	local root = vim.fs.find(root_markers, {
+		upward = true,
+		type = "file",
+		path = dir,
+		stop = vim.loop.os_homedir(), -- optional: stop at home
+	})
+
+	if root and #root > 0 then
+		return vim.fs.dirname(root[1])
+	end
+
+	return nil
+end
+
 return M
