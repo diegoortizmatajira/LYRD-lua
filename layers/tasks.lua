@@ -25,12 +25,32 @@ end
 --- @field name string
 --- @field open_in_split boolean?
 --- @field focus boolean?
+--- @field diagnostics_parser table?
 
 --- Runs a task in a terminal
 --- @param opts TaskRequest
 function L.run_task(opts)
 	-- Use overseer.nvim to run the command and show output in a terminal window
 	local overseer = require("overseer")
+	local components = { "default" }
+	if opts.diagnostics_parser then
+		table.insert(components, 1, {
+			"on_output_parse",
+			parser = {
+				diagnostics = {
+					opts.diagnostics_parser,
+				},
+			},
+		})
+	end
+	if opts.open_in_split then
+		table.insert(components, 1, {
+			"open_output",
+			direction = "dock",
+			focus = opts.focus or false,
+			on_complete = "always",
+		})
+	end
 	overseer
 		.new_task({
 			cmd = opts.cmd,
@@ -39,17 +59,7 @@ function L.run_task(opts)
 			cwd = opts.cwd,
 			name = opts.name,
 			strategy = "terminal",
-			components = opts.open_in_split and {
-				{
-					"open_output",
-					direction = "dock",
-					focus = opts.focus or false,
-					on_complete = "always",
-				},
-				"default",
-			} or {
-				"default",
-			},
+			components = components,
 		})
 		:start()
 end

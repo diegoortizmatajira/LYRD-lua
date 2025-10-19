@@ -50,7 +50,7 @@ local L = {
 		{ type_id = "neotest-summary", map_q = true, title = "Tests" },
 		{ type_id = "noice" },
 		{ type_id = "qf", map_q = true },
-		{ type_id = "toggleterm" },
+		{ type_id = "toggleterm", map_q = true },
 		{ type_id = "trouble" },
 		{ type_id = "tsplayground", title = "Treesitter Playground" },
 	},
