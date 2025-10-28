@@ -133,7 +133,7 @@ function L.plugins()
             -- Enables notebook like mode
             "GCBallesteros/NotebookNavigator.nvim",
             dependencies = {
-                "echasnovski/mini.comment",
+                "numToStr/Comment.nvim",
                 repl_providers[L.selected_repl_provider].plugins,
             },
             ft = L.supported_filetypes,

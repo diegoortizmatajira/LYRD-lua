@@ -74,7 +74,7 @@ function L.plugins()
 		},
 		{
 			-- Allows to toggle comments with gc/gcc keymaps
-			"echasnovski/mini.comment",
+			"numToStr/Comment.nvim",
 			opts = {},
 		},
 		{
