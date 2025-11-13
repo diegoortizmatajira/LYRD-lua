@@ -117,6 +117,9 @@ local provider = {
 			"test",
 			"validate",
 			"verify",
+			"spring-boot:run",
+			"spring-boot:start",
+			"spring-boot:stop",
 		}
 		local template = task_template(maven_cmd, cwd)
 		for _, action in ipairs(actions) do
