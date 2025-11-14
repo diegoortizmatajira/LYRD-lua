@@ -12,7 +12,7 @@ function L.settings()
 	if vim.g.neovide then
 		vim.g.neovide_refresh_rate = 60
 		vim.g.neovide_refresh_rate_idle = 5
-		vim.g.neovide_transparency = 1
+		vim.g.neovide_opacity = 1
 		vim.g.neovide_cursor_animation_length = 0.008
 		vim.g.neovide_cursor_trail_length = 0.15
 		vim.g.neovide_cursor_vfx_mode = "railgun"
