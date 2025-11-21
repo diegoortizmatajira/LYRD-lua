@@ -34,6 +34,7 @@ setup.load({
 		"LYRD.layers.tasks", -- Must be after debug and database
 		"LYRD.layers.repl",
 		"LYRD.layers.ai-dev",
+		"LYRD.layers.lang.bash",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.grpc",

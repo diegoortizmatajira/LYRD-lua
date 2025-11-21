@@ -79,19 +79,20 @@ function L.preparation()
 
 	lsp.null_ls_register_sources({
 		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
-		null_ls.builtins.diagnostics.pylint.with({
-			command = "python",
-			args = {
-				"-m",
-				"pylint",
-				"--rcfile",
-				utils.join_paths(setup.configs_path, "pylintrc"),
-				"--from-stdin",
-				"$FILENAME",
-				"-f",
-				"json",
-			},
-		}),
+		null_ls.builtins.diagnostics.pylint,
+		-- null_ls.builtins.diagnostics.pylint.with({
+		-- 	command = "python",
+		-- 	args = {
+		-- 		"-m",
+		-- 		"pylint",
+		-- 		"--rcfile",
+		-- 		utils.join_paths(setup.configs_path, "pylintrc"),
+		-- 		"--from-stdin",
+		-- 		"$FILENAME",
+		-- 		"-f",
+		-- 		"json",
+		-- 	},
+		-- }),
 	})
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-python"))
