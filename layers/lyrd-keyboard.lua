@@ -26,6 +26,14 @@ local L = {
 		-- Cycle to the previous completion.
 		prev = "<C-Up>",
 	},
+	bookmark_keys = {
+		toggle = "<tab><tab>", -- Toggle bookmark search (global keymap)
+		add_workspace = "<leader>bb", -- Add workspace bookmarks(global keymap)
+		add_global = "<leader>bg", -- Add global bookmarks(global keymap)
+		delete = "<leader>bd", -- Delete bookmarks on the current line(global keymap)
+		show_desc = "<leader>bs", -- Show bookmark description and jump to the bookmark(global keymap)
+		show = "<leader>bm", -- Show all bookmarks(global keymap)
+	},
 }
 
 function L.plugins()
@@ -148,6 +156,13 @@ function L.keybindings()
 			{ "c", cmd.LYRDAICli },
 			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
 		}, icons.other.ia, { "x" }),
+		menu_header("b", "Bookmarks", {
+			{ "a", cmd.LYRDBookmarkAddLocal },
+			{ "g", cmd.LYRDBookmarkAddGlobal },
+			{ "d", cmd.LYRDBookmarkDelete },
+			{ "s", cmd.LYRDBookmarkSearch },
+			{ "t", cmd.LYRDBookmarkToggle },
+		}, icons.other.bookmark),
 		menu_header("i", "Images", {
 			{ "p", cmd.LYRDPasteImage },
 			{ "i", cmd.LYRDInsertImage },
@@ -242,6 +257,7 @@ function L.keybindings()
 		{ "X", cmd.LYRDCodeRun },
 		{ "]", cmd.LYRDBufferNext },
 		{ "[", cmd.LYRDBufferPrev },
+		{ "/", cmd.LYRDSearchBuffers },
 	})
 
 	mappings.create_menu("<Space>", {
@@ -329,7 +345,8 @@ function L.keybindings()
 			{ "H", cmd.LYRDSearchHighlights },
 			{ "R", cmd.LYRDReplaceInFiles },
 			{ "S", cmd.LYRDSearchCurrentString },
-			{ "b", cmd.LYRDSearchBuffers },
+			{ "b", cmd.LYRDBookmarkSearch },
+			{ "B", cmd.LYRDSearchBuffers },
 			{ "c", cmd.LYRDSearchCommandHistory },
 			{ "f", cmd.LYRDSearchFiletypes },
 			{ "g", cmd.LYRDSearchBufferTags },

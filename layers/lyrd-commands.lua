@@ -213,6 +213,11 @@ local L = {
 		LYRDTasksConfigureLaunch = Command:new("Configure launch profile", nil, icons.other.launch),
 		LYRDToggleBufferDecorations = Command:new("Toggle buffer decorations", nil, icons.action.toggle_on),
 		LYRDEditLocalConfig = Command:new("Edit local config", setup.edit_local_config, icons.other.wrench),
+		LYRDBookmarkAddLocal = Command:new("Add local bookmark", nil, icons.other.bookmark),
+		LYRDBookmarkAddGlobal = Command:new("Add global bookmark", nil, icons.other.bookmark),
+		LYRDBookmarkSearch = Command:new("Show bookmarks", nil, icons.other.bookmark),
+		LYRDBookmarkToggle = Command:new("Toggle bookmarks view", nil, icons.other.bookmark),
+		LYRDBookmarkDelete = Command:new("Delete bookmark", nil, icons.action.delete),
 	},
 }
 

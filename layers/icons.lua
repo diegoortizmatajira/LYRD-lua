@@ -15,6 +15,7 @@ local L = {
 		service = "󰲋 ",
 	},
 	other = {
+		bookmark = "󰃃",
 		briefcase = " ",
 		code = " ",
 		command = " ",

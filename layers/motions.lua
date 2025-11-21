@@ -1,7 +1,9 @@
 local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
 local c = commands.command_shortcut
+local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Motions: LYRD.setup.Module
 local L = {
@@ -45,6 +47,49 @@ function L.plugins()
 					mode = { "n", "o", "x" },
 				},
 			},
+		},
+		{
+			"crusj/bookmarks.nvim",
+			branch = "main",
+			dependencies = { "nvim-web-devicons" },
+			opts = {
+				mappings_enabled = false, -- If the value is false, only valid for global keymaps: toggle、add、delete_on_virt、show_desc
+				sign_icon = icons.other.bookmark, -- if it is not empty, show icon in signColumn.
+			},
+			config = function()
+				require("bookmarks").setup()
+				require("telescope").load_extension("bookmarks")
+			end,
+		},
+	})
+end
+
+function L.settings()
+	commands.implement("*", {
+		{ cmd.LYRDBookmarkSearch, ":Telescope bookmarks" },
+		{
+			cmd.LYRDBookmarkAddLocal,
+			function()
+				require("bookmarks").add_bookmarks(false)
+			end,
+		},
+		{
+			cmd.LYRDBookmarkAddGlobal,
+			function()
+				require("bookmarks").add_bookmarks(true)
+			end,
+		},
+		{
+			cmd.LYRDBookmarkDelete,
+			function()
+				require("bookmarks.list").delete_on_virt()
+			end,
+		},
+		{
+			cmd.LYRDBookmarkToggle,
+			function()
+				require("bookmarks").toggle_bookmarks()
+			end,
 		},
 	})
 end
