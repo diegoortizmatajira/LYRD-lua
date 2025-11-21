@@ -69,6 +69,7 @@ function L.plugins()
 		{
 			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
+			version = "1",
 			opts = {
 				templates = {
 					"builtin",
