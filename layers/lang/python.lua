@@ -18,7 +18,8 @@ function L.plugins()
 			"mfussenegger/nvim-dap-python",
 			dependencies = { "mfussenegger/nvim-dap" },
 			config = function()
-				require("dap-python").setup()
+			    -- WARN: Using 'uv' for uv projects support, otherwise skip.
+				require("dap-python").setup("uv")
 				table.insert(require("dap").configurations.python, {
 					type = "python",
 					request = "launch",
