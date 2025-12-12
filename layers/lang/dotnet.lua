@@ -209,6 +209,7 @@ function L.settings()
 				dotnet.secrets()
 			end,
 		},
+		{ cmd.LYRDCodeTooling, ":Dotnet" },
 	})
 
 	-- Register custom overseer task providers

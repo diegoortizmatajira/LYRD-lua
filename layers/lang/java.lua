@@ -281,6 +281,7 @@ end
 function L.settings()
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
+		{ cmd.LYRDCodeTooling, ":Maven" },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
