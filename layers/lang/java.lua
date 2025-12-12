@@ -74,6 +74,20 @@ local function get_workspace_path()
 	return join(nvim_cache_path, "jdtls", "workspaces", project_path_hash)
 end
 
+local function start_tooling()
+	-- Check if should use Maven or Gradle
+	-- If both are present, prefer Maven
+	local is_maven = vim.fn.filereadable(vim.fn.getcwd() .. "/pom.xml") == 1
+	local is_gradle = vim.fn.filereadable(vim.fn.getcwd() .. "/build.gradle") == 1
+	if is_maven then
+		vim.cmd("Maven")
+	elseif is_gradle then
+		vim.cmd("Gradle")
+	else
+		vim.notify("No Maven or Gradle build file found in the project root.", vim.log.levels.WARN)
+	end
+end
+
 --- Generates the LSP configuration for the Java language using JDTLS.
 -- This function configures various aspects of the Java development environment,
 -- such as workspace paths, runtime settings, and debugging bundles. It ensures
@@ -245,6 +259,15 @@ function L.plugins()
 			opts = {}, -- options, see default configuration
 		},
 		{
+			"oclay1st/gradle.nvim",
+			cmd = { "Gradle", "GradleExec", "GradleInit", "GradleFavorites" },
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"MunifTanjim/nui.nvim",
+			},
+			opts = {}, -- options, see default configuration
+		},
+		{
 			"rcasia/neotest-java",
 			ft = "java",
 			dependencies = {
@@ -281,7 +304,7 @@ end
 function L.settings()
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
-		{ cmd.LYRDCodeTooling, ":Maven" },
+		{ cmd.LYRDCodeTooling, start_tooling },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
