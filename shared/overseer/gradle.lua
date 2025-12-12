@@ -1,32 +1,32 @@
 local overseer = require("overseer")
 
-local maven_default = "mvn"
-local maven_wrapper = "mvnw"
+local gradle_default = "gradle"
+local gradle_wrapper = "gradlew"
 
 ---@param opts overseer.SearchParams
 ---@return nil|string
-local function get_pom(opts)
+local function get_settings_gradle(opts)
 	-- If windows os, check for "build.ps1" script
-	return vim.fs.find("pom.xml", { upward = true, type = "file", path = opts.dir })[1]
+	return vim.fs.find("settings.gradle", { upward = true, type = "file", path = opts.dir })[1]
 end
 
 ---@param opts overseer.SearchParams
 ---@return nil|string
-local function get_mvnw(opts)
-	return vim.fs.find(maven_wrapper, { upward = true, type = "file", path = opts.dir })[1]
+local function get_gradlew(opts)
+	return vim.fs.find(gradle_wrapper, { upward = true, type = "file", path = opts.dir })[1]
 end
 
-local function task_template(maven_cmd, cwd)
+local function task_template(gradle_cmd, cwd)
 	---@type overseer.TemplateDefinition
 	return {
-		name = "Maven",
+		name = "Gradle",
 		priority = 60,
 		params = {
 			---@type overseer.ListParam
 			args = { optional = true, type = "list", delimiter = " " },
 		},
 		builder = function(params)
-			local cmd = { maven_cmd }
+			local cmd = { gradle_cmd }
 			local env = {}
 			local java_home = os.getenv("JAVA_HOME")
 			if java_home then
@@ -49,16 +49,16 @@ local function task_template(maven_cmd, cwd)
 	}
 end
 
-local function task_with_params(maven_cmd, cwd)
+local function task_with_params(gradle_cmd, cwd)
 	---@type overseer.TemplateDefinition
 	return {
-		name = "maven (with custom params)",
+		name = "Gradle (with custom params)",
 		priority = 60,
 		params = {
 			parameters = {
 				name = "Parameters",
-				desc = "List of parameters for Maven",
-				long_desc = "A list of parameters to pass to the Maven command. Separate multiple parameters with spaces.",
+				desc = "List of parameters for Gradle",
+				long_desc = "A list of parameters to pass to the Gradle command. Separate multiple parameters with spaces.",
 				type = "list",
 				subtype = {
 					type = "string",
@@ -67,7 +67,7 @@ local function task_with_params(maven_cmd, cwd)
 			},
 		},
 		builder = function(params)
-			local cmd = { maven_cmd }
+			local cmd = { gradle_cmd }
 
 			---@type overseer.TaskDefinition
 			local task = { cmd = cmd, cwd = cwd }
@@ -81,49 +81,43 @@ local function task_with_params(maven_cmd, cwd)
 end
 ---@type overseer.TemplateFileProvider
 local provider = {
-	name = "Maven",
+	name = "Gradle",
 	cache_key = function(search)
-		return get_pom(search) or search.dir
+		return get_settings_gradle(search) or search.dir
 	end,
 	condition = {
 		callback = function(search)
-			if not get_mvnw(search) and not vim.fn.executable(maven_default) then
-				return false, "Maven command not found"
+			if not get_gradlew(search) and not vim.fn.executable(gradle_default) then
+				return false, "Gradle command not found"
 			end
-			if not (get_pom(search)) then
-				return false, "No pom.xml file found"
+			if not (get_settings_gradle(search)) then
+				return false, "No settings.gradle file found"
 			end
 			return true
 		end,
 	},
 	generator = function(opts, cb)
-		local pom_path = get_pom(opts)
-		local maven_cmd = get_mvnw(opts) or maven_default
+		local pom_path = get_settings_gradle(opts)
+		local gradle_cmd = get_gradlew(opts) or gradle_default
 		local cwd = pom_path ~= nil and vim.fs.dirname(pom_path) or opts.dir
 		local ret = {}
-		-- Adds a task to run Maven with custom parameters
-		table.insert(ret, task_with_params(maven_cmd, cwd))
-		-- Adds multiple default tasks for common Maven actions
+		-- Adds a task to run Gradle with custom parameters
+		table.insert(ret, task_with_params(gradle_cmd, cwd))
+		-- Adds multiple default tasks for common Gradle actions
 		local actions = {
-			"clean compile",
+			"build",
+			"clean build",
 			"clean test",
 			"clean",
-			"compile",
-			"deploy",
-			"install",
-			"package",
-			"site",
+			"distTar",
+			"distZip",
+			"installDist",
 			"test",
-			"validate",
-			"verify",
-			"spring-boot:run",
-			"spring-boot:start",
-			"spring-boot:stop",
 		}
-		local template = task_template(maven_cmd, cwd)
+		local template = task_template(gradle_cmd, cwd)
 		for _, action in ipairs(actions) do
 			local override = {
-				name = string.format("maven: %s", action),
+				name = string.format("Gradle: %s", action),
 			}
 			table.insert(
 				ret,

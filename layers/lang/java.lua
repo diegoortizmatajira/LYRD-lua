@@ -309,6 +309,7 @@ function L.settings()
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
 	overseer.register_template(require("LYRD.shared.overseer.maven"))
+	overseer.register_template(require("LYRD.shared.overseer.gradle"))
 end
 
 function L.complete()
