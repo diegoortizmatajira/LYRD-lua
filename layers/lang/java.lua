@@ -236,6 +236,15 @@ function L.plugins()
 			opts = false,
 		},
 		{
+			"oclay1st/maven.nvim",
+			cmd = { "Maven", "MavenInit", "MavenExec", "MavenFavorites" },
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"muniftanjim/nui.nvim",
+			},
+			opts = {}, -- options, see default configuration
+		},
+		{
 			"rcasia/neotest-java",
 			ft = "java",
 			dependencies = {
