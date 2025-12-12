@@ -39,7 +39,7 @@ local function header()
 		[[⠀⣴⣇⠀⡇⠀⠸⣿⣿⣿⣿⣽⣟⣲⡤⠀⣀⣠⣴⡾⠟⠀⠀⠟⠀⠀⠀⠀⡰⡀]],
 		[[⣼⣿⠋⢀⣇⢸⡄⢻⣟⠻⣿⣿⣿⣿⣿⣿⠿⡿⠟⢁⠀⠀⠀⠀⠀⢰⠀⣠⠀⠰]],
 		[[⢸⣿⡣⣜⣿⣼⣿⣄⠻⡄⡀⠉⠛⠿⠿⠛⣉⡤⠖⣡⣶⠁⠀⠀⠀⣾⣶⣿⠐⡀]],
-		[[⣾⡇⠈⠛⠛⠿⣿⣿⣦⠁⠘⢷⣶⣶⡶⠟⢋⣠⣾⡿⠃⠀⠀⠀⠰⠛⠉⠉⠀    LYRD® Neovim by Diego Ortiz. 2023]],
+		[[⣾⡇⠈⠛⠛⠿⣿⣿⣦⠁⠘⢷⣶⣶⡶⠟⢋⣠⣾⡿⠃⠀⠀⠀⠰⠛⠉⠉⠀    LYRD® Neovim by Diego Ortiz. 2025]],
 	}
 	local title = {
 		[[    __      __       .__                                  __                   ]],
@@ -338,7 +338,7 @@ function L.plugins()
 						-- Use this if you set up 'mini.sessions'
 						-- starter.sections.sessions(5, true),
 					},
-					footer = "LYRD® Neovim by Diego Ortiz. 2023",
+					footer = "LYRD® Neovim by Diego Ortiz. 2025",
 					content_hooks = {
 						starter.gen_hook.adding_bullet(),
 						file_formatter("section", { "Common actions" }),
