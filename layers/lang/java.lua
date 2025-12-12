@@ -77,8 +77,8 @@ end
 local function start_tooling()
 	-- Check if should use Maven or Gradle
 	-- If both are present, prefer Maven
-	local is_maven = vim.fn.filereadable(vim.fn.getcwd() .. "/pom.xml") == 1
-	local is_gradle = vim.fn.filereadable(vim.fn.getcwd() .. "/build.gradle") == 1
+	local is_maven = vim.fn.filereadable(vim.fn.getcwd() .. "/mvnw") == 1
+	local is_gradle = vim.fn.filereadable(vim.fn.getcwd() .. "/gradlew") == 1
 	if is_maven then
 		vim.cmd("Maven")
 	elseif is_gradle then
