@@ -189,7 +189,13 @@ function setup.load(s)
 		--- Call the stage callback for each layer if it exists
 		for _, layer in ipairs(setup.config.loaded_layers) do
 			if layer[stage_function_name] ~= nil then
-				layer[stage_function_name]()
+				local ok, result = pcall(layer[stage_function_name])
+				if not ok then
+					vim.notify(
+						"Error in layer '" .. layer.name .. "' during stage '" .. stage_function_name .. "': " .. result,
+						vim.log.levels.ERROR
+					)
+				end
 			end
 		end
 	end, stages)
