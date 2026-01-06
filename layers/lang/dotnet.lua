@@ -122,7 +122,7 @@ function L.plugins()
 					local command = dotnet_commands[action]()
 					local task = require("overseer").new_task({
 						strategy = {
-							"toggleterm",
+							"jobstart",
 							use_shell = false,
 							direction = "horizontal",
 							open_on_start = true,
