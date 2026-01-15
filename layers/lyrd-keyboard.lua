@@ -200,7 +200,8 @@ function L.keybindings()
 			{ "s", cmd.LYRDScratchOpen },
 			{ "d", cmd.LYRDScratchDelete },
 		}, icons.file.scratch),
-		menu_header("r", "Refactors", {
+		{ "r", cmd.LYRDBufferReload },
+		menu_header("R", "Refactors", {
 			{ "f", cmd.LYRDCodeRefactor },
 			{ "n", cmd.LYRDLSPRename },
 		}, icons.code.refactor),

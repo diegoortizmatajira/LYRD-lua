@@ -34,6 +34,7 @@ local L = {
 		LYRDBufferSplitH = Command:new("Horizonal split", ":split", icons.action.split_h),
 		LYRDBufferSplitV = Command:new("Vertical split", ":vsplit", icons.action.split_v),
 		LYRDBufferToggleWrap = Command:new("Toggle line wrap", ":setlocal wrap!", icons.action.wrap),
+		LYRDBufferReload = Command:new("Reload buffer from disk", ":e", icons.action.reload),
 		LYRDCodeAlternateFile = Command:new("Toggle alternate file", nil, icons.file.swap),
 		LYRDCodeBuild = Command:new("Build", nil, icons.code.build),
 		LYRDCodeBuildAll = Command:new("Build all", nil, icons.code.build),
