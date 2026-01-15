@@ -18,6 +18,7 @@ local L = {
 			icons.action.break_line
 		),
 		LYRDBufferClose = Command:new("Close buffer", ":bd", icons.action.close),
+		LYRDBufferClearContent = Command:new("Close buffer", ":%d _", icons.action.close),
 		LYRDBufferCloseAll = Command:new("Close all buffers", ":bufdo bd", icons.action.close_many),
 		LYRDBufferCopy = Command:new("Copy whole buffer to clipboard", ':normal! ggVG"+y``', icons.action.copy),
 		LYRDBufferForceClose = Command:new("Force close buffer", ":bd!", icons.action.kill),

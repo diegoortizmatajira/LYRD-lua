@@ -263,6 +263,7 @@ function L.keybindings()
 
 	mappings.create_menu("<Space>", {
 		menu_header("b", "Buffers", {
+			{ "c", cmd.LYRDBufferClearContent },
 			{ "e", cmd.LYRDBufferNew },
 			{ "n", cmd.LYRDBufferNext },
 			{ "p", cmd.LYRDBufferPrev },
