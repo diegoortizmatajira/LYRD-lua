@@ -13,7 +13,10 @@ function L.plugins()
 			dependencies = { "kevinhwang91/promise-async" },
 			opts = {
 				provider_selector = function(bufnr, filetype, buftype)
-					return { "treesitter", "indent" }
+					return {
+						"treesitter",
+						"indent",
+					}
 				end,
 			},
 			init = function()
@@ -23,42 +26,42 @@ function L.plugins()
 				vim.o.foldenable = true
 			end,
 		},
-        {
-            "lukas-reineke/indent-blankline.nvim",
-            main = "ibl",
-            opts = {
-                enabled = true,
-                exclude = {
-                    filetypes = {
-                        "",
-                        "NvimTree",
-                        "TelescopePrompt",
-                        "TelescopeResults",
-                        "Trouble",
-                        "checkhealth",
-                        "dashboard",
-                        "gitcommit",
-                        "help",
-                        "lazy",
-                        "lspinfo",
-                        "man",
-                        "neogitstatus",
-                        "packer",
-                        "startify",
-                        "text",
-                    },
-                    buftypes = {
-                        "terminal",
-                        "nofile",
-                        "quickfix",
-                        "prompt",
-                    },
-                },
-                indent = {
-                    char = icons.tree_lines.thin_left,
-                },
-            },
-        },
+		{
+			"lukas-reineke/indent-blankline.nvim",
+			main = "ibl",
+			opts = {
+				enabled = true,
+				exclude = {
+					filetypes = {
+						"",
+						"NvimTree",
+						"TelescopePrompt",
+						"TelescopeResults",
+						"Trouble",
+						"checkhealth",
+						"dashboard",
+						"gitcommit",
+						"help",
+						"lazy",
+						"lspinfo",
+						"man",
+						"neogitstatus",
+						"packer",
+						"startify",
+						"text",
+					},
+					buftypes = {
+						"terminal",
+						"nofile",
+						"quickfix",
+						"prompt",
+					},
+				},
+				indent = {
+					char = icons.tree_lines.thin_left,
+				},
+			},
+		},
 	})
 end
 
