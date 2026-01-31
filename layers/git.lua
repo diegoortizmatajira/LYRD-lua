@@ -234,6 +234,13 @@ function L.git_flow_publish(what)
 	end
 end
 
+function L.git_view_graph()
+	return function()
+		local ui = require("LYRD.layers.lyrd-ui")
+		ui.toggle_external_app_terminal("tig")
+	end
+end
+
 function L.preparation()
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
@@ -278,6 +285,7 @@ function L.settings()
 		},
 		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
+		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
 	})
 end
 
@@ -286,6 +294,7 @@ function L.healthcheck()
 	local health = require("LYRD.health")
 	health.check_executable("git")
 	health.check_executable("lazygit")
+	health.check_executable("tig")
 end
 
 return L

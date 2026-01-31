@@ -392,6 +392,7 @@ function L.keybindings()
 				{ "e", cmd.LYRDGitWorkTreeCreateExistingBranch },
 			}),
 			{ "g", cmd.LYRDGitUI },
+			{ "G", cmd.LYRDGitViewGraph },
 			{ "s", cmd.LYRDGitStatus },
 			{ "c", cmd.LYRDGitCommit },
 			{ "P", cmd.LYRDGitPush },

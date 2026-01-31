@@ -96,6 +96,7 @@ local L = {
 		LYRDGitWorkTreeCreate = Command:new("Create Worktree", nil, icons.folder.new),
 		LYRDGitWorkTreeCreateExistingBranch = Command:new("Create Worktree for existing branch", nil, icons.folder.new),
 		LYRDGitWorkTreeList = Command:new("List GIT Worktrees", nil, icons.git.worktree),
+		LYRDGitViewGraph = Command:new("View Repository Graph", nil, icons.git.branch),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPFindCodeActions = Command:new("Actions", nil, icons.action.code_action),
 		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
