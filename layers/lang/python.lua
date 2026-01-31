@@ -92,8 +92,6 @@ function L.preparation()
 			args = {
 				"-m",
 				"pylint",
-				"--rcfile",
-				utils.join_paths(setup.configs_path, "pylintrc"),
 				"--from-stdin",
 				"$FILENAME",
 				"-f",
