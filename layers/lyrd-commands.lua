@@ -59,6 +59,7 @@ local L = {
 		LYRDCodeQuerySelection = Command:new("Run selected query", nil, icons.code.run, true),
 		LYRDCodeSelectEnvironment = Command:new("Select environment", nil, icons.other.environment),
 		LYRDCodeSecrets = Command:new("Edit Secrets", nil, icons.other.secret),
+		LYRDCodeOrganizeFile = Command:new("Organize code file", nil, icons.code.fix),
 		LYRDDebugBreakpoint = Command:new("Toggle breakpoint", nil, icons.debug.breakpoint),
 		LYRDDebugStart = Command:new("Start debug session", nil, icons.debug.play),
 		LYRDDebugContinue = Command:new("Continue", nil, icons.debug.play),

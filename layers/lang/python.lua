@@ -35,7 +35,6 @@ function L.plugins()
 		{
 			"nvim-neotest/neotest-python",
 			ft = "python",
-			python = nil,
 		},
 		{
 			"linux-cultist/venv-selector.nvim",
@@ -59,6 +58,10 @@ function L.plugins()
 				picker_integration = true,
 				keymaps = false,
 			},
+		},
+		{
+			"lukoshkin/pymove.nvim",
+			opts = {},
 		},
 	})
 end
@@ -105,10 +108,10 @@ end
 
 function L.settings()
 	commands.implement("python", {
-		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
 		{ cmd.LYRDCodeSecrets, open_dotenv },
 		{ cmd.LYRDCodeRunSelection, ":LYRDReplNotebookRunCellAndMove" },
+		{ cmd.LYRDCodeOrganizeFile, ":PySortFile" },
 		{
 			cmd.LYRDCodeTooling,
 			function()

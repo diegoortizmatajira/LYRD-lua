@@ -328,6 +328,7 @@ function L.keybindings()
 			{ "S", cmd.LYRDCodeSecrets },
 			{ "t", cmd.LYRDCodeAlternateFile },
 			{ "x", cmd.LYRDCodeRun },
+			{ "o", cmd.LYRDCodeOrganizeFile },
 		}, icons.other.code, { "x" }),
 		menu_header("d", "Debug", {
 			{ "y", cmd.LYRDDebugStart },

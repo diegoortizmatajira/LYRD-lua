@@ -196,6 +196,10 @@ local function usage_text_format(symbol)
 	return res
 end
 
+function L.organize_imports()
+	vim.lsp.buf.code_action({ only = { "source.organizeImports" } })
+end
+
 function L.plugins()
 	local SymbolKind = vim.lsp.protocol.SymbolKind
 	setup.plugin({
@@ -442,6 +446,7 @@ function L.settings()
 		{ cmd.LYRDViewQuickFixList, ":Trouble qflist toggle" },
 		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
 		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
+		{ cmd.LYRDCodeFixImports, L.organize_imports },
 	})
 end
 
