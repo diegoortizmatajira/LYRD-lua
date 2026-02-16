@@ -1,6 +1,4 @@
 local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Foldings: LYRD.setup.Module
@@ -12,7 +10,7 @@ function L.plugins()
 			"kevinhwang91/nvim-ufo",
 			dependencies = { "kevinhwang91/promise-async" },
 			opts = {
-				provider_selector = function(bufnr, filetype, buftype)
+				provider_selector = function()
 					return {
 						"treesitter",
 						"indent",
@@ -25,6 +23,7 @@ function L.plugins()
 				vim.o.foldlevelstart = 99
 				vim.o.foldenable = true
 			end,
+			-- enabled = false,
 		},
 		{
 			"lukas-reineke/indent-blankline.nvim",
@@ -64,25 +63,5 @@ function L.plugins()
 		},
 	})
 end
-
-function L.preparation() end
-
-function L.settings()
-	-- local lsp = require("LYRD.layers.lsp")
-	-- lsp.plug_capabilities(function(capabilities)
-	-- 	capabilities.textDocument.foldingRange = {
-	-- 		dynamicRegistration = false,
-	-- 		lineFoldingOnly = true,
-	-- 	}
-	-- 	return capabilities
-	-- end)
-	commands.implement("*", {
-		-- { cmd.LYRDXXXX, ":XXXXX" },
-	})
-end
-
-function L.keybindings() end
-
-function L.complete() end
 
 return L
