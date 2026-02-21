@@ -63,6 +63,7 @@ local mason_opts = {
 	-- The registries to source packages from. Accepts multiple entries. Should a package with the same name exist in
 	-- multiple registries, the registry listed first will be used.
 	registries = {
+		"lua:LYRD.shared.mason-registry",
 		"github:crashdummyy/mason-registry",
 		"github:nvim-java/mason-registry",
 		"github:mason-org/mason-registry",

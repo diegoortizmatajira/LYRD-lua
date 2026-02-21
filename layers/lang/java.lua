@@ -280,7 +280,7 @@ end
 
 function L.preparation()
 	lsp.mason_ensure({
-		"clang-format",
+		"palantir-java-format",
 		"jdtls",
 		"lombok-nightly",
 		"java-test",
@@ -295,8 +295,8 @@ function L.preparation()
 		"properties",
 	})
 
-	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
-	lsp.format_with_conform("java", { "clang-format" })
+	lsp.customize_formatter("palantir-java-format", require("LYRD.shared.conform.palantir-java-format"))
+	lsp.format_with_conform("java", { "palantir-java-format" })
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-java"))
 end
