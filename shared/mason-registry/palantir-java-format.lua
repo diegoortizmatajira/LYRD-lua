@@ -7,22 +7,28 @@ return {
 	categories = { "Formatter" },
 	source = {
 		id = "pkg:generic/palantir-java-format@2.88.0",
-		build = {
+		download = {
 			{
 				target = "linux_x64",
-				run = 'curl -fsSL -o palantir-java-format "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/2.88.0/palantir-java-format-native-2.88.0-nativeImage-linux-glibc_x86-64.bin" && chmod +x palantir-java-format',
+				files = {
+					["palantir-java-format-{{version}}.bin"] = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}/palantir-java-format-native-{{version}}-nativeImage-linux-glibc_x86-64.bin",
+				},
 			},
 			{
 				target = "linux_arm64",
-				run = 'curl -fsSL -o palantir-java-format "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/2.88.0/palantir-java-format-native-2.88.0-nativeImage-linux-glibc_aarch64.bin" && chmod +x palantir-java-format',
+				files = {
+					["palantir-java-format-{{version}}.bin"] = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}/palantir-java-format-native-{{version}}-nativeImage-linux-glibc_aarch64.bin",
+				},
 			},
 			{
 				target = "darwin_arm64",
-				run = 'curl -fsSL -o palantir-java-format "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/2.88.0/palantir-java-format-native-2.88.0-nativeImage-macos_aarch64.bin" && chmod +x palantir-java-format',
+				files = {
+					["palantir-java-format-{{version}}.bin"] = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}/palantir-java-format-native-{{version}}-nativeImage-macos_aarch64.bin",
+				},
 			},
 		},
 	},
 	bin = {
-		["palantir-java-format"] = "palantir-java-format",
+		["palantir-java-format"] = "exec:palantir-java-format-{{version}}.bin",
 	},
 }
