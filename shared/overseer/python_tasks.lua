@@ -43,15 +43,26 @@ return {
 		return search.dir
 	end,
 	generator = function(_, cb)
-		cb({
+		local task_templates = {
 			task_template(
 				"Pip install requirements",
 				{ "pip", "install", "-r", "requirements.txt" },
 				"requirements.txt"
 			),
-			task_template("uv sync", { "uv", "sync", "--all-extras" }, "pyproject.toml"),
-			task_template("uv build", { "uv", "build" }, "pyproject.toml"),
-			task_template("uv publish", { "uv", "publish" }, "pyproject.toml"),
-		})
+		}
+		if vim.fn.executable("uv") == 1 then
+			local tasks = {
+				"uv sync",
+				"uv build",
+				"uv publish",
+				"uv run pytest",
+				"uv run pytest --cov",
+			}
+			for _, task_name in ipairs(tasks) do
+				task_templates[#task_templates + 1] =
+					task_template(task_name, vim.split(task_name, " "), "pyproject.toml")
+			end
+		end
+		cb(task_templates)
 	end,
 }
