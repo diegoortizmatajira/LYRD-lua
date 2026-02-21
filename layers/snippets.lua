@@ -45,6 +45,12 @@ function L.plugins()
 				require("luasnip").filetype_extend("kotlin", { "kdoc" })
 				require("luasnip").filetype_extend("ruby", { "rdoc" })
 				require("luasnip").filetype_extend("sh", { "shelldoc" })
+				-- HTML snippets for frontend frameworks
+				require("luasnip").filetype_extend("vue", { "html" })
+				require("luasnip").filetype_extend("htmlangular", { "html" })
+				require("luasnip").filetype_extend("svelte", { "html" })
+				require("luasnip").filetype_extend("javascriptreact", { "html" })
+				require("luasnip").filetype_extend("typescriptreact", { "html" })
 			end,
 			-- install jsregexp (optional!).
 			build = "make install_jsregexp",
