@@ -95,6 +95,13 @@ function L.plugins()
 end
 
 function L.keybindings()
+	-- Use standard nvim key mapping to disable q for recording macros.
+	vim.keymap.set("n", "q", "<nop>")
+	-- Use standard nvim key mapping to set <leader> + q to start/stop
+	-- recording macros using the default q keymap while allowing the user to
+	-- press a register key of their choice after pressing <leader> + q.
+	vim.keymap.set("n", "<leader>q", "q", { desc = "Start/stop recording macro", noremap = true })
+
 	mappings.keys({
 		-- Manual brackaeted mappings for buffers to override mini.bracketed defaults
 		{ "n", "[b", cmd.LYRDBufferPrev },
