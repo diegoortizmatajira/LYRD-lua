@@ -224,6 +224,7 @@ function L.preparation()
 	lsp.register_code_actions({ L.docker_compose_filetype }, docker_compose_generate_actions)
 	lsp.mason_ensure({
 		"dockerfile-language-server",
+		"docker-language-server",
 		"docker-compose-language-service",
 	})
 	-- Configure hadolint only if platform is Linux
@@ -266,6 +267,7 @@ end
 function L.complete()
 	vim.lsp.enable({
 		"dockerls",
+		"docker_language_server",
 		"docker_compose_language_service",
 	})
 end
