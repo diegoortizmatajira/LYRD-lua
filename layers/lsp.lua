@@ -399,6 +399,48 @@ function L.settings()
 
 	vim.o.winborder = "rounded"
 
+	-- Custom hover that filters out LSP clients with empty results
+	local function filtered_hover()
+		local params = vim.lsp.util.make_position_params(0, "utf-16")
+		vim.lsp.buf_request_all(0, "textDocument/hover", params, function(results, ctx)
+			local entries = {}
+			for client_id, resp in pairs(results) do
+				if not resp.error and resp.result and resp.result.contents then
+					local lines = vim.lsp.util.convert_input_to_markdown_lines(resp.result.contents)
+					local has_content = false
+					for _, line in ipairs(lines) do
+						if vim.trim(line) ~= "" then
+							has_content = true
+							break
+						end
+					end
+					if has_content then
+						table.insert(entries, { client_id = client_id, lines = lines })
+					end
+				end
+			end
+			if #entries == 0 then
+				return
+			end
+			local display = {}
+			for i, entry in ipairs(entries) do
+				if #entries > 1 then
+					local client = vim.lsp.get_client_by_id(entry.client_id)
+					local name = client and client.name or tostring(entry.client_id)
+					if i > 1 then
+						table.insert(display, "---")
+					end
+					table.insert(display, ("# %s"):format(name))
+				end
+				vim.list_extend(display, entry.lines)
+			end
+			vim.lsp.util.open_floating_preview(display, "markdown", {
+				focus_id = "textDocument/hover",
+			})
+		end)
+	end
+	L.filtered_hover = filtered_hover
+
 	if L.enable_usage_hints then
 		local ui = require("LYRD.layers.lyrd-ui")
 		ui.register_decoration_togglers("*", {
@@ -421,7 +463,7 @@ function L.settings()
 		{ cmd.LYRDLSPFindImplementations, commands.wrap(vim.lsp.buf.implementation) },
 		{ cmd.LYRDLSPFindDefinitions, commands.wrap(vim.lsp.buf.definition) },
 		{ cmd.LYRDLSPFindDeclaration, commands.wrap(vim.lsp.buf.declaration) },
-		{ cmd.LYRDLSPHoverInfo, commands.wrap(vim.lsp.buf.hover) },
+		{ cmd.LYRDLSPHoverInfo, filtered_hover },
 		{ cmd.LYRDLSPSignatureHelp, commands.wrap(vim.lsp.buf.signature_help) },
 		{ cmd.LYRDLSPFindTypeDefinition, commands.wrap(vim.lsp.buf.type_definition) },
 		{ cmd.LYRDLSPRename, commands.wrap(vim.lsp.buf.rename) },
