@@ -12,7 +12,7 @@ local L = {
 	null_ls_registered = {},
 	conform_formatters_by_ft = {},
 	conform_formatters = {},
-	enable_usage_hints = true,
+	enable_usage_hints = false,
 }
 
 local mason_opts = {
@@ -397,21 +397,17 @@ function L.settings()
 	vim.diagnostic.config(config)
 	exclude_lsp_lines_from_filetypes({ "lazy" })
 
-	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+	vim.o.winborder = "rounded"
 
-	vim.lsp.handlers["textDocument/signatureHelp"] =
-		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
-	-- Enable rounded borders in :LspInfo window.
-	require("lspconfig.ui.windows").default_options.border = "rounded"
-
-	local ui = require("LYRD.layers.lyrd-ui")
-	ui.register_decoration_togglers("*", {
-		function()
-			-- Toggle symbol usage display
-			require("symbol-usage").toggle()
-		end,
-	})
+	if L.enable_usage_hints then
+		local ui = require("LYRD.layers.lyrd-ui")
+		ui.register_decoration_togglers("*", {
+			function()
+				-- Toggle symbol usage display
+				require("symbol-usage").toggle()
+			end,
+		})
+	end
 
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
