@@ -397,13 +397,7 @@ function L.settings()
 	vim.diagnostic.config(config)
 	exclude_lsp_lines_from_filetypes({ "lazy" })
 
-	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-
-	vim.lsp.handlers["textDocument/signatureHelp"] =
-		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
-	-- Enable rounded borders in :LspInfo window.
-	require("lspconfig.ui.windows").default_options.border = "rounded"
+	vim.o.winborder = "rounded"
 
 	if L.enable_usage_hints then
 		local ui = require("LYRD.layers.lyrd-ui")
