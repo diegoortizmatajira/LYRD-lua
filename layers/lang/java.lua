@@ -54,6 +54,22 @@ function L.plugins()
 				"mfussenegger/nvim-dap",
 			},
 		},
+		{
+			"JavaHello/spring-boot.nvim",
+			ft = "java",
+			dependencies = {
+				"mfussenegger/nvim-jdtls",
+			},
+			opts = function()
+				local ls_path = vim.fn.glob(
+					lsp.get_pkg_path("spring-boot-tools") .. "/extension/language-server/spring-boot-language-server*.jar"
+				)
+				if ls_path ~= "" then
+					return { ls_path = ls_path }
+				end
+				return {}
+			end,
+		},
 	})
 end
 
@@ -93,17 +109,6 @@ end
 
 function L.complete()
 	vim.lsp.enable("jdtls")
-	-- -- NOTE: Do not enable jdtls here using vim.lsp.enable("jdtls"), it will cause issues with the jdtls.nvim plugin.
-	-- local java_cmds = vim.api.nvim_create_augroup("java_cmds", { clear = true })
-	-- vim.api.nvim_create_autocmd("FileType", {
-	-- 	group = java_cmds,
-	-- 	pattern = { "java" },
-	-- 	desc = "Setup jdtls",
-	-- 	callback = function()
-	-- 		local config = require("LYRD.shared.jdtls")
-	-- 		require("jdtls").start_or_attach(config)
-	-- 	end,
-	-- })
 end
 
 return L

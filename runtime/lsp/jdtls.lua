@@ -37,7 +37,7 @@ local plug_jar_map = {
 		},
 	},
 	["java-debug-adapter"] = { dir = "server", patterns = { "*.jar" } },
-	-- ["spring-boot-tools"] = { dir = "jars", patterns = { "*.jar" } },
+	["spring-boot-tools"] = { dir = "jars", patterns = { "*.jar" } },
 }
 
 local default_runtimes = {
