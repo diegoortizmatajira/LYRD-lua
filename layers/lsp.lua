@@ -12,7 +12,7 @@ local L = {
 	null_ls_registered = {},
 	conform_formatters_by_ft = {},
 	conform_formatters = {},
-	enable_usage_hints = true,
+	enable_usage_hints = false,
 }
 
 local mason_opts = {
@@ -405,13 +405,15 @@ function L.settings()
 	-- Enable rounded borders in :LspInfo window.
 	require("lspconfig.ui.windows").default_options.border = "rounded"
 
-	local ui = require("LYRD.layers.lyrd-ui")
-	ui.register_decoration_togglers("*", {
-		function()
-			-- Toggle symbol usage display
-			require("symbol-usage").toggle()
-		end,
-	})
+	if L.enable_usage_hints then
+		local ui = require("LYRD.layers.lyrd-ui")
+		ui.register_decoration_togglers("*", {
+			function()
+				-- Toggle symbol usage display
+				require("symbol-usage").toggle()
+			end,
+		})
+	end
 
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
