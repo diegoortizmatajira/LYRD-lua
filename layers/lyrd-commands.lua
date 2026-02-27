@@ -222,6 +222,10 @@ local L = {
 		LYRDBookmarkSearch = Command:new("Show bookmarks", nil, icons.other.bookmark),
 		LYRDBookmarkToggle = Command:new("Toggle bookmarks view", nil, icons.other.bookmark),
 		LYRDBookmarkDelete = Command:new("Delete bookmark", nil, icons.action.delete),
+		LYRDCopyRelativeFilePath = Command:new("Copy relative file path", nil, icons.file.symlink),
+		LYRDCopyAbsoluteFilePath = Command:new("Copy absolute file path", nil, icons.file.symlink),
+		LYRDCopyFileName = Command:new("Copy file name", nil, icons.file.symlink),
+		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
 	},
 }
 

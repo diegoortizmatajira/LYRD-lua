@@ -143,16 +143,25 @@ function L.keybindings()
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 		{ "n", "<S-F5>", cmd.LYRDDebugStart },
 		{ "n", "K", cmd.LYRDLSPHoverInfo },
-		{ "n", "gD", cmd.LYRDLSPFindDeclaration },
 		{ "n", "gO", c([[call append(line('.')-1, '')]]), { desc = "Insert line above cursor" } },
-		{ "n", "gd", cmd.LYRDLSPFindDefinitions },
-		{ "n", "gi", cmd.LYRDLSPFindImplementations },
 		{ "n", "go", c([[call append(line('.'), '')]]), { desc = "Insert line below cursor" } },
-		{ "n", "gr", cmd.LYRDLSPFindReferences },
-		{ "n", "gt", cmd.LYRDLSPFindTypeDefinition },
 		{ "n", "s", "<nop>" },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-S-f>", cmd.LYRDBufferFormat },
+	})
+
+	mappings.create_menu("g", {
+		{ "d", cmd.LYRDLSPFindDefinitions },
+		{ "D", cmd.LYRDLSPFindDeclaration },
+		{ "i", cmd.LYRDLSPFindImplementations },
+		{ "r", cmd.LYRDLSPFindReferences },
+		{ "t", cmd.LYRDLSPFindTypeDefinition },
+		menu_header("y", "Yank", {
+			{ "a", cmd.LYRDCopyAbsoluteFilePath },
+			{ "f", cmd.LYRDCopyFileName },
+			{ "r", cmd.LYRDCopyRelativeFilePath },
+			{ "w", cmd.LYRDCopyWorkingDirectory },
+		}, icons.action.copy),
 	})
 
 	mappings.create_menu("<Leader>", {
