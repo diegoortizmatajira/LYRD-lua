@@ -1,6 +1,7 @@
 local commands = require("LYRD.layers.commands")
 local icons = require("LYRD.layers.icons")
 local setup = require("LYRD.setup")
+local c = commands.command_shortcut
 
 ---@class LYRD.layer.LYRDCommands: LYRD.setup.Module
 local L = {
@@ -226,6 +227,8 @@ local L = {
 		LYRDCopyAbsoluteFilePath = Command:new("Copy absolute file path", nil, icons.file.symlink),
 		LYRDCopyFileName = Command:new("Copy file name", nil, icons.file.symlink),
 		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
+		LYRDInsertLineAbove = Command:new("Insert line above", ":call append(line('.')-1, '')", icons.arrow.up),
+		LYRDInsertLineBelow = Command:new("Insert line below", ":call append(line('.'), '')", icons.arrow.down),
 	},
 }
 

@@ -2,8 +2,6 @@ local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
-local commands = require("LYRD.layers.commands")
-local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
@@ -143,8 +141,6 @@ function L.keybindings()
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 		{ "n", "<S-F5>", cmd.LYRDDebugStart },
 		{ "n", "K", cmd.LYRDLSPHoverInfo },
-		{ "n", "gO", c([[call append(line('.')-1, '')]]), { desc = "Insert line above cursor" } },
-		{ "n", "go", c([[call append(line('.'), '')]]), { desc = "Insert line below cursor" } },
 		{ "n", "s", "<nop>" },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-S-f>", cmd.LYRDBufferFormat },
@@ -154,6 +150,8 @@ function L.keybindings()
 		{ "d", cmd.LYRDLSPFindDefinitions },
 		{ "D", cmd.LYRDLSPFindDeclaration },
 		{ "i", cmd.LYRDLSPFindImplementations },
+		{ "o", cmd.LYRDInsertLineBelow },
+		{ "O", cmd.LYRDInsertLineAbove },
 		{ "r", cmd.LYRDLSPFindReferences },
 		{ "t", cmd.LYRDLSPFindTypeDefinition },
 		menu_header("y", "Yank", {
