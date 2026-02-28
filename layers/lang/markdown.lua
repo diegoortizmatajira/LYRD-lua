@@ -14,6 +14,11 @@ function L.plugins()
 			ft = { "markdown", "Avante", "codecompanion" },
 			opts = {
 				file_types = { "markdown", "Avante", "codecompanion" },
+				completions = {
+					lsp = {
+						enabled = true,
+					},
+				},
 				heading = {
 					sign = false,
 					icons = {
@@ -93,15 +98,7 @@ function L.preparation()
 		end,
 	})
 	--- Configures multiple formatters for markdown files, but first it will run a custom function to reflow the text.
-	lsp.format_with_conform(
-		{ "markdown", "markdown.mdx" },
-		{ "prettier", "markdownlint-cli2", "markdown-toc" },
-		nil
-		-- function()
-		-- 	-- Reflow the text first
-		-- 	vim.cmd("normal! gggwG")
-		-- end
-	)
+	lsp.format_with_conform({ "markdown", "markdown.mdx" }, { "prettier", "markdownlint-cli2", "markdown-toc" })
 	lsp.null_ls_register_sources({
 		require("null-ls.builtins.diagnostics.markdownlint_cli2"),
 	})
@@ -113,7 +110,16 @@ function L.settings()
 end
 
 function L.complete()
-	vim.lsp.enable("marksman")
+	vim.lsp.enable({
+		"marksman",
+	})
+end
+
+function L.healthcheck()
+	vim.health.start(L.name)
+	local health = require("LYRD.health")
+	health.check_executable("utftex")
+	health.check_executable("latex2text")
 end
 
 return L
