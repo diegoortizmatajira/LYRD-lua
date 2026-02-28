@@ -67,8 +67,12 @@ function L.preparation()
 	})
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
+		"latex",
 		"markdown",
+		"markdown_inline",
 		"mermaid",
+		"html",
+		"yaml",
 	})
 	lsp.customize_formatter("markdown-toc", {
 		condition = function(_, ctx)

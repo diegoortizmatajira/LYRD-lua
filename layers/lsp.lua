@@ -328,7 +328,6 @@ end
 function L.preparation()
 	add_mason_bin_to_path()
 	L.mason_ensure({
-		"bash-language-server",
 		"editorconfig-checker",
 		"vim-language-server",
 	})
