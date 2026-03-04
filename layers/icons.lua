@@ -8,6 +8,14 @@ local L = {
 	unicode = {
 		lightbulb = "💡",
 	},
+	ai = {
+		assistant = "󱜙 ",
+		cli = "󰶭 ",
+		prompt = "󰍩 ",
+		edit = "󱆿 ",
+		select = " ",
+		document = "󱋄 ",
+	},
 	cloud = {
 		cloud = "󰅟 ",
 		docker = "󰡨 ",

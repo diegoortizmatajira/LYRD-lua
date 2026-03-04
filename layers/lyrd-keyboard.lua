@@ -168,7 +168,9 @@ function L.keybindings()
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit, { "x" } },
 			{ "c", cmd.LYRDAICli },
+			{ "C", cmd.LYRDAICliSelect },
 			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
+			{ "p", cmd.LYRDAICliPrompt },
 		}, icons.other.ia, { "x" }),
 		menu_header("b", "Bookmarks", {
 			{ "a", cmd.LYRDBookmarkAddLocal },

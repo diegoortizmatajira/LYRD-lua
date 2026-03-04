@@ -203,6 +203,8 @@ function L.settings()
 		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
+		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
+		{ cmd.LYRDAICliPrompt, ":Sidekick cli prompt" },
 		{ cmd.LYRDAIAsk, wrap(require("avante.api").ask) },
 		{ cmd.LYRDAIEdit, wrap(require("avante.api").edit) },
 	})

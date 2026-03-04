@@ -8,11 +8,13 @@ local L = {
 	name = "LYRD Commands",
 	vscode_compatible = true,
 	cmd = {
-		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.other.ia, true),
-		LYRDAICli = Command:new("AI Cli tools", nil, icons.other.ia, true),
-		LYRDAIAsk = Command:new("Ask AI", nil, icons.other.ia, true),
-		LYRDAIEdit = Command:new("Edit with AI", nil, icons.other.ia, true),
-		LYRDAIGenerateDocumentation = Command:new("Document current element with AI", nil, icons.other.ia, true),
+		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.ai.assistant, true),
+		LYRDAICli = Command:new("AI Cli tools", nil, icons.ai.cli, true),
+		LYRDAICliPrompt = Command:new("Send a promtp to AI Cli tools", nil, icons.ai.prompt, true),
+		LYRDAICliSelect = Command:new("Select AI Cli tools", nil, icons.ai.select, true),
+		LYRDAIAsk = Command:new("Ask AI", nil, icons.ai.prompt, true),
+		LYRDAIEdit = Command:new("Edit with AI", nil, icons.ai.edit, true),
+		LYRDAIGenerateDocumentation = Command:new("Document current element with AI", nil, icons.ai.document, true),
 		LYRDBreakLine = Command:new(
 			"Break current line",
 			":s/[,(]/&\r/ge|:noh|:'[,']normal==",
