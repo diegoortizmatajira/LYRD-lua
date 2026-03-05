@@ -67,12 +67,35 @@ end
 function L.plugins()
 	setup.plugin({
 		{
-			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
 			version = "1",
 			opts = {
 				templates = {
 					"builtin",
+				},
+				component_aliases = {
+					default = {
+						{
+							"display_duration",
+							detail_level = 2,
+						},
+						"on_output_summarize",
+						"on_exit_set_status",
+						{
+							"on_complete_notify",
+							system = "unfocused",
+						},
+						{
+							"on_complete_dispose",
+							timeout = 300,
+						},
+						{
+							"open_output",
+							direction = "dock",
+							focus = true,
+							on_complete = "always",
+						},
+					},
 				},
 				task_list = {
 					direction = "bottom",
