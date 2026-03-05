@@ -58,6 +58,9 @@ function L.plugins()
 		{
 			"nvim-neotest/neotest-jest",
 		},
+		{
+			"nvim-svelte/nvim-svelte-snippets",
+		},
 	})
 end
 
