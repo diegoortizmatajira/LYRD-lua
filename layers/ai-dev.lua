@@ -39,6 +39,11 @@ local function avante_dependencies()
 	return result
 end
 
+--- Creates a function that triggers an Avante edit with a predefined prompt.
+--- The returned function accepts an options table with optional `args`, `line1`, and `line2` fields.
+--- If `args` is provided and the `prompt` parameter is nil, the trimmed `args` will be used as the prompt.
+---@param prompt string|nil The predefined prompt to use for the edit. If nil, `opts.args` is used instead.
+---@return fun(opts?: {args?: string, line1?: integer, line2?: integer}) handler A function that invokes `avante.api.edit` with the resolved prompt and line range.
 local function edit_with_prompt(prompt)
 	return function(opts)
 		opts = opts or {}
