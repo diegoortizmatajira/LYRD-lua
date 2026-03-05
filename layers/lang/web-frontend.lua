@@ -50,7 +50,7 @@ function L.plugins()
 		},
 		{
 			"leafgarland/typescript-vim",
-			ft = { "ts", "tsx", "vue" },
+			ft = { "ts", "tsx", "vue", "svelte" },
 		},
 		{
 			"marilari88/neotest-vitest",
@@ -65,18 +65,21 @@ function L.preparation()
 	lsp.mason_ensure({
 		"vue-language-server",
 		"angular-language-server",
+		"svelte-language-server",
 		"js-debug-adapter",
 		"eslint-lsp",
 		"vtsls",
 	})
 	lsp.format_with_lsp("vue", "vue_ls")
 	lsp.format_with_lsp("ts", "vtsls")
+	lsp.format_with_lsp("svelte", "svelte")
 
 	local ts = require("LYRD.layers.treesitter")
 	ts.ensureParser({
 		"javascript",
 		"typescript",
 		"vue",
+		"svelte",
 		"tsx",
 		"angular",
 	})
@@ -101,7 +104,7 @@ end
 function L.settings()
 	local wrap = require("LYRD.layers.commands").wrap
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
-	commands.implement({ "typescript", "vue" }, {
+	commands.implement({ "typescript", "vue", "svelte" }, {
 		{ cmd.LYRDCodeBuild, wrap(L.run_npm_build) },
 		{ cmd.LYRDCodeBuildAll, wrap(L.run_npm_build) },
 	})
@@ -112,6 +115,7 @@ function L.complete()
 		"vtsls",
 		"vue_ls",
 		"angularls",
+		"svelte",
 	})
 end
 
