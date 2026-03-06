@@ -28,7 +28,7 @@ function L.preparation()
 	})
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.prettier.with({ -- For most standard file types
+		null_ls.builtins.formatting.prettier.with({ -- For most standard filetypes
 			extra_filetypes = { "htmldjango" },
 		}),
 	})
