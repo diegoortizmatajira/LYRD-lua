@@ -1,6 +1,4 @@
 local lsp = require("LYRD.layers.lsp")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 local concrete_module = require("LYRD.shared.concrete_module")
 
 local L = concrete_module:new({
@@ -71,7 +69,6 @@ local L = concrete_module:new({
 	required_enabled_lsp_servers = {
 		"jdtls",
 	},
-	something = true, -- Just to test that the condition field works
 })
 
 local function start_tooling()
@@ -90,13 +87,19 @@ end
 
 function L:preparation()
 	concrete_module.preparation(self)
+
 	lsp.customize_formatter("palantir-java-format", require("LYRD.shared.conform.palantir-java-format"))
 	lsp.format_with_conform("java", { "palantir-java-format" })
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-java"))
 end
 
-function L.settings()
+function L:settings()
+	concrete_module.settings(self)
+
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
 		{ cmd.LYRDCodeTooling, start_tooling },
