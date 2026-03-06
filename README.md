@@ -52,7 +52,7 @@
 
 ## What is LYRD?
 
-LYRD (Layered neovim) transforms Neovim into a complete, modern development
+LYRD (Layered Neovim) transforms Neovim into a complete, modern development
 environment that rivals popular IDEs like VS Code, IntelliJ, or PyCharm. It's
 designed for developers who want the speed and efficiency of Neovim combined
 with the features of a full-featured IDE.
