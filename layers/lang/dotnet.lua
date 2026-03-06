@@ -1,33 +1,11 @@
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local lsp = require("LYRD.layers.lsp")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
-local utils = require("LYRD.utils")
-
----@class LYRD.layer.lang.Dotnet: LYRD.setup.Module
-local L = {
-	name = "Dotnet languages: C#, F#, Vb",
-}
+local concrete_module = require("LYRD.shared.concrete_module")
 
 local dotnet_languages = { "cs", "vb" }
 
-local function get_secret_path(secret_guid)
-	if secret_guid == nil then
-		return ""
-	end
-	local path = ""
-	local home_dir = vim.fn.expand("~")
-	if require("easy-dotnet.extensions").isWindows() then
-		path = utils.join_paths(home_dir, "AppData", "Roaming", "Microsoft", "UserSecrets", secret_guid, "secrets.json")
-	else
-		path = utils.join_paths(home_dir, ".microsoft", "usersecrets", secret_guid, "secrets.json")
-	end
-	return path
-end
-
-function L.plugins()
-	setup.plugin({
+local L = concrete_module:new({
+	name = "Dotnet languages: C#, F#, Vb",
+	required_plugins = {
 		{
 			"nsidorenco/neotest-vstest",
 			ft = dotnet_languages,
@@ -35,9 +13,7 @@ function L.plugins()
 		{
 			"seblj/roslyn.nvim",
 			ft = "cs",
-			opts = {
-				-- your configuration comes here; leave empty for default settings
-			},
+			opts = {},
 		},
 		{
 			"gustaveikaas/easy-dotnet.nvim",
@@ -134,7 +110,28 @@ function L.plugins()
 					task:start()
 				end,
 				secrets = {
-					path = get_secret_path,
+					path = function(secret_guid)
+						if secret_guid == nil then
+							return ""
+						end
+						local path = ""
+						local home_dir = vim.fn.expand("~")
+						local utils = require("LYRD.utils")
+						if require("easy-dotnet.extensions").isWindows() then
+							path = utils.join_paths(
+								home_dir,
+								"AppData",
+								"Roaming",
+								"Microsoft",
+								"UserSecrets",
+								secret_guid,
+								"secrets.json"
+							)
+						else
+							path = utils.join_paths(home_dir, ".microsoft", "usersecrets", secret_guid, "secrets.json")
+						end
+						return path
+					end,
 				},
 				csproj_mappings = true,
 				fsproj_mappings = true,
@@ -146,33 +143,45 @@ function L.plugins()
 		-- 	"adamclerk/vim-razor",
 		-- 	ft = dotnet_languages,
 		-- },
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"netcoredbg",
 		"roslyn",
 		"csharpier",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"c_sharp",
 		"fsharp",
-	})
+	},
+	required_enabled_lsp_servers = {
+		"roslyn",
+	},
+})
+
+function L:preparation()
+	concrete_module.preparation(self)
+
+	local lsp = require("LYRD.layers.lsp")
+
 	lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
 	lsp.format_with_conform("cs", {
 		"csharpier",
 		lsp_format = "prefer",
 	})
+
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-vstest"))
+
 	-- DEBUG ADAPTER
 	local debugger = require("LYRD.shared.dap.netcoredbg")
 	debugger.setup(dotnet_languages)
 end
 
-function L.settings()
+function L:settings()
+	concrete_module.settings(self)
+
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement(dotnet_languages, {
 		{
 			cmd.LYRDCodeBuild,
@@ -215,10 +224,6 @@ function L.settings()
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
 	overseer.register_template(require("LYRD.shared.overseer.cake"))
-end
-
-function L.complete()
-	vim.lsp.enable("roslyn")
 end
 
 return L

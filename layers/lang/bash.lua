@@ -1,19 +1,13 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
+local concrete_module = require("LYRD.shared.concrete_module")
 
----@class LYRD.layer.Bash: LYRD.setup.Module
-local L = { name = "Bash" }
-
-function L.plugins()
-	setup.plugin({})
-end
-
-function L.preparation()
-	lsp.mason_ensure({ "bashls" })
-end
-
-function L.complete()
-	vim.lsp.enable("bashls")
-end
+local L = concrete_module:new({
+	name = "Bash",
+	required_mason_packages = {
+		"bashls",
+	},
+	required_enabled_lsp_servers = {
+		"bashls",
+	},
+})
 
 return L

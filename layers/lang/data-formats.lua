@@ -1,19 +1,45 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
+local concrete_module = require("LYRD.shared.concrete_module")
 
----@class LYRD.layer.lang.DataFormats: LYRD.setup.Module
-local L = { name = "Data formats json, yaml, toml, xml" }
-
-function L.plugins()
-	setup.plugin({
-
-		{ "b0o/schemastore.nvim" },
+local L = concrete_module:new({
+	name = "Data formats json, yaml, toml, xml",
+	required_plugins = {
+		{
+			"b0o/schemastore.nvim",
+		},
 		{
 			"VPavliashvili/json-nvim",
-			ft = "json", -- only load for json filetype
+			ft = "json",
 		},
-	})
-end
+	},
+	required_mason_packages = {
+		"json-lsp",
+		"json-to-struct",
+		"jsonlint",
+		"lemminx",
+		"prettier",
+		"taplo",
+		"xmlformatter",
+		"yaml-language-server",
+		"yamlfmt",
+		"yamllint",
+	},
+	required_treesitter_parsers = {
+		"scheme",
+		"yaml",
+		"json",
+		"json5",
+		"jsonc",
+		"toml",
+		"xml",
+		"proto",
+	},
+	required_enabled_lsp_servers = {
+		"jsonls",
+		"yamlls",
+		"taplo",
+		"lemminx",
+	},
+})
 
 local function jsonlint()
 	local h = require("null-ls.helpers")
@@ -44,54 +70,24 @@ local function jsonlint()
 	})
 end
 
-function L.preparation()
-	lsp.mason_ensure({
-		"json-lsp",
-		"json-to-struct",
-		"jsonlint",
-		"lemminx",
-		"prettier",
-		"taplo",
-		"xmlformatter",
-		"yaml-language-server",
-		"yamlfmt",
-		"yamllint",
-	})
+function L:preparation()
+	concrete_module.preparation(self)
+	local lsp = require("LYRD.layers.lsp")
 	lsp.format_with_conform({ "json", "jsonc" }, { "prettier" })
 	lsp.format_with_conform("xml", { "xmlformatter", lsp_format = "prefer" })
 
 	lsp.null_ls_register_sources({
 		jsonlint(),
 	})
-
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"scheme",
-		"yaml",
-		"json",
-		"json5",
-		"jsonc",
-		"toml",
-		"xml",
-		"proto",
-	})
 end
 
-function L.settings()
+function L:settings()
+	concrete_module.settings(self)
 	vim.filetype.add({
 		filename = {
 			["tasks.json"] = "jsonc",
 			["launch.json"] = "jsonc",
 		},
-	})
-end
-
-function L.complete()
-	vim.lsp.enable({
-		"jsonls",
-		"yamlls",
-		"taplo",
-		"lemminx",
 	})
 end
 

@@ -1,7 +1,5 @@
-local lsp = require("LYRD.layers.lsp")
 local concrete_module = require("LYRD.shared.concrete_module")
 
----@class LYRD.layer.lang.Python: LYRD.setup.Module
 local L = concrete_module:new({
 	name = "Python language",
 	required_plugins = {
@@ -79,6 +77,7 @@ end
 function L:preparation()
 	concrete_module.preparation(self)
 
+	local lsp = require("LYRD.layers.lsp")
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
 		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.

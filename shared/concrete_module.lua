@@ -1,5 +1,5 @@
---- @class LYRD.setup.ConcreteModule: LYRD.setup.Module
---- @field required_plugins LazySpec[]
+--- @class LYRD.setup.ConcreteModule: LYRD.setup.Module Allows to create a layer module with a declarative style, by just specifying the required plugins, mason packages, treesitter parsers and enabled LSP servers. The methods of the module will be implemented with default implementations that take care of these requirements.
+--- @field required_plugins nil|LazySpec[]
 --- @field required_mason_packages nil|string[]  List of mason packages required by this module.
 --- @field required_treesitter_parsers nil|string[]  List of treesitter parsers required by this module.
 --- @field required_enabled_lsp_servers nil|string[]  List of LSP servers that must be enabled for this module to load.
@@ -7,9 +7,8 @@ local ConcreteModule = {}
 ConcreteModule.__index = ConcreteModule
 
 --- Constructor
---- @generic T: LYRD.setup.ConcreteModule
---- @param proto T A prototype table that contains the fields of the module to be created.
---- @return T & LYRD.setup.ConcreteModule An instance of the module created from the prototype.
+--- @param proto LYRD.setup.ConcreteModule A prototype table that contains the fields of the module to be created.
+--- @return LYRD.setup.ConcreteModule & T An instance of the module created from the prototype.
 function ConcreteModule:new(proto)
 	local o = setmetatable(proto, self)
 	return o

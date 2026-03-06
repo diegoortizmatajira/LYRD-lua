@@ -1,27 +1,11 @@
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.lang.Go: LYRD.setup.Module
-local L = { name = "Go language" }
+local concrete_module = require("LYRD.shared.concrete_module")
 
-local function ends_with(str, ending)
-	return ending == "" or str:sub(-#ending) == ending
-end
-
---  run :GoBuild or :GoTestCompile based on the go file
-local function build_go_files()
-	local file = vim.fn.expand("%")
-	if ends_with(file, "_test.go") then
-		vim.fn["go#test#Test"](0, 1)
-	else
-		vim.fn["go#cmd#Build"](0)
-	end
-end
-function L.plugins()
-	setup.plugin({
+local L = concrete_module:new({
+	name = "Go language",
+	required_plugins = {
 		{
 			"ray-x/go.nvim",
 			dependencies = { -- optional packages
@@ -46,11 +30,8 @@ function L.plugins()
 			"fredrikaverpil/neotest-golang",
 			ft = "go",
 		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"delve",
 		"go-debug-adapter",
 		"gofumpt",
@@ -62,15 +43,34 @@ function L.preparation()
 		"gopls",
 		"gotests",
 		"impl",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"go",
 		"gomod",
 		"gosum",
 		"gotmpl",
 		"gowork",
-	})
+	},
+	required_enabled_lsp_servers = {
+		"gopls",
+	},
+})
+
+local function ends_with(str, ending)
+	return ending == "" or str:sub(-#ending) == ending
+end
+
+local function build_go_files()
+	local file = vim.fn.expand("%")
+	if ends_with(file, "_test.go") then
+		vim.fn["go#test#Test"](0, 1)
+	else
+		vim.fn["go#cmd#Build"](0)
+	end
+end
+
+function L:preparation()
+	concrete_module.preparation(self)
 
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
@@ -89,8 +89,11 @@ local function DetectGoHtmlTmpl()
 	end
 end
 
-function L.settings()
-	local wrap = require("LYRD.layers.commands").wrap
+function L:settings()
+	concrete_module.settings(self)
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+	local wrap = commands.wrap
 	commands.implement("go", {
 		{ cmd.LYRDCodeBuild, build_go_files },
 		{ cmd.LYRDCodeRun, ":GoRun" },
@@ -117,10 +120,6 @@ function L.settings()
 		pattern = "*.html",
 		callback = DetectGoHtmlTmpl,
 	})
-end
-
-function L.complete()
-	vim.lsp.enable("gopls")
 end
 
 return L

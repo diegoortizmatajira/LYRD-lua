@@ -1,18 +1,8 @@
-local setup = require("LYRD.setup")
+local concrete_module = require("LYRD.shared.concrete_module")
 
----@class LYRD.layer.lang.Csv: LYRD.setup.Module
-local L = { name = "CSV" }
-
-function L.preparation()
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"csv",
-		"tsv",
-	})
-end
-
-function L.plugins()
-	setup.plugin({
+local L = concrete_module:new({
+	name = "CSV",
+	required_plugins = {
 		{
 			"hat0uma/csvview.nvim",
 			opts = {
@@ -22,7 +12,11 @@ function L.plugins()
 			},
 			ft = { "csv", "tsv" },
 		},
-	})
-end
+	},
+	required_treesitter_parsers = {
+		"csv",
+		"tsv",
+	},
+})
 
 return L
