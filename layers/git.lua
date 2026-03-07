@@ -4,11 +4,7 @@ local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Git: LYRD.setup.Module
-local L = {
-	name = "Git",
-	git_flow_base_command = "git", -- default to 'gh', but it can be 'git'
-}
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @param key_table table
 --- @param replacement_pairs  {[1]: string, [2]:string}[] contains the mapping definition as an array of (mode, key, command, options)
@@ -24,8 +20,11 @@ local function replace_keybindings(key_table, replacement_pairs)
 	end
 end
 
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Git",
+	git_flow_base_command = "git",
+	required_plugins = {
 		{
 			"NeogitOrg/neogit",
 			dependencies = {
@@ -182,8 +181,20 @@ function L.plugins()
 				telescope.load_extension("worktrees")
 			end,
 		},
-	})
-end
+	},
+	required_treesitter_parsers = {
+		"git_config",
+		"git_rebase",
+		"gitattributes",
+		"gitcommit",
+		"gitignore",
+	},
+	required_executables = {
+		"git",
+		"lazygit",
+		"tig",
+	},
+}
 
 function L.git_flow_init()
 	return function()
@@ -241,17 +252,6 @@ function L.git_view_graph()
 	end
 end
 
-function L.preparation()
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"git_config",
-		"git_rebase",
-		"gitattributes",
-		"gitcommit",
-		"gitignore",
-	})
-end
-
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
@@ -289,12 +289,4 @@ function L.settings()
 	})
 end
 
-function L.healthcheck()
-	vim.health.start(L.name)
-	local health = require("LYRD.health")
-	health.check_executable("git")
-	health.check_executable("lazygit")
-	health.check_executable("tig")
-end
-
-return L
+return declarative_layer.apply(L)

@@ -3,11 +3,12 @@
 --- @field required_mason_packages nil|string[]  List of mason packages required by this module.
 --- @field required_treesitter_parsers nil|string[]  List of treesitter parsers required by this module.
 --- @field required_enabled_lsp_servers nil|string[]  List of LSP servers that must be enabled for this module to load.
+--- @field required_executables nil|string[]  List of executables that must be available in the system for this module to load.
 
 local DeclarativeLayer = {}
 
 --- @param proto LYRD.setup.DeclarativeLayer The layer module for which to provide the standard implementation.
-local function standard_plugins(proto)
+local function apply_plugins(proto)
 	local original_plugins = proto.plugins
 	return function()
 		if proto.required_plugins then
@@ -21,7 +22,7 @@ local function standard_plugins(proto)
 end
 
 --- @param proto LYRD.setup.DeclarativeLayer The layer module for which to provide the standard implementation.
-local function standard_preparation(proto)
+local function apply_preparation(proto)
 	local original_preparation = proto.preparation
 	return function()
 		-- Ensure required mason packages to be installed
@@ -41,7 +42,7 @@ local function standard_preparation(proto)
 end
 
 --- @param proto LYRD.setup.DeclarativeLayer The layer module for which to provide the standard implementation.
-local function standard_complete(proto)
+local function apply_complete(proto)
 	local original_complete = proto.complete
 	return function()
 		if original_complete then
@@ -56,6 +57,25 @@ local function standard_complete(proto)
 	end
 end
 
+--- @param proto LYRD.setup.DeclarativeLayer The layer module for which to provide the standard implementation.
+local function apply_healthcheck(proto)
+	local original_healthcheck = proto.healthcheck
+	return function()
+		if original_healthcheck or proto.required_executables then
+			vim.health.start(proto.name)
+		end
+		if original_healthcheck then
+			original_healthcheck()
+		end
+		if proto.required_executables then
+			local health = require("LYRD.health")
+			vim.tbl_map(function(executable)
+				health.check_executable(executable)
+			end, proto.required_executables or {})
+		end
+	end
+end
+
 --- Standardizes a prototype table into a standard layer module. This is useful
 --- to create a layer module with a declarative style, by just specifying the
 --- required plugins, mason packages, Tree-sitter parsers and enabled LSP
@@ -64,9 +84,10 @@ end
 --- @param proto table|LYRD.setup.DeclarativeLayer A prototype table that contains the fields of the layer to be created.
 --- @return LYRD.setup.Module A standardized layer module based on the provided prototype.
 function DeclarativeLayer.apply(proto)
-	proto.plugins = standard_plugins(proto)
-	proto.preparation = standard_preparation(proto)
-	proto.complete = standard_complete(proto)
+	proto.plugins = apply_plugins(proto)
+	proto.preparation = apply_preparation(proto)
+	proto.complete = apply_complete(proto)
+	proto.healthcheck = apply_healthcheck(proto)
 	return proto
 end
 

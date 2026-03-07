@@ -70,6 +70,12 @@ local L = {
 	required_enabled_lsp_servers = {
 		"jdtls",
 	},
+	required_executables = {
+		"java",
+		"javac",
+		"mvn",
+		"gradle",
+	},
 }
 
 local function start_tooling()
