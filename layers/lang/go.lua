@@ -1,9 +1,10 @@
 local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
 
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "Go language",
 	required_plugins = {
 		{
@@ -19,7 +20,8 @@ local L = concrete_module:new({
 				},
 			},
 			ft = { "go", "gomod" },
-			build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+			-- If you need to install/update all binaries
+			build = ':lua require("go.install").update_all_sync()',
 		},
 		{
 			"leoluz/nvim-dap-go",
@@ -54,7 +56,7 @@ local L = concrete_module:new({
 	required_enabled_lsp_servers = {
 		"gopls",
 	},
-})
+}
 
 local function ends_with(str, ending)
 	return ending == "" or str:sub(-#ending) == ending
@@ -69,9 +71,7 @@ local function build_go_files()
 	end
 end
 
-function L:preparation()
-	concrete_module.preparation(self)
-
+function L.preparation()
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
 		null_ls.builtins.code_actions.gomodifytags,
@@ -82,15 +82,14 @@ function L:preparation()
 	test.configure_adapter(require("neotest-golang"))
 end
 
--- This function to detect go html templates in html files
+-- This function to detect go HTML templates in HTML files
 local function DetectGoHtmlTmpl()
 	if vim.fn.expand("%:e") == "html" and vim.fn.search("{{") ~= 0 then
 		vim.bo.filetype = "gohtmltmpl"
 	end
 end
 
-function L:settings()
-	concrete_module.settings(self)
+function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	local wrap = commands.wrap
@@ -115,11 +114,11 @@ function L:settings()
 		pattern = { "*.go" },
 		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
 	})
-	-- This auto command to detect go html templates for HUGO
+	-- This auto command to detect go HTML templates for Hugo
 	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 		pattern = "*.html",
 		callback = DetectGoHtmlTmpl,
 	})
 end
 
-return L
+return declarative_layer.apply(L)

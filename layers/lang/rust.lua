@@ -1,11 +1,9 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Rust: LYRD.setup.Module
-local L = { name = "Rust Language" }
-
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Rust Language",
+	required_plugins = {
 		{
 			"mrcjkb/rustaceanvim",
 			version = "^6", -- Recommended
@@ -28,20 +26,22 @@ function L.plugins()
 				},
 			},
 		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"rust-analyzer",
 		"bacon",
 		"bacon-ls",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"rust",
 		"ron",
-	})
+	},
+	required_enabled_lsp_servers = {
+		"bacon_ls",
+	},
+}
+
+function L.preparation()
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("rustaceanvim.neotest"))
 end
@@ -51,12 +51,4 @@ function L.settings()
 	debugger.setup({ "rust" })
 end
 
-function L.complete()
-	vim.lsp.enable({
-		-- Rust analyzer is initiallized by rustaceanvim, enabling it here would cause duplicate LSP clients
-		-- "rust-analyzer",
-		"bacon_ls",
-	})
-end
-
-return L
+return declarative_layer.apply(L)

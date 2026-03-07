@@ -1,8 +1,8 @@
-local concrete_module = require("LYRD.shared.concrete_module")
-
+local declarative_layer = require("LYRD.shared.declarative_layer")
 local filetypes = { "c", "cpp", "h" }
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "C and C++",
 	required_plugins = {
 		{
@@ -30,11 +30,9 @@ local L = concrete_module:new({
 		"clangd",
 		"cmake",
 	},
-})
+}
 
-function L:preparation()
-	concrete_module.preparation(self)
-
+function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
 	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
 	lsp.format_with_conform(filetypes, { "clang-format" })
@@ -46,10 +44,9 @@ function L:preparation()
 	test.configure_adapter(require("neotest-ctest").setup({}))
 end
 
-function L:settings()
-	concrete_module.settings(self)
+function L.settings()
 	local debugger = require("LYRD.shared.dap.codelldb")
 	debugger.setup(filetypes)
 end
 
-return L
+return declarative_layer.apply(L)

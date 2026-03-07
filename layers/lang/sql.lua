@@ -1,13 +1,8 @@
-local setup = require("LYRD.setup")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Sql: LYRD.setup.Module
-local L = { name = "SQL Language" }
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "SQL Language",
+}
 
-function L.plugins()
-	setup.plugin({})
-end
-
-function L.preparation()
-end
-
-return L
+return declarative_layer.apply(L)

@@ -1,25 +1,26 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Kotlin: LYRD.setup.Module
-local L = { name = "Kotlin Language" }
-
-function L.plugins()
-	setup.plugin({})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Kotlin Language",
+	required_mason_packages = {
 		"kotlin-language-server",
 		"ktlint",
-	})
+	},
+	required_treesitter_parsers = {
+		"kotlin",
+	},
+	required_enabled_lsp_servers = {
+		"kotlin_language_server",
+	},
+}
+
+function L.preparation()
+	local lsp = require("LYRD.layers.lsp")
+
 	lsp.format_with_conform("kotlin", { "ktlint" })
 	lsp.null_ls_register_sources({
 		require("null-ls.builtins.diagnostics.ktlint"),
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"kotlin",
 	})
 end
 
@@ -43,7 +44,11 @@ function L.settings()
 			-- it has to correspond to the class file located at `build/classes/`
 			-- and of course you have to build before you debug
 			mainClass = function()
-				local root = vim.fs.find("src", { path = vim.uv.cwd(), upward = true, stop = vim.env.HOME })[1] or ""
+				local root = vim.fs.find("src", {
+					path = vim.uv.cwd(),
+					upward = true,
+					stop = vim.env.HOME,
+				})[1] or ""
 				local fname = vim.api.nvim_buf_get_name(0)
 				-- src/main/kotlin/websearch/Main.kt -> websearch.MainKt
 				return fname:gsub(root, ""):gsub("main/kotlin/", ""):gsub(".kt", "Kt"):gsub("/", "."):sub(2, -1)
@@ -69,8 +74,4 @@ function L.settings()
 	}
 end
 
-function L.complete()
-	vim.lsp.enable("kotlin_language_server")
-end
-
-return L
+return declarative_layer.apply(L)

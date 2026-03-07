@@ -1,6 +1,7 @@
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "Bash",
 	required_mason_packages = {
 		"bashls",
@@ -8,6 +9,6 @@ local L = concrete_module:new({
 	required_enabled_lsp_servers = {
 		"bashls",
 	},
-})
+}
 
-return L
+return declarative_layer.apply(L)

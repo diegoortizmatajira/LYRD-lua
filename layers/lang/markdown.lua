@@ -1,9 +1,63 @@
-local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.lang.Markdown: LYRD.setup.Module
+local declarative_layer = require("LYRD.shared.declarative_layer")
+
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Markdown",
+	required_plugins = {
+		{
+			"MeanderingProgrammer/render-markdown.nvim",
+			main = "render-markdown",
+			ft = { "markdown", "Avante", "codecompanion" },
+			opts = {
+				file_types = { "markdown", "Avante", "codecompanion" },
+				heading = {
+					sign = false,
+					icons = {
+						icons.styles.h1,
+						icons.styles.h2,
+						icons.styles.h3,
+						icons.styles.h4,
+						icons.styles.h5,
+						icons.styles.h6,
+					},
+					width = "block",
+				},
+				code = { sign = false, width = "block", right_pad = 1 },
+				dash = { width = 79 },
+				pipe_table = { style = "full" },
+			},
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				"nvim-tree/nvim-web-devicons",
+			},
+		},
+		{
+			"Nedra1998/nvim-mdlink",
+			opts = { max_depth = 5, keymap = true, cmp = true },
+			dependencies = {
+				"hrsh7th/nvim-cmp",
+			},
+		},
+	},
+	required_mason_packages = {
+		"prettier",
+		"marksman",
+		"markdownlint-cli2",
+		"markdown-toc",
+	},
+	required_treesitter_parsers = {
+		"latex",
+		"markdown",
+		"markdown_inline",
+		"mermaid",
+		"html",
+		"yaml",
+	},
+	required_enabled_lsp_servers = {
+		"marksman",
+	},
 	--- Defines custom formatters, order matters as they are applied in the order they are defined here.
 	custom_formatters = {
 		--- Configures a custom formatter for Markdown files that uses prettier
@@ -43,74 +97,8 @@ local L = {
 	},
 }
 
-function L.plugins()
-	setup.plugin({
-		{
-			"MeanderingProgrammer/render-markdown.nvim",
-			main = "render-markdown",
-			ft = { "markdown", "Avante", "codecompanion" },
-			opts = {
-				file_types = { "markdown", "Avante", "codecompanion" },
-				heading = {
-					sign = false,
-					icons = {
-						icons.styles.h1,
-						icons.styles.h2,
-						icons.styles.h3,
-						icons.styles.h4,
-						icons.styles.h5,
-						icons.styles.h6,
-					},
-					width = "block",
-				},
-				code = {
-					sign = false,
-					width = "block", -- use 'language' if colorcolumn is important for you.
-					right_pad = 1,
-				},
-				dash = {
-					width = 79,
-				},
-				pipe_table = {
-					style = "full", -- use 'normal' if colorcolumn is important for you.
-				},
-			},
-			dependencies = {
-				"nvim-treesitter/nvim-treesitter",
-				"nvim-tree/nvim-web-devicons",
-			},
-		},
-		{
-			"Nedra1998/nvim-mdlink",
-			opts = {
-				max_depth = 5,
-				keymap = true,
-				cmp = true,
-			},
-			dependencies = {
-				"hrsh7th/nvim-cmp",
-			},
-		},
-	})
-end
-
 function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
-	lsp.mason_ensure({
-		"prettier",
-		"marksman",
-		"markdownlint-cli2",
-		"markdown-toc",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"latex",
-		"markdown",
-		"markdown_inline",
-		"mermaid",
-		"html",
-		"yaml",
-	})
 	--- Iterates over the custom formatters defined in the `custom_formatters` table and
 	--- registers each formatter with the LSP layer, allowing them to be used for formatting
 	--- Markdown files according to the specified conditions and arguments defined for each formatter.
@@ -134,8 +122,4 @@ function L.settings()
 	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
 end
 
-function L.complete()
-	vim.lsp.enable("marksman")
-end
-
-return L
+return declarative_layer.apply(L)

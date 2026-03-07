@@ -1,11 +1,9 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.WebStandard: LYRD.setup.Module
-local L = { name = "Web Standard Languages" }
-
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Web Standard Languages",
+	required_plugins = {
 		{
 			"windwp/nvim-ts-autotag",
 			event = "InsertEnter",
@@ -15,37 +13,34 @@ function L.plugins()
 			},
 			opts = {},
 		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"html-lsp",
 		"css-lsp",
 		"emmet-language-server",
 		"emmet-ls",
 		"prettier",
-	})
+	},
+	required_treesitter_parsers = {
+		"html",
+		"css",
+		"scss",
+	},
+	required_enabled_lsp_servers = {
+		"emmet_language_server",
+		"cssls",
+		"html",
+	},
+}
+
+function L.preparation()
 	local null_ls = require("null-ls")
+	local lsp = require("LYRD.layers.lsp")
 	lsp.null_ls_register_sources({
 		null_ls.builtins.formatting.prettier.with({ -- For most standard filetypes
 			extra_filetypes = { "htmldjango" },
 		}),
 	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"html",
-		"css",
-		"scss",
-	})
 end
 
-function L.complete()
-	vim.lsp.enable({
-		"emmet_language_server",
-		"cssls",
-		"html",
-	})
-end
-
-return L
+return declarative_layer.apply(L)

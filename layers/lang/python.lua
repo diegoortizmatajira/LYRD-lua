@@ -1,6 +1,7 @@
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "Python language",
 	required_plugins = {
 		{
@@ -66,7 +67,7 @@ local L = concrete_module:new({
 		"basedpyright",
 		"ruff",
 	},
-})
+}
 
 -- Opens the .env file in the current directory
 local function open_dotenv()
@@ -74,9 +75,7 @@ local function open_dotenv()
 	utils.open_or_create_file(".env")
 end
 
-function L:preparation()
-	concrete_module.preparation(self)
-
+function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
 	local null_ls = require("null-ls")
 	lsp.null_ls_register_sources({
@@ -97,9 +96,7 @@ function L:preparation()
 	test.configure_adapter(require("neotest-python"))
 end
 
-function L:settings()
-	concrete_module.settings(self)
-
+function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 
@@ -120,4 +117,4 @@ function L:settings()
 	overseer.register_template(require("LYRD.shared.overseer.python_tasks"))
 end
 
-return L
+return declarative_layer.apply(L)

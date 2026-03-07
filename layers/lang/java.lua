@@ -1,12 +1,13 @@
 local lsp = require("LYRD.layers.lsp")
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "Java language",
 	required_plugins = {
 		{
 			"mfussenegger/nvim-jdtls",
-			opts = false,
+			opts = nil,
 		},
 		{
 			"oclay1st/maven.nvim",
@@ -69,7 +70,7 @@ local L = concrete_module:new({
 	required_enabled_lsp_servers = {
 		"jdtls",
 	},
-})
+}
 
 local function start_tooling()
 	-- Check if should use Maven or Gradle
@@ -85,18 +86,14 @@ local function start_tooling()
 	end
 end
 
-function L:preparation()
-	concrete_module.preparation(self)
-
+function L.preparation()
 	lsp.customize_formatter("palantir-java-format", require("LYRD.shared.conform.palantir-java-format"))
 	lsp.format_with_conform("java", { "palantir-java-format" })
 	local test = require("LYRD.layers.test")
 	test.configure_adapter(require("neotest-java"))
 end
 
-function L:settings()
-	concrete_module.settings(self)
-
+function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 
@@ -110,4 +107,4 @@ function L:settings()
 	overseer.register_template(require("LYRD.shared.overseer.gradle"))
 end
 
-return L
+return declarative_layer.apply(L)

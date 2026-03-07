@@ -1,6 +1,7 @@
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "Data formats json, yaml, toml, xml",
 	required_plugins = {
 		{
@@ -39,7 +40,7 @@ local L = concrete_module:new({
 		"taplo",
 		"lemminx",
 	},
-})
+}
 
 local function jsonlint()
 	local h = require("null-ls.helpers")
@@ -70,8 +71,7 @@ local function jsonlint()
 	})
 end
 
-function L:preparation()
-	concrete_module.preparation(self)
+function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
 	lsp.format_with_conform({ "json", "jsonc" }, { "prettier" })
 	lsp.format_with_conform("xml", { "xmlformatter", lsp_format = "prefer" })
@@ -81,8 +81,7 @@ function L:preparation()
 	})
 end
 
-function L:settings()
-	concrete_module.settings(self)
+function L.settings()
 	vim.filetype.add({
 		filename = {
 			["tasks.json"] = "jsonc",
@@ -91,4 +90,4 @@ function L:settings()
 	})
 end
 
-return L
+return declarative_layer.apply(L)

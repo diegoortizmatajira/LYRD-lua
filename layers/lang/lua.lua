@@ -1,13 +1,9 @@
-local lsp = require("LYRD.layers.lsp")
-local setup = require("LYRD.setup")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Lua: LYRD.setup.Module
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Lua Language",
-}
-
-function L.plugins()
-	setup.plugin({
+	required_plugins = {
 		{
 			"folke/lazydev.nvim",
 			ft = "lua", -- only load on lua files
@@ -17,29 +13,28 @@ function L.plugins()
 			end,
 		},
 		{ "Bilal2453/luvit-meta", lazy = true },
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"lua-language-server",
 		"luacheck",
 		"luaformatter",
 		"luau-lsp",
 		"stylua",
-	})
-	lsp.format_with_conform("lua", { "stylua" })
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"lua",
 		"luap",
 		"luau",
 		"luadoc",
-	})
+	},
+	required_enabled_lsp_servers = {
+		"lua_ls",
+	},
+}
+
+function L.preparation()
+	local lsp = require("LYRD.layers.lsp")
+	lsp.format_with_conform("lua", { "stylua" })
 end
 
-function L.complete()
-	vim.lsp.enable("lua_ls")
-end
-
-return L
+return declarative_layer.apply(L)

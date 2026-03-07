@@ -1,6 +1,7 @@
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "CSV",
 	required_plugins = {
 		{
@@ -17,6 +18,6 @@ local L = concrete_module:new({
 		"csv",
 		"tsv",
 	},
-})
+}
 
-return L
+return declarative_layer.apply(L)

@@ -1,9 +1,9 @@
 local icons = require("LYRD.layers.icons")
-local concrete_module = require("LYRD.shared.concrete_module")
-
+local declarative_layer = require("LYRD.shared.declarative_layer")
 local dotnet_languages = { "cs", "vb" }
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "Dotnet languages: C#, F#, Vb",
 	required_plugins = {
 		{
@@ -156,11 +156,9 @@ local L = concrete_module:new({
 	required_enabled_lsp_servers = {
 		"roslyn",
 	},
-})
+}
 
-function L:preparation()
-	concrete_module.preparation(self)
-
+function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
 
 	lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
@@ -177,9 +175,7 @@ function L:preparation()
 	debugger.setup(dotnet_languages)
 end
 
-function L:settings()
-	concrete_module.settings(self)
-
+function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement(dotnet_languages, {
@@ -226,4 +222,4 @@ function L:settings()
 	overseer.register_template(require("LYRD.shared.overseer.cake"))
 end
 
-return L
+return declarative_layer.apply(L)

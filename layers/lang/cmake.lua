@@ -1,6 +1,7 @@
-local concrete_module = require("LYRD.shared.concrete_module")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = concrete_module:new({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
 	name = "CMake Language",
 	required_mason_packages = {
 		"cmake-language-server",
@@ -12,10 +13,9 @@ local L = concrete_module:new({
 	required_enabled_lsp_servers = {
 		"cmake",
 	},
-})
+}
 
-function L:settings()
-	concrete_module.settings(self)
+function L.settings()
 	local vimrc_make_cmake_group = vim.api.nvim_create_augroup("vimrc-make-cmake", {})
 	vim.api.nvim_create_autocmd({ "FileType" }, {
 		group = vimrc_make_cmake_group,
@@ -29,4 +29,4 @@ function L:settings()
 	})
 end
 
-return L
+return declarative_layer.apply(L)

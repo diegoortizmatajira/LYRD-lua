@@ -7,11 +7,11 @@ local ConcreteModule = {}
 ConcreteModule.__index = ConcreteModule
 
 --- Constructor
---- @param proto LYRD.setup.ConcreteModule A prototype table that contains the fields of the module to be created.
---- @return LYRD.setup.ConcreteModule & T An instance of the module created from the prototype.
+--- @generic T: table|LYRD.setup.ConcreteModule
+--- @param proto T A prototype table that contains the fields of the module to be created.
+--- @return T
 function ConcreteModule:new(proto)
-	local o = setmetatable(proto, self)
-	return o
+	return setmetatable(proto, self)
 end
 
 function ConcreteModule:plugins()
