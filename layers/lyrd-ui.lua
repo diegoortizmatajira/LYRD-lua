@@ -389,7 +389,6 @@ function L.plugins()
 		},
 		{
 			"diegoortizmatajira/workspace-scratch-files.nvim",
-			-- dir = "/home/diegoortizmatajira/Development/contrib/workspace-scratch-files.nvim",
 			opts = {},
 		},
 		{
@@ -401,7 +400,7 @@ function L.plugins()
 		{
 			"folke/twilight.nvim",
 			opts = {
-				-- your configuration comes here
+				-- Your configuration comes here
 				-- or leave it empty to use the default settings
 				-- refer to the configuration section below
 			},

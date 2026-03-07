@@ -29,7 +29,7 @@ local function standard_preparation(proto)
 			local lsp = require("LYRD.layers.lsp")
 			lsp.mason_ensure(proto.required_mason_packages)
 		end
-		-- Ensure required TreeSitter parsers to be installed
+		-- Ensure required Tree-sitter parsers to be installed
 		if proto.required_treesitter_parsers then
 			local ts = require("LYRD.layers.treesitter")
 			ts.ensureParser(proto.required_treesitter_parsers or {})
@@ -58,7 +58,7 @@ end
 
 --- Standardizes a prototype table into a standard layer module. This is useful
 --- to create a layer module with a declarative style, by just specifying the
---- required plugins, mason packages, treesitter parsers and enabled LSP
+--- required plugins, mason packages, Tree-sitter parsers and enabled LSP
 --- servers. The methods of the module will be implemented with default
 --- implementations that take care of these requirements.
 --- @param proto table|LYRD.setup.DeclarativeLayer A prototype table that contains the fields of the layer to be created.
