@@ -28,7 +28,6 @@ setup.load({
 		"LYRD.layers.snippets",
 		"LYRD.layers.completion",
 		"LYRD.layers.debug",
-		"LYRD.layers.database",
 		"LYRD.layers.docker",
 		"LYRD.layers.kubernetes",
 		"LYRD.layers.tasks", -- Must be after debug and database
