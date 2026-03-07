@@ -40,6 +40,20 @@ local L = {
 		"taplo",
 		"lemminx",
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "yaml", "yml" },
+			format_settings = { "yamlfmt" },
+		},
+		{
+			target_filetype = { "json", "jsonc", "json5" },
+			format_settings = { "prettier" },
+		},
+		{
+			target_filetype = { "xml" },
+			format_settings = { "xmlformatter", lsp_format = "prefer" },
+		},
+	},
 }
 
 local function jsonlint()
@@ -73,9 +87,6 @@ end
 
 function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
-	lsp.format_with_conform({ "json", "jsonc" }, { "prettier" })
-	lsp.format_with_conform("xml", { "xmlformatter", lsp_format = "prefer" })
-
 	lsp.null_ls_register_sources({
 		jsonlint(),
 	})

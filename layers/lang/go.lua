@@ -56,6 +56,15 @@ local L = {
 	required_enabled_lsp_servers = {
 		"gopls",
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "go" },
+			format_settings = { "gofumpt", "goimports" },
+		},
+	},
+	required_test_adapters = {
+		"neotest-golang",
+	},
 }
 
 local function ends_with(str, ending)
@@ -77,9 +86,6 @@ function L.preparation()
 		null_ls.builtins.code_actions.gomodifytags,
 		null_ls.builtins.code_actions.impl,
 	})
-	lsp.format_with_conform("go", { "gofumpt", "goimports" })
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-golang"))
 end
 
 -- This function to detect go HTML templates in HTML files

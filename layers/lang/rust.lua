@@ -39,12 +39,10 @@ local L = {
 	required_enabled_lsp_servers = {
 		"bacon_ls",
 	},
+	required_test_adapters = {
+		"rustaceanvim.neotest",
+	},
 }
-
-function L.preparation()
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("rustaceanvim.neotest"))
-end
 
 function L.settings()
 	local debugger = require("LYRD.shared.dap.codelldb")

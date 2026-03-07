@@ -58,12 +58,7 @@ local L = {
 	required_enabled_lsp_servers = {
 		"marksman",
 	},
-	--- Defines custom formatters, order matters as they are applied in the order they are defined here.
-	custom_formatters = {
-		--- Configures a custom formatter for Markdown files that uses prettier
-		--- with specific arguments to ensure that prose is wrapped and the print
-		--- width is set to a specified value, enhancing readability and formatting
-		--- consistency for Markdown content.
+	required_formatters = {
 		["prettier_markdown"] = {
 			inherit = "prettier",
 			prepend_args = { "--prose-wrap", "always", "--print-width", tostring(80) },
@@ -95,20 +90,16 @@ local L = {
 			end,
 		},
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "markdown", "markdown.mdx" },
+			format_settings = { "prettier_markdown", "markdown-toc", "markdownlint-cli2" },
+		},
+	},
 }
 
 function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
-	--- Iterates over the custom formatters defined in the `custom_formatters` table and
-	--- registers each formatter with the LSP layer, allowing them to be used for formatting
-	--- Markdown files according to the specified conditions and arguments defined for each formatter.
-	for key, value in pairs(L.custom_formatters) do
-		lsp.customize_formatter(key, value)
-	end
-	--- Configures the list of formatters to be applied to Markdown files,
-	--- ensuring that the custom formatters defined in the `custom_formatters`
-	--- table are used when formatting Markdown content.
-	lsp.format_with_conform({ "markdown", "markdown.mdx" }, vim.tbl_keys(L.custom_formatters))
 	--- Registers the markdownlint_cli2 diagnostic source with null-ls, enabling
 	--- linting for Markdown files using the markdownlint-cli2 tool, which helps
 	--- identify and fix issues in Markdown content according to the rules defined by markdownlint.

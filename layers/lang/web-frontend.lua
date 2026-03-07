@@ -49,6 +49,27 @@ local L = {
 		"angularls",
 		"svelte",
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "vue",
+			use_lsp = true,
+			lsp_name = "vue_ls",
+		},
+		{
+			target_filetype = "ts",
+			use_lsp = true,
+			lsp_name = "vtsls",
+		},
+		{
+			target_filetype = "svelte",
+			use_lsp = true,
+			lsp_name = "svelte",
+		},
+	},
+	required_test_adapters = {
+		"neotest-vitest",
+		"neotest-jest",
+	},
 	focus_terminal_on_run = true,
 	ts_root_markers = {
 		"package.json",
@@ -82,20 +103,6 @@ function L.run_npm_build()
 end
 
 function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	lsp.format_with_lsp("vue", "vue_ls")
-	lsp.format_with_lsp("ts", "vtsls")
-	lsp.format_with_lsp("svelte", "svelte")
-
-	local test = require("LYRD.layers.test")
-	local utils = require("LYRD.utils")
-	utils.with_safe_require("neotest-vitest", function(neotest_vitest)
-		test.configure_adapter(neotest_vitest)
-	end)
-	utils.with_safe_require("neotest-jest", function(neotest_jest)
-		test.configure_adapter(neotest_jest)
-	end)
-
 	-- Enable Tree-sitter for Angular HTML files
 	vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 		pattern = { "*.component.html", "*.container.html" },

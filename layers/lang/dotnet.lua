@@ -156,20 +156,21 @@ local L = {
 	required_enabled_lsp_servers = {
 		"roslyn",
 	},
+	required_formatters = {
+		["csharpier"] = require("LYRD.shared.conform.csharpier"),
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "cs",
+			format_settings = { "csharpier", lsp_format = "prefer" },
+		},
+	},
+	required_test_adapters = {
+		"neotest-vstest",
+	},
 }
 
 function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-
-	lsp.customize_formatter("csharpier", require("LYRD.shared.conform.csharpier"))
-	lsp.format_with_conform("cs", {
-		"csharpier",
-		lsp_format = "prefer",
-	})
-
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-vstest"))
-
 	-- DEBUG ADAPTER
 	local debugger = require("LYRD.shared.dap.netcoredbg")
 	debugger.setup(dotnet_languages)

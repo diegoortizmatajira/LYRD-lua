@@ -30,18 +30,28 @@ local L = {
 		"clangd",
 		"cmake",
 	},
+	required_formatters = {
+		["clang-format"] = require("LYRD.shared.conform.clang-format"),
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = filetypes,
+			format_settings = { "clang-format" },
+		},
+	},
+	required_test_adapters = {
+		function()
+			return require("neotest-ctest").setup({})
+		end,
+	},
 }
 
 function L.preparation()
 	local lsp = require("LYRD.layers.lsp")
-	lsp.customize_formatter("clang-format", require("LYRD.shared.conform.clang-format"))
-	lsp.format_with_conform(filetypes, { "clang-format" })
 	lsp.null_ls_register_sources({
 		require("none-ls.diagnostics.cpplint"),
 		require("null-ls.builtins.diagnostics.cmake_lint"),
 	})
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-ctest").setup({}))
 end
 
 function L.settings()

@@ -76,6 +76,18 @@ local L = {
 		"mvn",
 		"gradle",
 	},
+	required_formatters = {
+		["palantir-java-format"] = require("LYRD.shared.conform.palantir-java-format"),
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "java",
+			format_settings = { "palantir-java-format" },
+		},
+	},
+	required_test_adapters = {
+		"neotest-java",
+	},
 }
 
 local function start_tooling()
@@ -90,13 +102,6 @@ local function start_tooling()
 	else
 		vim.notify("No Maven or Gradle build file found in the project root.", vim.log.levels.WARN)
 	end
-end
-
-function L.preparation()
-	lsp.customize_formatter("palantir-java-format", require("LYRD.shared.conform.palantir-java-format"))
-	lsp.format_with_conform("java", { "palantir-java-format" })
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-java"))
 end
 
 function L.settings()

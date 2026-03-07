@@ -6,7 +6,7 @@ local L = {
 	required_plugins = {
 		{
 			"folke/lazydev.nvim",
-			ft = "lua", -- only load on lua files
+			ft = "lua",
 			opts = {},
 			init = function()
 				vim.g.lazydev_enabled = true
@@ -30,11 +30,12 @@ local L = {
 	required_enabled_lsp_servers = {
 		"lua_ls",
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "lua", "luau" },
+			format_settings = { "stylua" },
+		},
+	},
 }
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	lsp.format_with_conform("lua", { "stylua" })
-end
 
 return declarative_layer.apply(L)

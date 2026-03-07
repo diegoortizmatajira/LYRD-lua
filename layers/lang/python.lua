@@ -67,6 +67,9 @@ local L = {
 		"basedpyright",
 		"ruff",
 	},
+	required_test_adapters = {
+		"neotest-python",
+	},
 }
 
 -- Opens the .env file in the current directory
@@ -92,8 +95,6 @@ function L.preparation()
 			},
 		}),
 	})
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-python"))
 end
 
 function L.settings()
