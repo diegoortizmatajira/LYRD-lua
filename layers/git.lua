@@ -1,4 +1,3 @@
-local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
