@@ -32,8 +32,9 @@ local L = {
 	},
 	required_test_adapters = {
 	},
+    required_null_ls_sources = {
+    }
 }
-
 
 function L.plugins()
     local setup = require("LYRD.setup")
