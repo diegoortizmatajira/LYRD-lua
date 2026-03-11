@@ -5,11 +5,17 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 local L = {
 	name = "Pascal",
 	required_plugins = {},
-	required_mason_packages = {},
-	required_treesitter_parsers = {},
-	required_enabled_lsp_servers = {},
+	required_mason_packages = {
+		"pascal-language-server",
+	},
+	required_treesitter_parsers = {
+		"pascal",
+	},
+	required_enabled_lsp_servers = {
+		"pasls",
+	},
 	required_executables = {
-	    "pfc"
+		"pfc",
 	},
 	required_formatters = {},
 	required_formatter_per_filetype = {},
