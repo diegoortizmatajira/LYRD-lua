@@ -44,6 +44,7 @@ setup.load({
 		"LYRD.layers.lang.kotlin",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.markdown",
+		"LYRD.layers.lang.pascal",
 		"LYRD.layers.lang.python",
 		"LYRD.layers.lang.rust",
 		"LYRD.layers.lang.sql",
