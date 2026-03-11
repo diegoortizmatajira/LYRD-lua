@@ -1,5 +1,7 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
+local default_dialect = "ansi"
+
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "SQL language",
@@ -60,22 +62,17 @@ local L = {
 	required_enabled_lsp_servers = {
 		"sqls",
 	},
-	default_dialect = "ansi",
+	required_null_ls_sources = {
+		declarative_layer.provider_with_opts(
+			"null-ls.builtins.diagnostics.sqlfluff",
+			{ extra_args = { "--dialect", default_dialect } }
+		),
+		declarative_layer.provider_with_opts(
+			"null-ls.builtins.formatting.sqlfluff",
+			{ extra_args = { "--dialect", default_dialect } }
+		),
+	},
 }
-
-function L.preparation()
-	-- Configures the null language server
-	local lsp = require("LYRD.layers.lsp")
-	local null_ls = require("null-ls")
-	lsp.null_ls_register_sources({
-		null_ls.builtins.diagnostics.sqlfluff.with({
-			extra_args = { "--dialect", L.default_dialect }, -- change to your dialect
-		}),
-		null_ls.builtins.formatting.sqlfluff.with({
-			extra_args = { "--dialect", L.default_dialect }, -- change to your dialect
-		}),
-	})
-end
 
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")

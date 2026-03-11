@@ -10,13 +10,9 @@ local L = {
 	required_enabled_lsp_servers = {
 		"buf_ls",
 	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.protolint",
+	},
 }
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	lsp.null_ls_register_sources({
-		require("null-ls.builtins.diagnostics.protolint"),
-	})
-end
 
 return declarative_layer.apply(L)

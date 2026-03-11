@@ -96,17 +96,10 @@ local L = {
 			format_settings = { "prettier_markdown", "markdown-toc", "markdownlint-cli2" },
 		},
 	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.markdownlint_cli2",
+	},
 }
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	--- Registers the markdownlint_cli2 diagnostic source with null-ls, enabling
-	--- linting for Markdown files using the markdownlint-cli2 tool, which helps
-	--- identify and fix issues in Markdown content according to the rules defined by markdownlint.
-	lsp.null_ls_register_sources({
-		require("null-ls.builtins.diagnostics.markdownlint_cli2"),
-	})
-end
 
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")

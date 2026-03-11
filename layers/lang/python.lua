@@ -70,31 +70,18 @@ local L = {
 	required_test_adapters = {
 		"neotest-python",
 	},
+	required_null_ls_sources = {
+		declarative_layer.provider_with_opts("null-ls.builtins.diagnostics.pylint", {
+			command = "python",
+			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
+		}),
+	},
 }
 
 -- Opens the .env file in the current directory
 local function open_dotenv()
 	local utils = require("LYRD.utils")
 	utils.open_or_create_file(".env")
-end
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	local null_ls = require("null-ls")
-	lsp.null_ls_register_sources({
-		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
-		null_ls.builtins.diagnostics.pylint.with({
-			command = "python",
-			args = {
-				"-m",
-				"pylint",
-				"--from-stdin",
-				"$FILENAME",
-				"-f",
-				"json",
-			},
-		}),
-	})
 end
 
 function L.settings()

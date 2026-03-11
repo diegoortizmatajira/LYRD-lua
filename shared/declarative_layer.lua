@@ -13,6 +13,7 @@
 --- @field required_formatters nil|table<string,function|table> List of formatters to be registered for this module, with the filetype as key and the formatter configuration as value. The formatter configuration can be either a function that returns the configuration or a table with the configuration directly.
 --- @field required_formatter_per_filetype nil|LYRD.setup.DeclarativeFormat[]  List of formatting configurations to apply for this module.
 --- @field required_test_adapters  nil|(string|any|function)[] List of test adapters to be registered for this module. It can be a module name to require, a function that returns the adapter configuration or the adapter configuration directly.
+--- @field required_null_ls_sources nil|(string|any|function)[] List of null-ls sources to be registered for this module. It can be a list of module names to require.
 
 local DeclarativeLayer = {}
 
@@ -68,6 +69,17 @@ local function apply_preparation(proto)
 					)
 				end
 			end, proto.required_formatter_per_filetype or {})
+		end
+		if proto.required_null_ls_sources then
+			vim.tbl_map(function(source)
+				local actual_source = source
+				if type(source) == "function" then
+					actual_source = source()
+				elseif type(source) == "string" then
+					actual_source = require(source)
+				end
+				lsp.null_ls_register_sources({ actual_source })
+			end, proto.required_null_ls_sources or {})
 		end
 		-- Register required test adapters
 		if proto.required_test_adapters then
@@ -148,6 +160,12 @@ function DeclarativeLayer.apply(proto)
 	proto.complete = apply_complete(proto)
 	proto.healthcheck = apply_healthcheck(proto)
 	return proto
+end
+
+function DeclarativeLayer.provider_with_opts(name, opts)
+	return function()
+		return require(name).with(opts or {})
+	end
 end
 
 return DeclarativeLayer

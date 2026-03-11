@@ -31,16 +31,11 @@ local L = {
 		"cssls",
 		"html",
 	},
-}
-
-function L.preparation()
-	local null_ls = require("null-ls")
-	local lsp = require("LYRD.layers.lsp")
-	lsp.null_ls_register_sources({
-		null_ls.builtins.formatting.prettier.with({ -- For most standard filetypes
+	required_null_ls_sources = {
+		declarative_layer.provider_with_opts("null-ls.builtins.formatting.prettier", {
 			extra_filetypes = { "htmldjango" },
 		}),
-	})
-end
+	},
+}
 
 return declarative_layer.apply(L)

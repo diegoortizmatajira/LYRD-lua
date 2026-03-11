@@ -60,6 +60,10 @@ local L = {
 	required_test_adapters = {
 		"neotest-golang",
 	},
+	required_null_ls_sources = {
+		"null-ls.builtins.code_actions.gomodifytags",
+		"null-ls.builtins.code_actions.impl",
+	},
 }
 
 local function ends_with(str, ending)
@@ -73,14 +77,6 @@ local function build_go_files()
 	else
 		vim.fn["go#cmd#Build"](0)
 	end
-end
-
-function L.preparation()
-	local null_ls = require("null-ls")
-	lsp.null_ls_register_sources({
-		null_ls.builtins.code_actions.gomodifytags,
-		null_ls.builtins.code_actions.impl,
-	})
 end
 
 -- This function to detect go HTML templates in HTML files

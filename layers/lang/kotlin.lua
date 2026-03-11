@@ -13,16 +13,16 @@ local L = {
 	required_enabled_lsp_servers = {
 		"kotlin_language_server",
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "kotlin",
+			format_settings = { "ktlint" },
+		},
+	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.ktlint",
+	},
 }
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-
-	lsp.format_with_conform("kotlin", { "ktlint" })
-	lsp.null_ls_register_sources({
-		require("null-ls.builtins.diagnostics.ktlint"),
-	})
-end
 
 function L.settings()
 	local dap = require("dap")

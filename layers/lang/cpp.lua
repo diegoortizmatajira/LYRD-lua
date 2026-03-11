@@ -44,15 +44,11 @@ local L = {
 			return require("neotest-ctest").setup({})
 		end,
 	},
+	required_null_ls_sources = {
+		"none-ls.diagnostics.cpplint",
+		"null-ls.builtins.diagnostics.cmake_lint",
+	},
 }
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	lsp.null_ls_register_sources({
-		require("none-ls.diagnostics.cpplint"),
-		require("null-ls.builtins.diagnostics.cmake_lint"),
-	})
-end
 
 function L.settings()
 	local debugger = require("LYRD.shared.dap.codelldb")
