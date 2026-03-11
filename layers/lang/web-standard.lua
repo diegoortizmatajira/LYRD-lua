@@ -32,7 +32,7 @@ local L = {
 		"html",
 	},
 	required_null_ls_sources = {
-		declarative_layer.provider_with_opts("null-ls.builtins.formatting.prettier", {
+		declarative_layer.source_with_opts("null-ls.builtins.formatting.prettier", {
 			extra_filetypes = { "htmldjango" },
 		}),
 	},

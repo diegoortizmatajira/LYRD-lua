@@ -71,7 +71,7 @@ local L = {
 		"neotest-python",
 	},
 	required_null_ls_sources = {
-		declarative_layer.provider_with_opts("null-ls.builtins.diagnostics.pylint", {
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.pylint", {
 			command = "python",
 			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
 		}),

@@ -162,7 +162,7 @@ function DeclarativeLayer.apply(proto)
 	return proto
 end
 
-function DeclarativeLayer.provider_with_opts(name, opts)
+function DeclarativeLayer.source_with_opts(name, opts)
 	return function()
 		return require(name).with(opts or {})
 	end

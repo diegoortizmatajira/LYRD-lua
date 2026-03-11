@@ -63,11 +63,11 @@ local L = {
 		"sqls",
 	},
 	required_null_ls_sources = {
-		declarative_layer.provider_with_opts(
+		declarative_layer.source_with_opts(
 			"null-ls.builtins.diagnostics.sqlfluff",
 			{ extra_args = { "--dialect", default_dialect } }
 		),
-		declarative_layer.provider_with_opts(
+		declarative_layer.source_with_opts(
 			"null-ls.builtins.formatting.sqlfluff",
 			{ extra_args = { "--dialect", default_dialect } }
 		),
