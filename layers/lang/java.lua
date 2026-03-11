@@ -1,32 +1,13 @@
 local lsp = require("LYRD.layers.lsp")
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Java: LYRD.setup.Module
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Java language",
-}
-
-local function start_tooling()
-	-- Check if should use Maven or Gradle
-	-- If both are present, prefer Maven
-	local is_maven = vim.fn.filereadable(vim.fn.getcwd() .. "/mvnw") == 1
-	local is_gradle = vim.fn.filereadable(vim.fn.getcwd() .. "/gradlew") == 1
-	if is_maven then
-		vim.cmd("Maven")
-	elseif is_gradle then
-		vim.cmd("Gradle")
-	else
-		vim.notify("No Maven or Gradle build file found in the project root.", vim.log.levels.WARN)
-	end
-end
-
-function L.plugins()
-	setup.plugin({
+	required_plugins = {
 		{
 			"mfussenegger/nvim-jdtls",
-			opts = false,
+			opts = nil,
 		},
 		{
 			"oclay1st/maven.nvim",
@@ -62,7 +43,8 @@ function L.plugins()
 			},
 			opts = function()
 				local ls_path = vim.fn.glob(
-					lsp.get_pkg_path("spring-boot-tools") .. "/extension/language-server/spring-boot-language-server*.jar"
+					lsp.get_pkg_path("spring-boot-tools")
+						.. "/extension/language-server/spring-boot-language-server*.jar"
 				)
 				if ls_path ~= "" then
 					return { ls_path = ls_path }
@@ -70,11 +52,8 @@ function L.plugins()
 				return {}
 			end,
 		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"palantir-java-format",
 		"jdtls",
 		"lombok-nightly",
@@ -82,21 +61,53 @@ function L.preparation()
 		"java-debug-adapter",
 		"spring-boot-tools",
 		"openjdk-17",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"java",
 		"javadoc",
 		"properties",
-	})
+	},
+	required_enabled_lsp_servers = {
+		"jdtls",
+	},
+	required_executables = {
+		"java",
+		"javac",
+		"mvn",
+		"gradle",
+	},
+	required_formatters = {
+		["palantir-java-format"] = require("LYRD.shared.conform.palantir-java-format"),
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "java",
+			format_settings = { "palantir-java-format" },
+		},
+	},
+	required_test_adapters = {
+		"neotest-java",
+	},
+}
 
-	lsp.customize_formatter("palantir-java-format", require("LYRD.shared.conform.palantir-java-format"))
-	lsp.format_with_conform("java", { "palantir-java-format" })
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-java"))
+local function start_tooling()
+	-- Check if should use Maven or Gradle
+	-- If both are present, prefer Maven
+	local is_maven = vim.fn.filereadable(vim.fn.getcwd() .. "/mvnw") == 1
+	local is_gradle = vim.fn.filereadable(vim.fn.getcwd() .. "/gradlew") == 1
+	if is_maven then
+		vim.cmd("Maven")
+	elseif is_gradle then
+		vim.cmd("Gradle")
+	else
+		vim.notify("No Maven or Gradle build file found in the project root.", vim.log.levels.WARN)
+	end
 end
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
 		{ cmd.LYRDCodeTooling, start_tooling },
@@ -107,8 +118,4 @@ function L.settings()
 	overseer.register_template(require("LYRD.shared.overseer.gradle"))
 end
 
-function L.complete()
-	vim.lsp.enable("jdtls")
-end
-
-return L
+return declarative_layer.apply(L)

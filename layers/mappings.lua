@@ -43,10 +43,10 @@ function L.plugins()
 					group = "", -- symbol prepended to a group
 				},
 				layout = {
-					height = { min = 1, max = 25 }, -- min and max height of the columns
-					width = { min = 20, max = 50 }, -- min and max width of the columns
-					spacing = 3, -- spacing between columns
-					align = "center", -- align columns left, center or right
+					height = { min = 1, max = 25 },
+					width = { min = 20, max = 50 },
+					spacing = 3,
+					align = "center",
 				},
 				-- win = {
 				-- 	border = "solid",
@@ -103,7 +103,7 @@ local function get_command(mode, command)
 	return { command = actual_command, desc = desc_str, icon = icon_str }
 end
 
----Creates a keybinding
+---Creates a key binding
 ---@param mode string
 ---@param lead string|nil
 ---@param keys string|table
@@ -133,7 +133,7 @@ local function map_key(mode, lead, keys, command, documentation, options)
 	wk.add({ entry })
 end
 
----Creates a keybinding for a menu
+---Creates a key binding for a menu
 ---@param keys string
 ---@param title string|fun():string
 ---@param icon? string
@@ -162,7 +162,7 @@ local function map_menu(keys, title, icon, additional_modes)
 	end
 end
 
----Creates a set of keybindings
+---Creates a set of key bindings
 ---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(mappings, options)
 	for _, mapping in ipairs(mappings) do
@@ -174,14 +174,14 @@ function L.keys(mappings, options)
 	end
 end
 
----Creates a set of keybindings
+---Creates a set of key bindings
 ---@param filetypes string|string[] filetype or filetypes to create the mappings for
 ---@param prefix? string prefix for the mappings
 ---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys_per_filetype(filetypes, prefix, mappings, options)
-	-- Create an autocommand group for the filetype
+	-- Create an auto command group for the filetype
 	local group = vim.api.nvim_create_augroup(filetypes .. "Mappings", { clear = true })
-	-- Define the autocommand
+	-- Define the auto command
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = filetypes,
 		group = group,
@@ -202,7 +202,7 @@ function L.keys_per_filetype(filetypes, prefix, mappings, options)
 	})
 end
 
----Creates a set of keybindings for a filetype or filetypes
+---Creates a set of key bindings for a filetype or filetypes
 ---@param filetypes string|string[] filetype or filetypes to create the mappings for
 ---@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.create_filetype_menu(filetypes, mappings, options)
@@ -219,9 +219,9 @@ function L.create_menu(prefix, items)
 			map_menu(prefix .. item.key, item.title, item.icon, item.additional_modes)
 			L.create_menu(prefix .. item.key, item.items)
 		elseif item.type == "submode" then
-			-- Creates a submode
+			-- Creates a sub mode
 			map_menu(prefix .. item.key, item.title, item.icon)
-			heads = {}
+			local heads = {}
 			for _, mode_item in ipairs(item.items) do
 				local submode_key, command = unpack(mode_item)
 				if type(command) == "string" then

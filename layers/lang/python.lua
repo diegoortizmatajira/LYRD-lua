@@ -1,22 +1,9 @@
-local lsp = require("LYRD.layers.lsp")
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
-local utils = require("LYRD.utils")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Python: LYRD.setup.Module
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Python language",
-	use_basedpyright = true,
-}
-
--- Opens the .env file in the current directory
-local function open_dotenv()
-	utils.open_or_create_file(".env")
-end
-
-function L.plugins()
-	setup.plugin({
+	required_plugins = {
 		{
 			"mfussenegger/nvim-dap-python",
 			dependencies = { "mfussenegger/nvim-dap" },
@@ -63,50 +50,44 @@ function L.plugins()
 			"lukoshkin/pymove.nvim",
 			opts = {},
 		},
-	})
-end
-
-function L.preparation()
-	local python_lsp = "pyright"
-	if L.use_basedpyright then
-		python_lsp = "basedpyright"
-	end
-	lsp.mason_ensure({
-		python_lsp,
+	},
+	required_mason_packages = {
+		"basedpyright",
 		"debugpy",
-		"pylint",
 		"pydocstyle",
+		"pylint",
 		"ruff",
 		"yapf",
-	})
-
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"python",
 		"htmldjango",
-	})
-
-	local null_ls = require("null-ls")
-
-	lsp.null_ls_register_sources({
-		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
-		null_ls.builtins.diagnostics.pylint.with({
+	},
+	required_enabled_lsp_servers = {
+		"basedpyright",
+		"ruff",
+	},
+	required_test_adapters = {
+		"neotest-python",
+	},
+	required_null_ls_sources = {
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.pylint", {
 			command = "python",
-			args = {
-				"-m",
-				"pylint",
-				"--from-stdin",
-				"$FILENAME",
-				"-f",
-				"json",
-			},
+			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
 		}),
-	})
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-python"))
+	},
+}
+
+-- Opens the .env file in the current directory
+local function open_dotenv()
+	local utils = require("LYRD.utils")
+	utils.open_or_create_file(".env")
 end
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
 	commands.implement("python", {
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
 		{ cmd.LYRDCodeSecrets, open_dotenv },
@@ -124,26 +105,4 @@ function L.settings()
 	overseer.register_template(require("LYRD.shared.overseer.python_tasks"))
 end
 
-function L.complete()
-	local python_lsp = "pyright"
-	if L.use_basedpyright then
-		python_lsp = "basedpyright"
-	end
-	vim.lsp.enable({ python_lsp, "ruff" })
-	vim.api.nvim_create_autocmd("LspAttach", {
-		group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
-		callback = function(args)
-			local client = vim.lsp.get_client_by_id(args.data.client_id)
-			if client == nil then
-				return
-			end
-			if client.name == "ruff" then
-				-- Disable hover in favor of Pyright
-				client.server_capabilities.hoverProvider = false
-			end
-		end,
-		desc = "LSP: Disable hover capability from Ruff",
-	})
-end
-
-return L
+return declarative_layer.apply(L)

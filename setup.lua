@@ -203,7 +203,7 @@ function setup.load(s)
 	local file_type_commands_index = 0
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.run_once_per_filetype ~= nil then
-			--- Create autocommands for each filetype command
+			--- Create auto-commands for each filetype command
 			for ft, command_callback in pairs(layer.run_once_per_filetype) do
 				file_type_commands_index = file_type_commands_index + 1
 				vim.api.nvim_create_autocmd("FileType", {

@@ -6,9 +6,29 @@ local icons = require("LYRD.layers.icons")
 require("LYRD.utils.signs")
 local utils = require("LYRD.utils")
 
----@class LYRD.layer.Docker: LYRD.setup.Module
+local declarative_layer = require("LYRD.shared.declarative_layer")
+
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Docker",
+	required_mason_packages = {
+		"dockerfile-language-server",
+		"docker-language-server",
+		"docker-compose-language-service",
+	},
+	required_treesitter_parsers = {
+		"dockerfile",
+	},
+	required_enabled_lsp_servers = {
+		"dockerls",
+		"docker_language_server",
+		"docker_compose_language_service",
+	},
+	required_executables = {
+		"docker",
+		"docker-compose",
+		"lazydocker",
+	},
 	docker_compose_filetype = "yaml.docker-compose",
 	docker_compose_file_patterns = {
 		"docker%-compose*%.yaml",
@@ -222,11 +242,6 @@ end
 function L.preparation()
 	--
 	lsp.register_code_actions({ L.docker_compose_filetype }, docker_compose_generate_actions)
-	lsp.mason_ensure({
-		"dockerfile-language-server",
-		"docker-language-server",
-		"docker-compose-language-service",
-	})
 	-- Configure hadolint only if platform is Linux
 	if vim.fn.has("linux") == 1 then
 		lsp.mason_ensure({
@@ -236,9 +251,6 @@ function L.preparation()
 			require("null-ls.builtins.diagnostics.hadolint"),
 		})
 	end
-	ts.ensureParser({
-		"dockerfile",
-	})
 end
 
 function L.settings()
@@ -264,18 +276,4 @@ function L.settings()
 	})
 end
 
-function L.complete()
-	vim.lsp.enable({
-		"dockerls",
-		"docker_language_server",
-		"docker_compose_language_service",
-	})
-end
-
-function L.healthcheck()
-	vim.health.start(L.name)
-	local health = require("LYRD.health")
-	health.check_executable("lazydocker")
-end
-
-return L
+return declarative_layer.apply(L)
