@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+---@class LYRD.layer.Test: LYRD.setup.Module
 local L = { name = "Test", test_adapters = {} }
 
 function L.plugins()
@@ -32,11 +33,18 @@ end
 
 function L.settings()
 	-- Called only when all adapters have been collected into L.test_adapters
-	require("neotest").setup({
+	local neotest = require("neotest")
+	--- @diagnostic disable-next-line: missing-fields
+	neotest.setup({
 		adapters = L.test_adapters,
 		output = {
 			enabled = true, -- Enable output
 			open_on_run = true, -- Automatically open the output window
+		},
+		consumers = {
+		    --- uses overseer to run tests
+			--- @diagnostic disable-next-line: assign-type-mismatch
+			overseer = require("neotest.consumers.overseer"),
 		},
 	})
 	commands.implement("*", {
@@ -86,22 +94,6 @@ function L.settings()
 		{ cmd.LYRDTestCoverageSummary, ":CoverageSummary" },
 		{ cmd.LYRDTestCoverage, ":CoverageToggle" },
 	})
-
-	-- Creates an autocommand to enable q to close test panels
-	local group = vim.api.nvim_create_augroup("NeotestConfig", {})
-	for _, ft in ipairs({ "output", "attach", "summary" }) do
-		vim.api.nvim_create_autocmd("FileType", {
-			pattern = "neotest-" .. ft,
-			group = group,
-			callback = function(opts)
-				vim.keymap.set("n", "q", function()
-					pcall(vim.api.nvim_win_close, 0, true)
-				end, {
-					buffer = opts.buf,
-				})
-			end,
-		})
-	end
 end
 
 function L.complete()

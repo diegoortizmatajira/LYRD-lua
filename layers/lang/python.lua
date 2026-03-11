@@ -1,21 +1,15 @@
-local lsp = require("LYRD.layers.lsp")
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = { name = "Python language" }
-
--- Opens the .env file in the current directory
-function L.open_dotenv()
-	vim.cmd("e .env")
-end
-
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Python language",
+	required_plugins = {
 		{
 			"mfussenegger/nvim-dap-python",
+			dependencies = { "mfussenegger/nvim-dap" },
 			config = function()
-				require("dap-python").setup()
+				-- WARN: Using 'uv' for uv projects support, otherwise skip.
+				require("dap-python").setup("uv")
 				table.insert(require("dap").configurations.python, {
 					type = "python",
 					request = "launch",
@@ -28,14 +22,12 @@ function L.plugins()
 		{
 			"nvim-neotest/neotest-python",
 			ft = "python",
-			python = nil,
 		},
 		{
 			"linux-cultist/venv-selector.nvim",
 			dependencies = {
 				"neovim/nvim-lspconfig",
 				"mfussenegger/nvim-dap",
-				"mfussenegger/nvim-dap-python", --optional
 				"nvim-telescope/telescope.nvim",
 			},
 			lazy = false,
@@ -47,72 +39,70 @@ function L.plugins()
 		{
 			"raimon49/requirements.txt.vim",
 		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+		{
+			"benomahony/uv.nvim",
+			opts = {
+				picker_integration = true,
+				keymaps = false,
+			},
+		},
+		{
+			"lukoshkin/pymove.nvim",
+			opts = {},
+		},
+	},
+	required_mason_packages = {
+		"basedpyright",
 		"debugpy",
-		"pylint",
-		"pyright",
 		"pydocstyle",
+		"pylint",
 		"ruff",
 		"yapf",
-	})
-
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"python",
 		"htmldjango",
-	})
-
-	local null_ls = require("null-ls")
-
-	lsp.null_ls_register_sources({
-		-- Custom pylint to use the module in the environment (instead of the Mason one). Requires to install pylint manually.
-		null_ls.builtins.diagnostics.pylint.with({
+	},
+	required_enabled_lsp_servers = {
+		"basedpyright",
+		"ruff",
+	},
+	required_test_adapters = {
+		"neotest-python",
+	},
+	required_null_ls_sources = {
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.pylint", {
 			command = "python",
-			args = {
-				"-m",
-				"pylint",
-				"--rcfile",
-				setup.configs_path .. "/pylintrc",
-				"--from-stdin",
-				"$FILENAME",
-				"-f",
-				"json",
-			},
+			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
 		}),
-	})
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-python"))
+	},
+}
+
+-- Opens the .env file in the current directory
+local function open_dotenv()
+	local utils = require("LYRD.utils")
+	utils.open_or_create_file(".env")
 end
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
 	commands.implement("python", {
-		{ cmd.LYRDCodeFixImports, ":PyrightOrganizeImports" },
 		{ cmd.LYRDCodeSelectEnvironment, ":VenvSelect" },
-		{ cmd.LYRDCodeSecrets, L.open_dotenv },
+		{ cmd.LYRDCodeSecrets, open_dotenv },
 		{ cmd.LYRDCodeRunSelection, ":LYRDReplNotebookRunCellAndMove" },
+		{ cmd.LYRDCodeOrganizeFile, ":PySortFile" },
+		{
+			cmd.LYRDCodeTooling,
+			function()
+				require("uv").pick_uv_commands()
+			end,
+		},
 	})
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.python_tasks"))
 end
 
-function L.complete()
-	vim.lsp.enable({ "pyright", "ruff" })
-	vim.api.nvim_create_autocmd("LspAttach", {
-		group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
-		callback = function(args)
-			local client = vim.lsp.get_client_by_id(args.data.client_id)
-			if client == nil then
-				return
-			end
-			if client.name == "ruff" then
-				-- Disable hover in favor of Pyright
-				client.server_capabilities.hoverProvider = false
-			end
-		end,
-		desc = "LSP: Disable hover capability from Ruff",
-	})
-end
-
-return L
+return declarative_layer.apply(L)

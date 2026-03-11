@@ -1,0 +1,38 @@
+return function (buf)
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  local text= require("LYRD.layers.text")
+  basename = text.to_pascal_case(basename:match("(.+)%..+$"))
+
+  return { 
+      module_name = basename,
+      _cursor = { 11, 5 }
+    }
+end
+---
+local setup = require("LYRD.setup")
+local commands = require("LYRD.layers.commands")
+local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
+local lsp = require("LYRD.layers.lsp")
+
+---@class LYRD.layer.${module_name}: LYRD.setup.Module
+local L = { name = "${module_name}" }
+
+function L.plugins()
+	setup.plugin({})
+end
+
+function L.preparation() end
+
+function L.settings()
+	commands.implement("*", {
+		-- { cmd.LYRDXXXX, ":XXXXX" },
+	})
+end
+
+function L.keybindings() end
+
+function L.complete() end
+
+return L

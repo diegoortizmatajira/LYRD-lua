@@ -1,7 +1,20 @@
+local setup = require("LYRD.setup")
+
+---@class LYRD.layer.General: LYRD.setup.Module
 local L = {
 	name = "General",
 	vscode_compatible = true,
 }
+
+function L.plugins()
+	setup.plugin({
+		{
+			"vhyrro/luarocks.nvim",
+			priority = 1000, -- Very high priority is required, luarocks.nvim should run as the first plugin in your config.
+			opts = {},
+		},
+	})
+end
 
 function L.preparation()
 	vim.g.mapleader = ","

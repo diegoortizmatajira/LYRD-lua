@@ -2,17 +2,17 @@ local setup = require("LYRD.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
-local commands = require("LYRD.layers.commands")
-local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.LYRDKeyboard: LYRD.setup.Module
 local L = {
 	name = "LYRD Keyboard",
 	vscode_compatible = true,
 	ai_keys = {
 		-- Accept the current completion.
-		accept = "<C-l>",
+		-- accept = "<C-l>",
+		accept = "<Right>",
 		-- Accept the next word.
 		accept_word = "<C-Right>",
 		-- Accept the next line.
@@ -24,6 +24,14 @@ local L = {
 		-- Cycle to the previous completion.
 		prev = "<C-Up>",
 	},
+	bookmark_keys = {
+		toggle = "<tab><tab>", -- Toggle bookmark search (global keymap)
+		add_workspace = "<leader>bb", -- Add workspace bookmarks(global keymap)
+		add_global = "<leader>bg", -- Add global bookmarks(global keymap)
+		delete = "<leader>bd", -- Delete bookmarks on the current line(global keymap)
+		show_desc = "<leader>bs", -- Show bookmark description and jump to the bookmark(global keymap)
+		show = "<leader>bm", -- Show all bookmarks(global keymap)
+	},
 }
 
 function L.plugins()
@@ -31,7 +39,9 @@ function L.plugins()
 		{
 			-- Navigates using brackets (buffers, diagnostics, etc.)
 			"echasnovski/mini.bracketed",
-			opts = {},
+			opts = {
+				buffer = { suffix = "" }, -- disable buffer navigation (handled manually)
+			},
 		},
 		{
 			-- Text operators g=: evaluate, gx: exchange, multiply: gm, sort: gs, replace with register: gr
@@ -70,7 +80,7 @@ function L.plugins()
 		},
 		{
 			-- Allows to toggle comments with gc/gcc keymaps
-			"echasnovski/mini.comment",
+			"numToStr/Comment.nvim",
 			opts = {},
 		},
 		{
@@ -83,7 +93,18 @@ function L.plugins()
 end
 
 function L.keybindings()
+	-- Use standard nvim key mapping to disable q for recording macros.
+	vim.keymap.set("n", "q", "<nop>")
+	-- Use standard nvim key mapping to set <leader> + q to start/stop
+	-- recording macros using the default q keymap while allowing the user to
+	-- press a register key of their choice after pressing <leader> + q.
+	vim.keymap.set("n", "<leader>q", "q", { desc = "Start/stop recording macro", noremap = true })
+
 	mappings.keys({
+		-- Manual brackaeted mappings for buffers to override mini.bracketed defaults
+		{ "n", "[b", cmd.LYRDBufferPrev },
+		{ "n", "]b", cmd.LYRDBufferNext },
+		-- Manual bindings
 		{ "i", "<C-s>", cmd.LYRDBufferSave },
 		{ "i", "<M-C-[>", cmd.LYRDBufferPrev },
 		{ "i", "<M-C-]>", cmd.LYRDBufferNext },
@@ -120,26 +141,44 @@ function L.keybindings()
 		{ "n", "<S-CR>", cmd.LYRDCodeRunSelection },
 		{ "n", "<S-F5>", cmd.LYRDDebugStart },
 		{ "n", "K", cmd.LYRDLSPHoverInfo },
-		{ "n", "gD", cmd.LYRDLSPFindDeclaration },
-		{ "n", "gO", c([[call append(line('.')-1, '')]]), { desc = "Insert line above cursor" } },
-		{ "n", "gd", cmd.LYRDLSPFindDefinitions },
-		{ "n", "gi", cmd.LYRDLSPFindImplementations },
-		{ "n", "go", c([[call append(line('.'), '')]]), { desc = "Insert line below cursor" } },
-		{ "n", "gr", cmd.LYRDLSPFindReferences },
-		{ "n", "gt", cmd.LYRDLSPFindTypeDefinition },
-		{ "n", "q", "<nop>" },
 		{ "n", "s", "<nop>" },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-S-f>", cmd.LYRDBufferFormat },
+	})
+
+	mappings.create_menu("g", {
+		{ "d", cmd.LYRDLSPFindDefinitions },
+		{ "D", cmd.LYRDLSPFindDeclaration },
+		{ "i", cmd.LYRDLSPFindImplementations },
+		{ "o", cmd.LYRDInsertLineBelow },
+		{ "O", cmd.LYRDInsertLineAbove },
+		{ "r", cmd.LYRDLSPFindReferences },
+		{ "t", cmd.LYRDLSPFindTypeDefinition },
+		menu_header("y", "Yank", {
+			{ "a", cmd.LYRDCopyAbsoluteFilePath },
+			{ "f", cmd.LYRDCopyFileName },
+			{ "r", cmd.LYRDCopyRelativeFilePath },
+			{ "w", cmd.LYRDCopyWorkingDirectory },
+		}, icons.action.copy),
 	})
 
 	mappings.create_menu("<Leader>", {
 		menu_header("a", "Artificial Intelligence", {
 			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
-			{ "e", cmd.LYRDAIEdit },
-			{ "d", cmd.LYRDAIGenerateDocumentation },
+			{ "e", cmd.LYRDAIEdit, { "x" } },
+			{ "c", cmd.LYRDAICli },
+			{ "C", cmd.LYRDAICliSelect },
+			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
+			{ "p", cmd.LYRDAICliPrompt },
 		}, icons.other.ia, { "x" }),
+		menu_header("b", "Bookmarks", {
+			{ "a", cmd.LYRDBookmarkAddLocal },
+			{ "g", cmd.LYRDBookmarkAddGlobal },
+			{ "d", cmd.LYRDBookmarkDelete },
+			{ "s", cmd.LYRDBookmarkSearch },
+			{ "t", cmd.LYRDBookmarkToggle },
+		}, icons.other.bookmark),
 		menu_header("i", "Images", {
 			{ "p", cmd.LYRDPasteImage },
 			{ "i", cmd.LYRDInsertImage },
@@ -175,8 +214,10 @@ function L.keybindings()
 			{ "f", cmd.LYRDScratchSearch },
 			{ "n", cmd.LYRDScratchNew },
 			{ "s", cmd.LYRDScratchOpen },
+			{ "d", cmd.LYRDScratchDelete },
 		}, icons.file.scratch),
-		menu_header("r", "Refactors", {
+		{ "r", cmd.LYRDBufferReload },
+		menu_header("R", "Refactors", {
 			{ "f", cmd.LYRDCodeRefactor },
 			{ "n", cmd.LYRDLSPRename },
 		}, icons.code.refactor),
@@ -196,43 +237,49 @@ function L.keybindings()
 				{ "h", cmd.LYRDPaneSwapLeft },
 				{ "l", cmd.LYRDPaneSwapRight },
 			}, icons.arrow.swap),
-			{ "/", cmd.LYRDSearchBuffers },
 			{ ".", cmd.LYRDViewHomePage },
+			{ "/", cmd.LYRDSearchBuffers },
 			{ "D", cmd.LYRDLSPShowWorkspaceDiagnosticLocList },
-			{ "R", cmd.LYRDViewRegisters },
-			{ "d", cmd.LYRDLSPShowDocumentDiagnosticLocList },
 			{ "E", cmd.LYRDViewFileExplorerAlt },
+			{ "P", cmd.LYRDViewTreeSitterPlayground },
+			{ "R", cmd.LYRDViewRegisters },
+			{ "T", cmd.LYRDTestOutput },
+			{ "X", cmd.LYRDTerminal },
+			{ "b", cmd.LYRDDatabaseOutput },
+			{ "d", cmd.LYRDLSPShowDocumentDiagnosticLocList },
 			{ "e", cmd.LYRDViewFileExplorer },
 			{ "f", cmd.LYRDViewFileTree },
 			{ "g", cmd.LYRDDebugToggleUI },
 			{ "h", cmd.LYRDBufferSplitH },
 			{ "l", cmd.LYRDViewLocationList },
 			{ "o", cmd.LYRDViewCodeOutline },
-			{ "P", cmd.LYRDViewTreeSitterPlayground },
 			{ "q", cmd.LYRDViewQuickFixList },
+			{ "s", cmd.LYRDDatabaseUI },
 			{ "t", cmd.LYRDTestSummary },
-			{ "T", cmd.LYRDTestOutput },
 			{ "v", cmd.LYRDBufferSplitV },
-			{ "y", cmd.LYRDViewYankList },
-			{ "x", cmd.LYRDTerminalList },
-			{ "X", cmd.LYRDTerminal },
 			{ "w", cmd.LYRDTasksToggle },
+			{ "x", cmd.LYRDTerminalList },
+			{ "y", cmd.LYRDViewYankList },
 		}, icons.action.split_v),
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
 		{ "c", cmd.LYRDBufferClose },
 		{ "f", cmd.LYRDBufferFormat },
 		{ "j", cmd.LYRDSmartCoder },
+		{ "k", cmd.LYRDToggleBufferDecorations },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
 		{ "t", cmd.LYRDApplyNextTheme },
+		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
 		{ "X", cmd.LYRDCodeRun },
 		{ "]", cmd.LYRDBufferNext },
 		{ "[", cmd.LYRDBufferPrev },
+		{ "/", cmd.LYRDSearchBuffers },
 	})
 
 	mappings.create_menu("<Space>", {
 		menu_header("b", "Buffers", {
+			{ "c", cmd.LYRDBufferClearContent },
 			{ "e", cmd.LYRDBufferNew },
 			{ "n", cmd.LYRDBufferNext },
 			{ "p", cmd.LYRDBufferPrev },
@@ -285,18 +332,19 @@ function L.keybindings()
 			{ "I", cmd.LYRDCodeImplementInterface },
 			{ "a", cmd.LYRDLSPFindCodeActions },
 			{ "b", cmd.LYRDCodeBuildAll },
-			{ "c", cmd.LYRDCodeGlobalCheck },
+			{ "c", cmd.LYRDCodeTooling },
+			{ "C", cmd.LYRDCodeGlobalCheck },
 			{ "d", cmd.LYRDCodeAddDocumentation },
 			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },
 			{ "i", cmd.LYRDCodeFixImports },
 			{ "l", cmd.LYRDDiagnosticLinesToggle },
-			{ "m", cmd.LYRDCodeMakeTasks },
 			{ "p", cmd.LYRDCodeRestorePackages },
 			{ "r", cmd.LYRDCodeRefactor },
 			{ "S", cmd.LYRDCodeSecrets },
 			{ "t", cmd.LYRDCodeAlternateFile },
 			{ "x", cmd.LYRDCodeRun },
+			{ "o", cmd.LYRDCodeOrganizeFile },
 		}, icons.other.code, { "x" }),
 		menu_header("d", "Debug", {
 			{ "y", cmd.LYRDDebugStart },
@@ -310,27 +358,29 @@ function L.keybindings()
 			{ "/", cmd.LYRDDebugToggleRepl },
 		}, icons.debug.breakpoint),
 		menu_header("s", "Search", {
+			{ ",", cmd.LYRDSearchCommands },
 			{ ".", cmd.LYRDSearchFiles },
-			{ "b", cmd.LYRDSearchBuffers },
+			{ "/", cmd.LYRDSearchLiveGrep },
+			{ "H", cmd.LYRDSearchHighlights },
+			{ "R", cmd.LYRDReplaceInFiles },
+			{ "S", cmd.LYRDSearchCurrentString },
+			{ "b", cmd.LYRDBookmarkSearch },
+			{ "B", cmd.LYRDSearchBuffers },
+			{ "c", cmd.LYRDSearchCommandHistory },
+			{ "f", cmd.LYRDSearchFiletypes },
+			{ "g", cmd.LYRDSearchBufferTags },
 			{ "g", cmd.LYRDSearchGitFiles },
 			{ "h", cmd.LYRDSearchRecentFiles },
 			{ "l", cmd.LYRDSearchBufferLines },
-			{ "c", cmd.LYRDSearchCommandHistory },
 			{ "m", cmd.LYRDSearchKeyMappings },
-			{ "g", cmd.LYRDSearchBufferTags },
-			{ "t", cmd.LYRDTerminalList },
-			{ "/", cmd.LYRDSearchLiveGrep },
-			{ "f", cmd.LYRDSearchFiletypes },
-			{ "t", cmd.LYRDSearchColorSchemes },
-			{ "q", cmd.LYRDSearchQuickFixes },
-			{ "H", cmd.LYRDSearchHighlights },
-			{ ",", cmd.LYRDSearchCommands },
-			{ "S", cmd.LYRDSearchCurrentString },
-			{ "s", cmd.LYRDSearchSnippets },
+			{ "m", cmd.LYRDSearchMacros },
 			{ "o", cmd.LYRDSearchSymbols },
 			{ "p", cmd.LYRDSearchRegisters },
-			{ "R", cmd.LYRDReplaceInFiles },
+			{ "q", cmd.LYRDSearchQuickFixes },
 			{ "r", cmd.LYRDReplace },
+			{ "s", cmd.LYRDSearchSnippets },
+			{ "t", cmd.LYRDSearchColorSchemes },
+			{ "T", cmd.LYRDTerminalList },
 		}, icons.search.default),
 		menu_header("g", "Git", {
 			menu_header("f", "Gitflow", {
@@ -359,6 +409,7 @@ function L.keybindings()
 				{ "e", cmd.LYRDGitWorkTreeCreateExistingBranch },
 			}),
 			{ "g", cmd.LYRDGitUI },
+			{ "G", cmd.LYRDGitViewGraph },
 			{ "s", cmd.LYRDGitStatus },
 			{ "c", cmd.LYRDGitCommit },
 			{ "P", cmd.LYRDGitPush },
@@ -380,12 +431,13 @@ function L.keybindings()
 			{ "s", cmd.LYRDTestCoverageSummary },
 			{ "v", cmd.LYRDTestSummary },
 		}, icons.code.test),
-		menu_header("p", "Packages", {
+		menu_header("p", "Preferences", {
 			{ "t", cmd.LYRDToolManager },
 			{ "p", cmd.LYRDPluginManager },
 			{ "i", cmd.LYRDPluginsInstall },
 			{ "u", cmd.LYRDPluginsUpdate },
 			{ "c", cmd.LYRDPluginsClean },
+			{ "l", cmd.LYRDEditLocalConfig },
 		}, icons.other.briefcase),
 		menu_header("q", "Quit", {
 			{ ".", cmd.LYRDWindowClose },
@@ -398,7 +450,7 @@ function L.keybindings()
 				{ "r", cmd.LYRDReplRestart },
 			}, icons.other.command),
 			{ "r", cmd.LYRDTasksRun },
-			{ "v", cmd.LYRDTasksToggle },
+			{ "t", cmd.LYRDTasksToggle },
 			{ "T", cmd.LYRDTasksConfigure },
 			{ "L", cmd.LYRDTasksConfigureLaunch },
 		}, icons.code.run),

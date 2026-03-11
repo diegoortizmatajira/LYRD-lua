@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+---@class LYRD.layer.Tasks: LYRD.setup.Module
 local L = { name = "Tasks" }
 
 local function configure(filename)
@@ -15,14 +16,86 @@ local function configure(filename)
 		vim.cmd("edit " .. filename)
 	end
 end
+
+--- @class TaskRequest
+--- @field cmd string
+--- @field args string[]
+--- @field env table<string, string>?
+--- @field cwd string?
+--- @field name string
+--- @field open_in_split boolean?
+--- @field focus boolean?
+--- @field diagnostics_parser table?
+
+--- Runs a task in a terminal
+--- @param opts TaskRequest
+function L.run_task(opts)
+	-- Use overseer.nvim to run the command and show output in a terminal window
+	local overseer = require("overseer")
+	local components = { "default" }
+	if opts.diagnostics_parser then
+		table.insert(components, 1, {
+			"on_output_parse",
+			parser = {
+				diagnostics = {
+					opts.diagnostics_parser,
+				},
+			},
+		})
+	end
+	if opts.open_in_split then
+		table.insert(components, 1, {
+			"open_output",
+			direction = "dock",
+			focus = opts.focus or false,
+			on_complete = "always",
+		})
+	end
+	overseer
+		.new_task({
+			cmd = opts.cmd,
+			args = opts.args,
+			env = opts.env,
+			cwd = opts.cwd,
+			name = opts.name,
+			strategy = "terminal",
+			components = components,
+		})
+		:start()
+end
+
 function L.plugins()
 	setup.plugin({
 		{
-			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
+			version = "1",
 			opts = {
 				templates = {
 					"builtin",
+				},
+				component_aliases = {
+					default = {
+						{
+							"display_duration",
+							detail_level = 2,
+						},
+						"on_output_summarize",
+						"on_exit_set_status",
+						{
+							"on_complete_notify",
+							system = "unfocused",
+						},
+						{
+							"on_complete_dispose",
+							timeout = 300,
+						},
+						{
+							"open_output",
+							direction = "dock",
+							focus = true,
+							on_complete = "always",
+						},
+					},
 				},
 				task_list = {
 					direction = "bottom",

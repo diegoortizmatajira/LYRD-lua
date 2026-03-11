@@ -2,7 +2,9 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local mappings = require("LYRD.layers.mappings")
+local utils = require("LYRD.utils")
 
+---@class LYRD.layer.Rest: LYRD.setup.Module
 local L = { name = "REST Client" }
 
 function L.plugins()
@@ -56,7 +58,7 @@ function L.get_closest_environment_file()
 	local current_dir = buf_dir
 
 	while current_dir ~= nil and current_dir ~= "" do
-		local env_file_path = current_dir .. "/" .. env_file
+		local env_file_path = utils.join_paths(current_dir, env_file)
 		if file_exists(env_file_path) then
 			return env_file_path
 		end
@@ -66,7 +68,7 @@ function L.get_closest_environment_file()
 	end
 
 	-- Return the default path in the current working directory if not found
-	return vim.fn.getcwd() .. "/" .. env_file
+	return utils.join_paths(vim.fn.getcwd(), env_file)
 end
 
 function L.settings()

@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 
+---@class LYRD.layer.Text: LYRD.setup.Module
 local L = { name = "Text functions" }
 
 function L.plugins()

@@ -2,6 +2,9 @@ local L = { name = "Generator" }
 
 local function get_root(bufnr)
 	local parser = vim.treesitter.get_parser(bufnr, "go", {})
+	if not parser then
+		error("No parser found for buffer " .. bufnr)
+	end
 	local tree = parser:parse()[1]
 	return tree:root()
 end

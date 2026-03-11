@@ -83,7 +83,7 @@ local config = {
 
 function config.setup(filetypes)
 	local dap = require("dap")
-	dap.adapters.codelldb = config.adapter
+	dap.adapters.netcoredbg = config.adapter
 	for _, ft in ipairs(filetypes) do
 		dap.configurations[ft] = config.default_configuration
 	end

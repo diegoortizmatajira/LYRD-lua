@@ -12,6 +12,24 @@
                 "language": [
                     "python"
                 ]
+            },
+            {
+                "path": "./html.json",
+                "language": [
+                    "html"
+                ]
+            },
+            {
+                "path": "./markdown.json",
+                "language": [
+                    "markdown"
+                ]
+            },
+            {
+                "path": "./json.json",
+                "language": [
+                    "json"
+                ]
             }
         ]
     },

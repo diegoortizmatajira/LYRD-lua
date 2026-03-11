@@ -1,5 +1,6 @@
 local setup = require("LYRD.setup")
 
+---@class LYRD.layer.Icons: LYRD.setup.Module
 local L = {
 	name = "Icons",
 	vscode_compatible = true,
@@ -7,7 +8,22 @@ local L = {
 	unicode = {
 		lightbulb = "💡",
 	},
+	ai = {
+		assistant = "󱜙 ",
+		cli = "󰶭 ",
+		prompt = "󰍩 ",
+		edit = "󱆿 ",
+		select = " ",
+		document = "󱋄 ",
+	},
+	cloud = {
+		cloud = "󰅟 ",
+		docker = "󰡨 ",
+		container = " ",
+		service = "󰲋 ",
+	},
 	other = {
+		bookmark = "󰃃",
 		briefcase = " ",
 		code = " ",
 		command = " ",
@@ -39,6 +55,7 @@ local L = {
 		task = "󰄴 ",
 		launch = " ",
 		eye = " ",
+		macro = "󱃸 ",
 	},
 	images = {
 		default = " ",
@@ -110,6 +127,7 @@ local L = {
 		replace_text = " ",
 		replace_in_files = "󰬳 ",
 		run_task = "󱖑 ",
+		delete = "󰗨 ",
 	},
 	arrow = {
 		swap = " ",
@@ -371,6 +389,11 @@ function L.plugins()
 						icon = "",
 						color = "#81e043",
 						name = "Log",
+					},
+					["java"] = {
+						icon = "",
+						color = "#CC3E44",
+						name = "Java",
 					},
 				},
 			},

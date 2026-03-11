@@ -1,0 +1,8 @@
+require("LYRD.setup")
+
+--- @type LYRD.setup.LocalConfig
+return {
+	skip_layers = {
+	    --Include layer names to skip here
+	},
+}

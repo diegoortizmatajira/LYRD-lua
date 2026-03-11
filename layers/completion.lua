@@ -2,6 +2,7 @@ local setup = require("LYRD.setup")
 local lsp = require("LYRD.layers.lsp")
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.Completion: LYRD.setup.Module
 local L = { name = "Completion" }
 
 local kind_icons = {
@@ -251,6 +252,8 @@ function L.plugins()
 						{ name = "codeium" },
 						{ name = "cmp_tabnine" },
 						{ name = "easy-dotnet" },
+						{ name = "cmp-dbee" },
+						{ name = "mdlink" },
 					}, {
 						{ name = "buffer" },
 						{ name = "path" },

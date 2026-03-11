@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.Filetree: LYRD.setup.Module
 local L = { name = "File tree" }
 
 function L.plugins()
@@ -226,10 +227,11 @@ function L.plugins()
 end
 
 function L.settings()
+	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDViewFileTree, ":NvimTreeFindFileToggle" },
-		{ cmd.LYRDViewFileExplorer, require("tfm").open },
-		{ cmd.LYRDViewFileExplorerAlt, require("oil").toggle_float },
+		{ cmd.LYRDViewFileExplorer, wrap(require("tfm").open) },
+		{ cmd.LYRDViewFileExplorerAlt, wrap(require("oil").toggle_float) },
 	})
 end
 

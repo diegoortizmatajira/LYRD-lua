@@ -1,16 +1,9 @@
-local setup = require("LYRD.setup")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = { name = "CSV" }
-
-function L.preparation()
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"csv",
-		"tsv",
-	})
-end
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "CSV",
+	required_plugins = {
 		{
 			"hat0uma/csvview.nvim",
 			opts = {
@@ -20,7 +13,11 @@ function L.plugins()
 			},
 			ft = { "csv", "tsv" },
 		},
-	})
-end
+	},
+	required_treesitter_parsers = {
+		"csv",
+		"tsv",
+	},
+}
 
-return L
+return declarative_layer.apply(L)

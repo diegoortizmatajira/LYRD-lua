@@ -1,22 +1,21 @@
-local lsp = require("LYRD.layers.lsp")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local L = { name = "CMake Language" }
-
-function L.plugins() end
-
-function L.preparation()
-	lsp.mason_ensure({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "CMake Language",
+	required_mason_packages = {
 		"cmake-language-server",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"make",
 		"cmake",
-	})
-end
+	},
+	required_enabled_lsp_servers = {
+		"cmake",
+	},
+}
 
 function L.settings()
-	-- make/cmake
 	local vimrc_make_cmake_group = vim.api.nvim_create_augroup("vimrc-make-cmake", {})
 	vim.api.nvim_create_autocmd({ "FileType" }, {
 		group = vimrc_make_cmake_group,
@@ -30,10 +29,4 @@ function L.settings()
 	})
 end
 
-function L.keybindings() end
-
-function L.complete()
-	vim.lsp.enable("cmake")
-end
-
-return L
+return declarative_layer.apply(L)

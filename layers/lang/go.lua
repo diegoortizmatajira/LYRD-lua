@@ -1,55 +1,23 @@
-local setup = require("LYRD.setup")
-local utils = require("LYRD.utils")
-local commands = require("LYRD.layers.commands")
 local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Go language" }
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Go language",
+	required_plugins = {
 		{
 			"ray-x/go.nvim",
-			dependencies = { -- optional packages
-				"ray-x/guihua.lua",
-				"neovim/nvim-lspconfig",
-				"nvim-treesitter/nvim-treesitter",
-			},
 			opts = {
 				diagnostic = {
 					virtual_text = false,
 				},
 			},
 			ft = { "go", "gomod" },
-			build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+			-- If you need to install/update all binaries
+			build = ':lua require("go.install").update_all_sync()',
 		},
-		-- {
-		-- 	"fatih/vim-go",
-		-- 	ft = "go", -- only load on go files
-		-- 	init = function()
-		-- 		vim.g.go_list_type = "quickfix"
-		-- 		vim.g.go_fmt_command = "gopls"
-		-- 		vim.g.go_gopls_gofumpt = 1
-		-- 		vim.g.go_fmt_fail_silently = 1
-		-- 		vim.g.go_def_mapping_enabled = 0
-		-- 		vim.g.go_doc_popup_window = 1
-		-- 		vim.g.go_highlight_types = 1
-		-- 		vim.g.go_highlight_fields = 1
-		-- 		vim.g.go_highlight_functions = 1
-		-- 		vim.g.go_highlight_methods = 1
-		-- 		vim.g.go_highlight_operators = 1
-		-- 		vim.g.go_highlight_build_constraints = 1
-		-- 		vim.g.go_highlight_structs = 1
-		-- 		vim.g.go_highlight_generate_tags = 1
-		-- 		vim.g.go_highlight_space_tab_error = 0
-		-- 		vim.g.go_highlight_array_whitespace_error = 0
-		-- 		vim.g.go_highlight_trailing_whitespace_error = 0
-		-- 		vim.g.go_highlight_extra_types = 1
-		-- 		vim.g.go_debug_breakpoint_sign_text = ">"
-		-- 	end,
-		-- 	build = ":GoUpdateBinaries",
-		-- },
 		{
 			"leoluz/nvim-dap-go",
 			ft = "go", -- only load on go files
@@ -59,11 +27,8 @@ function L.plugins()
 			"fredrikaverpil/neotest-golang",
 			ft = "go",
 		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+	},
+	required_mason_packages = {
 		"delve",
 		"go-debug-adapter",
 		"gofumpt",
@@ -75,27 +40,46 @@ function L.preparation()
 		"gopls",
 		"gotests",
 		"impl",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"go",
 		"gomod",
 		"gosum",
 		"gotmpl",
 		"gowork",
-	})
+	},
+	required_enabled_lsp_servers = {
+		"gopls",
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "go" },
+			format_settings = { "gofumpt", "goimports" },
+		},
+	},
+	required_test_adapters = {
+		"neotest-golang",
+	},
+	required_null_ls_sources = {
+		"null-ls.builtins.code_actions.gomodifytags",
+		"null-ls.builtins.code_actions.impl",
+	},
+}
 
-	local null_ls = require("null-ls")
-	lsp.null_ls_register_sources({
-		null_ls.builtins.code_actions.gomodifytags,
-		null_ls.builtins.code_actions.impl,
-	})
-	lsp.format_with_conform("go", { "gofumpt", "goimports" })
-	local test = require("LYRD.layers.test")
-	test.configure_adapter(require("neotest-golang"))
+local function ends_with(str, ending)
+	return ending == "" or str:sub(-#ending) == ending
 end
 
--- This function to detect go html templates in html files
+local function build_go_files()
+	local file = vim.fn.expand("%")
+	if ends_with(file, "_test.go") then
+		vim.fn["go#test#Test"](0, 1)
+	else
+		vim.fn["go#cmd#Build"](0)
+	end
+end
+
+-- This function to detect go HTML templates in HTML files
 local function DetectGoHtmlTmpl()
 	if vim.fn.expand("%:e") == "html" and vim.fn.search("{{") ~= 0 then
 		vim.bo.filetype = "gohtmltmpl"
@@ -103,8 +87,11 @@ local function DetectGoHtmlTmpl()
 end
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+	local wrap = commands.wrap
 	commands.implement("go", {
-		{ cmd.LYRDCodeBuild, L.build_go_files },
+		{ cmd.LYRDCodeBuild, build_go_files },
 		{ cmd.LYRDCodeRun, ":GoRun" },
 		{ cmd.LYRDTest, ":GoTest" },
 		{ cmd.LYRDTestCoverage, ":GoCoverageToggle" },
@@ -115,38 +102,20 @@ function L.settings()
 		{ cmd.LYRDCodeImplementInterface, "GoImpl" },
 		{ cmd.LYRDCodeFillStructure, ":GoFillStruct" },
 		{ cmd.LYRDCodeGenerate, ":GoGenerate" },
-		{ cmd.LYRDCodeProduceGetter, generator.generate_getters },
-		{ cmd.LYRDCodeProduceSetter, generator.generate_setters },
-		{ cmd.LYRDCodeProduceMapping, generator.generate_mapping },
+		{ cmd.LYRDCodeProduceGetter, wrap(generator.generate_getters) },
+		{ cmd.LYRDCodeProduceSetter, wrap(generator.generate_setters) },
+		{ cmd.LYRDCodeProduceMapping, wrap(generator.generate_mapping) },
 	})
 
 	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 		pattern = { "*.go" },
 		command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
 	})
-	-- This auto command to detect go html templates for HUGO
+	-- This auto command to detect go HTML templates for Hugo
 	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 		pattern = "*.html",
 		callback = DetectGoHtmlTmpl,
 	})
 end
 
-function L.complete()
-	vim.lsp.enable("gopls")
-end
-
-local function ends_with(str, ending)
-	return ending == "" or str:sub(-#ending) == ending
-end
-
---  run :GoBuild or :GoTestCompile based on the go file
-function L.build_go_files()
-	local file = vim.fn.expand("%")
-	if ends_with(file, "_test.go") then
-		vim.fn["go#test#Test"](0, 1)
-	else
-		vim.fn["go#cmd#Build"](0)
-	end
-end
-
-return L
+return declarative_layer.apply(L)

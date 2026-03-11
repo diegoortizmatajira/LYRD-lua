@@ -4,6 +4,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.LSP: LYRD.setup.Module
 local L = {
 	name = "LSP",
 	required_tools = {},
@@ -11,6 +12,7 @@ local L = {
 	null_ls_registered = {},
 	conform_formatters_by_ft = {},
 	conform_formatters = {},
+	enable_usage_hints = false,
 }
 
 local mason_opts = {
@@ -61,6 +63,7 @@ local mason_opts = {
 	-- The registries to source packages from. Accepts multiple entries. Should a package with the same name exist in
 	-- multiple registries, the registry listed first will be used.
 	registries = {
+		"lua:LYRD.shared.mason-registry",
 		"github:crashdummyy/mason-registry",
 		"github:nvim-java/mason-registry",
 		"github:mason-org/mason-registry",
@@ -144,23 +147,62 @@ local function exclude_lsp_lines_from_filetypes(filetypes)
 	end
 end
 
-local function format_buffer(args)
-	local range = nil
-	if args and args.count ~= -1 then
-		local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
-		range = {
-			start = { args.line1, 0 },
-			["end"] = { args.line2, end_line:len() },
-		}
-	end
-	require("conform").format({ async = true, lsp_format = "fallback", range = range })
-end
-
 function L.get_pkg_path(pkg, ...)
 	return utils.join_paths(vim.fn.expand("$MASON"), "packages", pkg, ...)
 end
 
+local function usage_text_format(symbol)
+	local res = {}
+
+	local round_start = { "", "SymbolUsageRounding" }
+	local round_end = { "", "SymbolUsageRounding" }
+
+	-- Indicator that shows if there are any other symbols in the same line
+	local stacked_functions_content = symbol.stacked_count > 0 and ("+%s"):format(symbol.stacked_count) or ""
+
+	table.insert(res, round_start)
+
+	if symbol.references then
+		local usage = symbol.references <= 1 and "usage" or "usages"
+		local num = symbol.references == 0 and "no" or symbol.references
+		table.insert(res, { "󰌹 ", "SymbolUsageRef" })
+		table.insert(res, { ("%s %s"):format(num, usage), "SymbolUsageContent" })
+	end
+
+	if symbol.definition then
+		if #res > 0 then
+			table.insert(res, { " ", "SymbolUsageContent" })
+		end
+		table.insert(res, { "󰳽 ", "SymbolUsageDef" })
+		table.insert(res, { symbol.definition .. " defs", "SymbolUsageContent" })
+	end
+
+	if symbol.implementation then
+		if #res > 0 then
+			table.insert(res, { " ", "SymbolUsageContent" })
+		end
+		table.insert(res, { "󰡱 ", "SymbolUsageImpl" })
+		table.insert(res, { symbol.implementation .. " impls", "SymbolUsageContent" })
+	end
+
+	if stacked_functions_content ~= "" then
+		if #res > 0 then
+			table.insert(res, { " ", "SymbolUsageContent" })
+		end
+		table.insert(res, { " ", "SymbolUsageImpl" })
+		table.insert(res, { stacked_functions_content, "SymbolUsageContent" })
+	end
+	table.insert(res, round_end)
+
+	return res
+end
+
+function L.organize_imports()
+	vim.lsp.buf.code_action({ only = { "source.organizeImports" } })
+end
+
 function L.plugins()
+	local SymbolKind = vim.lsp.protocol.SymbolKind
 	setup.plugin({
 		{ "neovim/nvim-lspconfig" },
 		{
@@ -252,13 +294,40 @@ function L.plugins()
 				vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 			end,
 		},
+		{
+			"Wansmer/symbol-usage.nvim",
+			enabled = L.enable_usage_hints,
+			event = "LspAttach", -- need run before LspAttach if you use nvim 0.9. On 0.10 use 'LspAttach'
+			opts = {
+				---@type lsp.SymbolKind[] Symbol kinds what need to be count (see `lsp.SymbolKind`)
+				kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface, SymbolKind.Class },
+				text_format = usage_text_format,
+				references = { enabled = true, include_declaration = false },
+				definition = { enabled = true },
+				implementation = { enabled = true },
+			},
+			init = function()
+				local function h(name)
+					return vim.api.nvim_get_hl(0, { name = name })
+				end
+
+				-- hl-groups can have any name
+				-- Stylua will mess up the formatting here, so disable it
+                -- stylua: ignore start
+				vim.api.nvim_set_hl(0, "SymbolUsageRounding", { fg = h("CursorLine").bg, italic = true })
+				vim.api.nvim_set_hl( 0, "SymbolUsageContent", { bg = h("CursorLine").bg, fg = h("Comment").fg, italic = true })
+				vim.api.nvim_set_hl( 0, "SymbolUsageRef", { fg = h("Function").fg, bg = h("CursorLine").bg, italic = true })
+				vim.api.nvim_set_hl(0, "SymbolUsageDef", { fg = h("Type").fg, bg = h("CursorLine").bg, italic = true })
+				vim.api.nvim_set_hl( 0, "SymbolUsageImpl", { fg = h("@keyword").fg, bg = h("CursorLine").bg, italic = true })
+				-- stylua: ignore end
+			end,
+		},
 	})
 end
 
 function L.preparation()
 	add_mason_bin_to_path()
 	L.mason_ensure({
-		"bash-language-server",
 		"editorconfig-checker",
 		"vim-language-server",
 	})
@@ -327,30 +396,76 @@ function L.settings()
 	vim.diagnostic.config(config)
 	exclude_lsp_lines_from_filetypes({ "lazy" })
 
-	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+	vim.o.winborder = "rounded"
 
-	vim.lsp.handlers["textDocument/signatureHelp"] =
-		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+	-- Custom hover that filters out LSP clients with empty results
+	local function filtered_hover()
+		local params = vim.lsp.util.make_position_params(0, "utf-16")
+		vim.lsp.buf_request_all(0, "textDocument/hover", params, function(results, ctx)
+			local entries = {}
+			for client_id, resp in pairs(results) do
+				if not resp.error and resp.result and resp.result.contents then
+					local lines = vim.lsp.util.convert_input_to_markdown_lines(resp.result.contents)
+					local has_content = false
+					for _, line in ipairs(lines) do
+						if vim.trim(line) ~= "" then
+							has_content = true
+							break
+						end
+					end
+					if has_content then
+						table.insert(entries, { client_id = client_id, lines = lines })
+					end
+				end
+			end
+			if #entries == 0 then
+				return
+			end
+			local display = {}
+			for i, entry in ipairs(entries) do
+				if #entries > 1 then
+					local client = vim.lsp.get_client_by_id(entry.client_id)
+					local name = client and client.name or tostring(entry.client_id)
+					if i > 1 then
+						table.insert(display, "---")
+					end
+					table.insert(display, ("# %s"):format(name))
+				end
+				vim.list_extend(display, entry.lines)
+			end
+			vim.lsp.util.open_floating_preview(display, "markdown", {
+				focus_id = "textDocument/hover",
+			})
+		end)
+	end
+	L.filtered_hover = filtered_hover
 
-	-- Enable rounded borders in :LspInfo window.
-	require("lspconfig.ui.windows").default_options.border = "rounded"
+	if L.enable_usage_hints then
+		local ui = require("LYRD.layers.lyrd-ui")
+		ui.register_decoration_togglers("*", {
+			function()
+				-- Toggle symbol usage display
+				require("symbol-usage").toggle()
+			end,
+		})
+	end
 
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
-		{ cmd.LYRDBufferFormat, format_buffer },
-		{ cmd.LYRDLSPFindReferences, vim.lsp.buf.references },
-		{ cmd.LYRDLSPFindCodeActions, require("actions-preview").code_actions },
-		{ cmd.LYRDLSPFindRangeCodeActions, vim.lsp.buf.range_code_action },
-		{ cmd.LYRDLSPFindLineDiagnostics, vim.diagnostic.show_line_diagnostics },
+		{ cmd.LYRDBufferFormat, L.conform_format_handler() },
+		{ cmd.LYRDLSPFindReferences, commands.wrap(vim.lsp.buf.references) },
+		{ cmd.LYRDLSPFindCodeActions, commands.wrap(require("actions-preview").code_actions) },
+		{ cmd.LYRDLSPFindRangeCodeActions, commands.wrap(vim.lsp.buf.range_code_action) },
+		{ cmd.LYRDLSPFindLineDiagnostics, commands.wrap(vim.diagnostic.show_line_diagnostics) },
 		{ cmd.LYRDLSPFindDocumentDiagnostics, ":Trouble diagnostics toggle filter.buf=0" },
 		{ cmd.LYRDLSPFindWorkspaceDiagnostics, ":Trouble diagnostics toggle" },
-		{ cmd.LYRDLSPFindImplementations, vim.lsp.buf.implementation },
-		{ cmd.LYRDLSPFindDefinitions, vim.lsp.buf.definition },
-		{ cmd.LYRDLSPFindDeclaration, vim.lsp.buf.declaration },
-		{ cmd.LYRDLSPHoverInfo, vim.lsp.buf.hover },
-		{ cmd.LYRDLSPSignatureHelp, vim.lsp.buf.signature_help },
-		{ cmd.LYRDLSPFindTypeDefinition, vim.lsp.buf.type_definition },
-		{ cmd.LYRDLSPRename, vim.lsp.buf.rename },
+		{ cmd.LYRDLSPFindImplementations, commands.wrap(vim.lsp.buf.implementation) },
+		{ cmd.LYRDLSPFindDefinitions, commands.wrap(vim.lsp.buf.definition) },
+		{ cmd.LYRDLSPFindDeclaration, commands.wrap(vim.lsp.buf.declaration) },
+		{ cmd.LYRDLSPHoverInfo, filtered_hover },
+		{ cmd.LYRDLSPSignatureHelp, commands.wrap(vim.lsp.buf.signature_help) },
+		{ cmd.LYRDLSPFindTypeDefinition, commands.wrap(vim.lsp.buf.type_definition) },
+		{ cmd.LYRDLSPRename, commands.wrap(vim.lsp.buf.rename) },
 		{
 			cmd.LYRDLSPGotoNextDiagnostic,
 			function()
@@ -369,6 +484,7 @@ function L.settings()
 		{ cmd.LYRDViewQuickFixList, ":Trouble qflist toggle" },
 		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
 		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
+		{ cmd.LYRDCodeFixImports, L.organize_imports },
 	})
 end
 
@@ -409,22 +525,31 @@ end
 --- Configures the given LSP server to format buffers for a given filetype.
 --- @param filetype string|string[] filetype(s) to format
 --- @param lsp_name string name of the LSP server
-function L.format_with_lsp(filetype, lsp_name)
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.format_with_lsp(filetype, lsp_name, pre_logic, post_logic)
 	commands.implement(filetype, {
-		{ cmd.LYRDBufferFormat, L.format_handler(lsp_name) },
+		{ cmd.LYRDBufferFormat, L.lsp_format_handler(lsp_name, pre_logic, post_logic) },
 	})
 end
 
 --- Configures the given LSP server to format buffers for a given filetype.
 --- @param filetype string | string[] filetype(s) to format
 --- @param format_settings table Settings for the formatter
-function L.format_with_conform(filetype, format_settings)
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.format_with_conform(filetype, format_settings, pre_logic, post_logic)
 	if type(filetype) == "string" then
 		L.conform_formatters_by_ft[filetype] = format_settings
 	elseif type(filetype) == "table" then
 		for _, ft in pairs(filetype) do
 			L.conform_formatters_by_ft[ft] = format_settings
 		end
+	end
+	if pre_logic or post_logic then
+		commands.implement(filetype, {
+			{ cmd.LYRDBufferFormat, L.conform_format_handler(pre_logic, post_logic) },
+		})
 	end
 end
 
@@ -433,15 +558,49 @@ function L.complete()
 	vim.diagnostic.config({ virtual_text = false })
 end
 
-function L.format_handler(server_name)
+--- Returns a handler that format using the given lsp
+--- @param server_name string name of the LSP server
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.lsp_format_handler(server_name, pre_logic, post_logic)
 	-- Returns a handler that format using the given lsp
 	return function()
+		if pre_logic then
+			pre_logic()
+		end
 		vim.lsp.buf.format({
 			filter = function(client)
 				return client.name == server_name
 			end,
 			async = false,
 		})
+		if post_logic then
+			post_logic()
+		end
+	end
+end
+
+--- Returns a handler that format using conform plugin
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.conform_format_handler(pre_logic, post_logic)
+	-- Returns a handler that format using the given lsp
+	return function(args)
+		if pre_logic then
+			pre_logic()
+		end
+		local range = nil
+		if args and args.count ~= -1 then
+			local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+			range = {
+				start = { args.line1, 0 },
+				["end"] = { args.line2, end_line:len() },
+			}
+		end
+		require("conform").format({ async = true, lsp_format = "fallback", range = range })
+		if post_logic then
+			post_logic()
+		end
 	end
 end
 

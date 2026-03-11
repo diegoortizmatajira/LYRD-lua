@@ -3,9 +3,11 @@ local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local utils = require("LYRD.utils")
+
+---@class LYRD.layer.Snippets: LYRD.setup.Module
 local L = {
 	name = "Snippets",
-	snippets_path = utils.get_lyrd_path() .. "/snippets",
+	snippets_path = utils.get_lyrd_path("snippets"),
 }
 
 function L.plugins()
@@ -43,6 +45,12 @@ function L.plugins()
 				require("luasnip").filetype_extend("kotlin", { "kdoc" })
 				require("luasnip").filetype_extend("ruby", { "rdoc" })
 				require("luasnip").filetype_extend("sh", { "shelldoc" })
+				-- HTML snippets for frontend frameworks
+				require("luasnip").filetype_extend("vue", { "html" })
+				require("luasnip").filetype_extend("htmlangular", { "html" })
+				require("luasnip").filetype_extend("svelte", { "html" })
+				require("luasnip").filetype_extend("javascriptreact", { "html" })
+				require("luasnip").filetype_extend("typescriptreact", { "html" })
 			end,
 			-- install jsregexp (optional!).
 			build = "make install_jsregexp",

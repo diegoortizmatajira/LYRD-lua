@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local handler = commands.handler
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+---@class LYRD.layer.REPL: LYRD.setup.Module
 local L = {
     name = "REPL",
     -- Add as many filetypes as you have iron.nvim configured to support REPL
@@ -132,7 +133,7 @@ function L.plugins()
             -- Enables notebook like mode
             "GCBallesteros/NotebookNavigator.nvim",
             dependencies = {
-                "echasnovski/mini.comment",
+                "numToStr/Comment.nvim",
                 repl_providers[L.selected_repl_provider].plugins,
             },
             ft = L.supported_filetypes,

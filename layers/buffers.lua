@@ -1,14 +1,15 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.ui.special_type
 ---@field type_id string
 ---@field title? string
 ---@field allow_saving? boolean
 ---@field prevent_closing? boolean
----
+---@field map_q? boolean
+
+---@class LYRD.layer.Buffers: LYRD.setup.Module
 local L = {
 	name = "Buffers",
 
@@ -30,21 +31,26 @@ local L = {
 		{ type_id = "NvimTree", title = "Explorer" },
 		{ type_id = "OverseerList" },
 		{ type_id = "aerial", title = "Outline" },
-		{ type_id = "alpha", prevent_closing = true },
 		{ type_id = "code-stdout", title = "Playground output" },
 		{ type_id = "copilot-chat", title = "AI Chat" },
+		{ type_id = "db-cli-output.csv" },
+		{ type_id = "db-cli-output.text" },
+		{ type_id = "db-cli-sidebar" },
 		{ type_id = "dbout" },
 		{ type_id = "dbui", title = "Database" },
 		{ type_id = "fugitive" },
 		{ type_id = "gitcommit" },
-		{ type_id = "help" },
+		{ type_id = "grug-far", map_q = true },
+		{ type_id = "help", map_q = true },
 		{ type_id = "http_response" },
 		{ type_id = "lazy" },
-		{ type_id = "lazy" },
-		{ type_id = "neotest-summary", title = "Tests" },
+		{ type_id = "lazyterm" },
+		{ type_id = "neotest-attach", map_q = true },
+		{ type_id = "neotest-output", map_q = true },
+		{ type_id = "neotest-summary", map_q = true, title = "Tests" },
 		{ type_id = "noice" },
-		{ type_id = "qf" },
-		{ type_id = "toggleterm" },
+		{ type_id = "qf", map_q = true },
+		{ type_id = "toggleterm", map_q = true },
 		{ type_id = "trouble" },
 		{ type_id = "tsplayground", title = "Treesitter Playground" },
 	},
@@ -53,22 +59,6 @@ local L = {
 		{ type_id = "terminal" },
 	},
 }
-
--- Gets the list of buffers that will have a title in their sidebar
-local function get_buffer_offsets()
-	local result = {}
-	for _, value in pairs(L.special_filetypes) do
-		if value.title then
-			table.insert(result, {
-				filetype = value.type_id,
-				text = value.title,
-				highlight = "PanelHeading",
-				padding = 1,
-			})
-		end
-	end
-	return result
-end
 
 local function check_closing_conditions()
 	local buffer_number = vim.api.nvim_get_current_buf()
@@ -120,15 +110,49 @@ local function close_buffer()
 			vim.notify("This buffer cannot be closed", vim.log.levels.WARN)
 			return
 		end
-		-- If the buffer is special, we just close the window
-		vim.cmd("close")
-	else
-		-- If it's a normal buffer, we close it properly
-		local closed = require("mini.bufremove").delete(0, false)
-		if closed then
-			open_starter_if_empty_buffer()
+		-- If the buffer is special, we just close the window unlless it is the last one
+		-- (meaning no other buffer is visible)
+		local wins = vim.api.nvim_list_wins()
+		if #wins > 1 then
+			vim.cmd("close")
+			return
 		end
 	end
+	-- If it's a normal buffer, we close it properly
+	local closed = require("mini.bufremove").delete(0, false)
+	if closed then
+		open_starter_if_empty_buffer()
+	end
+end
+
+--- Moves to the previous buffer while checking for any special conditions.
+---
+--- If the current buffer matches conditions specified in the `special_filenames`,
+--- `special_filetypes`, or `special_buffertypes` lists, the operation to move
+--- to the previous buffer will be skipped.
+---
+--- This function ensures that special buffers remain unaffected by navigation.
+local function buffer_prev()
+	local conditions = check_closing_conditions()
+	if conditions then
+		return
+	end
+	vim.cmd("bprevious")
+end
+
+--- Moves to the next buffer while checking for any special conditions.
+---
+--- If the current buffer matches conditions specified in the `special_filenames`,
+--- `special_filetypes`, or `special_buffertypes` lists, the operation to move
+--- to the next buffer will be skipped.
+---
+--- This function ensures that special buffers remain unaffected by navigation.
+local function buffer_next()
+	local conditions = check_closing_conditions()
+	if conditions then
+		return
+	end
+	vim.cmd("bnext")
 end
 
 function L.plugins()
@@ -151,6 +175,8 @@ function L.preparation() end
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDBufferClose, close_buffer },
+		{ cmd.LYRDBufferNext, buffer_next },
+		{ cmd.LYRDBufferPrev, buffer_prev },
 		{ cmd.LYRDBufferCloseAll, ":bufdo " .. cmd.LYRDBufferClose.name },
 		{ cmd.LYRDBufferForceClose, ":" .. cmd.LYRDBufferClose.name .. "!" },
 		{ cmd.LYRDWindowZoom, ":SimpleZoomToggle" },
@@ -172,6 +198,24 @@ end
 
 function L.keybindings() end
 
-function L.complete() end
+function L.map_q_for_closing_ft(ft)
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = ft,
+		callback = function()
+			vim.keymap.set("n", "q", cmd.LYRDBufferClose:shortcut(), {
+				buffer = true,
+				desc = "Close",
+				silent = true,
+			})
+		end,
+	})
+end
+function L.complete()
+	for _, item in pairs(L.special_filetypes) do
+		if item.map_q then
+			L.map_q_for_closing_ft(item.type_id)
+		end
+	end
+end
 
 return L

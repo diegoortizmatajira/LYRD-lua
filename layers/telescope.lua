@@ -2,12 +2,16 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
-local L = { name = "Telescope" }
+---@class LYRD.layer.Telescope: LYRD.setup.Module
+local L = {
+	name = "Telescope",
+	use_frecency = false,
+}
 
 function L.plugins()
 	setup.plugin({
-		"nvim-lua/popup.nvim",
-		"nvim-lua/plenary.nvim",
+		{ "nvim-lua/popup.nvim" },
+		{ "nvim-lua/plenary.nvim" },
 		{
 			"nvim-telescope/telescope-fzf-native.nvim",
 			config = function()
@@ -43,10 +47,26 @@ function L.plugins()
 			},
 		},
 		{
+			"nvim-telescope/telescope-frecency.nvim",
+			-- install the latest stable version
+			version = "*",
+			opts = {
+				show_filter_column = false,
+			},
+			enabled = L.use_frecency,
+			config = function(_, opts)
+				require("telescope-frecency").setup(opts)
+				require("telescope").load_extension("frecency")
+			end,
+		},
+		{
 			-- Adds support for viewing code outlines in a floating window
 			"stevearc/aerial.nvim",
 			opts = {
 				close_on_select = true,
+				layout = {
+					default_direction = "right",
+				},
 			},
 			-- Optional dependencies
 			dependencies = {
@@ -87,7 +107,7 @@ end
 
 function L.settings()
 	commands.implement("*", {
-		{ cmd.LYRDSearchFiles, ":Telescope find_files" },
+		{ cmd.LYRDSearchFiles, L.use_frecency and ":Telescope frecency workspace=CWD" or "Telescope find_files" },
 		{
 			cmd.LYRDSearchAllFiles,
 			function()

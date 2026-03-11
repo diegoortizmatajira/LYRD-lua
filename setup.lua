@@ -1,6 +1,9 @@
 local utils = require("LYRD.utils")
 
----@class LYRD.setup.Settings
+--- @class LYRD.setup.LocalConfig
+--- @field skip_layers? string[] List of layers to skip loading
+---
+---@class LYRD.setup.Settings: LYRD.setup.LocalConfig
 ---@field layers string[] contains the list of layers provided in init script
 ---@field loaded_layers? LYRD.setup.Module[] contains the list of names of the loaded layers
 ---@field plugins? LazySpec[] contains the list of plugins loaded
@@ -19,8 +22,10 @@ local utils = require("LYRD.utils")
 ---@field run_once_per_filetype? nil|table<string|string[], fun():nil> Allows to define actions to run once per filetype
 
 local setup = {
-	configs_path = utils.get_lyrd_path() .. "/configs",
-	runtime_path = utils.get_lyrd_path() .. "/runtime",
+	configs_path = utils.get_lyrd_path("configs"),
+	runtime_path = utils.get_lyrd_path("runtime"),
+	data_path = utils.get_lyrd_data_path(),
+	local_config_path = utils.get_lyrd_data_path("lyrd-local.lua"),
 	---@type LYRD.setup.Settings
 	config = {
 		commands = {},
@@ -29,6 +34,8 @@ local setup = {
 		layers = {},
 	},
 }
+
+vim.fn.mkdir(setup.data_path, "p")
 
 -- Is a dictionary to control filetype commands to run only once
 local run_once_per_file_type_execution = {}
@@ -45,7 +52,7 @@ local run_once_per_file_type_execution = {}
 --- manage plugins.
 local function bootstrap_lazy()
 	-- Bootstrap lazy.nvim
-	local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+	local lazypath = utils.join_paths(vim.fn.stdpath("data"), "lazy", "lazy.nvim")
 	if not (vim.uv or vim.loop).fs_stat(lazypath) then
 		local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 		local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
@@ -106,32 +113,49 @@ local function load_plugins()
 		-- Enable luarocks if installed.
 		rocks = { enabled = vim.fn.executable("luarocks") == 1 },
 		-- We don't use this, so create it in a disposable place.
-		lockfile = vim.fn.stdpath("cache") .. "/lazy-lock.json",
+		lockfile = utils.join_paths(vim.fn.stdpath("cache"), "lazy-lock.json"),
 	})
 end
 
---- Determines whether a layer should be loaded based on its conditions.
+--- Loads a layer module if it meets the conditions to be loaded.
+--- This function checks if the layer is in the skip list, evaluates its
+--- condition, and verifies compatibility with VSCode if applicable.
 ---
---- This function evaluates the conditions defined within the layer metadata to decide
---- whether the layer should be loaded or not. It considers general conditions, as well
---- as specific checks for compatibility with VSCode.
----
---- @param layer LYRD.setup.Module The layer to evaluate for loading.
---- @return boolean True if the layer should be loaded; otherwise, false.
-local function should_load_layer(layer)
-	if layer.condition == nil then
-		layer.condition = true
+--- @param layer_module string The module name of the layer to load.
+--- @return LYRD.setup.Module|nil The loaded layer module or nil if it should not
+local function load_if_should_be_loaded(layer_module)
+	--- Check if the layer is in the skip list (doesn't even load it)
+	if vim.list_contains(setup.config.skip_layers or {}, layer_module) then
+		return nil
 	end
-	--- Check if the layer has a condition and if it is met
-	if not layer.condition then
-		return false
+	--- Load the layer module
+	--- @type LYRD.setup.Module
+	local layer = require(layer_module)
+	--- Check if the layer has a condition and if it is not met
+	if layer.condition ~= nil and not layer.condition then
+		return nil
 	end
 	--- Check if vscode is running and the layer is compatible with vscode
 	if vim.g.vscode and not layer.vscode_compatible then
-		return false
+		return nil
 	end
+	return layer
+end
 
-	return true
+--- Reads and merges local configuration settings.
+local function read_local_config()
+	-- If the local config file exists, load it and merge its settings
+	-- into the main config
+	if vim.uv.fs_stat(setup.local_config_path) then
+		local local_config = dofile(setup.local_config_path)
+		if type(local_config) == "table" then
+			setup.config = vim.tbl_deep_extend("force", setup.config, local_config)
+		end
+	end
+end
+
+function setup.edit_local_config()
+	utils.open_or_create_file(setup.local_config_path)
 end
 
 --- Loads and initializes the LYRD setup configuration.
@@ -148,12 +172,12 @@ end
 --- @param s LYRD.setup.Settings The setup configuration table containing layers, plugins, and commands.
 function setup.load(s)
 	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
+	read_local_config()
 	vim.tbl_map(function(layer)
-		---@type LYRD.setup.Module
-		local L = require(layer)
+		local loaded_layer = load_if_should_be_loaded(layer)
 		--- Checks if the layer meets the condition to be loaded
-		if should_load_layer(L) then
-			table.insert(setup.config.loaded_layers, L)
+		if loaded_layer then
+			table.insert(setup.config.loaded_layers, loaded_layer)
 		end
 	end, setup.config.layers)
 
@@ -165,7 +189,13 @@ function setup.load(s)
 		--- Call the stage callback for each layer if it exists
 		for _, layer in ipairs(setup.config.loaded_layers) do
 			if layer[stage_function_name] ~= nil then
-				layer[stage_function_name]()
+				local ok, result = pcall(layer[stage_function_name])
+				if not ok then
+					vim.notify(
+						"Error in layer '" .. layer.name .. "' during stage '" .. stage_function_name .. "': " .. result,
+						vim.log.levels.ERROR
+					)
+				end
 			end
 		end
 	end, stages)
@@ -173,7 +203,7 @@ function setup.load(s)
 	local file_type_commands_index = 0
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.run_once_per_filetype ~= nil then
-			--- Create autocommands for each filetype command
+			--- Create auto-commands for each filetype command
 			for ft, command_callback in pairs(layer.run_once_per_filetype) do
 				file_type_commands_index = file_type_commands_index + 1
 				vim.api.nvim_create_autocmd("FileType", {

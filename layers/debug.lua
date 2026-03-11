@@ -3,6 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
+---@class LYRD.layer.Debug: LYRD.setup.Module
 local L = { name = "Debug" }
 
 function L.plugins()
@@ -167,6 +168,7 @@ function L.settings()
 		numhl = "DiagnosticSignWarn",
 	})
 
+	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
 		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
@@ -175,7 +177,7 @@ function L.settings()
 		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
-		{ cmd.LYRDDebugToggleUI, require("dapui").toggle },
+		{ cmd.LYRDDebugToggleUI, wrap(require("dapui").toggle) },
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end
