@@ -11,20 +11,12 @@ local L = {
 			ft = dotnet_languages,
 		},
 		{
-			"seblj/roslyn.nvim",
-			ft = "cs",
-			opts = {},
-		},
-		{
 			"gustaveikaas/easy-dotnet.nvim",
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 				"nvim-telescope/telescope.nvim",
 			},
 			opts = {
-				lsp = {
-					enabled = false,
-				},
 				test_runner = {
 					---@type "split" | "float" | "buf"
 					viewmode = "float",
@@ -139,10 +131,6 @@ local L = {
 			},
 			ft = dotnet_languages,
 		},
-		-- {
-		-- 	"adamclerk/vim-razor",
-		-- 	ft = dotnet_languages,
-		-- },
 	},
 	required_mason_packages = {
 		"netcoredbg",
