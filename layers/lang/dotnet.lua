@@ -53,13 +53,13 @@ local L = {
 					}
 
 					local function filter_warnings(line)
-						-- if not line:find("warning") then
-						local filename, lnum, col, text = line:match("^%s*(.+)%((%d+),(%d+)%)%: (.+)$")
-						if filename and text then
-							text = text:gsub("%s*%[.-%]%s*$", "")
+						if not line:find("warning") then
+							local filename, lnum, col, text = line:match("^%s*(.+)%((%d+),(%d+)%)%: (.+)$")
+							if filename and text then
+								text = text:gsub("%s*%[.-%]%s*$", "")
+							end
+							return filename, lnum, col, text
 						end
-						return filename, lnum, col, text
-						-- end
 					end
 
 					local overseer_components = {
