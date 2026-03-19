@@ -41,6 +41,7 @@ function L.plugins()
 				vim.g.dap_virtual_text = true
 			end,
 			opts = {
+				expand_lines = false,
 				icons = {
 					expanded = icons.chevron.down,
 					collapsed = icons.chevron.right,
