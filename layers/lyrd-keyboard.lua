@@ -268,6 +268,7 @@ function L.keybindings()
 		{ "j", cmd.LYRDSmartCoder },
 		{ "k", cmd.LYRDToggleBufferDecorations },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
+		{ "p", cmd.LYRDPasteFromHistory },
 		{ "t", cmd.LYRDApplyNextTheme },
 		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
