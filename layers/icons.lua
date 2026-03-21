@@ -100,6 +100,7 @@ local L = {
 		keys = " ",
 	},
 	action = {
+	    compare=" ",
 		exit = "󰩈 ",
 		clean = "󰃢 ",
 		install = "󰃘 ",

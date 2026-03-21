@@ -231,6 +231,9 @@ local L = {
 		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
 		LYRDInsertLineAbove = Command:new("Insert line above", ":call append(line('.')-1, '')", icons.arrow.up),
 		LYRDInsertLineBelow = Command:new("Insert line below", ":call append(line('.'), '')", icons.arrow.down),
+		LYRDDiffThis = Command:new("Add to comparisson", ":diffthis", icons.action.compare),
+		LYRDDiffOff = Command:new("Turn comparisson off", ":diffoff", icons.action.compare),
+		LYRDBindScroll = Command:new("Bind scroll on buffers", ":set scrollbind", icons.action.compare),
 	},
 }
 

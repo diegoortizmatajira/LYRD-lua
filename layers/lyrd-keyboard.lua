@@ -469,8 +469,11 @@ function L.keybindings()
 		}, icons.other.palette),
 		menu_header("v", "View", {
 			{ ".", cmd.LYRDViewHomePage },
+			{ "d", cmd.LYRDDiffThis },
+			{ "D", cmd.LYRDDiffOff },
 			{ "f", cmd.LYRDViewFocusMode },
 			{ "w", cmd.LYRDBufferToggleWrap },
+			{ "s", cmd.LYRDBindScroll },
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),
