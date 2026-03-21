@@ -180,6 +180,11 @@ local L = {
 				telescope.load_extension("worktrees")
 			end,
 		},
+		{
+			"FabijanZulj/blame.nvim",
+			lazy = false,
+			opts = {},
+		},
 	},
 	required_treesitter_parsers = {
 		"git_config",
@@ -285,6 +290,7 @@ function L.settings()
 		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
+		{ cmd.LYRDGitViewBlame, ":BlameToggle" },
 	})
 end
 
