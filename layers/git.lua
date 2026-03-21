@@ -291,6 +291,7 @@ function L.settings()
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
 		{ cmd.LYRDGitViewBlame, ":BlameToggle" },
+		{ cmd.LYRDGitMergeConflicts, ":DiffviewOpen" },
 	})
 end
 

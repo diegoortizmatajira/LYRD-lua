@@ -241,6 +241,7 @@ local L = {
 		blame = " ",
 		init = " ",
 		worktree = " ",
+		conflict=" ",
 		-- Status
 		unstaged = " ",
 		staged = "✓ ",

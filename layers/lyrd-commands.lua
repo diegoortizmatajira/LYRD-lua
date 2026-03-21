@@ -78,6 +78,7 @@ local L = {
 		LYRDGitCheckoutDev = Command:new("Checkout Develop branch", nil, icons.git.branch),
 		LYRDGitCheckoutMain = Command:new("Checkout Main branch", nil, icons.git.branch),
 		LYRDGitCommit = Command:new("Commit changes", nil, icons.git.commit),
+		LYRDGitMergeConflicts = Command:new("View Merge Conflicts", nil, icons.git.conflict),
 		LYRDGitFlowFeatureFinish = Command:new("Feature finish", nil, icons.git.commit_end),
 		LYRDGitFlowFeatureStart = Command:new("Feature start", nil, icons.git.commit_start),
 		LYRDGitFlowFeaturePublish = Command:new("Feature publish (pull req.)", nil, icons.git.pull_request),
