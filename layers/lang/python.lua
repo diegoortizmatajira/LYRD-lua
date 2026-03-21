@@ -50,6 +50,7 @@ local L = {
 		{
 			"lukoshkin/pymove.nvim",
 			opts = {},
+			enabled = false, -- TODO: Enable when the actions are implemented as Code actions
 		},
 	},
 	required_mason_packages = {
