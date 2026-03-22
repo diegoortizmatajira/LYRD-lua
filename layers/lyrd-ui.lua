@@ -3,6 +3,8 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 local utils = require("LYRD.utils")
+local goku = require("LYRD.shared.resources.goku")
+local title = require("LYRD.shared.resources.title")
 
 ---@class LYRD.layer.LYRDUI: LYRD.setup.Module
 --- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype
@@ -22,45 +24,8 @@ local function combine_ascii_art(base, new, from_line)
 	end
 	return table.concat(base, "\n")
 end
-local function get_current_year()
-	return os.date("%Y")
-end
 local function header()
-	local image = {
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣶⣦⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⢀⣀⣀⣀⡀⢀⠀⢹⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣷⣄⠨⣿⣿⣿⡌⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣷⣿⣿⣿⣿⣿⣶⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⣠⣴⣾⣿⣮⣝⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠈⠉⠙⠻⢿⣿⣿⣿⣿⣿⣿⠟⣹⣿⡿⢿⣿⣿⣬⣶⣶⡶⠦⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⣀⣢⣙⣻⢿⣿⣿⣿⠎⢸⣿⠕⢹⣿⣿⡿⣛⣥⣀⣀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠈⠉⠛⠿⡏⣿⡏⠿⢄⣜⣡⠞⠛⡽⣸⡿⣟⡋⠉⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠾⠿⣿⠁⠀⡄⠀⠀⠰⠾⠿⠛⠓⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠠⢐⢉⢷⣀⠛⠠⠐⠐⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⣀⣠⣴⣶⣿⣧⣾⠡⠼⠎⢎⣋⡄⠆⠀⠱⡄⢉⠃⣦⡤⡀⠀⠀⠀⠀]],
-		[[⠀⠀⠐⠙⠻⢿⣿⣿⣿⣿⣿⣿⣄⡀⠀⢩⠀⢀⠠⠂⢀⡌⠀⣿⡇⠟⠀⠀⢄⠀]],
-		[[⠀⣴⣇⠀⡇⠀⠸⣿⣿⣿⣿⣽⣟⣲⡤⠀⣀⣠⣴⡾⠟⠀⠀⠟⠀⠀⠀⠀⡰⡀]],
-		[[⣼⣿⠋⢀⣇⢸⡄⢻⣟⠻⣿⣿⣿⣿⣿⣿⠿⡿⠟⢁⠀⠀⠀⠀⠀⢰⠀⣠⠀⠰]],
-		[[⢸⣿⡣⣜⣿⣼⣿⣄⠻⡄⡀⠉⠛⠿⠿⠛⣉⡤⠖⣡⣶⠁⠀⠀⠀⣾⣶⣿⠐⡀]],
-		[[⣾⡇⠈⠛⠛⠿⣿⣿⣦⠁⠘⢷⣶⣶⡶⠟⢋⣠⣾⡿⠃⠀⠀⠀⠰⠛⠉⠉⠀    LYRD® Neovim by Diego Ortiz. ]]
-			.. get_current_year(),
-	}
-	local title = {
-		[[    __      __       .__                                  __                   ]],
-		[[   /  \    /  \ ____ |  |   ____  ____   _____   ____   _/  |_  ____           ]],
-		[[   \   \/\/   // __ \|  | _/ ___\/  _ \ /     \_/ __ \  \   __\/  _ \          ]],
-		[[    \        /\  ___/|  |_\  \__(  <_> )  Y Y  \  ___/   |  | (  <_> )         ]],
-		[[     \__/\  /  \___  >____/\___  >____/|__|_|  /\___  >  |__|  \____/          ]],
-		[[          \/       \/          \/            \/     \/                         ]],
-		[[    ___       ___  ___  _______   ________       _____  ___  ___      ___  __     ___      ___ ]],
-		[[   |"  |     |"  \/"  |/"      \ |"      "\     (\"   \|"  \|"  \    /"  ||" \   |"  \    /"  |]],
-		[[   ||  |      \   \  /|:        |(.  ___  :)    |.\\   \    |\   \  //  / ||  |   \   \  //   |]],
-		[[   |:  |       \\  \/ |_____/   )|: \   ) ||    |: \.   \\  | \\  \/. ./  |:  |   /\\  \/.    |]],
-		[[    \  |___    /   /   //      / (| (___\ ||    |.  \    \. |  \.    //   |.  |  |: \.        |]],
-		[[   ( \_|:  \  /   /   |:  __   \ |:       :)    |    \    \ |   \\   /    /\  |\ |.  \    /:  |]],
-		[[    \_______)|___/    |__|  \___)(________/      \___|\____\)    \__/    (__\_|_)|___|\__/|___|]],
-	}
-	return combine_ascii_art(image, title, 1)
+	return combine_ascii_art(goku.content, title.content, 1)
 end
 
 local function macro_recording()
@@ -329,11 +294,16 @@ function L.plugins()
 					},
 				})
 				set_matching_ministarter_colorscheme()
+				goku.setup_highlights()
 				--- Ensure colors match on colorscheme change
-				vim.api.nvim_create_autocmd(
-					"ColorScheme",
-					{ group = lyrd_ui_group, callback = set_matching_ministarter_colorscheme, desc = "Ensure colors" }
-				)
+				vim.api.nvim_create_autocmd("ColorScheme", {
+					group = lyrd_ui_group,
+					callback = function()
+						set_matching_ministarter_colorscheme()
+						goku.setup_highlights()
+					end,
+					desc = "Ensure colors",
+				})
 				-- Map `j` and `k` to navigate items
 				vim.api.nvim_create_autocmd("User", {
 					group = lyrd_ui_group,
@@ -344,6 +314,7 @@ function L.plugins()
 						vim.api.nvim_buf_del_keymap(0, "n", "<C-n>")
 						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", { noremap = true, silent = true })
 						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", { noremap = true, silent = true })
+						goku.colorize(vim.api.nvim_get_current_buf())
 					end,
 				})
 			end,
