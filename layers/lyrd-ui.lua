@@ -24,6 +24,7 @@ local function combine_ascii_art(base, new, from_line)
 	end
 	return table.concat(base, "\n")
 end
+
 local function header()
 	return combine_ascii_art(goku.content, title.content, 1)
 end
@@ -285,12 +286,11 @@ function L.plugins()
 						-- Use this if you set up 'mini.sessions'
 						-- starter.sections.sessions(5, true),
 					},
-					footer = "LYRD® Neovim by Diego Ortiz. 2025",
+					footer = "LYRD® Neovim by Diego Ortiz. 2026",
 					content_hooks = {
 						starter.gen_hook.adding_bullet(),
 						file_formatter("section", { "Common actions" }),
 						starter.gen_hook.padding(3, 2),
-						-- starter.gen_hook.aligning("center", "center"),
 					},
 				})
 				set_matching_ministarter_colorscheme()

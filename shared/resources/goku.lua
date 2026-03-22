@@ -3,7 +3,7 @@ local function get_current_year()
 end
 
 local function setup_goku_highlights()
-	vim.api.nvim_set_hl(0, "GokuHair", { fg = "#D98900" })
+	vim.api.nvim_set_hl(0, "GokuHair", { fg = "#0AD7EB" })
 	vim.api.nvim_set_hl(0, "GokuSkin", { fg = "#FFCC99" })
 	vim.api.nvim_set_hl(0, "GokuSkinDark", { fg = "#DB7C6B" })
 	vim.api.nvim_set_hl(0, "GokuGi", { fg = "#FF6600" })
@@ -50,7 +50,13 @@ local content = {
 	[[⣾⡇⠈⠛⠛⠿⣿⣿⣦⠁⠘⢷⣶⣶⡶⠟⢋⣠⣾⡿⠃⠀⡤⠖⠰⠛⠉⠉⠀    LYRD® Neovim by Diego Ortiz. ]]
 		.. get_current_year(),
 }
-local image_hl_map = { H = "GokuHair", S = "GokuSkin", s = "GokuSkinDark", G = "GokuGi", U = "GokuUnderGi" }
+local image_hl_map = {
+	H = "GokuHair",
+	S = "GokuSkin",
+	s = "GokuSkinDark",
+	G = "GokuGi",
+	U = "GokuUnderGi",
+}
 
 local function colorize(buf)
 	vim.api.nvim_buf_clear_namespace(buf, goku_ns, 0, -1)
