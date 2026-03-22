@@ -2,7 +2,6 @@ local commands = require("LYRD.layers.commands")
 local Command = commands.Command
 local icons = require("LYRD.layers.icons")
 local setup = require("LYRD.setup")
-local c = commands.command_shortcut
 
 ---@class LYRD.layer.LYRDCommands: LYRD.setup.Module
 local L = {
