@@ -163,7 +163,10 @@ function L.execute_implementation(implementation, opts)
 		end
 		return true
 	elseif type(implementation) == "function" then
-		implementation(opts)
+		local ok, err = pcall(implementation, opts)
+		if not ok then
+			vim.notify("Command execution failed: " .. tostring(err), vim.log.levels.ERROR)
+		end
 		return true
 	elseif type(implementation) == "table" and implementation.name then
 		return L.execute_implementation(":" .. implementation.name, opts)
