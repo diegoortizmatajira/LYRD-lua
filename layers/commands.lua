@@ -166,7 +166,7 @@ function L.execute_implementation(implementation, opts)
 		implementation(opts)
 		return true
 	elseif type(implementation) == "table" and implementation.name then
-		L.execute_implementation(":" .. implementation.name, opts)
+		return L.execute_implementation(":" .. implementation.name, opts)
 	end
 	return false
 end
@@ -182,7 +182,7 @@ end
 function L.list_unimplemented()
 	print("The following commands are not implemented for any type of file")
 	for name, cmd in pairs(L.commands) do
-		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+		if (not cmd.default_implementation) and vim.tbl_isempty(cmd.implementations) then
 			print("-", name)
 		end
 	end
@@ -250,7 +250,7 @@ function L.healthcheck()
 	vim.health.start(L.name)
 	local unimplemented_commands = {}
 	for name, cmd in pairs(L.commands) do
-		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+		if (not cmd.default_implementation) and vim.tbl_isempty(cmd.implementations) then
 			table.insert(unimplemented_commands, name)
 			vim.health.warn(name .. " commmand is not implemented")
 		end
