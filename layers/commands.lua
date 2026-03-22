@@ -83,7 +83,8 @@ end
 function Command:execute(opts)
 	-- Looks for the current filetype command implementation
 	local filetype = vim.bo.filetype
-	if filetype == "" then
+	-- Just for safety, we check if the filetype is set. It should always be set, but in case it's not, we show an error and return.
+	if not filetype then
 		vim.notify("Filetype is not set", vim.log.levels.ERROR)
 		return
 	end
