@@ -8,6 +8,9 @@ local L = {
 	commands = {},
 }
 
+--- Wraps a function in a zero-argument closure, useful for passing callable tables (e.g., vim.lsp.buf methods) as command implementations.
+--- @param fn function The function to wrap.
+--- @return function
 function L.wrap(fn)
 	return function()
 		return fn()
@@ -15,8 +18,8 @@ function L.wrap(fn)
 end
 
 --- @class ShortCutOptions
---- @field range? boolean Indicates the shorcut uses current selection.
---- @field escape? boolean Indicates the shorcut includes <ESC> before running the command.
+--- @field range? boolean Indicates the shortcut uses current selection.
+--- @field escape? boolean Indicates the shortcut includes <ESC> before running the command.
 
 --- @alias CommandImplementation string|fun(opts?: table)
 
@@ -35,6 +38,7 @@ Command = {}
 --- @param default_implementation? CommandImplementation Default implementation.
 --- @param icon? string Icon to show for the command.
 --- @param range? boolean Indicates whether the command can be applied to a range of text.
+--- @param leave_insert_mode? boolean Indicates whether the command should leave insert mode.
 --- @return Command
 function Command:new(desc, default_implementation, icon, range, leave_insert_mode)
 	local o = setmetatable({}, self)
@@ -81,7 +85,7 @@ end
 function Command:execute(opts)
 	-- Looks for the current file type command implementation
 	local filetype = vim.bo.filetype
-	if not filetype then
+	if filetype == "" then
 		vim.notify("Filetype is not set", vim.log.levels.ERROR)
 		return
 	end
@@ -153,11 +157,7 @@ end
 --- @return boolean
 function L.execute_implementation(implementation, opts)
 	if type(implementation) == "string" and implementation ~= "" then
-		---Executes a command
-		--- @param command string
-		local ok, _ = pcall(function(command)
-			return vim.cmd(command)
-		end, implementation)
+		local ok, _ = pcall(vim.cmd --[[@as function]], implementation)
 		if not ok then
 			vim.notify("Command execution failed: " .. implementation, vim.log.levels.ERROR)
 		end
@@ -181,7 +181,8 @@ end
 --- @field [1] Command
 --- @field [2] CommandImplementation
 
---- Prints a list of commands that don't have an implementation (default or per filetype)
+--- Prints a list of commands that don't have any implementation (neither default nor filetype-specific).
+--- Output goes to :messages via print, as the list can be large.
 function L.list_unimplemented()
 	print("The following commands are not implemented for any type of file")
 	for name, cmd in pairs(L.commands) do
@@ -192,11 +193,17 @@ function L.list_unimplemented()
 	print("End of the list")
 end
 
+--- Prints a list of commands that have a default implementation.
+--- Output goes to :messages via print, as the list can be large.
 function L.list_implemented()
 	print("The following commands are implemented by default")
 	for name, cmd in pairs(L.commands) do
 		if cmd.default_implementation then
-			print("-", name, "=>", cmd.default_implementation)
+			local impl = cmd.default_implementation
+			if type(impl) == "function" then
+				impl = "<function>"
+			end
+			print("-", name, "=>", impl)
 		end
 	end
 	print("End of the list")
@@ -209,7 +216,7 @@ function L.implement(filetype, commands)
 	for _, command_info in ipairs(commands) do
 		local cmd, implementation = unpack(command_info)
 		if cmd == nil then
-			error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
+			error("The command to be implemented does not exist. Its implementation would be: " .. implementation)
 		end
 		cmd:implement_for(filetype, implementation)
 	end
@@ -223,13 +230,10 @@ function L.register(commands)
 	end
 end
 
---- @param commandName string Name of the command to generate the shortcut
+--- @param command_name string Name of the command to generate the shortcut
 --- @param opts? ShortCutOptions Options for the generated shortcut
-function L.command_shortcut(commandName, opts)
-	local sequence = commandName
-	-- if opts and opts.range then
-	-- 	sequence = "'<,'>" .. sequence
-	-- end
+function L.command_shortcut(command_name, opts)
+	local sequence = command_name
 	sequence = "<cmd>" .. sequence .. "<CR>"
 	if opts and opts.escape then
 		sequence = "<ESC>" .. sequence
@@ -240,7 +244,7 @@ end
 
 --- This function return a handler function which will execute the given callback function with the given arguments.
 --- @param callback function to be executed with the given arguments
---- @vararg any list of arguments to be passed to the callback function
+--- @param ... any list of arguments to be passed to the callback function
 --- @return function
 function L.handler(callback, ...)
 	local params = { ... }
@@ -255,7 +259,7 @@ function L.healthcheck()
 	for name, cmd in pairs(L.commands) do
 		if (not cmd.default_implementation) and vim.tbl_isempty(cmd.implementations) then
 			table.insert(unimplemented_commands, name)
-			vim.health.warn(name .. " commmand is not implemented")
+			vim.health.warn(name .. " command is not implemented")
 		end
 	end
 	if #unimplemented_commands == 0 then
