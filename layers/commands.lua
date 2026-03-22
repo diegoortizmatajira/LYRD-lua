@@ -1,5 +1,3 @@
-local utils = require("LYRD.utils")
-
 --- @class LYRD.layer.Commands: LYRD.setup.Module
 local L = {
 	name = "Commands",
@@ -18,7 +16,6 @@ function L.wrap(fn)
 end
 
 --- @class ShortCutOptions
---- @field range? boolean Indicates the shortcut uses current selection.
 --- @field escape? boolean Indicates the shortcut includes <ESC> before running the command.
 
 --- @alias CommandImplementation string|fun(opts?: table)
@@ -142,9 +139,7 @@ end
 
 --- Returns the command as a string command to be run in vim
 function Command:as_vim_command(mode)
-	if self.range and utils.contains({ "v", "x" }, mode) then
-		return self:shortcut({ range = true })
-	elseif self.leave_insert_mode and mode == "i" then
+	if self.leave_insert_mode and mode == "i" then
 		return self:shortcut({ escape = true })
 	else
 		return self:shortcut()
@@ -173,9 +168,6 @@ function L.execute_implementation(implementation, opts)
 	end
 	return false
 end
-
---- @class LYRD.commands.settings
---- @field commands table<string, table<string, CommandImplementation>>
 
 --- @class LYRD.commands.implementation
 --- @field [1] Command
