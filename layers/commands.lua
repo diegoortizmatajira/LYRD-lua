@@ -28,7 +28,8 @@ end
 --- @field range? boolean Indicates whether the command can be applied to a range of text.
 --- @field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
 --- @field implementations table<string, CommandImplementation> Implementations per filetype.
-Command = {}
+local Command = {}
+L.Command = Command
 
 --- Constructor
 --- @param desc string Command description.
