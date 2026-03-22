@@ -6,7 +6,7 @@ local icons = require("LYRD.layers.icons")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @param key_table table
---- @param replacement_pairs  {[1]: string, [2]:string}[] contains the mapping definition as an array of (mode, key, command, options)
+--- @param replacement_pairs  {[1]: string, [2]:string}[] contains pairs of (original_key, new_key) for keybinding replacements
 local function replace_keybindings(key_table, replacement_pairs)
 	for _, replacement in ipairs(replacement_pairs) do
 		local original_key, new_key = unpack(replacement)
@@ -19,10 +19,19 @@ local function replace_keybindings(key_table, replacement_pairs)
 	end
 end
 
+--- Returns the current git branch name, or nil if not in a git repository.
+--- @return string|nil
+local function current_branch()
+	local head = vim.trim(vim.fn.system("git branch --show-current"))
+	if vim.v.shell_error ~= 0 or head == "" then
+		return nil
+	end
+	return head
+end
+
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Git",
-	git_flow_base_command = "git",
 	required_plugins = {
 		{
 			"NeogitOrg/neogit",
@@ -182,7 +191,7 @@ local L = {
 		},
 		{
 			"FabijanZulj/blame.nvim",
-			lazy = false,
+			cmd = { "BlameToggle" },
 			opts = {},
 		},
 	},
@@ -212,38 +221,39 @@ function L.git_flow_start(what)
 			if not name then
 				return
 			end
-			vim.cmd(":!git flow " .. what .. " start " .. name)
+			vim.cmd(":!git flow " .. what .. " start " .. vim.fn.shellescape(name))
 		end)
 	end
 end
 
 function L.git_flow_finish(what)
 	return function()
-		local head = require("neogit.lib.git.branch").current()
+		local head = current_branch()
 		if not head then
 			return
 		end
-		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-		vim.cmd(string.format("!git flow %s finish %s", what, name))
+		local parts = vim.fn.split(head, "/")
+		local name = parts[#parts]
+		vim.cmd(string.format("!git flow %s finish %s", what, vim.fn.shellescape(name)))
 	end
 end
 
 function L.git_flow_publish(what)
 	return function()
-		local head = require("neogit.lib.git.branch").current()
+		local head = current_branch()
 		if not head then
 			return
 		end
 		local target_branch = what == "feature" and "develop" or "main"
-		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
+		local parts = vim.fn.split(head, "/")
+		local name = parts[#parts]
 		local ui = require("LYRD.layers.lyrd-ui")
 		ui.toggle_external_app_terminal(
 			string.format(
 				[[gh pr create --base %s --head %s/%s --assignee "@me" --draft ]],
 				target_branch,
 				what,
-				name,
-				what
+				vim.fn.shellescape(name)
 			)
 		)
 	end
