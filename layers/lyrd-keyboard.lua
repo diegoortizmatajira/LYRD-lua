@@ -201,7 +201,7 @@ function L.keybindings()
 			{ "a", cmd.LYRDReplNotebookAddCellAbove },
 			{ "b", cmd.LYRDReplNotebookAddCellBelow },
 		}, icons.file.notebook),
-		submode_header("g", "Debug", {
+		submode_header("G", "Debug", {
 			{ "g", cmd.LYRDDebugStart },
 			{ "d", cmd.LYRDDebugContinue },
 			{ "v", cmd.LYRDDebugStepInto },
@@ -265,6 +265,7 @@ function L.keybindings()
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
 		{ "c", cmd.LYRDBufferClose },
 		{ "f", cmd.LYRDBufferFormat },
+		{ "g", cmd.LYRDGrammarToggle },
 		{ "j", cmd.LYRDSmartCoder },
 		{ "k", cmd.LYRDToggleBufferDecorations },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
