@@ -13,13 +13,13 @@ local utils = require("LYRD.utils")
 ---@field name string Name of the layer
 ---@field condition? nil|boolean Condition to check if the layer should be loaded
 ---@field vscode_compatible? nil|boolean If true, the layer is compatible with vscode
----@field plugins? nil|fun():nil Function to load the plugins for the layer
----@field preparation? nil|fun():nil Function to prepare the layer, called before settings
----@field settings? nil|fun():nil Function to set the settings for the layer, called after preparation
----@field keybindings? nil|fun():nil Function to set the keybindings for the layer, called after settings
----@field complete? nil|fun():nil Function to complete the layer, called after keybindings
----@field healthcheck? nil|fun():nil Function to check the health of the layer
----@field run_once_per_filetype? nil|table<string|string[], fun():nil> Allows to define actions to run once per filetype
+---@field plugins? nil|fun() Function to load the plugins for the layer
+---@field preparation? nil|fun() Function to prepare the layer, called before settings
+---@field settings? nil|fun() Function to set the settings for the layer, called after preparation
+---@field keybindings? nil|fun() Function to set the keybindings for the layer, called after settings
+---@field complete? nil|fun() Function to complete the layer, called after keybindings
+---@field healthcheck? nil|fun() Function to check the health of the layer
+---@field run_once_per_filetype? nil|table<string|string[], fun()> Allows to define actions to run once per filetype
 
 local setup = {
 	configs_path = utils.get_lyrd_path("configs"),
@@ -63,7 +63,7 @@ local function bootstrap_lazy()
 				{ "\nPress any key to exit..." },
 			}, true, {})
 			vim.fn.getchar()
-			os.exit(1)
+			vim.cmd("cquit 1")
 		end
 	end
 	vim.opt.rtp:prepend(lazypath)
@@ -84,7 +84,13 @@ local function load_plugins()
 	-- Calls the plugin method for each layer
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.plugins then
-			layer.plugins()
+			local ok, result = pcall(layer.plugins)
+			if not ok then
+				vim.notify(
+					"Error in layer '" .. layer.name .. "' during stage 'plugins': " .. result,
+					vim.log.levels.ERROR
+				)
+			end
 		end
 	end
 
@@ -97,7 +103,6 @@ local function load_plugins()
 		concurrency = 50,
 		performance = {
 			rtp = { -- Disable unnecessary nvim features to speed up startup.
-
 				paths = {
 					setup.runtime_path, -- Add LYRD runtime path
 				},
@@ -122,15 +127,23 @@ end
 --- condition, and verifies compatibility with VSCode if applicable.
 ---
 --- @param layer_module string The module name of the layer to load.
---- @return LYRD.setup.Module|nil The loaded layer module or nil if it should not
+--- @return LYRD.setup.Module|nil The loaded layer module or nil if it should not be loaded
 local function load_if_should_be_loaded(layer_module)
 	--- Check if the layer is in the skip list (doesn't even load it)
 	if vim.list_contains(setup.config.skip_layers or {}, layer_module) then
 		return nil
 	end
 	--- Load the layer module
+	local ok, layer = pcall(require, layer_module)
+	if not ok then
+		vim.notify("Failed to load layer '" .. layer_module .. "': " .. layer, vim.log.levels.ERROR)
+		return nil
+	end
+	if type(layer) ~= "table" then
+		vim.notify("Layer '" .. layer_module .. "' did not return a table", vim.log.levels.WARN)
+		return nil
+	end
 	--- @type LYRD.setup.Module
-	local layer = require(layer_module)
 	--- Check if the layer has a condition and if it is not met
 	if layer.condition ~= nil and not layer.condition then
 		return nil
@@ -147,9 +160,15 @@ local function read_local_config()
 	-- If the local config file exists, load it and merge its settings
 	-- into the main config
 	if vim.uv.fs_stat(setup.local_config_path) then
-		local local_config = dofile(setup.local_config_path)
+		local ok, local_config = pcall(dofile, setup.local_config_path)
+		if not ok then
+			vim.notify("Error loading local config: " .. local_config, vim.log.levels.ERROR)
+			return
+		end
 		if type(local_config) == "table" then
-			setup.config = vim.tbl_deep_extend("force", setup.config, local_config)
+			if local_config.skip_layers then
+				setup.config.skip_layers = local_config.skip_layers
+			end
 		end
 	end
 end
@@ -171,22 +190,20 @@ end
 ---
 --- @param s LYRD.setup.Settings The setup configuration table containing layers, plugins, and commands.
 function setup.load(s)
-	setup.config = vim.tbl_deep_extend("force", setup.config, s) or setup.config
+	setup.config = vim.tbl_deep_extend("force", setup.config, s)
 	read_local_config()
-	vim.tbl_map(function(layer)
+	for _, layer in ipairs(setup.config.layers) do
 		local loaded_layer = load_if_should_be_loaded(layer)
-		--- Checks if the layer meets the condition to be loaded
 		if loaded_layer then
 			table.insert(setup.config.loaded_layers, loaded_layer)
 		end
-	end, setup.config.layers)
+	end
 
 	-- Process each layer
 	load_plugins()
 	-- Define the stages to be called in order
 	local stages = { "preparation", "settings", "keybindings", "complete" }
-	vim.tbl_map(function(stage_function_name)
-		--- Call the stage callback for each layer if it exists
+	for _, stage_function_name in ipairs(stages) do
 		for _, layer in ipairs(setup.config.loaded_layers) do
 			if layer[stage_function_name] ~= nil then
 				local ok, result = pcall(layer[stage_function_name])
@@ -198,25 +215,26 @@ function setup.load(s)
 				end
 			end
 		end
-	end, stages)
-	-- Initializes the index for the run_once_per_filetype commands
-	local file_type_commands_index = 0
+	end
+	-- Creates auto-commands for the run_once_per_filetype commands
 	for _, layer in ipairs(setup.config.loaded_layers) do
 		if layer.run_once_per_filetype ~= nil then
-			--- Create auto-commands for each filetype command
 			for ft, command_callback in pairs(layer.run_once_per_filetype) do
-				file_type_commands_index = file_type_commands_index + 1
+				local key = layer.name .. ":" .. ft
 				vim.api.nvim_create_autocmd("FileType", {
 					pattern = ft,
 					callback = function()
-						-- Ensure the command is run only once per file type
-						if run_once_per_file_type_execution[file_type_commands_index] then
+						if run_once_per_file_type_execution[key] then
 							return
 						end
-						-- Call the command function
-						command_callback()
-						-- Mark the command as executed
-						run_once_per_file_type_execution[file_type_commands_index] = true
+						local cb_ok, cb_result = pcall(command_callback)
+						if not cb_ok then
+							vim.notify(
+								"Error in layer '" .. layer.name .. "' run_once_per_filetype for '" .. ft .. "': " .. cb_result,
+								vim.log.levels.ERROR
+							)
+						end
+						run_once_per_file_type_execution[key] = true
 					end,
 				})
 			end
