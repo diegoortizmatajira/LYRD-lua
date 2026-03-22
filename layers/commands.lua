@@ -51,7 +51,7 @@ function Command:new(desc, default_implementation, icon, range, leave_insert_mod
 	return o
 end
 
---- Implements the command for one or many file types.
+--- Implements the command for one or many filetypes.
 --- @param filetype string A filetype.
 --- @param implementation CommandImplementation An implementation of the command.
 function Command:implement_for_filetype(filetype, implementation)
@@ -62,14 +62,14 @@ function Command:implement_for_filetype(filetype, implementation)
 	end
 end
 
---- Implements the command for one or many file types.
+--- Implements the command for one or many filetypes.
 --- @param target string|string[] One filetype or a list of filetypes.
 --- @param implementation CommandImplementation An implementation of the command.
 function Command:implement_for(target, implementation)
 	if type(target) == "string" then
 		self:implement_for_filetype(target, implementation)
 	elseif type(target) == "table" then
-		for _, f in pairs(target) do
+		for _, f in ipairs(target) do
 			self:implement_for_filetype(f, implementation)
 		end
 	else
@@ -77,11 +77,11 @@ function Command:implement_for(target, implementation)
 	end
 end
 
---- Executes the command implementation corresponding to the current file type or the default one if no specific implementation is available.
+--- Executes the command implementation corresponding to the current filetype or the default one if no specific implementation is available.
 --- If no implementation is found, a warning is shown.
 --- @param opts? table Options for the command execution.
 function Command:execute(opts)
-	-- Looks for the current file type command implementation
+	-- Looks for the current filetype command implementation
 	local filetype = vim.bo.filetype
 	if filetype == "" then
 		vim.notify("Filetype is not set", vim.log.levels.ERROR)
@@ -138,7 +138,9 @@ function Command:shortcut(opts)
 	return L.command_shortcut(self.name, opts)
 end
 
---- Returns the command as a string command to be run in vim
+--- Returns the command as a string command to be run in vim.
+--- @param mode string The current vim mode (e.g., "n", "v", "i").
+--- @return string
 function Command:as_vim_command(mode)
 	if self.leave_insert_mode and mode == "i" then
 		return self:shortcut({ escape = true })
@@ -226,8 +228,7 @@ end
 --- @param command_name string Name of the command to generate the shortcut
 --- @param opts? ShortCutOptions Options for the generated shortcut
 function L.command_shortcut(command_name, opts)
-	local sequence = command_name
-	sequence = "<cmd>" .. sequence .. "<CR>"
+	local sequence = "<cmd>" .. command_name .. "<CR>"
 	if opts and opts.escape then
 		sequence = "<ESC>" .. sequence
 	end
@@ -246,6 +247,7 @@ function L.handler(callback, ...)
 	end
 end
 
+--- Reports unimplemented commands as health warnings via :checkhealth.
 function L.healthcheck()
 	vim.health.start(L.name)
 	local unimplemented_commands = {}
