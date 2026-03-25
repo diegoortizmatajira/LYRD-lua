@@ -22,10 +22,10 @@ local color_map = {
 	"___HHHHHHHHHHHHHHHHHHHHHHH____", -- hair sides + face
 	"______HHHHHHHSSHHHHHHHHHHH____", -- eyes area
 	"______HHHHHHSSSSsssHHHHHH_____", -- lower face
-	"_________HHSSSSSsssSHHH_______", -- mouth
-	"_________USSSSSSssssHH________", -- chin/neck
-	"____GGGGUUSSSsSSss_ssUGGGG____", -- shoulders
-	"_UGGGGGGUUSSSSsSSSSssUUGGG__UU", -- torso
+	"_________HHSSSSSssssHHH_______", -- mouth
+	"_________USSSSssssssHH________", -- chin/neck
+	"____GGGGUUSSSsSSsssssUGGGG____", -- shoulders
+	"_UGGGGGGUUSSSSsSSssssUUGGG__UU", -- torso
 	"UGG_G_GGUUUSSSSSSsssUUGGGGGUUU", -- torso
 	"UUUGGGGGGGUUUUUUUUUUUUGGGGGUUU", -- lower body
 	"UUUUGGGGGGGUUUUUUGGGGGGGGUUUUU", -- lower body
@@ -41,10 +41,10 @@ local content = {
 	[[⠀⠀⠀⠀⠀⠀⣀⣢⣙⣻⢿⣿⣿⣿⢿⢹⣿⠕⢹⣿⣿⡿⣛⣥⣀⣀⠀⠀⠀⠀]],
 	[[⠀⠀⠀⠀⠀⠀⠈⠉⠛⠿⡏⣿⡏⠿⢿⣜⣡⠿⠏⡽⣸⡿⣟⡋⠉⠀⠀⠀⠀⠀]],
 	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠾⣿⣿⣿⣿⣏⣸⣿⣿⣿⠿⠛⠓⠀⠀⠀⠀⠀⠀⠀]],
-	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠠⢐⢙⢿⣿⣯⣽⡿⠋ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-	[[⠀⠀⠀⠀⣀⣠⣴⣶⣿⣧⣾⠡⠼⠎⢎⣋⡅⠆⠀⠱⡄⢉⠃⣦⡤⡀⠀⠀⠀⠀]],
-	[[⠀⠀⠐⠙⠻⢿⣿⣿⣿⣿⣿⣿⣿⣸⣇⣭⣸⣇⠠⠂⢀⡌⠀⣿⡇⠟⠀⠀⢄⠀]],
-	[[⠀⣴⣇⠀⡇⠀⠸⣿⣿⣿⣿⣽⣿⣟⣲⡤⣉⣠⣴⡾⠟⠀⣸⠟⠀⠀⣿⠟⡰⡀]],
+	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀  ⢙⢿⣿⣯⣽⡿⠋ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+	[[⠀⠀⠀⠀⣀⣠⣴⣶⣿⣧⣾⣿⣿⠎⢎⣋⡅⠆⣿⣿⡄⢉⠃⣦⡤⡀⠀⠀⠀⠀]],
+	[[⠀⠀⠐⠙⠻⢿⣿⣿⣿⣿⣿⣿⣿⣸⣇⣭⣸⣇⣿⣿⢀⡌⠀⣿⡇⠟⠀⠀⢄⠀]],
+	[[⠀⣴⣇⠀⡇⠀⠸⣿⣿⣿⣿⣽⣟⣲⡤⣉⣠⣴⡾⣿⠟⠀⣸⠟⠀⠀⣿⠟⡰⡀]],
 	[[⣼⣿⠋⢀⣇⢸⡄⢻⣟⠻⣿⣿⣿⣿⣿⣿⠿⡿⠟⢁⠀⢾⣿⡏⣸⢰⠀⣠⠀⠰]],
 	[[⢸⣿⡣⣜⣿⣼⣿⣄⠻⡄⡀⠉⠛⠿⠿⠛⣉⡤⠖⣡⣶⠁⠀⠼⠟⣾⣶⣿⣿⡀]],
 	[[⣾⡇⠈⠛⠛⠿⣿⣿⣦⠁⠘⢷⣶⣶⡶⠟⢋⣠⣾⡿⠃⠀⡤⠖⠰⠛⠉⠉⠀    LYRD® Neovim by Diego Ortiz. ]]
