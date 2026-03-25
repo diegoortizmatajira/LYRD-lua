@@ -194,6 +194,19 @@ local L = {
 			cmd = { "BlameToggle" },
 			opts = {},
 		},
+		{
+			"pwntester/octo.nvim",
+			cmd = "Octo",
+			opts = {
+				picker = "telescope",
+				enable_builtin = true,
+			},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-telescope/telescope.nvim",
+				"nvim-tree/nvim-web-devicons",
+			},
+		},
 	},
 	required_treesitter_parsers = {
 		"git_config",
@@ -302,6 +315,15 @@ function L.settings()
 		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
 		{ cmd.LYRDGitViewBlame, ":BlameToggle" },
 		{ cmd.LYRDGitMergeConflicts, ":DiffviewOpen" },
+		{ cmd.LYRDGithubIssueList, ":Octo issue list" },
+		{ cmd.LYRDGithubIssueCreate, ":Octo issue create" },
+		{ cmd.LYRDGithubIssueClose, ":Octo issue close" },
+		{ cmd.LYRDGithubIssueReopen, ":Octo issue reopen" },
+		{ cmd.LYRDGithubIssueDevelop, ":Octo issue develop" },
+		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
+		{ cmd.LYRDGithubPullRequestCreate, ":Octo pr create" },
+		{ cmd.LYRDGithubPullRequestClose, ":Octo pr close" },
+		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
 	})
 end
 

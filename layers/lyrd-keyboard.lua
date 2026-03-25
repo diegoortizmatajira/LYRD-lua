@@ -405,6 +405,16 @@ function L.keybindings()
 				{ "D", cmd.LYRDGitCheckoutDev },
 				{ "M", cmd.LYRDGitCheckoutMain },
 			}),
+			menu_header("h", "GitHub", {
+				{ "l", cmd.LYRDGithubIssueList },
+				{ "c", cmd.LYRDGithubIssueCreate },
+				{ "x", cmd.LYRDGithubIssueClose },
+				{ "O", cmd.LYRDGithubIssueReopen },
+				{ "o", cmd.LYRDGithubIssueDevelop },
+				{ "C", cmd.LYRDGithubPullRequestCreate },
+				{ "L", cmd.LYRDGithubPullRequestList },
+				{ "X", cmd.LYRDGithubPullRequestClose },
+			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
 				{ "n", cmd.LYRDGitWorkTreeCreate },
