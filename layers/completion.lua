@@ -36,21 +36,23 @@ local kind_icons = {
 local menu_texts = {
 	buffer = "[Buffer]",
 	calc = "[Calc]",
+	cmdline = "[Cmd]",
+	["cmp-dbee"] = "[DBee]",
 	cmp_tabnine = "[Tabnine]",
+	codeium = "[Codeium]",
 	copilot = "[Copilot]",
+	["easy-dotnet"] = "[.NET]",
 	emoji = "[Emoji]",
+	lazydev = "[LazyDev]",
 	luasnip = "[Snippet]",
+	mdlink = "[MDLink]",
 	nvim_lsp = "[LSP]",
+	nvim_lsp_signature_help = "[Signature]",
 	path = "[Path]",
 	tmux = "[TMUX]",
 	treesitter = "[TreeSitter]",
 	vsnip = "[Snippet]",
 }
-
-local has_words_before = function()
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
 
 local function jumpable(dir)
 	local luasnip_ok, luasnip = pcall(require, "luasnip")
@@ -96,8 +98,9 @@ local function jumpable(dir)
 		while node ~= nil and node.next ~= nil and node ~= snippet do
 			local n_next = node.next
 			local next_pos = n_next and n_next.mark:pos_begin()
-			local candidate = n_next ~= snippet and next_pos and (pos[1] < next_pos[1])
-				or (pos[1] == next_pos[1] and pos[2] < next_pos[2])
+			local candidate = n_next ~= snippet
+				and next_pos
+				and ((pos[1] < next_pos[1]) or (pos[1] == next_pos[1] and pos[2] < next_pos[2]))
 
 			-- Past unmarked exit node, exit early
 			if n_next == nil or n_next == snippet.next then
@@ -148,30 +151,25 @@ function L.plugins()
 			"hrsh7th/nvim-cmp",
 			config = function()
 				local cmp = require("cmp")
-				local cmp_mapping = require("cmp.config.mapping")
 				local luasnip = require("luasnip")
 
-				local status_cmp_ok, cmp_types = pcall(require, "cmp.types.cmp")
-				if not status_cmp_ok then
-					return
-				end
-				local ConfirmBehavior = cmp_types.ConfirmBehavior
-				local SelectBehavior = cmp_types.SelectBehavior
+				local ConfirmBehavior = cmp.ConfirmBehavior
+				local SelectBehavior = cmp.SelectBehavior
 				cmp.setup({
 					preselect = cmp.PreselectMode.None,
-					mapping = cmp_mapping.preset.insert({
-						["<Down>"] = cmp_mapping(
+					mapping = cmp.mapping.preset.insert({
+						["<Down>"] = cmp.mapping(
 							cmp.mapping.select_next_item({ behavior = SelectBehavior.Select }),
 							{ "i" }
 						),
-						["<Up>"] = cmp_mapping(
+						["<Up>"] = cmp.mapping(
 							cmp.mapping.select_prev_item({ behavior = SelectBehavior.Select }),
 							{ "i" }
 						),
 						["<C-d>"] = cmp.mapping.scroll_docs(-4),
 						["<C-f>"] = cmp.mapping.scroll_docs(4),
-						["<C-y>"] = cmp_mapping({
-							i = cmp_mapping.confirm({ behavior = ConfirmBehavior.Replace, select = false }),
+						["<C-y>"] = cmp.mapping({
+							i = cmp.mapping.confirm({ behavior = ConfirmBehavior.Replace, select = false }),
 							c = function(fallback)
 								if cmp.visible() then
 									cmp.confirm({ behavior = ConfirmBehavior.Replace, select = false })
@@ -180,21 +178,18 @@ function L.plugins()
 								end
 							end,
 						}),
-						["<Tab>"] = cmp_mapping(function(fallback)
+						["<Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
 								cmp.select_next_item()
 							elseif luasnip.expand_or_locally_jumpable() then
 								luasnip.expand_or_jump()
 							elseif jumpable(1) then
 								luasnip.jump(1)
-							elseif has_words_before() then
-								-- cmp.complete()
-								fallback()
 							else
 								fallback()
 							end
 						end, { "i", "s" }),
-						["<S-Tab>"] = cmp_mapping(function(fallback)
+						["<S-Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
 								cmp.select_prev_item()
 							elseif luasnip.jumpable(-1) then
@@ -203,9 +198,9 @@ function L.plugins()
 								fallback()
 							end
 						end, { "i", "s" }),
-						["<C-Space>"] = cmp_mapping.complete(),
-						["<C-e>"] = cmp_mapping.abort(),
-						["<CR>"] = cmp_mapping(function(fallback)
+						["<C-Space>"] = cmp.mapping.complete(),
+						["<C-e>"] = cmp.mapping.abort(),
+						["<CR>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
 								local confirm_opts = {
 									behavior = ConfirmBehavior.Replace,
@@ -218,6 +213,7 @@ function L.plugins()
 									confirm_opts.behavior = ConfirmBehavior.Insert
 								end
 								local entry = cmp.get_selected_entry()
+								-- Handles copilot source if provided by another layer
 								local is_copilot = entry and entry.source.name == "copilot"
 								if is_copilot then
 									confirm_opts.behavior = ConfirmBehavior.Replace
@@ -234,7 +230,8 @@ function L.plugins()
 						expandable_indicator = true,
 						fields = { "abbr", "kind", "menu" },
 						format = function(entry, vim_item)
-							vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
+								local icon = kind_icons[vim_item.kind] or ""
+							vim_item.kind = string.format("%s %s", icon, vim_item.kind)
 							vim_item.menu = menu_texts[entry.source.name]
 							return vim_item
 						end,
