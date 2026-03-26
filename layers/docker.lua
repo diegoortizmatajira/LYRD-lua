@@ -31,10 +31,10 @@ local L = {
 	},
 	docker_compose_filetype = "yaml.docker-compose",
 	docker_compose_file_patterns = {
-		"docker%-compose*%.yaml",
-		"docker%-compose*%.yml",
-		"compose*%.yaml",
-		"compose*%.yml",
+		".*/docker%-compose.*%.yaml",
+		".*/docker%-compose.*%.yml",
+		".*/compose.*%.yaml",
+		".*/compose.*%.yml",
 	},
 	focus_terminal_on_run = true,
 	ts_compose_services_query = [[
@@ -49,7 +49,7 @@ local L = {
 	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
 }
 
-local function docker_compose_refesh_service_signs()
+local function docker_compose_refresh_service_signs()
 	-- Gets all the line numbers where services are defined in the docker-compose file
 	local service_rows = ts.get_matches(L.ts_compose_services_query, "yaml", nil, function(match, captures)
 		local index = utils.index_of(captures, "service-name")
@@ -207,7 +207,7 @@ local function docker_compose_generate_actions()
 	}
 	--- Accumulate all actions
 	local result = {
-		{ title = "Refresh service status", action = docker_compose_refesh_service_signs },
+		{ title = "Refresh service status", action = docker_compose_refresh_service_signs },
 	}
 	--- Generate actions for all services
 	result = vim.list_extend(
@@ -264,7 +264,7 @@ function L.settings()
 	})
 
 	local ui = require("LYRD.layers.lyrd-ui")
-	ui.register_decoration_togglers(L.docker_compose_filetype, { docker_compose_refesh_service_signs })
+	ui.register_decoration_togglers(L.docker_compose_filetype, { docker_compose_refresh_service_signs })
 
 	-- Command implementations
 	commands.implement(L.docker_compose_filetype, {
