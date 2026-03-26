@@ -6,7 +6,7 @@ return {
 	languages = { "Java" },
 	categories = { "Formatter" },
 	source = {
-		id = "pkg:generic/palantir-java-format@2.89.0",
+		id = "pkg:generic/palantir-java-format@2.90.0",
 		download = {
 			{
 				target = "linux_x64",
