@@ -60,6 +60,7 @@ local L = {
 		"pylint",
 		"ruff",
 		"yapf",
+		"dotenv-linter",
 	},
 	required_treesitter_parsers = {
 		"python",
@@ -76,6 +77,9 @@ local L = {
 		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.pylint", {
 			command = "python",
 			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
+		}),
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.dotenv_linter", {
+			args = { "check", "$FILENAME" },
 		}),
 	},
 }
