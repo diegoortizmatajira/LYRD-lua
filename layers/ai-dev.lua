@@ -23,7 +23,6 @@ local L = {
 
 local function avante_dependencies()
 	local result = {
-
 		"nvim-lua/plenary.nvim",
 		"muniftanjim/nui.nvim",
 		--- The below dependencies are optional,
@@ -47,7 +46,7 @@ end
 local function edit_with_prompt(prompt)
 	return function(opts)
 		opts = opts or {}
-		require("avante.api").edit(prompt or vim.trim(opts.args), opts.line1, opts.line2)
+		require("avante.api").edit(prompt or vim.trim(opts.args or ""), opts.line1, opts.line2)
 	end
 end
 
@@ -71,8 +70,7 @@ function L.plugins()
 						next = keyboard.ai_keys.next,
 						prev = keyboard.ai_keys.prev,
 						dismiss = keyboard.ai_keys.clear,
-					},
-					copilot_model = "", -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
+					} or {},
 				},
 			},
 			cmd = "Copilot",
@@ -85,36 +83,19 @@ function L.plugins()
 			opts = {
 				virtual_text = {
 					enabled = true,
-					-- Set to true if you never want completions to be shown automatically.
 					manual = false,
-					-- A mapping of filetype to true or false, to enable virtual text.
 					filetypes = {},
-					-- Whether to enable virtual text of not for filetypes not specifically listed above.
 					default_filetype_enabled = true,
-					-- How long to wait (in ms) before requesting completions after typing stops.
 					idle_delay = 75,
-					-- Priority of the virtual text. This usually ensures that the completions appear on top of
-					-- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
-					-- desired.
 					virtual_text_priority = 65535,
-					-- Set to false to disable all key bindings for managing completions.
 					map_keys = true,
-					-- The key to press when hitting the accept keybinding but no completion is showing.
-					-- Defaults to \t normally or <c-n> when a popup is showing.
 					accept_fallback = nil,
-					-- Key bindings for managing completions in virtual text mode.
 					key_bindings = {
-						-- Accept the current completion.
 						accept = keyboard.ai_keys.accept,
-						-- Accept the next word.
 						accept_word = keyboard.ai_keys.accept_word,
-						-- Accept the next line.
 						accept_line = keyboard.ai_keys.accept_line,
-						-- Clear the virtual text.
 						clear = keyboard.ai_keys.clear,
-						-- Cycle to the next completion.
 						next = keyboard.ai_keys.next,
-						-- Cycle to the previous completion.
 						prev = keyboard.ai_keys.prev,
 					},
 				},
@@ -153,10 +134,8 @@ function L.plugins()
 		},
 		{
 			"yetone/avante.nvim",
-			event = "VeryLazy",
 			lazy = false,
 			version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
-			-- version = "v0.0.20",
 			opts = {
 				provider = L.avante_provider,
 				auto_suggestions_provider = L.avante_provider,
@@ -183,6 +162,7 @@ function L.plugins()
 				nes = {
 					enabled = false,
 				},
+				-- This is explicit mappings in options for sidekick
 				keys = {
 					{
 						"<tab>",
@@ -202,7 +182,6 @@ function L.plugins()
 end
 
 function L.settings()
-	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
@@ -210,8 +189,8 @@ function L.settings()
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
 		{ cmd.LYRDAICliPrompt, ":Sidekick cli prompt" },
-		{ cmd.LYRDAIAsk, wrap(require("avante.api").ask) },
-		{ cmd.LYRDAIEdit, wrap(require("avante.api").edit) },
+		{ cmd.LYRDAIAsk, ":AvanteAsk" },
+		{ cmd.LYRDAIEdit, ":AvanteEdit" },
 	})
 end
 
