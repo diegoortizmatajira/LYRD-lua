@@ -224,7 +224,12 @@ local L = {
 
 function L.git_flow_init()
 	return function()
-		vim.cmd(":!git flow init -d")
+		local output = vim.fn.system("git flow init -d")
+		if vim.v.shell_error ~= 0 then
+			vim.notify(output, vim.log.levels.ERROR)
+		else
+			vim.notify(output, vim.log.levels.INFO)
+		end
 	end
 end
 
@@ -234,7 +239,12 @@ function L.git_flow_start(what)
 			if not name then
 				return
 			end
-			vim.cmd(":!git flow " .. what .. " start " .. vim.fn.shellescape(name))
+			local output = vim.fn.system("git flow " .. what .. " start " .. vim.fn.shellescape(name))
+			if vim.v.shell_error ~= 0 then
+				vim.notify(output, vim.log.levels.ERROR)
+			else
+				vim.notify(output, vim.log.levels.INFO)
+			end
 		end)
 	end
 end
@@ -247,7 +257,12 @@ function L.git_flow_finish(what)
 		end
 		local parts = vim.fn.split(head, "/")
 		local name = parts[#parts]
-		vim.cmd(string.format("!git flow %s finish %s", what, vim.fn.shellescape(name)))
+		local output = vim.fn.system(string.format("git flow %s finish %s", what, vim.fn.shellescape(name)))
+		if vim.v.shell_error ~= 0 then
+			vim.notify(output, vim.log.levels.ERROR)
+		else
+			vim.notify(output, vim.log.levels.INFO)
+		end
 	end
 end
 
