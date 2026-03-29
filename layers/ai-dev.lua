@@ -213,10 +213,12 @@ function L.plugins()
 end
 
 function L.settings()
+	commands.implement("gitcommit", {
+		{ cmd.LYRDAIGenerateCommitMessage, generate_commit_message },
+	})
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
-		{ cmd.LYRDAIGenerateCommitMessage, generate_commit_message },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
