@@ -20,14 +20,22 @@ local L = {
 	child elements documentation.
 	]],
 	commit_message_prompt = [[
-	Goal: Produce a concise and informative git commit message and description
-	based on the current staged changes. How: USe git diff to analyze the
-	changes and identify the key modifications. Guidelines: Focus on
-	summarizing the main changes and their impact, avoiding unnecessary
-	details. The commit message should be clear and descriptive, accurately
-	reflecting the changes made in the code. Description lines may contain
-	itemized descriptions of changes, but the first line should be a concise
-	summary of the commit.
+Generate a concise git commit message from the diff below.
+
+Format:
+<type>: <summary in imperative mood, max 72 chars>
+
+- <what changed and why>
+- <what changed and why>
+
+Where <type> is one of: feat, fix, refactor, docs, style, test, chore, perf.
+
+Rules:
+- The summary line must describe the SPECIFIC change, not a category. Bad: "Update code". Good: "Add retry logic to S3 upload handler".
+- Each bullet must name the concrete thing that changed (file, function, config key, behavior) and why.
+- If the diff adds something, say what was added. If it removes something, say what was removed. If it changes behavior, describe the old vs new behavior.
+- Do NOT use filler like "improve maintainability" or "enhance functionality" — be specific about what improved and how.
+- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
 	]],
 }
 
@@ -58,6 +66,19 @@ local function edit_with_prompt(prompt)
 		opts = opts or {}
 		require("avante.api").edit(prompt or vim.trim(opts.args or ""), opts.line1, opts.line2)
 	end
+end
+
+--- Generates a commit message by injecting the staged diff into the current buffer and invoking Avante edit.
+local function generate_commit_message()
+	local diff = vim.fn.system("git diff --cached")
+	if vim.v.shell_error ~= 0 or diff == "" then
+		vim.notify("No staged changes found. Stage your changes first.", vim.log.levels.WARN)
+		return
+	end
+	local lines = vim.split(diff, "\n")
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+	local line_count = vim.api.nvim_buf_line_count(0)
+	require("avante.api").edit(L.commit_message_prompt, 1, line_count)
 end
 
 function L.plugins()
@@ -195,7 +216,7 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
-		{ cmd.LYRDAIGenerateCommitMessage, edit_with_prompt(L.commit_message_prompt) },
+		{ cmd.LYRDAIGenerateCommitMessage, generate_commit_message },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },

@@ -170,6 +170,7 @@ function L.keybindings()
 			{ "c", cmd.LYRDAICli },
 			{ "C", cmd.LYRDAICliSelect },
 			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
+			{ "k", cmd.LYRDAIGenerateCommitMessage, { "x", "i" } },
 			{ "p", cmd.LYRDAICliPrompt },
 		}, icons.other.ia, { "x" }),
 		menu_header("b", "Bookmarks", {
