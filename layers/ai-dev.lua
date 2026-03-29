@@ -214,7 +214,7 @@ end
 
 function L.settings()
 	commands.implement("gitcommit", {
-		{ cmd.LYRDAIGenerateCommitMessage, generate_commit_message },
+		{ cmd.LYRDAIGenerateDocumentation, generate_commit_message },
 	})
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
