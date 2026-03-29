@@ -56,16 +56,57 @@ local function avante_dependencies()
 	return result
 end
 
---- Creates a function that triggers an Avante edit with a predefined prompt.
---- The returned function accepts an options table with optional `args`, `line1`, and `line2` fields.
---- If `args` is provided and the `prompt` parameter is nil, the trimmed `args` will be used as the prompt.
----@param prompt string|nil The predefined prompt to use for the edit. If nil, `opts.args` is used instead.
----@return fun(opts?: {args?: string, line1?: integer, line2?: integer}) handler A function that invokes `avante.api.edit` with the resolved prompt and line range.
-local function edit_with_prompt(prompt)
-	return function(opts)
-		opts = opts or {}
-		require("avante.api").edit(prompt or vim.trim(opts.args or ""), opts.line1, opts.line2)
+--- Treesitter node types that represent documentable elements.
+local documentable_node_types = {
+	"function_definition",
+	"function_declaration",
+	"method_definition",
+	"method_declaration",
+	"class_definition",
+	"class_declaration",
+	"class_specifier",
+	"struct_item",
+	"enum_item",
+	"impl_item",
+	"function_item",
+	"interface_declaration",
+	"type_alias_declaration",
+	"export_statement",
+	"lexical_declaration",
+	"variable_declaration",
+	"field_definition",
+}
+
+--- Finds the nearest documentable treesitter node at the cursor and returns its line range.
+---@return integer|nil start_line 1-indexed start line
+---@return integer|nil end_line 1-indexed end line
+local function find_documentable_node_range()
+	local node = vim.treesitter.get_node()
+	if not node then
+		return nil, nil
 	end
+	local type_set = {}
+	for _, t in ipairs(documentable_node_types) do
+		type_set[t] = true
+	end
+	while node do
+		if type_set[node:type()] then
+			local start_row, _, end_row, _ = node:range()
+			return start_row + 1, end_row + 1
+		end
+		node = node:parent()
+	end
+	return nil, nil
+end
+
+--- Generates documentation for the element at the cursor using treesitter to find its full range.
+local function generate_documentation()
+	local start_line, end_line = find_documentable_node_range()
+	if not start_line or not end_line then
+		vim.notify("No documentable element found at cursor", vim.log.levels.WARN)
+		return
+	end
+	require("avante.api").edit(L.documentation_prompt, start_line, end_line)
 end
 
 --- Generates a commit message by injecting the staged diff into the current buffer and invoking Avante edit.
@@ -218,7 +259,7 @@ function L.settings()
 	})
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
-		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
+		{ cmd.LYRDAIGenerateDocumentation, generate_documentation },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
