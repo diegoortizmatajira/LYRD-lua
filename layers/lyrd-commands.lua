@@ -15,6 +15,7 @@ local L = {
 		LYRDAIAsk = Command:new("Ask AI", nil, icons.ai.prompt, true),
 		LYRDAIEdit = Command:new("Edit with AI", nil, icons.ai.edit, true),
 		LYRDAIGenerateDocumentation = Command:new("Document current element with AI", nil, icons.ai.document, true),
+		LYRDAIGenerateCommitMessage = Command:new("Generate commit message with AI", nil, icons.ai.edit, true),
 		LYRDBreakLine = Command:new(
 			"Break current line",
 			":s/[,(]/&\r/ge|:noh|:'[,']normal==",

@@ -19,6 +19,16 @@ local L = {
 	documentation annotations to reflect the current code. Do not add or modify
 	child elements documentation.
 	]],
+	commit_message_prompt = [[
+	Goal: Produce a concise and informative git commit message and description
+	based on the current staged changes. How: USe git diff to analyze the
+	changes and identify the key modifications. Guidelines: Focus on
+	summarizing the main changes and their impact, avoiding unnecessary
+	details. The commit message should be clear and descriptive, accurately
+	reflecting the changes made in the code. Description lines may contain
+	itemized descriptions of changes, but the first line should be a concise
+	summary of the commit.
+	]],
 }
 
 local function avante_dependencies()
@@ -185,6 +195,7 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
+		{ cmd.LYRDAIGenerateCommitMessage, edit_with_prompt(L.commit_message_prompt) },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
