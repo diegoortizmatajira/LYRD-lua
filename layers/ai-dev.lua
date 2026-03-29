@@ -136,7 +136,7 @@ function L.plugins()
 					hide_during_completion = true,
 					debounce = 75,
 					keymap = L.completion_provider == ai_providers.COPILOT and {
-						accept = keyboard.ai_keys.accept,
+						accept = false, -- Mapped manually to avoid expr mapping bug with special keys
 						accept_word = keyboard.ai_keys.accept_word,
 						accept_line = keyboard.ai_keys.accept_line,
 						next = keyboard.ai_keys.next,
@@ -161,7 +161,7 @@ function L.plugins()
 					idle_delay = 75,
 					virtual_text_priority = 65535,
 					map_keys = true,
-					accept_fallback = nil,
+					accept_fallback = keyboard.ai_keys.accept,
 					key_bindings = {
 						accept = keyboard.ai_keys.accept,
 						accept_word = keyboard.ai_keys.accept_word,
@@ -254,6 +254,18 @@ function L.plugins()
 end
 
 function L.settings()
+	-- Manual accept mapping for copilot to avoid expr mapping bug that inserts raw keycodes
+	if L.completion_provider == ai_providers.COPILOT then
+		vim.keymap.set("i", keyboard.ai_keys.accept, function()
+			local ok, suggestion = pcall(require, "copilot.suggestion")
+			if ok and suggestion.is_visible() then
+				suggestion.accept()
+			else
+				local key = vim.api.nvim_replace_termcodes(keyboard.ai_keys.accept, true, false, true)
+				vim.api.nvim_feedkeys(key, "n", false)
+			end
+		end, { desc = "[copilot] accept suggestion", silent = true })
+	end
 	commands.implement("gitcommit", {
 		{ cmd.LYRDAIGenerateDocumentation, generate_commit_message },
 	})
