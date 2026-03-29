@@ -54,7 +54,12 @@ function SignItem:get_placed(bufnr)
 end
 
 function SignItem:clear(bufnr)
-	vim.fn.sign_unplace(self.sign_group, { buffer = bufnr })
+	local placed = vim.fn.sign_getplaced(bufnr, { group = self.sign_group })[1].signs
+	for _, sign in ipairs(placed) do
+		if sign.name == self.name then
+			vim.fn.sign_unplace(self.sign_group, { buffer = bufnr, id = sign.id })
+		end
+	end
 end
 
 function SignItem:undefine()

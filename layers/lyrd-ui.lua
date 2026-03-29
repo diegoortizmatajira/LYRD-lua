@@ -3,6 +3,8 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 local utils = require("LYRD.utils")
+local goku = require("LYRD.shared.resources.goku")
+local title = require("LYRD.shared.resources.title")
 
 ---@class LYRD.layer.LYRDUI: LYRD.setup.Module
 --- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype
@@ -16,52 +18,15 @@ local ext_app_term = nil -- Store the terminal object
 local lyrd_ui_group = vim.api.nvim_create_augroup("LYRD-ui", {})
 
 local function combine_ascii_art(base, new, from_line)
-	for i = 1, #new, 1 do
+	local last_line = math.min(#new, #base - from_line)
+	for i = 1, last_line, 1 do
 		base[from_line + i] = base[from_line + i] .. new[i]
 	end
 	return table.concat(base, "\n")
 end
 
 local function header()
-	local image = {
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣶⣦⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⢀⣀⣀⣀⡀⢀⠀⢹⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣷⣄⠨⣿⣿⣿⡌⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣷⣿⣿⣿⣿⣿⣶⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⣠⣴⣾⣿⣮⣝⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠈⠉⠙⠻⢿⣿⣿⣿⣿⣿⣿⠟⣹⣿⡿⢿⣿⣿⣬⣶⣶⡶⠦⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⣀⣢⣙⣻⢿⣿⣿⣿⠎⢸⣿⠕⢹⣿⣿⡿⣛⣥⣀⣀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠈⠉⠛⠿⡏⣿⡏⠿⢄⣜⣡⠞⠛⡽⣸⡿⣟⡋⠉⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠾⠿⣿⠁⠀⡄⠀⠀⠰⠾⠿⠛⠓⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠠⢐⢉⢷⣀⠛⠠⠐⠐⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-		[[⠀⠀⠀⠀⣀⣠⣴⣶⣿⣧⣾⠡⠼⠎⢎⣋⡄⠆⠀⠱⡄⢉⠃⣦⡤⡀⠀⠀⠀⠀]],
-		[[⠀⠀⠐⠙⠻⢿⣿⣿⣿⣿⣿⣿⣄⡀⠀⢩⠀⢀⠠⠂⢀⡌⠀⣿⡇⠟⠀⠀⢄⠀]],
-		[[⠀⣴⣇⠀⡇⠀⠸⣿⣿⣿⣿⣽⣟⣲⡤⠀⣀⣠⣴⡾⠟⠀⠀⠟⠀⠀⠀⠀⡰⡀]],
-		[[⣼⣿⠋⢀⣇⢸⡄⢻⣟⠻⣿⣿⣿⣿⣿⣿⠿⡿⠟⢁⠀⠀⠀⠀⠀⢰⠀⣠⠀⠰]],
-		[[⢸⣿⡣⣜⣿⣼⣿⣄⠻⡄⡀⠉⠛⠿⠿⠛⣉⡤⠖⣡⣶⠁⠀⠀⠀⣾⣶⣿⠐⡀]],
-		[[⣾⡇⠈⠛⠛⠿⣿⣿⣦⠁⠘⢷⣶⣶⡶⠟⢋⣠⣾⡿⠃⠀⠀⠀⠰⠛⠉⠉⠀    LYRD® Neovim by Diego Ortiz. 2025]],
-	}
-	local title = {
-		[[    __      __       .__                                  __                   ]],
-		[[   /  \    /  \ ____ |  |   ____  ____   _____   ____   _/  |_  ____           ]],
-		[[   \   \/\/   // __ \|  | _/ ___\/  _ \ /     \_/ __ \  \   __\/  _ \          ]],
-		[[    \        /\  ___/|  |_\  \__(  <_> )  Y Y  \  ___/   |  | (  <_> )         ]],
-		[[     \__/\  /  \___  >____/\___  >____/|__|_|  /\___  >  |__|  \____/          ]],
-		[[          \/       \/          \/            \/     \/                         ]],
-		[[    ___       ___  ___  _______   ________       _____  ___  ___      ___  __     ___      ___ ]],
-		[[   |"  |     |"  \/"  |/"      \ |"      "\     (\"   \|"  \|"  \    /"  ||" \   |"  \    /"  |]],
-		[[   ||  |      \   \  /|:        |(.  ___  :)    |.\\   \    |\   \  //  / ||  |   \   \  //   |]],
-		[[   |:  |       \\  \/ |_____/   )|: \   ) ||    |: \.   \\  | \\  \/. ./  |:  |   /\\  \/.    |]],
-		[[    \  |___    /   /   //      / (| (___\ ||    |.  \    \. |  \.    //   |.  |  |: \.        |]],
-		[[   ( \_|:  \  /   /   |:  __   \ |:       :)    |    \    \ |   \\   /    /\  |\ |.  \    /:  |]],
-		[[    \_______)|___/    |__|  \___)(________/      \___|\____\)    \__/    (__\_|_)|___|\__/|___|]],
-	}
-	return combine_ascii_art(image, title, 1)
-end
-
-function L.notify(message, level, options)
-	local notify = require("notify")
-	notify(message, level, options)
+	return combine_ascii_art(goku.content, title.content, 1)
 end
 
 local function macro_recording()
@@ -83,28 +48,27 @@ function L.register_decoration_togglers(filetype, implementations)
 	if type(filetype) == "string" then
 		filetype = { filetype }
 	end
-	vim.tbl_map(function(ft)
+	for _, ft in ipairs(filetype) do
 		if not L.decoration_togglers[ft] then
 			L.decoration_togglers[ft] = {}
 		end
 		for _, impl in ipairs(implementations) do
 			table.insert(L.decoration_togglers[ft], impl)
 		end
-	end, filetype)
+	end
 end
 
 --- Toggles UI decorations for the current buffer based on its filetype.
---- @param opts? table|nil Optional options to pass to the command implementations.
+--- @param opts? table Optional options to pass to the command implementations.
 function L.toggle_decorations(opts)
 	local function run_for_filetype(filetype)
 		local togglers = L.decoration_togglers[filetype]
 		if not togglers then
-			return false
+			return
 		end
 		for _, impl in ipairs(togglers) do
 			commands.execute_implementation(impl, opts)
 		end
-		return true
 	end
 	local ft = vim.bo.filetype
 	run_for_filetype(ft)
@@ -197,7 +161,7 @@ function L.plugins()
 			version = "*",
 			config = function()
 				local starter = require("mini.starter")
-				--- customizes how the file path is appendned to the item text (aligned with file_formatter function for splitting)
+				--- customizes how the file path is appended to the item text (aligned with file_formatter function for splitting)
 				local show_path = function(path)
 					return string.format("|%s%s", vim.fn.fnamemodify(path, ":~:.:h"), utils.path_sep)
 				end
@@ -211,50 +175,45 @@ function L.plugins()
 						local cur_section, n_section, n_item = 0, -1, 0
 						local coords = MiniStarter.content_coords(content, "item")
 
+						-- New units use `_item` (not `item`) to associate with the parent item
+						-- without being treated as item entries by MiniStarter
 						for _, c in ipairs(coords) do
 							local unit = content[c.line][c.unit]
-							local item = unit.item
 
-							local rbracket_unit = {
+							local lbracket_unit = {
 								string = "[",
 								type = "item_bracket",
 								hl = "@tag",
-								-- Use `_item` instead of `item` because it is better to be 'private'
 								_item = unit.item,
 							}
-							local lbracket_unit = {
-
+							local rbracket_unit = {
 								string = "] ",
 								type = "item_bracket",
 								hl = "@tag",
-								-- Use `_item` instead of `item` because it is better to be 'private'
 								_item = unit.item,
 							}
-							if vim.tbl_contains(exclude_sections, item.section) then
+							if vim.tbl_contains(exclude_sections, unit.item.section) then
 								local parts = vim.split(unit.string, "|")
 								local icon_unit = {
 									string = (#parts > 1 and parts[2] or "") .. " ",
 									type = "item_icon",
 									hl = "Function",
-									-- Use `_item` instead of `item` because it is better to be 'private'
 									_item = unit.item,
 								}
 								local text_unit = {
-
 									string = #parts == 3 and parts[3] or "",
 									type = "item_text",
 									hl = "MiniStarterItem",
-									-- Use `_item` instead of `item` because it is better to be 'private'
 									_item = unit.item,
 								}
-								table.insert(content[c.line], c.unit, rbracket_unit)
-								table.insert(content[c.line], c.unit + 2, lbracket_unit)
+								table.insert(content[c.line], c.unit, lbracket_unit)
+								table.insert(content[c.line], c.unit + 2, rbracket_unit)
 								table.insert(content[c.line], c.unit + 3, icon_unit)
 								table.insert(content[c.line], c.unit + 4, text_unit)
 								unit.string = parts[1] or unit.string
 							else
-								if cur_section ~= item.section then
-									cur_section = item.section
+								if cur_section ~= unit.item.section then
+									cur_section = unit.item.section
 									-- Cycle through lower case letters
 									n_section = n_section + 1
 									n_item = per_section and 0 or n_item
@@ -266,27 +225,22 @@ function L.plugins()
 									string = icon.icon .. "  ",
 									type = "item_icon",
 									hl = icon.hl,
-									-- Use `_item` instead of `item` because it is better to be 'private'
 									_item = unit.item,
 								}
 								local path_unit = {
-
 									string = #parts == 2 and parts[2] or "",
 									type = "item_text",
 									hl = "@comment",
-									-- Use `_item` instead of `item` because it is better to be 'private'
 									_item = unit.item,
 								}
 								local filename_unit = {
-
 									string = parts[1] or unit.string,
 									type = "item_text",
 									hl = "MiniStarterItem",
-									-- Use `_item` instead of `item` because it is better to be 'private'
 									_item = unit.item,
 								}
-								table.insert(content[c.line], c.unit, rbracket_unit)
-								table.insert(content[c.line], c.unit + 2, lbracket_unit)
+								table.insert(content[c.line], c.unit, lbracket_unit)
+								table.insert(content[c.line], c.unit + 2, rbracket_unit)
 								table.insert(content[c.line], c.unit + 3, icon_unit)
 								table.insert(content[c.line], c.unit + 4, path_unit)
 								table.insert(content[c.line], c.unit + 5, filename_unit)
@@ -304,12 +258,6 @@ function L.plugins()
 					vim.api.nvim_set_hl(0, "MiniStarterItemPrefix", { link = "Constant" })
 					vim.api.nvim_set_hl(0, "MiniStarterHeader", { link = "Type" })
 					vim.api.nvim_set_hl(0, "MiniStarterQuery", { link = "Constant" })
-					-- vim.api.nvim_set_hl(0, "MiniStarterCurrent", { link = "MiniStarterItem" })
-					-- vim.api.nvim_set_hl(0, "MiniStarterFooter", { link = "Title" })
-					-- vim.api.nvim_set_hl(0, "MiniStarterInactive", { link = "Comment" })
-					-- vim.api.nvim_set_hl(0, "MiniStarterItem", { link = "Normal" })
-					-- vim.api.nvim_set_hl(0, "MiniStarterItemBullet", { link = "Delimiter" })
-					-- vim.api.nvim_set_hl(0, "MiniStarterSection", { link = "Delimiter" })
 				end
 				--- Sets up the mini.starter with custom options
 				starter.setup({
@@ -338,20 +286,24 @@ function L.plugins()
 						-- Use this if you set up 'mini.sessions'
 						-- starter.sections.sessions(5, true),
 					},
-					footer = "LYRD® Neovim by Diego Ortiz. 2025",
+					footer = "LYRD® Neovim by Diego Ortiz. 2026",
 					content_hooks = {
 						starter.gen_hook.adding_bullet(),
 						file_formatter("section", { "Common actions" }),
 						starter.gen_hook.padding(3, 2),
-						-- starter.gen_hook.aligning("center", "center"),
 					},
 				})
 				set_matching_ministarter_colorscheme()
+				goku.setup_highlights()
 				--- Ensure colors match on colorscheme change
-				vim.api.nvim_create_autocmd(
-					"ColorScheme",
-					{ group = lyrd_ui_group, callback = set_matching_ministarter_colorscheme, desc = "Ensure colors" }
-				)
+				vim.api.nvim_create_autocmd("ColorScheme", {
+					group = lyrd_ui_group,
+					callback = function()
+						set_matching_ministarter_colorscheme()
+						goku.setup_highlights()
+					end,
+					desc = "Ensure colors",
+				})
 				-- Map `j` and `k` to navigate items
 				vim.api.nvim_create_autocmd("User", {
 					group = lyrd_ui_group,
@@ -362,6 +314,7 @@ function L.plugins()
 						vim.api.nvim_buf_del_keymap(0, "n", "<C-n>")
 						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", { noremap = true, silent = true })
 						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", { noremap = true, silent = true })
+						goku.colorize(vim.api.nvim_get_current_buf())
 					end,
 				})
 			end,
@@ -370,7 +323,6 @@ function L.plugins()
 			"akinsho/toggleterm.nvim",
 			opts = {},
 			cmd = { "ToggleTerm", "TermSelect" },
-			lazy = true,
 		},
 		{
 			"natecraddock/workspaces.nvim",
@@ -393,17 +345,13 @@ function L.plugins()
 		},
 		{
 			"MagicDuck/grug-far.nvim",
-			-- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
+			-- Note (lazy loading): grug-far.lua defers all its requires so it's lazy by default
 			-- additional lazy config to defer loading is not really needed...
 			opts = {},
 		},
 		{
 			"folke/twilight.nvim",
-			opts = {
-				-- Your configuration comes here
-				-- or leave it empty to use the default settings
-				-- refer to the configuration section below
-			},
+			opts = {},
 			cmd = { "Twilight" },
 		},
 	})
@@ -443,7 +391,7 @@ function L.settings()
 		{ cmd.LYRDScratchNew, ":ScratchNew" },
 		{ cmd.LYRDScratchOpen, ":ScratchSearch" },
 		{ cmd.LYRDScratchDelete, ":ScratchDelete" },
-		{ cmd.LYRDScratchSearch, ":ScratchSearch" },
+		{ cmd.LYRDScratchSearch, ":ScratchSearch" }, --Should search inside scratch files, but `ScratchSearch` but currently just lists them, so using the same command for now
 		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },
 		{ cmd.LYRDTerminalList, ":TermSelect" },
@@ -458,24 +406,34 @@ function L.settings()
 	})
 end
 
+--- Toggles a singleton floating terminal for an external application.
+--- Only one external app terminal can be open at a time. If a different command
+--- is requested while a terminal is open, the current terminal is closed and the
+--- new one is opened in its place.
+--- @param external_cmd string The shell command to run in the terminal.
 function L.toggle_external_app_terminal(external_cmd)
 	local Terminal = require("toggleterm.terminal").Terminal
 	if ext_app_term and ext_app_term:is_open() then
+		local current_cmd = ext_app_term.cmd
 		ext_app_term:close()
 		ext_app_term = nil
-	else
-		-- Create a floating terminal pane and run a custom command
-		ext_app_term = Terminal:new({
-			cmd = external_cmd,
-			direction = "float",
-			float_opts = { border = "double" },
-			on_open = function(term)
-				vim.cmd("startinsert!")
-				vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
-			end,
-		})
-		return ext_app_term:toggle()
+		if current_cmd == external_cmd then
+			return
+		end
 	end
+	ext_app_term = Terminal:new({
+		cmd = external_cmd,
+		direction = "float",
+		float_opts = { border = "double" },
+		on_open = function(term)
+			vim.cmd("startinsert!")
+			vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+		end,
+		on_close = function()
+			ext_app_term = nil
+		end,
+	})
+	ext_app_term:toggle()
 end
 
 return L

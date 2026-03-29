@@ -41,6 +41,7 @@ local L = {
 		},
 		{
 			"benomahony/uv.nvim",
+			ft = "python",
 			opts = {
 				picker_integration = true,
 				keymaps = false,
@@ -49,6 +50,7 @@ local L = {
 		{
 			"lukoshkin/pymove.nvim",
 			opts = {},
+			enabled = false, -- TODO: Enable when the actions are implemented as Code actions
 		},
 	},
 	required_mason_packages = {
@@ -58,6 +60,7 @@ local L = {
 		"pylint",
 		"ruff",
 		"yapf",
+		"dotenv-linter",
 	},
 	required_treesitter_parsers = {
 		"python",
@@ -74,6 +77,9 @@ local L = {
 		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.pylint", {
 			command = "python",
 			args = { "-m", "pylint", "--from-stdin", "$FILENAME", "-f", "json" },
+		}),
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.dotenv_linter", {
+			args = { "check", "$FILENAME" },
 		}),
 	},
 }

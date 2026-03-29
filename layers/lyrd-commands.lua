@@ -1,7 +1,7 @@
 local commands = require("LYRD.layers.commands")
+local Command = commands.Command
 local icons = require("LYRD.layers.icons")
 local setup = require("LYRD.setup")
-local c = commands.command_shortcut
 
 ---@class LYRD.layer.LYRDCommands: LYRD.setup.Module
 local L = {
@@ -10,7 +10,7 @@ local L = {
 	cmd = {
 		LYRDAIAssistant = Command:new("AI Assistant", nil, icons.ai.assistant, true),
 		LYRDAICli = Command:new("AI Cli tools", nil, icons.ai.cli, true),
-		LYRDAICliPrompt = Command:new("Send a promtp to AI Cli tools", nil, icons.ai.prompt, true),
+		LYRDAICliPrompt = Command:new("Send a prompt to AI Cli tools", nil, icons.ai.prompt, true),
 		LYRDAICliSelect = Command:new("Select AI Cli tools", nil, icons.ai.select, true),
 		LYRDAIAsk = Command:new("Ask AI", nil, icons.ai.prompt, true),
 		LYRDAIEdit = Command:new("Edit with AI", nil, icons.ai.edit, true),
@@ -74,10 +74,12 @@ local L = {
 		LYRDDebugToggleUI = Command:new("Debug UI", nil, icons.debug.breakpoint),
 		LYRDDiagnosticLinesToggle = Command:new("Toggle diagnostic lines", nil, icons.action.toggle_on),
 		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),
+		LYRDGrammarToggle = Command:new("Toggle grammar checker", nil, icons.action.toggle_on),
 		LYRDGitBrowseOnWeb = Command:new("Browse line on web", nil, icons.apps.browser),
 		LYRDGitCheckoutDev = Command:new("Checkout Develop branch", nil, icons.git.branch),
 		LYRDGitCheckoutMain = Command:new("Checkout Main branch", nil, icons.git.branch),
 		LYRDGitCommit = Command:new("Commit changes", nil, icons.git.commit),
+		LYRDGitMergeConflicts = Command:new("View Merge Conflicts", nil, icons.git.conflict),
 		LYRDGitFlowFeatureFinish = Command:new("Feature finish", nil, icons.git.commit_end),
 		LYRDGitFlowFeatureStart = Command:new("Feature start", nil, icons.git.commit_start),
 		LYRDGitFlowFeaturePublish = Command:new("Feature publish (pull req.)", nil, icons.git.pull_request),
@@ -97,6 +99,14 @@ local L = {
 		LYRDGitViewDiff = Command:new("View diff", nil, icons.git.diff),
 		LYRDGitViewLog = Command:new("File log", nil, icons.git.log),
 		LYRDGitWrite = Command:new("Write"),
+		LYRDGithubIssueList = Command:new("List GitHub issues", nil, icons.git.issue.list),
+		LYRDGithubIssueClose = Command:new("Close GitHub issue", nil, icons.git.issue.closed),
+		LYRDGithubIssueReopen = Command:new("Reopen GitHub issue", nil, icons.git.issue.reopened),
+		LYRDGithubIssueCreate = Command:new("Create GitHub issue", nil, icons.git.issue.open),
+		LYRDGithubIssueDevelop = Command:new("Develop GitHub issue", nil, icons.git.issue.develop_branch),
+		LYRDGithubPullRequestList = Command:new("List GitHub pull requests", nil, icons.git.pr.list),
+		LYRDGithubPullRequestCreate = Command:new("Create GitHub pull request", nil, icons.git.pr.open),
+		LYRDGithubPullRequestClose = Command:new("Close GitHub pull request", nil, icons.git.pr.closed),
 		LYRDGitWorkTreeCreate = Command:new("Create Worktree", nil, icons.folder.new),
 		LYRDGitWorkTreeCreateExistingBranch = Command:new("Create Worktree for existing branch", nil, icons.folder.new),
 		LYRDGitWorkTreeList = Command:new("List GIT Worktrees", nil, icons.git.worktree),
@@ -229,8 +239,12 @@ local L = {
 		LYRDCopyAbsoluteFilePath = Command:new("Copy absolute file path", nil, icons.file.symlink),
 		LYRDCopyFileName = Command:new("Copy file name", nil, icons.file.symlink),
 		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
+		LYRDPasteFromHistory = Command:new("Paste from history", nil, icons.action.paste),
 		LYRDInsertLineAbove = Command:new("Insert line above", ":call append(line('.')-1, '')", icons.arrow.up),
 		LYRDInsertLineBelow = Command:new("Insert line below", ":call append(line('.'), '')", icons.arrow.down),
+		LYRDDiffThis = Command:new("Add to comparisson", ":diffthis", icons.action.compare),
+		LYRDDiffOff = Command:new("Turn comparisson off", ":diffoff", icons.action.compare),
+		LYRDBindScroll = Command:new("Bind scroll on buffers", ":set scrollbind", icons.action.compare),
 	},
 }
 
