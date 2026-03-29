@@ -109,6 +109,17 @@ local function generate_documentation()
 	require("avante.api").edit(L.documentation_prompt, start_line, end_line)
 end
 
+--- Finds the Neogit status panel window, if open.
+---@return integer|nil winid
+local function find_neogit_status_win()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].filetype == "NeogitStatus" then
+			return win
+		end
+	end
+end
+
 --- Generates a commit message by injecting the staged diff into the current buffer and invoking Avante edit.
 local function generate_commit_message()
 	local diff = vim.fn.system("git diff --cached")
@@ -117,9 +128,49 @@ local function generate_commit_message()
 		return
 	end
 	local lines = vim.split(diff, "\n")
+	local commit_win = vim.api.nvim_get_current_win()
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
 	local line_count = vim.api.nvim_buf_line_count(0)
 	require("avante.api").edit(L.commit_message_prompt, 1, line_count)
+	-- Avante's PromptInput floating window corrupts Neovim's prevwin chain.
+	-- When the commit editor later closes on Submit, Neovim can't find its way
+	-- back to the Neogit status panel. Fix both hops of the chain:
+	-- 1. After PromptInput closes: restore focus to commit editor with correct prevwin
+	-- 2. After commit editor closes: ensure focus lands on Neogit status panel
+	local prompt_buf = vim.api.nvim_get_current_buf()
+	if vim.api.nvim_buf_is_valid(prompt_buf) and vim.bo[prompt_buf].filetype == "AvantePromptInput" then
+		vim.api.nvim_create_autocmd("BufDelete", {
+			buffer = prompt_buf,
+			once = true,
+			callback = function()
+				vim.schedule(function()
+					if not vim.api.nvim_win_is_valid(commit_win) then
+						return
+					end
+					-- Restore prevwin chain: briefly visit status panel, then return to commit editor.
+					-- This makes Neovim's prevwin for the commit editor point to the status panel.
+					local status_win = find_neogit_status_win()
+					if status_win and vim.api.nvim_win_is_valid(status_win) then
+						vim.api.nvim_set_current_win(status_win)
+					end
+					vim.api.nvim_set_current_win(commit_win)
+				end)
+			end,
+		})
+	end
+	-- Fallback: when the commit editor window closes, explicitly focus the status panel.
+	vim.api.nvim_create_autocmd("WinClosed", {
+		pattern = tostring(commit_win),
+		once = true,
+		callback = function()
+			vim.schedule(function()
+				local status_win = find_neogit_status_win()
+				if status_win and vim.api.nvim_win_is_valid(status_win) then
+					vim.api.nvim_set_current_win(status_win)
+				end
+			end)
+		end,
+	})
 end
 
 function L.plugins()
