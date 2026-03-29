@@ -7,34 +7,22 @@ local L = {
 	name = "Themes",
 	favorite_themes = {
 		{
-			name = "Gruvbox - Dark",
+			name = "gruvbox - dark",
 			colorscheme = "gruvbox",
 			before = [[vim.o.background = "dark"]],
 		},
+		"bamboo",
+		"kanagawa",
+		"tokyonight",
+		"catppuccin",
+		"onedark",
+		"monokai-pro",
+		"duskfox",
 		{
-			name = "Gruvbox - Light",
+			name = "gruvbox - light",
 			colorscheme = "gruvbox",
 			before = [[vim.o.background = "light"]],
 		},
-		"catppuccin-mocha",
-		"catppuccin-frappe",
-		"catppuccin-macchiato",
-		"catppuccin",
-		"carbonfox",
-		"nightfox",
-		"terafox",
-		"duskfox",
-		"nordfox",
-		"dawnfox",
-		"kanagawa-dragon",
-		"kanagawa-wave",
-		"kanagawa-lotus",
-		"bamboo-multiplex",
-		"bamboo-vulgaris",
-		"tokyonight-storm",
-		"tokyonight-night",
-		"tokyonight-moon",
-		"tokyonight-day",
 	},
 	globalBefore = [[vim.o.background = "dark"]],
 }
@@ -77,7 +65,9 @@ function L.plugins()
 		{
 			"folke/tokyonight.nvim",
 			priority = 1000,
-			opts = {},
+			opts = {
+				style = "night",
+			},
 		},
 		{
 			"ellisonleao/gruvbox.nvim",
@@ -90,21 +80,51 @@ function L.plugins()
 		{
 			"rebelot/kanagawa.nvim",
 			priority = 1000,
-			opts = {},
+			opts = {
+				theme = "wave",
+			},
 		},
 		{
 			"catppuccin/nvim",
 			name = "catppuccin",
 			priority = 1000,
-			opts = {},
+			opts = {
+				flavour = "mocha",
+			},
 		},
 		{
 			"EdenEast/nightfox.nvim",
 			priority = 1000,
-			opts = {},
+			opts = {
+				options = {
+					styles = {
+						comments = "italic",
+						keywords = "bold",
+						types = "italic,bold",
+					},
+				},
+			},
 		},
 		{
 			"ribru17/bamboo.nvim",
+			priority = 1000,
+			opts = {
+				style = "vulgaris",
+			},
+		},
+		{
+			"olimorris/onedarkpro.nvim",
+			priority = 1000, -- Ensure it loads first
+			opts = {
+				theme = "onedark",
+				highlights = {
+					Comment = { extend = true, italic = true },
+				},
+			},
+		},
+		{
+			"loctvl842/monokai-pro.nvim",
+			lazy = false,
 			priority = 1000,
 			opts = {},
 		},

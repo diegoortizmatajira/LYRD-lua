@@ -131,8 +131,8 @@ return {
 	filetypes = {
 		"java",
 		"jproperties",
-		"xml",
-		"yaml",
+		-- "xml",
+		-- "yaml",
 	},
 	settings = {
 		java = {

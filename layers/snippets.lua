@@ -14,19 +14,17 @@ function L.plugins()
 	setup.plugin({
 		{
 			"L3MON4D3/LuaSnip",
-			version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+			version = "v2.*",
 			opts = {
 				history = true,
 				delete_check_events = "TextChanged",
 				region_check_events = "CursorMoved",
 			},
 			config = function(_, opts)
-				if opts then
-					require("luasnip").config.setup(opts)
-				end
-				vim.tbl_map(function(type)
+				require("luasnip").config.setup(opts)
+				for _, type in ipairs({ "vscode", "snipmate", "lua" }) do
 					require("luasnip.loaders.from_" .. type).lazy_load()
-				end, { "vscode", "snipmate", "lua" })
+				end
 				-- Load snippets from LYRD's custom snippets path.
 				require("luasnip.loaders.from_vscode").lazy_load({
 					paths = { L.snippets_path },

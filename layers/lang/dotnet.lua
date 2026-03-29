@@ -11,20 +11,12 @@ local L = {
 			ft = dotnet_languages,
 		},
 		{
-			"seblj/roslyn.nvim",
-			ft = "cs",
-			opts = {},
-		},
-		{
 			"gustaveikaas/easy-dotnet.nvim",
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 				"nvim-telescope/telescope.nvim",
 			},
 			opts = {
-				lsp = {
-					enabled = false,
-				},
 				test_runner = {
 					---@type "split" | "float" | "buf"
 					viewmode = "float",
@@ -62,7 +54,11 @@ local L = {
 
 					local function filter_warnings(line)
 						if not line:find("warning") then
-							return line:match("^(.+)%((%d+),(%d+)%)%: (.+)$")
+							local filename, lnum, col, text = line:match("^%s*(.+)%((%d+),(%d+)%)%: (.+)$")
+							if filename and text then
+								text = text:gsub("%s*%[.-%]%s*$", "")
+							end
+							return filename, lnum, col, text
 						end
 					end
 
@@ -139,10 +135,6 @@ local L = {
 			},
 			ft = dotnet_languages,
 		},
-		-- {
-		-- 	"adamclerk/vim-razor",
-		-- 	ft = dotnet_languages,
-		-- },
 	},
 	required_mason_packages = {
 		"netcoredbg",

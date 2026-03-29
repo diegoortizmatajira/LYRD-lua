@@ -13,7 +13,7 @@ local function configure(filename)
 			-- Create an empty file if it doesn't exist
 			vim.fn.writefile({}, filename)
 		end
-		vim.cmd("edit " .. filename)
+		vim.cmd.edit(filename)
 	end
 end
 

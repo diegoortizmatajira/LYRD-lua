@@ -20,6 +20,12 @@
   - [Interactive Programming (REPL)](#interactive-programming-repl)
   - [REST API Testing](#rest-api-testing)
   - [Database Management](#database-management)
+  - [Grammar Checking](#grammar-checking)
+  - [Static Website Development](#static-website-development)
+  - [Tmux Integration](#tmux-integration)
+  - [Media and Images](#media-and-images)
+  - [Neovide Support](#neovide-support)
+  - [VSCode Compatibility](#vscode-compatibility)
 - [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Language Support](#language-support)
   - [Python](#python)
@@ -29,6 +35,9 @@
   - [Go](#go)
   - [Rust](#rust)
   - [C and C++](#c-and-c)
+  - [Kotlin](#kotlin)
+  - [Bash](#bash)
+  - [Pascal](#pascal)
   - [Other Languages](#other-languages)
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
@@ -59,8 +68,8 @@ with the features of a full-featured IDE.
 
 Think of LYRD as a carefully curated collection of the best tools and features
 for software development, all working together seamlessly. Whether you're
-writing Python, JavaScript, Java, Rust, or any other language, LYRD provides
-the tools you need without the bloat.
+writing Python, JavaScript, Java, Rust, or any other language, LYRD provides the
+tools you need without the bloat.
 
 ## Why Use LYRD?
 
@@ -77,26 +86,32 @@ configurations, and maintain your workflow without fighting against the system.
 - **Save Time**: No need to configure everything from scratch
 - **Stay Focused**: All your development tools in one place
 - **Work Faster**: Keyboard-driven workflow means less mouse usage
-- **Code Smarter**: AI assistance, intelligent completions, and refactoring tools
+- **Code Smarter**: AI assistance, intelligent completions, and refactoring
+  tools
 - **Debug Easier**: Integrated debugging for multiple languages
 - **Test Confidently**: Built-in test runners and coverage reports
 - **Version Control**: Powerful Git integration right in your editor
+- **Work Anywhere**: Since Neovim runs in the terminal, every LYRD feature —
+  code intelligence, debugging, testing, AI assistance, Git — works seamlessly
+  over SSH. Access your full development environment on remote machines, cloud
+  servers, or containers with no extra setup
 
 ## How LYRD Works: The Layer Architecture
 
 LYRD is built using a **layer system** - think of it like building blocks that
-you can stack together. Each layer adds a specific feature or capability to
-your editor.
+you can stack together. Each layer adds a specific feature or capability to your
+editor.
 
 **What makes this powerful?**
 
-1. **Modular Design**: Each feature (like Python support, Git integration, or
-   AI assistance) lives in its own layer. This means:
+1. **Modular Design**: Each feature (like Python support, Git integration, or AI
+   assistance) lives in its own layer. This means:
    - Features don't interfere with each other
    - You can disable features you don't need
    - Adding new features is straightforward
 
-2. **Smart Loading**: LYRD only loads the features you're actually using. For example:
+2. **Smart Loading**: LYRD only loads the features you're actually using. For
+   example:
    - Python tools only load when you open a Python file
    - Database tools only load when you need them
    - This keeps Neovim fast and responsive
@@ -138,7 +153,8 @@ writing code. The editor "just works" the way you expect it to.
 
 ### Beautiful and Informative Interface
 
-**What it does**: Provides a modern, clean interface with helpful visual feedback.
+**What it does**: Provides a modern, clean interface with helpful visual
+feedback.
 
 **Components**:
 
@@ -177,14 +193,13 @@ navigation for all supported languages.
 
 - **Auto-completion**: Suggests functions, variables, and methods as you type
 - **Error detection**: Highlights problems in your code as you write
-- **Go to definition**: Jump to where a function or variable is defined with
-  one keystroke
+- **Go to definition**: Jump to where a function or variable is defined with one
+  keystroke
 - **Find references**: See everywhere a function is used in your project
 - **Hover documentation**: View function signatures and documentation without
   leaving your editor
 - **Code actions**: Get suggestions for fixing problems or improving code
-- **Auto-formatting**: Automatically format your code to follow style
-  guidelines
+- **Auto-formatting**: Automatically format your code to follow style guidelines
 - **Refactoring**: Safely rename variables, extract functions, and reorganize
   code
 
@@ -204,13 +219,15 @@ work.
 
 ### Powerful Search and Navigation
 
-**What it does**: Helps you find files, code, and information quickly in large projects.
+**What it does**: Helps you find files, code, and information quickly in large
+projects.
 
 **Capabilities**:
 
 - **Fuzzy file finder**: Type part of a filename and instantly see matches
 - **Project-wide search**: Find text across all files in your project
-- **Code outline**: See the structure of your current file (functions, classes, etc.)
+- **Code outline**: See the structure of your current file (functions, classes,
+  etc.)
 - **Symbol search**: Find any function or class in your project by name
 - **Recent files**: Quickly reopen files you were just working on
 - **Bookmarks**: Mark important locations in your code and jump back to them
@@ -235,9 +252,10 @@ using grep commands.
 
 **Features**:
 
-- **Visual Git interface**: See and manage your Git repository in a beautiful interface
-- **Line-by-line change indicators**: See which lines you've modified, added,
-  or deleted
+- **Visual Git interface**: See and manage your Git repository in a beautiful
+  interface
+- **Line-by-line change indicators**: See which lines you've modified, added, or
+  deleted
 - **Blame annotations**: See who wrote each line of code and when
 - **Diff viewing**: Compare different versions of your files side-by-side
 - **Commit from editor**: Stage changes and create commits without leaving
@@ -266,7 +284,8 @@ branches without breaking your concentration.
 - **Run individual tests**: Test just the function you're working on
 - **Run test files**: Test an entire file with one command
 - **Run test suites**: Run all tests in your project
-- **Visual test results**: See which tests passed or failed with clear indicators
+- **Visual test results**: See which tests passed or failed with clear
+  indicators
 - **Test coverage**: See which parts of your code are tested
 - **Watch mode**: Automatically rerun tests when you save files
 - **Debug tests**: Step through failing tests to understand why they fail
@@ -278,7 +297,8 @@ branches without breaking your concentration.
 - Java: JUnit, TestNG
 - Go: go test
 - Rust: cargo test
-- And more...
+- .NET: VSTest (xUnit, NUnit, MSTest)
+- C/C++: CTest/CMake
 
 **How it helps you**:
 
@@ -313,6 +333,7 @@ execution line by line.
 - Java (java-debug-adapter)
 - .NET (netcoredbg)
 - Go (delve)
+- Kotlin (kotlin-debug-adapter)
 - Rust (lldb/codelldb)
 - C/C++ (lldb/codelldb)
 
@@ -336,7 +357,8 @@ deployment tasks.
 **Capabilities**:
 
 - **VSCode tasks**: Import and run tasks from VS Code's tasks.json
-- **Build systems**: Support for Make, Maven, Gradle, Cargo, npm scripts, and more
+- **Build systems**: Support for Make, Maven, Gradle, Cargo, npm scripts, and
+  more
 - **Custom tasks**: Define your own tasks for any project-specific needs
 - **Task monitoring**: See task output in real-time
 - **Task history**: Rerun recent tasks with one command
@@ -376,27 +398,43 @@ improve code.
 - Codeium
 - TabNine
 
-**Capabilities**:
+**AI Chat and Editing** (Avante):
 
-- **Code suggestions**: Get AI-powered completions as you type
-- **Smart context**: AI understands your project and suggests relevant code
 - **Ask questions**: Get explanations about code directly in your editor
+- **Smart editing**: AI-powered code edits with visual diff review
 - **Generate documentation**: Auto-create comments and documentation
 - **Code explanations**: Understand complex code with AI explanations
 - **Refactoring suggestions**: Get AI recommendations for improving code
 - **Bug fixes**: AI suggests fixes for errors and issues
 
+**CLI AI Tools** (Sidekick):
+
+- **CLI integration**: Use external AI CLI tools (Claude Code, GitHub Copilot CLI,
+  etc.) directly from within Neovim
+- **Tmux backend**: Runs CLI tools in a Tmux pane alongside your editor
+- **Tool selection**: Switch between different CLI AI tools on the fly
+- **Send prompts**: Send prompts to CLI AI tools with project context
+
+**Inline Completions**:
+
+- **Code suggestions**: Get AI-powered completions as you type
+- **Smart context**: AI understands your project and suggests relevant code
+- **Multiple providers**: Switch between Copilot, Codeium, or TabNine
+
 **How it helps you**:
 
 - **Learn faster**: AI explains unfamiliar code and concepts
 - **Write faster**: AI suggests entire code blocks, not just completions
-- **Better documentation**: Auto-generated docs save time and improve code quality
+- **Better documentation**: Auto-generated docs save time and improve code
+  quality
 - **Fewer bugs**: AI catches potential issues before they become problems
 - **Stay in flow**: Get help without searching documentation or Stack Overflow
+- **Use your preferred AI CLI**: Leverage powerful CLI tools like Claude Code
+  without leaving Neovim
 
-**Real-world benefit**: It's like having an expert developer looking over your
-shoulder, offering suggestions and catching mistakes. You write better code
-faster, especially in unfamiliar areas.
+**Real-world benefit**: Multiple AI integration points — inline completions for
+fast coding, Avante for chat-based editing and questions, and Sidekick for
+full CLI AI tools — give you the right level of AI assistance for each task.
 
 ### Code Snippets and Templates
 
@@ -405,7 +443,8 @@ faster, especially in unfamiliar areas.
 **Features**:
 
 - **Code snippets**: Quick templates for common code patterns
-- **Language-specific snippets**: Optimized snippets for each programming language
+- **Language-specific snippets**: Optimized snippets for each programming
+  language
 - **File templates**: Start new files with proper structure
 - **Custom snippets**: Create your own templates for repeated code
 - **Smart placeholders**: Jump between fillable parts of a template
@@ -417,7 +456,8 @@ faster, especially in unfamiliar areas.
 - Java: Classes, Records, Interfaces, Enums
 - C#: Classes, Interfaces, MediatR handlers
 - Go: Structs, Interfaces, Test files
-- And many more...
+- Vue: Component templates
+- Lua: LYRD module templates, LSP settings
 
 **How it helps you**:
 
@@ -438,7 +478,8 @@ container-based development.
 
 **Docker Features**:
 
-- **Dockerfile support**: Syntax highlighting and language server for Dockerfiles
+- **Dockerfile support**: Syntax highlighting and language server for
+  Dockerfiles
 - **Docker Compose**: Full support for compose files with service visualization
 - **Linting**: Catch Dockerfile problems with hadolint
 - **LazyDocker integration**: Visual Docker management in a terminal UI
@@ -456,7 +497,8 @@ container-based development.
 - **Faster development**: Manage containers without leaving your editor
 - **Catch issues early**: Linting prevents deployment problems
 - **Visual management**: See your containers and clusters clearly
-- **Simplified workflows**: Common Docker/K8s operations are just keystrokes away
+- **Simplified workflows**: Common Docker/K8s operations are just keystrokes
+  away
 - **DevOps integration**: Bridge development and deployment seamlessly
 
 **Real-world benefit**: Container-based development becomes as smooth as local
@@ -490,12 +532,13 @@ development. You can develop, test, and deploy containerized apps efficiently.
 - **Prototyping**: Build and test ideas quickly
 
 **Real-world benefit**: Perfect for data science, scientific computing, and
-learning new technologies. You get instant feedback on your code without
-context switching.
+learning new technologies. You get instant feedback on your code without context
+switching.
 
 ### REST API Testing
 
-**What it does**: Test HTTP APIs directly from your editor without external tools.
+**What it does**: Test HTTP APIs directly from your editor without external
+tools.
 
 **Features**:
 
@@ -520,11 +563,13 @@ documentation.
 
 ### Database Management
 
-**What it does**: Connect to databases, run queries, and manage data from your editor.
+**What it does**: Connect to databases, run queries, and manage data from your
+editor.
 
 **Features**:
 
-- **Database connections**: Connect to PostgreSQL, MySQL, SQLite, MongoDB, and more
+- **Database connections**: Connect to PostgreSQL, MySQL, SQLite, MongoDB, and
+  more
 - **Query execution**: Run SQL queries and see results
 - **Table browsing**: View database structure and data
 - **Result formatting**: See query results in easy-to-read tables
@@ -542,6 +587,114 @@ documentation.
 **Real-world benefit**: Database work integrates into your normal workflow. You
 can develop features that touch the database without constantly switching
 between tools.
+
+### Grammar Checking
+
+**What it does**: Checks your writing for grammar and style issues directly in
+the editor.
+
+**Features**:
+
+- **Harper LS**: Fast, privacy-focused grammar checker that runs locally
+- **Inline diagnostics**: See grammar issues highlighted as you write
+- **Code actions**: Quick fixes for common grammar mistakes
+- **Works everywhere**: Checks comments, strings, markdown, and documentation
+
+**How it helps you**:
+
+- **Better documentation**: Catch grammar issues in comments and docs
+- **Professional communication**: Write cleaner commit messages and README files
+- **No external services**: Everything runs locally for privacy and speed
+
+**Real-world benefit**: Your documentation, comments, and written content are
+polished without needing to copy text into an external grammar tool.
+
+### Static Website Development
+
+**What it does**: Integrates with Hugo for static site generation workflows.
+
+**Features**:
+
+- **Hugo integration**: Build, serve, and manage Hugo sites from your editor
+- **Task templates**: Pre-configured Overseer tasks for common Hugo operations
+- **Live preview**: Start the Hugo development server and preview changes
+
+**How it helps you**:
+
+- **Streamlined workflow**: Manage your static site without leaving the editor
+- **Quick iterations**: Build and preview changes with keyboard shortcuts
+- **Content creation**: Write and publish blog posts efficiently
+
+**Real-world benefit**: Static site development becomes as smooth as any other
+project type, with all Hugo commands accessible from your editor.
+
+### Tmux Integration
+
+**What it does**: Seamless navigation and window management between Neovim and
+Tmux.
+
+**Features**:
+
+- **Unified navigation**: Move between Neovim splits and Tmux panes with the
+  same keys
+- **Smart resizing**: Resize Neovim and Tmux panes consistently
+- **Terminal workflow**: Combine Neovim with terminal-based tools naturally
+
+**How it helps you**:
+
+- **No context switching**: Navigate between editor and terminal seamlessly
+- **Muscle memory**: Same key bindings work in both Neovim and Tmux
+- **Efficient layout**: Use Tmux panes alongside Neovim splits naturally
+
+**Real-world benefit**: If you use Tmux, the boundary between your editor and
+terminal disappears. Navigation feels like one unified environment.
+
+### Media and Images
+
+**What it does**: Embed and manage images directly from your editor.
+
+**Features**:
+
+- **Image embedding**: Paste images from clipboard into your documents
+- **Format support**: Works with PNG, JPG, and other common formats
+- **Markdown integration**: Automatically creates proper image references
+
+**How it helps you**:
+
+- **Quick documentation**: Add screenshots to docs without leaving the editor
+- **Streamlined workflow**: Paste images directly instead of manual file
+  management
+
+**Real-world benefit**: Adding visual content to documentation becomes as simple
+as taking a screenshot and pasting it.
+
+### Neovide Support
+
+**What it does**: Optimizes the experience when running Neovim inside the
+Neovide GUI client.
+
+**Features**:
+
+- **Font configuration**: Proper font settings for the GUI environment
+- **Smooth animations**: Cursor and scroll animations tuned for Neovide
+- **GUI-specific settings**: Transparency, padding, and visual polish
+
+**Real-world benefit**: If you prefer a graphical Neovim experience, LYRD
+automatically detects Neovide and applies appropriate settings.
+
+### VSCode Compatibility
+
+**What it does**: Provides a compatibility mode for running LYRD layers inside
+VSCode's Neovim extension.
+
+**Features**:
+
+- **Selective layer loading**: Only loads layers marked as `vscode_compatible`
+- **Shared keybindings**: Keep your muscle memory across both environments
+- **Lightweight mode**: Skips plugins that conflict with VSCode features
+
+**Real-world benefit**: Use your familiar Neovim keybindings and motions inside
+VSCode when needed, without breaking either environment.
 
 ## Keyboard-Driven Workflow
 
@@ -628,10 +781,11 @@ Mouse usage is optional - everything can be done with keyboard shortcuts.
 9. `<Space>tt` - Run tests
 10. `<Space>gs` - Check Git status
 
-All of this takes seconds and never requires moving your hands from the keyboard.
+All of this takes seconds and never requires moving your hands from the
+keyboard.
 
-For a detailed list of commands with their corresponding keybindings see [LYRD
-Commands Reference](/docs/commands.md).
+For a detailed list of commands with their corresponding keybindings see
+[LYRD Commands Reference](/docs/commands.md).
 
 **Learning curve**: Don't worry about memorizing everything at once. The
 built-in helper (which-key) shows you what shortcuts are available. Start with
@@ -643,8 +797,8 @@ the basics:
 - `<Space>tt` - Run tests
 - `<Space>gs` - Git status
 
-As you work, you'll naturally discover and learn more shortcuts. Press
-`<Space>` or `,` and pause to see what's available!
+As you work, you'll naturally discover and learn more shortcuts. Press `<Space>`
+or `,` and pause to see what's available!
 
 ## Language Support
 
@@ -656,8 +810,10 @@ completion, error detection, formatting, debugging, and testing.
 
 **What you get**:
 
-- **Language Servers**: Pyright (type checking) and Ruff (fast linting and formatting)
-- **Virtual Environments**: Automatic detection and switching between Python environments
+- **Language Servers**: Basedpyright/Pyright (type checking) and Ruff (fast
+  linting and formatting)
+- **Virtual Environments**: Automatic detection and switching between Python
+  environments
 - **Testing**: Run pytest and unittest tests with visual results
 - **Debugging**: Full debugging support with breakpoints and variable inspection
 - **Jupyter Notebooks**: Work with notebooks directly in Neovim
@@ -673,7 +829,8 @@ completion, error detection, formatting, debugging, and testing.
 - Fast, accurate code completions
 - Instant feedback on code quality
 
-**Perfect for**: Web development, data science, scripting, automation, machine learning
+**Perfect for**: Web development, data science, scripting, automation, machine
+learning
 
 ### JavaScript/TypeScript and Web Development
 
@@ -681,7 +838,7 @@ completion, error detection, formatting, debugging, and testing.
 
 - **Language Servers**: VTSLS for TypeScript/JavaScript, Vue Language Server,
   Angular LS
-- **Frameworks**: First-class support for React, Vue, Angular
+- **Frameworks**: First-class support for React, Vue, Angular, and Svelte
 - **Testing**: Jest and Vitest test runners with visual results
 - **Debugging**: Debug Node.js and browser code
 - **Formatting**: Prettier integration for consistent code style
@@ -698,7 +855,7 @@ completion, error detection, formatting, debugging, and testing.
 - Test-driven development with visual test runners
 
 **Perfect for**: Frontend development, full-stack JavaScript, Node.js
-applications, modern web frameworks
+applications, modern web frameworks (React, Vue, Angular, Svelte)
 
 ### Java
 
@@ -709,7 +866,9 @@ applications, modern web frameworks
 - **Debugging**: Full debugging with Java Debug Adapter
 - **Build Tools**: Maven and Gradle integration
 - **Code Generation**: Generate getters, setters, constructors, and more
+- **Code Scaffolding**: Java class, record, enum, and interface templates
 - **Refactoring**: Rename, extract method, extract variable, and more
+- **Spring Boot**: Spring Boot integration with boot-specific tooling
 - **Project Management**: Automatic classpath detection and management
 
 **How it helps you**:
@@ -727,10 +886,14 @@ backend services
 
 **What you get**:
 
-- **Language Server**: Roslyn (Microsoft's official language server)
+- **Language Server**: Roslyn (Microsoft's official language server) via
+  easy-dotnet
 - **Testing**: VSTest integration with visual results
 - **Debugging**: netcoredbg for full debugging support
-- **Code Generation**: Create classes, interfaces, MediatR patterns
+- **Code Generation**: Create classes, interfaces, MediatR patterns (commands,
+  requests, events, handlers)
+- **Code Scaffolding**: C# class, interface, enum, record, and exception
+  templates
 - **Formatting**: CSharpier for consistent code style
 - **Project Management**: Solution and project file support
 - **NuGet**: Package management integration
@@ -743,8 +906,8 @@ backend services
 - Quick navigation in large solutions
 - Cross-platform .NET development
 
-**Perfect for**: Web APIs, microservices, desktop applications, game
-development with Unity
+**Perfect for**: Web APIs, microservices, desktop applications, game development
+with Unity
 
 ### Go
 
@@ -754,6 +917,7 @@ development with Unity
 - **Testing**: go test integration with visual results
 - **Debugging**: delve debugger integration
 - **Code Generation**: struct tags, interface implementation, test files
+- **Code Scaffolding**: Go struct, interface, and test file templates
 - **Formatting**: gofmt/goimports automatic formatting
 - **Build Tools**: go build, go mod support
 - **Refactoring**: gorename, goimpl for safe refactoring
@@ -814,13 +978,38 @@ performance-critical applications
 **Perfect for**: Systems programming, game development, embedded systems,
 performance-critical code
 
+### Kotlin
+
+**What you get**:
+
+- **Language Server**: kotlin-language-server for code intelligence
+- **Linting**: ktlint for code style enforcement
+- **Debugging**: kotlin-debug-adapter for full debugging support
+- **Build Tools**: Gradle and Maven integration
+
+**Perfect for**: Android development, Spring Boot with Kotlin, multiplatform
+projects
+
+### Bash
+
+**What you get**:
+
+- **Language Server**: bash-language-server for script intelligence
+- **Syntax highlighting**: Full Treesitter-based highlighting
+- **ShellCheck integration**: Linting for common shell scripting issues
+
+**Perfect for**: Shell scripting, automation, DevOps workflows
+
+### Pascal
+
+**What you get**:
+
+- **Language Server**: pascal-language-server (custom Mason registry)
+- **Syntax highlighting**: Treesitter-based highlighting
+
+**Perfect for**: Legacy Pascal projects, Free Pascal development
+
 ### Other Languages
-
-**Kotlin**:
-
-- Android development
-- Spring Boot with Kotlin
-- Multiplatform projects
 
 **Lua**:
 
@@ -866,7 +1055,8 @@ performance-critical code
 
 ### Prerequisites
 
-- **Neovim 0.10.0 or higher**: LYRD requires a recent version of Neovim
+- **Neovim 0.11.0 or higher**: LYRD requires a recent version of Neovim (uses
+  native LSP config via `vim.lsp.enable()`)
 - **Git**: For cloning the repository and managing plugins
 - **A Nerd Font**: For icons to display correctly (recommended: JetBrains Mono
   Nerd Font, FiraCode Nerd Font, or Hack Nerd Font)
@@ -928,7 +1118,7 @@ also manually install tools:
 
 **Common tools to install**:
 
-- Python: `pyright`, `ruff`, `debugpy`
+- Python: `basedpyright`, `ruff`, `debugpy`
 - JavaScript/TypeScript: `typescript-language-server`, `prettier`
 - Java: `jdtls`, `java-debug-adapter`
 - Go: `gopls`, `delve`
@@ -985,8 +1175,9 @@ return {
 - `LYRD.layers.ai-dev` - AI-powered coding assistance
 - `LYRD.layers.docker` - Docker integration
 - `LYRD.layers.kubernetes` - Kubernetes tools
-- `LYRD.layers.database` - Database management
 - `LYRD.layers.repl` - Interactive REPL/Jupyter support
+- `LYRD.layers.grammar` - Grammar checking
+- `LYRD.layers.static-website` - Hugo integration
 - `LYRD.layers.lang.java` - Java support
 - `LYRD.layers.lang.dotnet` - .NET support
 - `LYRD.layers.lang.rust` - Rust support
@@ -1085,8 +1276,8 @@ Then in Neovim, update plugins:
 4. **Week 4**: Git integration (`<Space>gs`, `<Space>gc`)
 5. **Week 5**: Debugging (`F5`, `F9`, `F10`)
 
-**Explore gradually**: Press `<Space>` or `,` and pause to see what commands
-are available. The which-key popup will show you all options with descriptions.
+**Explore gradually**: Press `<Space>` or `,` and pause to see what commands are
+available. The which-key popup will show you all options with descriptions.
 
 **Customize to your needs**: Don't be afraid to skip features you don't use and
 add your own customizations.
@@ -1111,7 +1302,7 @@ for details.
 
 ---
 
-LYRD® Neovim by Diego Ortiz. 2023-2025
+LYRD® Neovim by Diego Ortiz. 2023-2026
 
 Transform your Neovim into a complete development environment. Code faster,
 debug smarter, and stay in your flow.

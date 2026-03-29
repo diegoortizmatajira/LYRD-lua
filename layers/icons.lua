@@ -100,6 +100,7 @@ local L = {
 		keys = " ",
 	},
 	action = {
+		compare = " ",
 		exit = "󰩈 ",
 		clean = "󰃢 ",
 		install = "󰃘 ",
@@ -240,6 +241,7 @@ local L = {
 		blame = " ",
 		init = " ",
 		worktree = " ",
+		conflict = " ",
 		-- Status
 		unstaged = " ",
 		staged = "✓ ",
@@ -248,6 +250,24 @@ local L = {
 		untracked = "★ ",
 		deleted = " ",
 		ignored = "◌ ",
+		-- Github
+		github = " ",
+		issue = {
+			list = " ",
+			draft = " ",
+			open = " ",
+			closed = " ",
+			reopened = " ",
+			create_branch = "󱓊 ",
+			develop_branch = "󱓏 ",
+		},
+		pr = {
+			list = " ",
+			pull_request = " ",
+			draft = " ",
+			open = " ",
+			closed = " ",
+		},
 	},
 	git_gutter = {
 		add = "┃",
