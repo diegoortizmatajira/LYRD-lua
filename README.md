@@ -17,6 +17,7 @@
   - [AI-Powered Development](#ai-powered-development)
   - [Code Snippets and Templates](#code-snippets-and-templates)
   - [Container and Cloud Development](#container-and-cloud-development)
+  - [CI/CD Pipeline Support](#cicd-pipeline-support)
   - [Interactive Programming (REPL)](#interactive-programming-repl)
   - [REST API Testing](#rest-api-testing)
   - [Database Management](#database-management)
@@ -409,8 +410,8 @@ improve code.
 
 **CLI AI Tools** (Sidekick):
 
-- **CLI integration**: Use external AI CLI tools (Claude Code, GitHub Copilot CLI,
-  etc.) directly from within Neovim
+- **CLI integration**: Use external AI CLI tools (Claude Code, GitHub Copilot
+  CLI, etc.) directly from within Neovim
 - **Tmux backend**: Runs CLI tools in a Tmux pane alongside your editor
 - **Tool selection**: Switch between different CLI AI tools on the fly
 - **Send prompts**: Send prompts to CLI AI tools with project context
@@ -433,8 +434,8 @@ improve code.
   without leaving Neovim
 
 **Real-world benefit**: Multiple AI integration points — inline completions for
-fast coding, Avante for chat-based editing and questions, and Sidekick for
-full CLI AI tools — give you the right level of AI assistance for each task.
+fast coding, Avante for chat-based editing and questions, and Sidekick for full
+CLI AI tools — give you the right level of AI assistance for each task.
 
 ### Code Snippets and Templates
 
@@ -503,6 +504,35 @@ container-based development.
 
 **Real-world benefit**: Container-based development becomes as smooth as local
 development. You can develop, test, and deploy containerized apps efficiently.
+
+### CI/CD Pipeline Support
+
+**What it does**: Provides language server support and linting for CI/CD
+pipeline configuration files across major platforms.
+
+**Features**:
+
+- **GitHub Actions**: Language server for workflow files with completions,
+  validation, and diagnostics
+- **GitLab CI**: Language server for `.gitlab-ci.yml` with schema validation and
+  autocompletion
+- **Azure Pipelines**: Language server for Azure DevOps pipeline YAML files
+- **Actionlint**: Linting for GitHub Actions workflow files to catch common
+  mistakes
+- **Custom filetype detection**: Automatic recognition of `.gitlab-ci.yml` as a
+  GitLab CI file
+
+**How it helps you**:
+
+- **Catch errors early**: Validate pipeline configs before pushing
+- **Faster authoring**: Autocompletion for pipeline-specific syntax and keywords
+- **Multi-platform**: Work with GitHub, GitLab, and Azure pipelines in the same
+  editor
+- **Less context switching**: No need to check documentation for correct syntax
+
+**Real-world benefit**: Writing and maintaining CI/CD pipelines becomes much
+faster and less error-prone. You get instant feedback on syntax issues and
+schema violations without waiting for a pipeline run to fail.
 
 ### Interactive Programming (REPL)
 
