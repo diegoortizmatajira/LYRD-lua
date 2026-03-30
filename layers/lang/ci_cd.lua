@@ -24,8 +24,8 @@ local L = {
 		"null-ls.builtins.diagnostics.actionlint",
 	},
 	required_filetype_definitions = {
-		filename = {
-			[".gitlab-ci.yml"] = "yaml.gitlab",
+		pattern = {
+			["%.gitlab%-ci%.ya?ml"] = "yaml.gitlab",
 		},
 	},
 }
