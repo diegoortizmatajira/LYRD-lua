@@ -14,6 +14,7 @@
 --- @field required_formatter_per_filetype nil|LYRD.setup.DeclarativeFormat[]  List of formatting configurations to apply for this module.
 --- @field required_test_adapters  nil|(string|any|function)[] List of test adapters to be registered for this module. It can be a module name to require, a function that returns the adapter configuration or the adapter configuration directly.
 --- @field required_null_ls_sources nil|(string|any|function)[] List of null-ls sources to be registered for this module. It can be a list of module names to require.
+--- @field required_filetype_definitions nil|vim.filetype.add.filetypes List of filetype definitions to be registered for this module, with the filetype as key and a list of glob patterns as value.
 
 local DeclarativeLayer = {}
 
@@ -105,6 +106,9 @@ end
 local function apply_settings(proto)
 	local original_settings = proto.settings
 	return function()
+		if proto.required_filetype_definitions then
+			vim.filetype.add(proto.required_filetype_definitions)
+		end
 		if original_settings then
 			original_settings()
 		end

@@ -22,15 +22,13 @@ local L = {
 			format_settings = { "kulala-fmt" },
 		},
 	},
-}
-
-function L.preparation()
-	vim.filetype.add({
+	required_filetype_definitions = {
 		extension = {
 			["http"] = "http",
+			["rest"] = "rest",
 		},
-	})
-end
+	},
+}
 
 function L.keybindings()
 	local mappings = require("LYRD.layers.mappings")

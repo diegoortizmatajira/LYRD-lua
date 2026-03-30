@@ -29,12 +29,13 @@ local L = {
 		"docker-compose",
 		"lazydocker",
 	},
-	docker_compose_filetype = "yaml.docker-compose",
-	docker_compose_file_patterns = {
-		".*/docker%-compose.*%.yaml",
-		".*/docker%-compose.*%.yml",
-		".*/compose.*%.yaml",
-		".*/compose.*%.yml",
+	required_filetype_definitions = {
+		pattern = {
+			[".*/docker%-compose.*%.yaml"] = "yaml.docker-compose",
+			[".*/docker%-compose.*%.yml"] = "yaml.docker-compose",
+			[".*/compose.*%.yaml"] = "yaml.docker-compose",
+			[".*/compose.*%.yml"] = "yaml.docker-compose",
+		},
 	},
 	focus_terminal_on_run = true,
 	ts_compose_services_query = [[
@@ -47,6 +48,7 @@ local L = {
   ) 
 )]],
 	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
+	docker_compose_filetype = "yaml.docker-compose",
 }
 
 local function docker_compose_refresh_service_signs()
@@ -254,15 +256,6 @@ function L.preparation()
 end
 
 function L.settings()
-	-- Filetype detection for docker-compose files
-	local patterns = {}
-	vim.tbl_map(function(p)
-		patterns[p] = L.docker_compose_filetype
-	end, L.docker_compose_file_patterns)
-	vim.filetype.add({
-		pattern = patterns,
-	})
-
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers(L.docker_compose_filetype, { docker_compose_refresh_service_signs })
 

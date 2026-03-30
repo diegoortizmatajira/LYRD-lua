@@ -51,6 +51,7 @@ setup.load({
 		"LYRD.layers.lang.data-formats",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
+		"LYRD.layers.lang.ci_cd",
 		"LYRD.layers.static-website",
 		"LYRD.layers.grammar",
 		"LYRD.layers.extras",
