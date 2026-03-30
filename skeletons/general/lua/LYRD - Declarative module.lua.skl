@@ -33,7 +33,9 @@ local L = {
 	required_test_adapters = {
 	},
     required_null_ls_sources = {
-    }
+    },
+    required_filetype_definitions = {
+    },
 }
 
 function L.plugins()
