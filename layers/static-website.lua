@@ -1,7 +1,7 @@
 local setup = require("LYRD.setup")
 
 ---@class LYRD.layer.StaticWebSite: LYRD.setup.Module
-local L = { name = "Static web sites" }
+local L = { name = "Static web sites: Hugo" }
 
 function L.settings()
 	-- Register custom overseer task providers

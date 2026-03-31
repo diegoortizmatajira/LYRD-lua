@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Web Standard Languages",
+	name = "Web Standard Languages: HTML, CSS, SCSS",
 	required_plugins = {
 		{
 			"windwp/nvim-ts-autotag",

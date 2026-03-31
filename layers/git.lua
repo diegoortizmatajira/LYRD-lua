@@ -31,7 +31,7 @@ end
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Git",
+	name = "Git integration",
 	required_plugins = {
 		{
 			"NeogitOrg/neogit",

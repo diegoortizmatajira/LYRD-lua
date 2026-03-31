@@ -4,7 +4,10 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Debug: LYRD.setup.Module
-local L = { name = "Debug" }
+local L = { 
+    name = "Debug",
+    unskippable = true,
+}
 
 function L.plugins()
 	setup.plugin({

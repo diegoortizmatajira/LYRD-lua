@@ -1,4 +1,5 @@
 local utils = require("LYRD.utils")
+local icons = require("LYRD.layers.icons")
 
 local UI = {}
 
@@ -12,17 +13,18 @@ end
 --- Generates the buffer lines from the current state.
 --- @param layers string[] Full list of layer module paths
 --- @param skipped table<string, boolean> Set of skipped layer paths
+--- @param names table<string, string> Map of module path to display name
 --- @return string[] Lines to display in the buffer
-local function render_lines(layers, skipped)
+local function render_lines(layers, skipped, names)
 	local lines = {}
 	table.insert(lines, "LYRD Local Configuration - Layer Selection")
 	table.insert(lines, string.rep("─", 50))
 	table.insert(lines, "")
-	table.insert(lines, " <Space>/<Enter> toggle  |  <S> save  |  <q>/Esc cancel")
+	table.insert(lines, " <Space>/<Enter> toggle  |  <S>/:w save  |  <q>/Esc cancel")
 	table.insert(lines, "")
 	for _, layer in ipairs(layers) do
-		local marker = skipped[layer] and "☐ SKIP" or "☑ LOAD"
-		table.insert(lines, string.format("  %s  %s", marker, display_name(layer)))
+		local marker = skipped[layer] and icons.ui.checkbox_unchecked .. " SKIP" or icons.ui.checkbox_checked .. " LOAD"
+		table.insert(lines, string.format("  %s  %s", marker, names[layer] or display_name(layer)))
 	end
 	return lines
 end
@@ -77,12 +79,16 @@ end
 --- Displays a dialog for selecting the local configuration to use.
 --- @param settings LYRD.setup.Settings The current configuration settings.
 function UI.show(settings)
-	-- Filter out unskippable layers
+	-- Filter out unskippable layers and collect display names
 	local layers = {}
+	local names = {}
 	for _, layer_module in ipairs(settings.layers) do
 		local ok, layer = pcall(require, layer_module)
 		if not ok or type(layer) ~= "table" or not layer.unskippable then
 			table.insert(layers, layer_module)
+			if ok and type(layer) == "table" and layer.name then
+				names[layer_module] = layer.name
+			end
 		end
 	end
 	local skipped = {}
@@ -95,11 +101,14 @@ function UI.show(settings)
 	-- Create buffer
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.bo[buf].bufhidden = "wipe"
+	vim.bo[buf].readonly = false
+	vim.api.nvim_buf_set_name(buf, "lyrd://local-config")
+	vim.bo[buf].buftype = "acwrite"
 	vim.bo[buf].filetype = "lyrd-local-config"
 
 	-- Render initial content
 	local function refresh()
-		local lines = render_lines(layers, skipped)
+		local lines = render_lines(layers, skipped, names)
 		vim.bo[buf].modifiable = true
 		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 		vim.bo[buf].modifiable = false
@@ -107,7 +116,7 @@ function UI.show(settings)
 	refresh()
 
 	-- Calculate window size
-	local width = 60
+	local width = math.floor(vim.o.columns * 0.50)
 	local height = header_count + #layers + 1
 	local max_height = vim.o.lines - 6
 	if height > max_height then
@@ -165,8 +174,17 @@ function UI.show(settings)
 			end
 		end
 		save_local_config(skip_list)
+		settings.skip_layers = skip_list
 		close_win()
 	end
+
+	-- Intercept :w to save settings
+	vim.api.nvim_create_autocmd("BufWriteCmd", {
+		buffer = buf,
+		callback = function()
+			save()
+		end,
+	})
 
 	-- Key mappings
 	local opts = { buffer = buf, nowait = true, silent = true }

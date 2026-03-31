@@ -344,6 +344,10 @@ local L = {
 		project = "󰘐 ",
 		package = " ",
 	},
+	ui = {
+		checkbox_checked = "󰄵 ",
+		checkbox_unchecked = "󰄱 ",
+	},
 }
 
 function L.plugins()

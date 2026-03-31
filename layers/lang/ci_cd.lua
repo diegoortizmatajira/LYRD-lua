@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "CiCd",
+	name = "CI/CD YAML: GitLab CI, GitHub Actions, Azure Pipelines",
 	required_mason_packages = {
 		"actionlint",
 		"gitlab-ci-ls",
