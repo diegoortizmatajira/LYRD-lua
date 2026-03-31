@@ -2,6 +2,7 @@
 local L = {
 	name = "Commands",
 	vscode_compatible = true,
+	unskippable = true,
 	--- @type table<string, Command>
 	commands = {},
 }

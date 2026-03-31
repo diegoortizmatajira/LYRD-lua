@@ -13,6 +13,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = {
 	name = "Buffers",
 
+    unskippable = true,
 	---@type LYRD.ui.special_type[]
 	special_filenames = {
 

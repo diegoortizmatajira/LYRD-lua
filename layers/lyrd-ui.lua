@@ -10,6 +10,7 @@ local title = require("LYRD.shared.resources.title")
 --- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype
 local L = {
 	name = "LYRD UI",
+	unskippable = true,
 	decoration_togglers = {},
 }
 
@@ -403,6 +404,12 @@ function L.settings()
 		},
 		{ cmd.LYRDReplaceInFiles, ":GrugFar" },
 		{ cmd.LYRDToggleBufferDecorations, L.toggle_decorations },
+		{
+			cmd.LYRDEditLocalConfig,
+			function()
+				require("LYRD.ui.local_config").show(setup.config)
+			end,
+		},
 	})
 end
 

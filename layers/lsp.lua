@@ -7,6 +7,7 @@ local icons = require("LYRD.layers.icons")
 ---@class LYRD.layer.LSP: LYRD.setup.Module
 local L = {
 	name = "LSP",
+	unskippable = true,
 	required_tools = {},
 	null_ls_sources = {},
 	null_ls_registered = {},
