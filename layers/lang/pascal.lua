@@ -18,12 +18,12 @@ local L = {
 		"ptop",
 	},
 	required_formatters = {
-		["ptop"] = require("LYRD.shared.conform.ptop"),
+		["pasfmt"] = require("LYRD.shared.conform.pasfmt"),
 	},
 	required_formatter_per_filetype = {
 		{
 			target_filetype = "pascal",
-			format_settings = { "ptop", lsp_format = "prefer" },
+			format_settings = { "pasfmt", lsp_format = "prefer" },
 		},
 	},
 	required_test_adapters = {},
