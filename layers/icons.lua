@@ -4,6 +4,7 @@ local setup = require("LYRD.setup")
 local L = {
 	name = "Icons",
 	vscode_compatible = true,
+	unskippable = true,
 	no_icon = " ",
 	unicode = {
 		lightbulb = "💡",
@@ -342,6 +343,10 @@ local L = {
 		sln = "󰘐 ",
 		project = "󰘐 ",
 		package = " ",
+	},
+	ui = {
+		checkbox_checked = "󰄵 ",
+		checkbox_unchecked = "󰄱 ",
 	},
 }
 

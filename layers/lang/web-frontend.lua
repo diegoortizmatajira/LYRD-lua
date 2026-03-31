@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Web frontend",
+	name = "Web frontend languages: JavaScript, TypeScript, Vue, Svelte, Angular",
 	required_plugins = {
 		{
 			"pangloss/vim-javascript",

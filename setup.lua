@@ -11,6 +11,7 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.setup.Module
 ---@field name string Name of the layer
+---@field unskippable? nil|boolean If true, the layer cannot be skipped
 ---@field condition? nil|boolean Condition to check if the layer should be loaded
 ---@field vscode_compatible? nil|boolean If true, the layer is compatible with vscode
 ---@field plugins? nil|fun() Function to load the plugins for the layer
@@ -230,7 +231,12 @@ function setup.load(s)
 						local cb_ok, cb_result = pcall(command_callback)
 						if not cb_ok then
 							vim.notify(
-								"Error in layer '" .. layer.name .. "' run_once_per_filetype for '" .. ft .. "': " .. cb_result,
+								"Error in layer '"
+									.. layer.name
+									.. "' run_once_per_filetype for '"
+									.. ft
+									.. "': "
+									.. cb_result,
 								vim.log.levels.ERROR
 							)
 						end

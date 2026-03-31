@@ -9,6 +9,7 @@ local icons = require("LYRD.layers.icons")
 local L = {
 	name = "LYRD Keyboard",
 	vscode_compatible = true,
+	unskippable = true,
 	ai_keys = {
 		-- Accept the current completion.
 		-- accept = "<C-l>",

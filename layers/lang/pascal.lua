@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Pascal",
+	name = "Pascal language",
 	required_plugins = {},
 	required_mason_packages = {
 		"pascal-language-server",

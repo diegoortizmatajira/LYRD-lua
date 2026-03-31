@@ -4,7 +4,7 @@ local dotnet_languages = { "cs", "vb" }
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Dotnet languages: C#, F#, Vb",
+	name = ".NET languages: C#, F#, VB",
 	required_plugins = {
 		{
 			"nsidorenco/neotest-vstest",

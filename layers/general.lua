@@ -4,6 +4,7 @@ local setup = require("LYRD.setup")
 local L = {
 	name = "General",
 	vscode_compatible = true,
+	unskippable = true,
 }
 
 function L.plugins()

@@ -9,6 +9,7 @@ local c = require("LYRD.layers.commands").command_shortcut
 local L = {
 	name = "Mappings",
 	vscode_compatible = true,
+	unskippable = true,
 	filetype_specific_leader_prefix = ".",
 }
 
