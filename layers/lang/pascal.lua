@@ -15,9 +15,17 @@ local L = {
 	},
 	required_executables = {
 		"pfc",
+		"ptop",
 	},
-	required_formatters = {},
-	required_formatter_per_filetype = {},
+	required_formatters = {
+		["ptop"] = require("LYRD.shared.conform.ptop"),
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "pascal",
+			format_settings = { "ptop", lsp_format = "prefer" },
+		},
+	},
 	required_test_adapters = {},
 }
 
