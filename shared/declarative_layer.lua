@@ -3,12 +3,16 @@
 --- @field use_lsp nil|boolean Whether to use the LSP formatting capabilities for the specified filetypes. If false, the specified formatter(s) will be used instead.
 --- @field format_settings nil|table List of formatters to be applied for the specified filetypes.
 --- @field lsp_name nil|string The name of the LSP server to use for formatting, if use_lsp is true.
+---
+--- @class LYRD.setup.DeclarativeLSPConfig
+--- @field [1] string The name of the LSP server for which to apply the configuration.
+--- @field config function|table The configuration to apply for the specified LSP server.
 
 --- @class LYRD.setup.DeclarativeLayer: LYRD.setup.Module Allows to create a layer module with a declarative style, by just specifying the required plugins, mason packages, treesitter parsers and enabled LSP servers. The methods of the module will be implemented with default implementations that take care of these requirements.
 --- @field required_plugins nil|LazySpec[]
 --- @field required_mason_packages nil|string[]  List of mason packages required by this module.
 --- @field required_treesitter_parsers nil|string[]  List of treesitter parsers required by this module.
---- @field required_enabled_lsp_servers nil|string[]  List of LSP servers that must be enabled for this module to load.
+--- @field required_enabled_lsp_servers nil|(string|LYRD.setup.DeclarativeLSPConfig)[]  List of LSP servers that must be enabled for this module to load.
 --- @field required_executables nil|string[]  List of executables that must be available in the system for this module to load.
 --- @field required_formatters nil|table<string,function|table> List of formatters to be registered for this module, with the filetype as key and the formatter configuration as value. The formatter configuration can be either a function that returns the configuration or a table with the configuration directly.
 --- @field required_formatter_per_filetype nil|LYRD.setup.DeclarativeFormat[]  List of formatting configurations to apply for this module.
@@ -125,7 +129,17 @@ local function apply_complete(proto)
 		if proto.required_enabled_lsp_servers then
 			-- Enable required LSP servers
 			vim.tbl_map(function(server)
-				vim.lsp.enable(server)
+				if type(server) == "table" and server[1] and server.config then
+					if type(server.config) == "function" then
+						server.config = server.config()
+					end
+					-- If the server is a table with the server name and configuration, apply the configuration
+					vim.lsp.config(server[1], server.config)
+					vim.lsp.enable(server[1])
+				else
+					-- Otherwise, assume it's just the server name and enable it with default configuration
+					vim.lsp.enable(server)
+				end
 			end, proto.required_enabled_lsp_servers or {})
 		end
 	end
