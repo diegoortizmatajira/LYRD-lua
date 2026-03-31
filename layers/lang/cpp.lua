@@ -3,7 +3,7 @@ local filetypes = { "c", "cpp", "h" }
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "C and C++",
+	name = "C and C++ Languages",
 	required_plugins = {
 		{
 			"nvimtools/none-ls-extras.nvim",

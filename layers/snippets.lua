@@ -6,7 +6,7 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.Snippets: LYRD.setup.Module
 local L = {
-	name = "Snippets",
+	name = "Code Snippets",
 	snippets_path = utils.get_lyrd_path("snippets"),
 }
 

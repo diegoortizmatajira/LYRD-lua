@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Test: LYRD.setup.Module
 local L = {
-	name = "Testing",
+	name = "Test Runner",
 	unskippable = true,
 	test_adapters = {},
 }

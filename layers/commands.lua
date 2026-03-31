@@ -1,6 +1,6 @@
 --- @class LYRD.layer.Commands: LYRD.setup.Module
 local L = {
-	name = "Commands",
+	name = "Command Registration and Management",
 	vscode_compatible = true,
 	unskippable = true,
 	--- @type table<string, Command>

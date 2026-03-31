@@ -7,7 +7,7 @@ local c = require("LYRD.layers.commands").command_shortcut
 
 ---@class LYRD.layer.Mappings: LYRD.setup.Module
 local L = {
-	name = "Mappings",
+	name = "Key Mappings",
 	vscode_compatible = true,
 	unskippable = true,
 	filetype_specific_leader_prefix = ".",

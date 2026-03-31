@@ -11,7 +11,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Buffers: LYRD.setup.Module
 local L = {
-	name = "Buffers",
+	name = "Buffer Management",
 
     unskippable = true,
 	---@type LYRD.ui.special_type[]

@@ -10,7 +10,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Docker",
+	name = "Docker Containers and Compose",
 	required_mason_packages = {
 		"dockerfile-language-server",
 		"docker-language-server",

@@ -1,11 +1,10 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
-local handler = commands.handler
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.REPL: LYRD.setup.Module
 local L = {
-    name = "REPL",
+    name = "Interactive REPL",
     -- Add as many filetypes as you have iron.nvim configured to support REPL
     supported_filetypes = { "python" },
     selected_repl_provider = "iron",

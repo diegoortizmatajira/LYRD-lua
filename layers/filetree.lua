@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Filetree: LYRD.setup.Module
-local L = { name = "File tree" }
+local L = { name = "File Explorer" }
 
 function L.plugins()
 	setup.plugin({

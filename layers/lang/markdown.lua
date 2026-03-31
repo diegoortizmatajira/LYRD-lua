@@ -4,7 +4,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Markdown",
+	name = "Markdown Documents",
 	required_plugins = {
 		{
 			"MeanderingProgrammer/render-markdown.nvim",

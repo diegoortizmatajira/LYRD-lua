@@ -5,7 +5,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Clipboard",
+	name = "Clipboard Management",
 	unskippable = true,
 	required_plugins = {
 		{

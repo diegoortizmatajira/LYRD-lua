@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Themes: LYRD.setup.Module
 local L = {
-	name = "Themes",
+	name = "Color Themes",
 	favorite_themes = {
 		{
 			name = "gruvbox - dark",

@@ -5,7 +5,7 @@ local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Debug: LYRD.setup.Module
 local L = { 
-    name = "Debug",
+    name = "Debugger",
     unskippable = true,
 }
 
