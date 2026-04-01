@@ -11,11 +11,10 @@ local L = {
 		"pascal",
 	},
 	required_enabled_lsp_servers = {
-		"pasls",
+		"pascal_ls",
 	},
 	required_executables = {
 		"pfc",
-		"ptop",
 	},
 	required_formatters = {
 		["pasfmt"] = require("LYRD.shared.conform.pasfmt"),
