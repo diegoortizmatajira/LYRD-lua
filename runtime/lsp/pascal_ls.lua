@@ -19,10 +19,10 @@ local util = require("lspconfig.util")
 
 local required_env_vars = {
 	{ name = "FPCDIR", description = "FPC source directory" },
-	{ name = "PP", description = "Path to the Free Pascal compiler executable" },
-	{ name = "LAZARUSDIR", description = "Path to the Lazarus sources" },
 	{ name = "FPCTARGET", description = "Target operating system for cross compiling" },
 	{ name = "FPCTARGETCPU", description = "Target CPU for cross compiling" },
+	{ name = "LAZARUSDIR", description = "Path to the Lazarus sources" },
+	{ name = "PP", description = "Path to the Free Pascal compiler executable" },
 }
 
 local function validate_required_env_vars()
