@@ -179,6 +179,7 @@ local L = {
 		LYRDViewQuickFixList = Command:new("QuickFix", ":cope"),
 		LYRDViewRegisters = Command:new("Registers"),
 		LYRDViewYankList = Command:new("Yank list"),
+		LYRDViewLSPInfo = Command:new("View LSP info", ":checkhealth vim.lsp", icons.code.check),
 		LYRDViewFocusMode = Command:new("Focus mode", nil, icons.other.focus),
 		LYRDWindowClose = Command:new("Close window", ":q"),
 		LYRDWindowCloseAll = Command:new("Close all", ":qa"),

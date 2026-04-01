@@ -486,6 +486,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDDiffThis },
 			{ "D", cmd.LYRDDiffOff },
 			{ "f", cmd.LYRDViewFocusMode },
+			{ "l", cmd.LYRDViewLSPInfo },
 			{ "w", cmd.LYRDBufferToggleWrap },
 			{ "s", cmd.LYRDBindScroll },
 			{ "T", cmd.LYRDApplyCurrentTheme },

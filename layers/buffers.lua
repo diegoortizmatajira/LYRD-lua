@@ -13,7 +13,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local L = {
 	name = "Buffer Management",
 
-    unskippable = true,
+	unskippable = true,
 	---@type LYRD.ui.special_type[]
 	special_filenames = {
 
@@ -32,6 +32,7 @@ local L = {
 		{ type_id = "NvimTree", title = "Explorer" },
 		{ type_id = "OverseerList" },
 		{ type_id = "aerial", title = "Outline" },
+		{ type_id = "checkhealth", map_q = true },
 		{ type_id = "code-stdout", title = "Playground output" },
 		{ type_id = "copilot-chat", title = "AI Chat" },
 		{ type_id = "db-cli-output.csv" },
