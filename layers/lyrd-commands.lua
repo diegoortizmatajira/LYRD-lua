@@ -181,6 +181,7 @@ local L = {
 		LYRDViewYankList = Command:new("Yank list"),
 		LYRDViewLSPInfo = Command:new("View LSP info", ":checkhealth vim.lsp", icons.code.check),
 		LYRDViewFocusMode = Command:new("Focus mode", nil, icons.other.focus),
+		LYRDViewMarks = Command:new("Marks", nil, icons.other.bookmark),
 		LYRDWindowClose = Command:new("Close window", ":q"),
 		LYRDWindowCloseAll = Command:new("Close all", ":qa"),
 		LYRDWindowForceCloseAll = Command:new("Force Quit", ":qa!"),

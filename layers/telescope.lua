@@ -140,6 +140,7 @@ function L.settings()
 		{ cmd.LYRDResumeLastSearch, ":Telescope resume" },
 		{ cmd.LYRDCodeInsertSnippet, "Telescope luasnip" },
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
+		{ cmd.LYRDViewMarks, ":Telescope marks" },
 	})
 end
 
