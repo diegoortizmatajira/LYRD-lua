@@ -128,10 +128,10 @@ local function generate_commit_message()
 		return
 	end
 	local lines = vim.split(diff, "\n")
+	local diff_line_count = #lines
 	local commit_win = vim.api.nvim_get_current_win()
-	vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-	local line_count = vim.api.nvim_buf_line_count(0)
-	require("avante.api").edit(L.commit_message_prompt, 1, line_count)
+	vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+	require("avante.api").edit(L.commit_message_prompt, 1, diff_line_count)
 	-- Avante's PromptInput floating window corrupts Neovim's prevwin chain.
 	-- When the commit editor later closes on Submit, Neovim can't find its way
 	-- back to the Neogit status panel. Fix both hops of the chain:
