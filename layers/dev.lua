@@ -33,6 +33,11 @@ function L.plugins()
 				-- All of your `setup(opts)` and saved macros will go here
 			},
 		},
+		{
+			"chentoast/marks.nvim",
+			event = "VeryLazy",
+			opts = {},
+		},
 	})
 end
 
