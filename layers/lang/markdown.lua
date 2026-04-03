@@ -12,6 +12,11 @@ local L = {
 			ft = { "markdown", "Avante", "codecompanion" },
 			opts = {
 				file_types = { "markdown", "Avante", "codecompanion" },
+				completions = {
+					lsp = {
+						enabled = true,
+					},
+				},
 				heading = {
 					sign = false,
 					icons = {

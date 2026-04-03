@@ -30,6 +30,12 @@
                 "language": [
                     "json"
                 ]
+            },
+            {
+                "path": "./tex.json",
+                "language": [
+                    "tex"
+                ]
             }
         ]
     },
