@@ -204,6 +204,7 @@ local function docker_compose_generate_actions()
 		"start",
 		"stop",
 		"up",
+		"logs",
 	}
 	--- Accumulate all actions
 	local result = {
