@@ -1,49 +1,34 @@
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
-local lsp = require("LYRD.layers.lsp")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.LaTeX: LYRD.setup.Module
-local L = { name = "LaTeX" }
-
-function L.plugins()
-	setup.plugin({
-		{
-			"lervag/vimtex",
-			lazy = false,
-			init = function()
-				vim.g.vimtex_view_method = "zathura"
-				vim.g.vimtex_compiler_method = "latexmk"
-				vim.g.vimtex_compiler_latexmk = {
-					options = {
-						"-pdf",
-						"-shell-escape",
-						"-verbose",
-						"-file-line-error",
-						"-synctex=1",
-						"-interaction=nonstopmode",
-					},
-				}
-				vim.g.vimtex_quickfix_mode = 0
-			end,
-		},
-	})
-end
-
-function L.preparation()
-	lsp.mason_ensure({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "LaTeX Documents",
+	required_mason_packages = {
 		"texlab",
 		"latexindent",
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
+	},
+	required_treesitter_parsers = {
 		"latex",
 		"bibtex",
-	})
-	lsp.format_with_conform("tex", { "latexindent" })
-end
+	},
+	required_enabled_lsp_servers = {
+		"texlab",
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "tex" },
+			format_settings = { "latexindent", lsp_format = "prefer" },
+		},
+	},
+	required_executables = {
+		"latexmk",
+		"zathura",
+	},
+}
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement("tex", {
 		{ cmd.LYRDCodeBuild, ":VimtexCompile" },
 		{ cmd.LYRDCodeRun, ":VimtexView" },
@@ -52,16 +37,4 @@ function L.settings()
 	})
 end
 
-function L.keybindings() end
-
-function L.complete()
-	vim.lsp.enable("texlab")
-end
-
-function L.healthcheck()
-	vim.health.start(L.name)
-	local health = require("LYRD.health")
-	health.check_executable("latexmk")
-	health.check_executable("zathura")
-end
-return L
+return declarative_layer.apply(L)
