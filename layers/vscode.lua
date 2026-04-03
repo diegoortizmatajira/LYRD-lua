@@ -4,7 +4,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.VsCode: LYRD.setup.Module
 local L = {
-	name = "VsCode Compatibility",
+	name = "VS Code Compatibility",
 	vscode_compatible = true,
 	condition = vim.g.vscode ~= nil,
 }

@@ -1,17 +1,12 @@
-local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Git: LYRD.setup.Module
-local L = {
-	name = "Git",
-	git_flow_base_command = "git", -- default to 'gh', but it can be 'git'
-}
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @param key_table table
---- @param replacement_pairs  {[1]: string, [2]:string}[] contains the mapping definition as an array of (mode, key, command, options)
+--- @param replacement_pairs  {[1]: string, [2]:string}[] contains pairs of (original_key, new_key) for keybinding replacements
 local function replace_keybindings(key_table, replacement_pairs)
 	for _, replacement in ipairs(replacement_pairs) do
 		local original_key, new_key = unpack(replacement)
@@ -24,8 +19,20 @@ local function replace_keybindings(key_table, replacement_pairs)
 	end
 end
 
-function L.plugins()
-	setup.plugin({
+--- Returns the current git branch name, or nil if not in a git repository.
+--- @return string|nil
+local function current_branch()
+	local head = vim.trim(vim.fn.system("git branch --show-current"))
+	if vim.v.shell_error ~= 0 or head == "" then
+		return nil
+	end
+	return head
+end
+
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Git Integration",
+	required_plugins = {
 		{
 			"NeogitOrg/neogit",
 			dependencies = {
@@ -182,12 +189,47 @@ function L.plugins()
 				telescope.load_extension("worktrees")
 			end,
 		},
-	})
-end
+		{
+			"FabijanZulj/blame.nvim",
+			cmd = { "BlameToggle" },
+			opts = {},
+		},
+		{
+			"pwntester/octo.nvim",
+			cmd = "Octo",
+			opts = {
+				picker = "telescope",
+				enable_builtin = true,
+			},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-telescope/telescope.nvim",
+				"nvim-tree/nvim-web-devicons",
+			},
+		},
+	},
+	required_treesitter_parsers = {
+		"git_config",
+		"git_rebase",
+		"gitattributes",
+		"gitcommit",
+		"gitignore",
+	},
+	required_executables = {
+		"git",
+		"lazygit",
+		"tig",
+	},
+}
 
 function L.git_flow_init()
 	return function()
-		vim.cmd(":!git flow init -d")
+		local output = vim.fn.system("git flow init -d")
+		if vim.v.shell_error ~= 0 then
+			vim.notify(output, vim.log.levels.ERROR)
+		else
+			vim.notify(output, vim.log.levels.INFO)
+		end
 	end
 end
 
@@ -197,38 +239,49 @@ function L.git_flow_start(what)
 			if not name then
 				return
 			end
-			vim.cmd(":!git flow " .. what .. " start " .. name)
+			local output = vim.fn.system("git flow " .. what .. " start " .. vim.fn.shellescape(name))
+			if vim.v.shell_error ~= 0 then
+				vim.notify(output, vim.log.levels.ERROR)
+			else
+				vim.notify(output, vim.log.levels.INFO)
+			end
 		end)
 	end
 end
 
 function L.git_flow_finish(what)
 	return function()
-		local head = require("neogit.lib.git.branch").current()
+		local head = current_branch()
 		if not head then
 			return
 		end
-		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
-		vim.cmd(string.format("!git flow %s finish %s", what, name))
+		local parts = vim.fn.split(head, "/")
+		local name = parts[#parts]
+		local output = vim.fn.system(string.format("git flow %s finish %s", what, vim.fn.shellescape(name)))
+		if vim.v.shell_error ~= 0 then
+			vim.notify(output, vim.log.levels.ERROR)
+		else
+			vim.notify(output, vim.log.levels.INFO)
+		end
 	end
 end
 
 function L.git_flow_publish(what)
 	return function()
-		local head = require("neogit.lib.git.branch").current()
+		local head = current_branch()
 		if not head then
 			return
 		end
 		local target_branch = what == "feature" and "develop" or "main"
-		local name = vim.fn.split(head, "/")[#vim.fn.split(head, "/")]
+		local parts = vim.fn.split(head, "/")
+		local name = parts[#parts]
 		local ui = require("LYRD.layers.lyrd-ui")
 		ui.toggle_external_app_terminal(
 			string.format(
 				[[gh pr create --base %s --head %s/%s --assignee "@me" --draft ]],
 				target_branch,
 				what,
-				name,
-				what
+				vim.fn.shellescape(name)
 			)
 		)
 	end
@@ -239,17 +292,6 @@ function L.git_view_graph()
 		local ui = require("LYRD.layers.lyrd-ui")
 		ui.toggle_external_app_terminal("tig")
 	end
-end
-
-function L.preparation()
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"git_config",
-		"git_rebase",
-		"gitattributes",
-		"gitcommit",
-		"gitignore",
-	})
 end
 
 function L.settings()
@@ -286,15 +328,18 @@ function L.settings()
 		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
+		{ cmd.LYRDGitViewBlame, ":BlameToggle" },
+		{ cmd.LYRDGitMergeConflicts, ":DiffviewOpen" },
+		{ cmd.LYRDGithubIssueList, ":Octo issue list" },
+		{ cmd.LYRDGithubIssueCreate, ":Octo issue create" },
+		{ cmd.LYRDGithubIssueClose, ":Octo issue close" },
+		{ cmd.LYRDGithubIssueReopen, ":Octo issue reopen" },
+		{ cmd.LYRDGithubIssueDevelop, ":Octo issue develop" },
+		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
+		{ cmd.LYRDGithubPullRequestCreate, ":Octo pr create" },
+		{ cmd.LYRDGithubPullRequestClose, ":Octo pr close" },
+		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
 	})
 end
 
-function L.healthcheck()
-	vim.health.start(L.name)
-	local health = require("LYRD.health")
-	health.check_executable("git")
-	health.check_executable("lazygit")
-	health.check_executable("tig")
-end
-
-return L
+return declarative_layer.apply(L)

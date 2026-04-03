@@ -2,8 +2,9 @@ local setup = require("LYRD.setup")
 
 ---@class LYRD.layer.General: LYRD.setup.Module
 local L = {
-	name = "General",
+	name = "General Settings",
 	vscode_compatible = true,
+	unskippable = true,
 }
 
 function L.plugins()

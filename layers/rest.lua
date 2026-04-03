@@ -1,36 +1,37 @@
-local setup = require("LYRD.setup")
-local commands = require("LYRD.layers.commands")
-local cmd = require("LYRD.layers.lyrd-commands").cmd
-local mappings = require("LYRD.layers.mappings")
-local utils = require("LYRD.utils")
-
----@class LYRD.layer.Rest: LYRD.setup.Module
-local L = { name = "REST Client" }
-
-function L.plugins()
-	setup.plugin({
+local declarative_layer = require("LYRD.shared.declarative_layer")
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "REST Client",
+	required_plugins = {
 		{
 			"mistweaverco/kulala.nvim",
 			opts = {
 				default_view = "headers_body",
 			},
 		},
-	})
-end
-
-function L.preparation()
-	vim.filetype.add({
+	},
+	required_mason_packages = {
+		"kulala-fmt",
+	},
+	required_treesitter_parsers = {
+		"http",
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = { "http", "rest" },
+			format_settings = { "kulala-fmt" },
+		},
+	},
+	required_filetype_definitions = {
 		extension = {
 			["http"] = "http",
+			["rest"] = "rest",
 		},
-	})
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"http",
-	})
-end
+	},
+}
 
 function L.keybindings()
+	local mappings = require("LYRD.layers.mappings")
 	mappings.create_filetype_menu("http", {
 		{ "n", "i", [[<Cmd>lua require("kulala").inspect()<CR>]], { desc = "Inspect current request" } },
 		{ "n", "d", [[<Cmd>lua require("kulala").show_stats()<CR>]], { desc = "Describe Statistics" } },
@@ -46,6 +47,7 @@ end
 
 --- Returns the closest environment file for the current working directory. Starts with the current file directory and checks parent directories until it finds the file or reaches the root.
 function L.get_closest_environment_file()
+	local utils = require("LYRD.utils")
 	local env_file = "http-client.env.json"
 
 	local function file_exists(path)
@@ -72,6 +74,8 @@ function L.get_closest_environment_file()
 end
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement("http", {
 		{
 			cmd.LYRDCodeRunSelection,
@@ -118,4 +122,4 @@ function L.settings()
 	})
 end
 
-return L
+return declarative_layer.apply(L)

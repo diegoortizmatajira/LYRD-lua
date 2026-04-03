@@ -6,7 +6,8 @@ local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.LSP: LYRD.setup.Module
 local L = {
-	name = "LSP",
+	name = "Language Server Protocol",
+	unskippable = true,
 	required_tools = {},
 	null_ls_sources = {},
 	null_ls_registered = {},
@@ -106,10 +107,8 @@ local plugged_capabilities = function()
 		lineFoldingOnly = true,
 	}
 
-	result.textDocument = result.textDocument or {}
 	result.textDocument.codeLens = {
 		dynamicRegistration = true,
-		resolveProvider = true,
 	}
 
 	result.workspace = result.workspace or {}
@@ -127,6 +126,8 @@ local function setup_default_providers()
 	})
 end
 
+--- Decorates the capabilities function. plug_handler receives the current function and must return a new one.
+--- Callers are trusted internal layers, so no runtime validation is enforced.
 function L.plug_capabilities(plug_handler)
 	plugged_capabilities = plug_handler(plugged_capabilities)
 end
@@ -170,25 +171,19 @@ local function usage_text_format(symbol)
 	end
 
 	if symbol.definition then
-		if #res > 0 then
-			table.insert(res, { " ", "SymbolUsageContent" })
-		end
+		table.insert(res, { " ", "SymbolUsageContent" })
 		table.insert(res, { "󰳽 ", "SymbolUsageDef" })
 		table.insert(res, { symbol.definition .. " defs", "SymbolUsageContent" })
 	end
 
 	if symbol.implementation then
-		if #res > 0 then
-			table.insert(res, { " ", "SymbolUsageContent" })
-		end
+		table.insert(res, { " ", "SymbolUsageContent" })
 		table.insert(res, { "󰡱 ", "SymbolUsageImpl" })
 		table.insert(res, { symbol.implementation .. " impls", "SymbolUsageContent" })
 	end
 
 	if stacked_functions_content ~= "" then
-		if #res > 0 then
-			table.insert(res, { " ", "SymbolUsageContent" })
-		end
+		table.insert(res, { " ", "SymbolUsageContent" })
 		table.insert(res, { " ", "SymbolUsageImpl" })
 		table.insert(res, { stacked_functions_content, "SymbolUsageContent" })
 	end
@@ -198,7 +193,7 @@ local function usage_text_format(symbol)
 end
 
 function L.organize_imports()
-	vim.lsp.buf.code_action({ only = { "source.organizeImports" } })
+	vim.lsp.buf.code_action({ only = { "source.organizeImports" }, apply = true })
 end
 
 function L.plugins()
@@ -230,7 +225,7 @@ function L.plugins()
 			"jay-babu/mason-null-ls.nvim",
 			event = { "BufReadPre", "BufNewFile" },
 			dependencies = {
-				"williamboman/mason.nvim",
+				"mason-org/mason.nvim",
 				"nvimtools/none-ls.nvim",
 			},
 			config = false,
@@ -238,7 +233,7 @@ function L.plugins()
 		{
 			"whoissethdaniel/mason-tool-installer.nvim",
 			config = false,
-			dependencies = { "williamboman/mason.nvim" },
+			dependencies = { "mason-org/mason.nvim" },
 		},
 		{
 			"folke/trouble.nvim",
@@ -371,20 +366,15 @@ function L.settings()
 		},
 	})
 
-	local signs = {
-		{ name = "DiagnosticSignError", text = icons.diagnostic.error },
-		{ name = "DiagnosticSignWarn", text = icons.diagnostic.warning },
-		{ name = "DiagnosticSignHint", text = icons.diagnostic.hint },
-		{ name = "DiagnosticSignInfo", text = icons.diagnostic.info },
-	}
-
-	for _, sign in ipairs(signs) do
-		vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
-	end
-
 	local config = {
-		-- show signs
-		signs = { active = signs },
+		signs = {
+			text = {
+				[vim.diagnostic.severity.ERROR] = icons.diagnostic.error,
+				[vim.diagnostic.severity.WARN] = icons.diagnostic.warning,
+				[vim.diagnostic.severity.HINT] = icons.diagnostic.hint,
+				[vim.diagnostic.severity.INFO] = icons.diagnostic.info,
+			},
+		},
 		update_in_insert = true,
 		underline = true,
 		severity_sort = true,
@@ -398,14 +388,42 @@ function L.settings()
 
 	vim.o.winborder = "rounded"
 
+	--- Converts LSP hover contents (MarkupContent | MarkedString | MarkedString[]) to markdown lines.
+	local function hover_contents_to_lines(contents)
+		if type(contents) == "string" then
+			return vim.split(contents, "\n", { trimempty = true })
+		end
+		if contents.kind then
+			-- MarkupContent
+			return vim.split(contents.value or "", "\n", { trimempty = true })
+		end
+		if contents.language then
+			-- MarkedString with language
+			local lines = { "```" .. contents.language }
+			vim.list_extend(lines, vim.split(contents.value or "", "\n", { trimempty = true }))
+			table.insert(lines, "```")
+			return lines
+		end
+		if vim.islist(contents) then
+			local result = {}
+			for _, item in ipairs(contents) do
+				vim.list_extend(result, hover_contents_to_lines(item))
+			end
+			return result
+		end
+		return {}
+	end
+
 	-- Custom hover that filters out LSP clients with empty results
 	local function filtered_hover()
-		local params = vim.lsp.util.make_position_params(0, "utf-16")
-		vim.lsp.buf_request_all(0, "textDocument/hover", params, function(results, ctx)
+		local clients = vim.lsp.get_clients({ bufnr = 0 })
+		local encoding = clients[1] and clients[1].offset_encoding or "utf-16"
+		local params = vim.lsp.util.make_position_params(0, encoding)
+		vim.lsp.buf_request_all(0, "textDocument/hover", params, function(results)
 			local entries = {}
 			for client_id, resp in pairs(results) do
 				if not resp.error and resp.result and resp.result.contents then
-					local lines = vim.lsp.util.convert_input_to_markdown_lines(resp.result.contents)
+					local lines = hover_contents_to_lines(resp.result.contents)
 					local has_content = false
 					for _, line in ipairs(lines) do
 						if vim.trim(line) ~= "" then
@@ -424,7 +442,7 @@ function L.settings()
 			local display = {}
 			for i, entry in ipairs(entries) do
 				if #entries > 1 then
-					local client = vim.lsp.get_client_by_id(entry.client_id)
+					local client = vim.lsp.get_clients({ id = entry.client_id })[1]
 					local name = client and client.name or tostring(entry.client_id)
 					if i > 1 then
 						table.insert(display, "---")
@@ -455,8 +473,18 @@ function L.settings()
 		{ cmd.LYRDBufferFormat, L.conform_format_handler() },
 		{ cmd.LYRDLSPFindReferences, commands.wrap(vim.lsp.buf.references) },
 		{ cmd.LYRDLSPFindCodeActions, commands.wrap(require("actions-preview").code_actions) },
-		{ cmd.LYRDLSPFindRangeCodeActions, commands.wrap(vim.lsp.buf.range_code_action) },
-		{ cmd.LYRDLSPFindLineDiagnostics, commands.wrap(vim.diagnostic.show_line_diagnostics) },
+		{
+			cmd.LYRDLSPFindRangeCodeActions,
+			function()
+				vim.lsp.buf.code_action()
+			end,
+		},
+		{
+			cmd.LYRDLSPFindLineDiagnostics,
+			function()
+				vim.diagnostic.open_float({ scope = "line" })
+			end,
+		},
 		{ cmd.LYRDLSPFindDocumentDiagnostics, ":Trouble diagnostics toggle filter.buf=0" },
 		{ cmd.LYRDLSPFindWorkspaceDiagnostics, ":Trouble diagnostics toggle" },
 		{ cmd.LYRDLSPFindImplementations, commands.wrap(vim.lsp.buf.implementation) },
@@ -584,7 +612,7 @@ end
 --- @param pre_logic function|nil function to execute before formatting
 --- @param post_logic function|nil function to execute after formatting
 function L.conform_format_handler(pre_logic, post_logic)
-	-- Returns a handler that format using the given lsp
+	-- Returns a handler that format using conform
 	return function(args)
 		if pre_logic then
 			pre_logic()
@@ -597,10 +625,11 @@ function L.conform_format_handler(pre_logic, post_logic)
 				["end"] = { args.line2, end_line:len() },
 			}
 		end
-		require("conform").format({ async = true, lsp_format = "fallback", range = range })
-		if post_logic then
-			post_logic()
-		end
+		require("conform").format({ async = true, lsp_format = "fallback", range = range }, function()
+			if post_logic then
+				post_logic()
+			end
+		end)
 	end
 end
 

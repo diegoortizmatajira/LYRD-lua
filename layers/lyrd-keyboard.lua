@@ -9,6 +9,7 @@ local icons = require("LYRD.layers.icons")
 local L = {
 	name = "LYRD Keyboard",
 	vscode_compatible = true,
+	unskippable = true,
 	ai_keys = {
 		-- Accept the current completion.
 		-- accept = "<C-l>",
@@ -168,7 +169,9 @@ function L.keybindings()
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit, { "x" } },
 			{ "c", cmd.LYRDAICli },
+			{ "C", cmd.LYRDAICliSelect },
 			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
+			{ "p", cmd.LYRDAICliPrompt },
 		}, icons.other.ia, { "x" }),
 		menu_header("b", "Bookmarks", {
 			{ "a", cmd.LYRDBookmarkAddLocal },
@@ -199,7 +202,7 @@ function L.keybindings()
 			{ "a", cmd.LYRDReplNotebookAddCellAbove },
 			{ "b", cmd.LYRDReplNotebookAddCellBelow },
 		}, icons.file.notebook),
-		submode_header("g", "Debug", {
+		submode_header("G", "Debug", {
 			{ "g", cmd.LYRDDebugStart },
 			{ "d", cmd.LYRDDebugContinue },
 			{ "v", cmd.LYRDDebugStepInto },
@@ -263,9 +266,11 @@ function L.keybindings()
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
 		{ "c", cmd.LYRDBufferClose },
 		{ "f", cmd.LYRDBufferFormat },
+		{ "g", cmd.LYRDGrammarToggle },
 		{ "j", cmd.LYRDSmartCoder },
 		{ "k", cmd.LYRDToggleBufferDecorations },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
+		{ "p", cmd.LYRDPasteFromHistory },
 		{ "t", cmd.LYRDApplyNextTheme },
 		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
@@ -401,11 +406,22 @@ function L.keybindings()
 				{ "D", cmd.LYRDGitCheckoutDev },
 				{ "M", cmd.LYRDGitCheckoutMain },
 			}),
+			menu_header("h", "GitHub", {
+				{ "l", cmd.LYRDGithubIssueList },
+				{ "c", cmd.LYRDGithubIssueCreate },
+				{ "x", cmd.LYRDGithubIssueClose },
+				{ "O", cmd.LYRDGithubIssueReopen },
+				{ "o", cmd.LYRDGithubIssueDevelop },
+				{ "C", cmd.LYRDGithubPullRequestCreate },
+				{ "L", cmd.LYRDGithubPullRequestList },
+				{ "X", cmd.LYRDGithubPullRequestClose },
+			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
 				{ "n", cmd.LYRDGitWorkTreeCreate },
 				{ "e", cmd.LYRDGitWorkTreeCreateExistingBranch },
 			}),
+			{ "m", cmd.LYRDGitMergeConflicts },
 			{ "g", cmd.LYRDGitUI },
 			{ "G", cmd.LYRDGitViewGraph },
 			{ "s", cmd.LYRDGitStatus },
@@ -467,8 +483,13 @@ function L.keybindings()
 		}, icons.other.palette),
 		menu_header("v", "View", {
 			{ ".", cmd.LYRDViewHomePage },
+			{ "d", cmd.LYRDDiffThis },
+			{ "D", cmd.LYRDDiffOff },
 			{ "f", cmd.LYRDViewFocusMode },
+			{ "l", cmd.LYRDViewLSPInfo },
+			{ "m", cmd.LYRDViewMarks },
 			{ "w", cmd.LYRDBufferToggleWrap },
+			{ "s", cmd.LYRDBindScroll },
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),

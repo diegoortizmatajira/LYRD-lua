@@ -19,11 +19,28 @@ local L = {
 	documentation annotations to reflect the current code. Do not add or modify
 	child elements documentation.
 	]],
+	commit_message_prompt = [[
+Generate a concise git commit message from the diff below.
+
+Format:
+<type>: <summary in imperative mood, max 72 chars>
+
+- <what changed and why>
+- <what changed and why>
+
+Where <type> is one of: feat, fix, refactor, docs, style, test, chore, perf.
+
+Rules:
+- The summary line must describe the SPECIFIC change, not a category. Bad: "Update code". Good: "Add retry logic to S3 upload handler".
+- Each bullet must name the concrete thing that changed (file, function, config key, behavior) and why.
+- If the diff adds something, say what was added. If it removes something, say what was removed. If it changes behavior, describe the old vs new behavior.
+- Do NOT use filler like "improve maintainability" or "enhance functionality" — be specific about what improved and how.
+- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
+	]],
 }
 
 local function avante_dependencies()
 	local result = {
-
 		"nvim-lua/plenary.nvim",
 		"muniftanjim/nui.nvim",
 		--- The below dependencies are optional,
@@ -39,11 +56,121 @@ local function avante_dependencies()
 	return result
 end
 
-local function edit_with_prompt(prompt)
-	return function(opts)
-		opts = opts or {}
-		require("avante.api").edit(prompt or vim.trim(opts.args), opts.line1, opts.line2)
+--- Treesitter node types that represent documentable elements.
+local documentable_node_types = {
+	"function_definition",
+	"function_declaration",
+	"method_definition",
+	"method_declaration",
+	"class_definition",
+	"class_declaration",
+	"class_specifier",
+	"struct_item",
+	"enum_item",
+	"impl_item",
+	"function_item",
+	"interface_declaration",
+	"type_alias_declaration",
+	"export_statement",
+	"lexical_declaration",
+	"variable_declaration",
+	"field_definition",
+}
+
+--- Finds the nearest documentable treesitter node at the cursor and returns its line range.
+---@return integer|nil start_line 1-indexed start line
+---@return integer|nil end_line 1-indexed end line
+local function find_documentable_node_range()
+	local node = vim.treesitter.get_node()
+	if not node then
+		return nil, nil
 	end
+	local type_set = {}
+	for _, t in ipairs(documentable_node_types) do
+		type_set[t] = true
+	end
+	while node do
+		if type_set[node:type()] then
+			local start_row, _, end_row, _ = node:range()
+			return start_row + 1, end_row + 1
+		end
+		node = node:parent()
+	end
+	return nil, nil
+end
+
+--- Generates documentation for the element at the cursor using treesitter to find its full range.
+local function generate_documentation()
+	local start_line, end_line = find_documentable_node_range()
+	if not start_line or not end_line then
+		vim.notify("No documentable element found at cursor", vim.log.levels.WARN)
+		return
+	end
+	require("avante.api").edit(L.documentation_prompt, start_line, end_line)
+end
+
+--- Finds the Neogit status panel window, if open.
+---@return integer|nil winid
+local function find_neogit_status_win()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].filetype == "NeogitStatus" then
+			return win
+		end
+	end
+end
+
+--- Generates a commit message by injecting the staged diff into the current buffer and invoking Avante edit.
+local function generate_commit_message()
+	local diff = vim.fn.system("git diff --cached")
+	if vim.v.shell_error ~= 0 or diff == "" then
+		vim.notify("No staged changes found. Stage your changes first.", vim.log.levels.WARN)
+		return
+	end
+	local lines = vim.split(diff, "\n")
+	local diff_line_count = #lines
+	local commit_win = vim.api.nvim_get_current_win()
+	vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+	require("avante.api").edit(L.commit_message_prompt, 1, diff_line_count)
+	-- Avante's PromptInput floating window corrupts Neovim's prevwin chain.
+	-- When the commit editor later closes on Submit, Neovim can't find its way
+	-- back to the Neogit status panel. Fix both hops of the chain:
+	-- 1. After PromptInput closes: restore focus to commit editor with correct prevwin
+	-- 2. After commit editor closes: ensure focus lands on Neogit status panel
+	local prompt_buf = vim.api.nvim_get_current_buf()
+	if vim.api.nvim_buf_is_valid(prompt_buf) and vim.bo[prompt_buf].filetype == "AvantePromptInput" then
+		vim.api.nvim_create_autocmd("BufDelete", {
+			buffer = prompt_buf,
+			once = true,
+			callback = function()
+				vim.schedule(function()
+					if not vim.api.nvim_win_is_valid(commit_win) then
+						return
+					end
+					-- Restore prevwin chain: briefly visit status panel, then return to commit editor.
+					-- This makes Neovim's prevwin for the commit editor point to the status panel.
+					local status_win = find_neogit_status_win()
+					if status_win and vim.api.nvim_win_is_valid(status_win) then
+						vim.api.nvim_set_current_win(status_win)
+					end
+					vim.api.nvim_set_current_win(commit_win)
+				end)
+			end,
+		})
+	end
+	-- Fallback: when the commit editor window closes, explicitly focus the status panel.
+	vim.api.nvim_create_autocmd("WinClosed", {
+		pattern = tostring(commit_win),
+		once = true,
+		callback = function()
+			vim.schedule(function()
+				local status_win = find_neogit_status_win()
+				if status_win and vim.api.nvim_win_is_valid(status_win) then
+					vim.api.nvim_set_current_win(status_win)
+				end
+			end)
+		end,
+	})
 end
 
 function L.plugins()
@@ -60,14 +187,13 @@ function L.plugins()
 					hide_during_completion = true,
 					debounce = 75,
 					keymap = L.completion_provider == ai_providers.COPILOT and {
-						accept = keyboard.ai_keys.accept,
+						accept = false, -- Mapped manually to avoid expr mapping bug with special keys
 						accept_word = keyboard.ai_keys.accept_word,
 						accept_line = keyboard.ai_keys.accept_line,
 						next = keyboard.ai_keys.next,
 						prev = keyboard.ai_keys.prev,
 						dismiss = keyboard.ai_keys.clear,
-					},
-					copilot_model = "", -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
+					} or {},
 				},
 			},
 			cmd = "Copilot",
@@ -80,36 +206,19 @@ function L.plugins()
 			opts = {
 				virtual_text = {
 					enabled = true,
-					-- Set to true if you never want completions to be shown automatically.
 					manual = false,
-					-- A mapping of filetype to true or false, to enable virtual text.
 					filetypes = {},
-					-- Whether to enable virtual text of not for filetypes not specifically listed above.
 					default_filetype_enabled = true,
-					-- How long to wait (in ms) before requesting completions after typing stops.
 					idle_delay = 75,
-					-- Priority of the virtual text. This usually ensures that the completions appear on top of
-					-- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
-					-- desired.
 					virtual_text_priority = 65535,
-					-- Set to false to disable all key bindings for managing completions.
 					map_keys = true,
-					-- The key to press when hitting the accept keybinding but no completion is showing.
-					-- Defaults to \t normally or <c-n> when a popup is showing.
-					accept_fallback = nil,
-					-- Key bindings for managing completions in virtual text mode.
+					accept_fallback = keyboard.ai_keys.accept,
 					key_bindings = {
-						-- Accept the current completion.
 						accept = keyboard.ai_keys.accept,
-						-- Accept the next word.
 						accept_word = keyboard.ai_keys.accept_word,
-						-- Accept the next line.
 						accept_line = keyboard.ai_keys.accept_line,
-						-- Clear the virtual text.
 						clear = keyboard.ai_keys.clear,
-						-- Cycle to the next completion.
 						next = keyboard.ai_keys.next,
-						-- Cycle to the previous completion.
 						prev = keyboard.ai_keys.prev,
 					},
 				},
@@ -148,10 +257,8 @@ function L.plugins()
 		},
 		{
 			"yetone/avante.nvim",
-			event = "VeryLazy",
 			lazy = false,
 			version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
-			-- version = "v0.0.20",
 			opts = {
 				provider = L.avante_provider,
 				auto_suggestions_provider = L.avante_provider,
@@ -178,6 +285,7 @@ function L.plugins()
 				nes = {
 					enabled = false,
 				},
+				-- This is explicit mappings in options for sidekick
 				keys = {
 					{
 						"<tab>",
@@ -197,14 +305,30 @@ function L.plugins()
 end
 
 function L.settings()
-	local wrap = require("LYRD.layers.commands").wrap
+	-- Manual accept mapping for copilot to avoid expr mapping bug that inserts raw keycodes
+	if L.completion_provider == ai_providers.COPILOT then
+		vim.keymap.set("i", keyboard.ai_keys.accept, function()
+			local ok, suggestion = pcall(require, "copilot.suggestion")
+			if ok and suggestion.is_visible() then
+				suggestion.accept()
+			else
+				local key = vim.api.nvim_replace_termcodes(keyboard.ai_keys.accept, true, false, true)
+				vim.api.nvim_feedkeys(key, "n", false)
+			end
+		end, { desc = "[copilot] accept suggestion", silent = true })
+	end
+	commands.implement("gitcommit", {
+		{ cmd.LYRDAIGenerateDocumentation, generate_commit_message },
+	})
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
-		{ cmd.LYRDAIGenerateDocumentation, edit_with_prompt(L.documentation_prompt) },
+		{ cmd.LYRDAIGenerateDocumentation, generate_documentation },
 		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
-		{ cmd.LYRDAIAsk, wrap(require("avante.api").ask) },
-		{ cmd.LYRDAIEdit, wrap(require("avante.api").edit) },
+		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
+		{ cmd.LYRDAICliPrompt, ":Sidekick cli prompt" },
+		{ cmd.LYRDAIAsk, ":AvanteAsk" },
+		{ cmd.LYRDAIEdit, ":AvanteEdit" },
 	})
 end
 

@@ -3,7 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Tasks: LYRD.setup.Module
-local L = { name = "Tasks" }
+local L = { name = "Tasks Runner" }
 
 local function configure(filename)
 	return function()
@@ -13,7 +13,7 @@ local function configure(filename)
 			-- Create an empty file if it doesn't exist
 			vim.fn.writefile({}, filename)
 		end
-		vim.cmd("edit " .. filename)
+		vim.cmd.edit(filename)
 	end
 end
 
@@ -67,12 +67,35 @@ end
 function L.plugins()
 	setup.plugin({
 		{
-			--TODO: Make the most out of this one
 			"stevearc/overseer.nvim",
 			version = "1",
 			opts = {
 				templates = {
 					"builtin",
+				},
+				component_aliases = {
+					default = {
+						{
+							"display_duration",
+							detail_level = 2,
+						},
+						"on_output_summarize",
+						"on_exit_set_status",
+						{
+							"on_complete_notify",
+							system = "unfocused",
+						},
+						{
+							"on_complete_dispose",
+							timeout = 300,
+						},
+						{
+							"open_output",
+							direction = "dock",
+							focus = true,
+							on_complete = "always",
+						},
+					},
 				},
 				task_list = {
 					direction = "bottom",

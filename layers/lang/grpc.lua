@@ -1,25 +1,18 @@
-local setup = require("LYRD.setup")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.Grpc: LYRD.setup.Module
-local L = { name = "Grpc and Protobuffers" }
-
-function L.plugins()
-	setup.plugin({})
-end
-
-function L.preparation()
-	local lsp = require("LYRD.layers.lsp")
-	lsp.mason_ensure({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "GRPC and ProtoBuffers",
+	required_mason_packages = {
 		"buf",
 		"protolint",
-	})
-	lsp.null_ls_register_sources({
-		require("null-ls.builtins.diagnostics.protolint"),
-	})
-end
+	},
+	required_enabled_lsp_servers = {
+		"buf_ls",
+	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.protolint",
+	},
+}
 
-function L.complete()
-	vim.lsp.enable({ "buf_ls" })
-end
-
-return L
+return declarative_layer.apply(L)

@@ -1,9 +1,18 @@
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.Clipboard: LYRD.setup.Module
+local declarative_layer = require("LYRD.shared.declarative_layer")
+
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Clipboard",
+	name = "Clipboard Management",
+	unskippable = true,
+	required_plugins = {
+		{
+			"gbprod/yanky.nvim",
+			opts = {},
+		},
+	},
 }
 
 --- Returns a function that copies a specific path to the clipboard
@@ -25,6 +34,16 @@ local function copy_working_directory()
 	vim.notify('Copied "' .. path .. '" to the clipboard!')
 end
 
+function L.keybindings()
+	vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+	vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
+	vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
+	vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
+
+	vim.keymap.set("n", "<c-m-j>", "<Plug>(YankyPreviousEntry)")
+	vim.keymap.set("n", "<c-m-k>", "<Plug>(YankyNextEntry)")
+end
+
 function L.settings()
 	-- only set clipboard if not in ssh, to make sure the OSC 52
 	-- integration works automatically. Requires Neovim >= 0.10.0
@@ -34,7 +53,8 @@ function L.settings()
 		{ cmd.LYRDCopyRelativeFilePath, copy_path("%:p:.") },
 		{ cmd.LYRDCopyAbsoluteFilePath, copy_path("%:p") },
 		{ cmd.LYRDCopyWorkingDirectory, copy_working_directory },
+		{ cmd.LYRDPasteFromHistory, ":YankyRingHistory" },
 	})
 end
 
-return L
+return declarative_layer.apply(L)

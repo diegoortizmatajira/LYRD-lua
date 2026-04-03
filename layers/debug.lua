@@ -4,13 +4,13 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Debug: LYRD.setup.Module
-local L = { name = "Debug" }
+local L = { 
+    name = "Debugger",
+    unskippable = true,
+}
 
 function L.plugins()
 	setup.plugin({
-		{
-			"pocco81/dap-buddy.nvim",
-		},
 		{
 			"mfussenegger/nvim-dap",
 			config = function()
@@ -37,10 +37,8 @@ function L.plugins()
 		},
 		{
 			"rcarriga/nvim-dap-ui",
-			init = function()
-				vim.g.dap_virtual_text = true
-			end,
 			opts = {
+				expand_lines = false,
 				icons = {
 					expanded = icons.chevron.down,
 					collapsed = icons.chevron.right,
@@ -117,10 +115,6 @@ function L.plugins()
 			"theHamsta/nvim-dap-virtual-text",
 			opts = {},
 		},
-		-- {
-		-- 	--TODO: Add configuration https://github.com/niuiic/dap-utils.nvim
-		-- 	"niuiic/dap-utils.nvim",
-		-- },
 	})
 end
 
@@ -132,9 +126,15 @@ end
 function L.start_handler(implementation)
 	return function()
 		if L.is_running() then
+			local dap = require("dap")
+			dap.listeners.after.event_terminated["lyrd_restart"] = function()
+				dap.listeners.after.event_terminated["lyrd_restart"] = nil
+				commands.execute_implementation(implementation)
+			end
 			commands.execute_implementation(cmd.LYRDDebugStop)
+		else
+			commands.execute_implementation(implementation)
 		end
-		commands.execute_implementation(implementation)
 	end
 end
 
@@ -168,7 +168,6 @@ function L.settings()
 		numhl = "DiagnosticSignWarn",
 	})
 
-	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDDebugBreakpoint, ":DapToggleBreakpoint" },
 		{ cmd.LYRDDebugStart, L.start_handler(":DapContinue") },
@@ -177,7 +176,7 @@ function L.settings()
 		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
-		{ cmd.LYRDDebugToggleUI, wrap(require("dapui").toggle) },
+		{ cmd.LYRDDebugToggleUI, function() require("dapui").toggle() end },
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end

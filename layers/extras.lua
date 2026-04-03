@@ -3,7 +3,7 @@ local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Extras: LYRD.setup.Module
-local L = { name = "Extras" }
+local L = { name = "Extra Utilities" }
 
 function L.plugins()
     setup.plugin({

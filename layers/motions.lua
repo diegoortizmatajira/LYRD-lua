@@ -7,7 +7,7 @@ local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Motions: LYRD.setup.Module
 local L = {
-	name = "Motions",
+	name = "Navigation Motions",
 	vscode_compatible = true,
 }
 

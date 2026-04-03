@@ -5,7 +5,8 @@ local utils = require("LYRD.utils")
 
 ---@class LYRD.layer.Treesitter: LYRD.setup.Module
 local L = {
-	name = "Treesitter",
+	name = "Treesitter Parsing",
+	unskippable = true,
 	required = {
 		"query",
 		"regex",
@@ -243,10 +244,10 @@ function L.settings()
 			swap = {
 				enable = true,
 				swap_next = {
-					["<leader>a"] = "@parameter.inner",
+					["<leader>Sa"] = "@parameter.inner",
 				},
 				swap_previous = {
-					["<leader>A"] = "@parameter.inner",
+					["<leader>SA"] = "@parameter.inner",
 				},
 			},
 		},

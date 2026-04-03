@@ -6,15 +6,36 @@ local icons = require("LYRD.layers.icons")
 require("LYRD.utils.signs")
 local utils = require("LYRD.utils")
 
----@class LYRD.layer.Docker: LYRD.setup.Module
+local declarative_layer = require("LYRD.shared.declarative_layer")
+
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Docker",
-	docker_compose_filetype = "yaml.docker-compose",
-	docker_compose_file_patterns = {
-		"docker%-compose*%.yaml",
-		"docker%-compose*%.yml",
-		"compose*%.yaml",
-		"compose*%.yml",
+	name = "Docker Containers and Compose",
+	required_mason_packages = {
+		"dockerfile-language-server",
+		"docker-language-server",
+		"docker-compose-language-service",
+	},
+	required_treesitter_parsers = {
+		"dockerfile",
+	},
+	required_enabled_lsp_servers = {
+		"dockerls",
+		"docker_language_server",
+		"docker_compose_language_service",
+	},
+	required_executables = {
+		"docker",
+		"docker-compose",
+		"lazydocker",
+	},
+	required_filetype_definitions = {
+		pattern = {
+			[".*/docker%-compose.*%.yaml"] = "yaml.docker-compose",
+			[".*/docker%-compose.*%.yml"] = "yaml.docker-compose",
+			[".*/compose.*%.yaml"] = "yaml.docker-compose",
+			[".*/compose.*%.yml"] = "yaml.docker-compose",
+		},
 	},
 	focus_terminal_on_run = true,
 	ts_compose_services_query = [[
@@ -27,9 +48,10 @@ local L = {
   ) 
 )]],
 	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
+	docker_compose_filetype = "yaml.docker-compose",
 }
 
-local function docker_compose_refesh_service_signs()
+local function docker_compose_refresh_service_signs()
 	-- Gets all the line numbers where services are defined in the docker-compose file
 	local service_rows = ts.get_matches(L.ts_compose_services_query, "yaml", nil, function(match, captures)
 		local index = utils.index_of(captures, "service-name")
@@ -184,10 +206,11 @@ local function docker_compose_generate_actions()
 		"start",
 		"stop",
 		"up",
+		"logs",
 	}
 	--- Accumulate all actions
 	local result = {
-		{ title = "Refresh service status", action = docker_compose_refesh_service_signs },
+		{ title = "Refresh service status", action = docker_compose_refresh_service_signs },
 	}
 	--- Generate actions for all services
 	result = vim.list_extend(
@@ -222,11 +245,6 @@ end
 function L.preparation()
 	--
 	lsp.register_code_actions({ L.docker_compose_filetype }, docker_compose_generate_actions)
-	lsp.mason_ensure({
-		"dockerfile-language-server",
-		"docker-language-server",
-		"docker-compose-language-service",
-	})
 	-- Configure hadolint only if platform is Linux
 	if vim.fn.has("linux") == 1 then
 		lsp.mason_ensure({
@@ -236,23 +254,11 @@ function L.preparation()
 			require("null-ls.builtins.diagnostics.hadolint"),
 		})
 	end
-	ts.ensureParser({
-		"dockerfile",
-	})
 end
 
 function L.settings()
-	-- Filetype detection for docker-compose files
-	local patterns = {}
-	vim.tbl_map(function(p)
-		patterns[p] = L.docker_compose_filetype
-	end, L.docker_compose_file_patterns)
-	vim.filetype.add({
-		pattern = patterns,
-	})
-
 	local ui = require("LYRD.layers.lyrd-ui")
-	ui.register_decoration_togglers(L.docker_compose_filetype, { docker_compose_refesh_service_signs })
+	ui.register_decoration_togglers(L.docker_compose_filetype, { docker_compose_refresh_service_signs })
 
 	-- Command implementations
 	commands.implement(L.docker_compose_filetype, {
@@ -264,18 +270,4 @@ function L.settings()
 	})
 end
 
-function L.complete()
-	vim.lsp.enable({
-		"dockerls",
-		"docker_language_server",
-		"docker_compose_language_service",
-	})
-end
-
-function L.healthcheck()
-	vim.health.start(L.name)
-	local health = require("LYRD.health")
-	health.check_executable("lazydocker")
-end
-
-return L
+return declarative_layer.apply(L)

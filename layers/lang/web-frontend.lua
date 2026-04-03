@@ -1,11 +1,75 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
-local utils = require("LYRD.utils")
-local commands = require("LYRD.layers.commands")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.lang.WebFrontend: LYRD.setup.Module
+--- @type table|LYRD.setup.DeclarativeLayer
 local L = {
-	name = "Web frontend",
+	name = "Web frontend languages: JavaScript, TypeScript, Vue, Svelte, Angular",
+	required_plugins = {
+		{
+			"pangloss/vim-javascript",
+			init = function()
+				vim.g.javascript_plugin_jsdoc = 1
+				vim.g.javascript_plugin_ngdoc = 1
+				vim.g.javascript_plugin_flow = 1
+			end,
+			ft = { "js" },
+		},
+		{
+			"leafgarland/typescript-vim",
+			ft = { "ts", "tsx", "vue", "svelte" },
+		},
+		{
+			"marilari88/neotest-vitest",
+		},
+		{
+			"nvim-neotest/neotest-jest",
+		},
+		{
+			"nvim-svelte/nvim-svelte-snippets",
+		},
+	},
+	required_mason_packages = {
+		"vue-language-server",
+		"angular-language-server",
+		"svelte-language-server",
+		"js-debug-adapter",
+		"eslint-lsp",
+		"vtsls",
+	},
+	required_treesitter_parsers = {
+		"javascript",
+		"typescript",
+		"vue",
+		"svelte",
+		"tsx",
+		"angular",
+	},
+	required_enabled_lsp_servers = {
+		"vtsls",
+		"vue_ls",
+		"angularls",
+		"svelte",
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "vue",
+			use_lsp = true,
+			lsp_name = "vue_ls",
+		},
+		{
+			target_filetype = "ts",
+			use_lsp = true,
+			lsp_name = "vtsls",
+		},
+		{
+			target_filetype = "svelte",
+			use_lsp = true,
+			lsp_name = "svelte",
+		},
+	},
+	required_test_adapters = {
+		"neotest-vitest",
+		"neotest-jest",
+	},
 	focus_terminal_on_run = true,
 	ts_root_markers = {
 		"package.json",
@@ -25,7 +89,8 @@ function L.run_npm_build()
 		return
 	end
 	local tasks = require("LYRD.layers.tasks")
-	--- get the current working directory as the folder where the current file is located
+	local utils = require("LYRD.utils")
+	--- Get the current working directory as the folder where the current file is located
 	local cwd = utils.find_root_dir(L.ts_root_markers) or vim.fn.getcwd()
 	tasks.run_task({
 		name = "NPM Build",
@@ -37,59 +102,8 @@ function L.run_npm_build()
 	})
 end
 
-function L.plugins()
-	setup.plugin({
-		{
-			"pangloss/vim-javascript",
-			init = function()
-				vim.g.javascript_plugin_jsdoc = 1
-				vim.g.javascript_plugin_ngdoc = 1
-				vim.g.javascript_plugin_flow = 1
-			end,
-			ft = { "js" },
-		},
-		{
-			"leafgarland/typescript-vim",
-			ft = { "ts", "tsx", "vue" },
-		},
-		{
-			"marilari88/neotest-vitest",
-		},
-		{
-			"nvim-neotest/neotest-jest",
-		},
-	})
-end
-
 function L.preparation()
-	lsp.mason_ensure({
-		"vue-language-server",
-		"angular-language-server",
-		"js-debug-adapter",
-		"eslint-lsp",
-		"vtsls",
-	})
-	lsp.format_with_lsp("vue", "vue_ls")
-	lsp.format_with_lsp("ts", "vtsls")
-
-	local ts = require("LYRD.layers.treesitter")
-	ts.ensureParser({
-		"javascript",
-		"typescript",
-		"vue",
-		"tsx",
-		"angular",
-	})
-
-	local test = require("LYRD.layers.test")
-	utils.with_safe_require("neotest-vitest", function(neotest_vitest)
-		test.configure_adapter(neotest_vitest)
-	end)
-	utils.with_safe_require("neotest-jest", function(neotest_jest)
-		test.configure_adapter(neotest_jest)
-	end)
-
-	-- Enable treesitter for Angular HTML files
+	-- Enable Tree-sitter for Angular HTML files
 	vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 		pattern = { "*.component.html", "*.container.html" },
 		callback = function()
@@ -99,20 +113,13 @@ function L.preparation()
 end
 
 function L.settings()
+	local commands = require("LYRD.layers.commands")
 	local wrap = require("LYRD.layers.commands").wrap
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
-	commands.implement({ "typescript", "vue" }, {
+	commands.implement({ "typescript", "vue", "svelte" }, {
 		{ cmd.LYRDCodeBuild, wrap(L.run_npm_build) },
 		{ cmd.LYRDCodeBuildAll, wrap(L.run_npm_build) },
 	})
 end
 
-function L.complete()
-	vim.lsp.enable({
-		"vtsls",
-		"vue_ls",
-		"angularls",
-	})
-end
-
-return L
+return declarative_layer.apply(L)

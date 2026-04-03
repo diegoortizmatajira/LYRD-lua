@@ -5,6 +5,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 ---@class LYRD.layer.Telescope: LYRD.setup.Module
 local L = {
 	name = "Telescope",
+	unskippable = true,
 	use_frecency = false,
 }
 
@@ -139,6 +140,7 @@ function L.settings()
 		{ cmd.LYRDResumeLastSearch, ":Telescope resume" },
 		{ cmd.LYRDCodeInsertSnippet, "Telescope luasnip" },
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
+		{ cmd.LYRDViewMarks, ":Telescope marks" },
 	})
 end
 

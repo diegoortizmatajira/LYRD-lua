@@ -1,13 +1,15 @@
-local utils = require("LYRD.utils")
-
 --- @class LYRD.layer.Commands: LYRD.setup.Module
 local L = {
-	name = "Commands",
+	name = "Command Registration and Management",
 	vscode_compatible = true,
+	unskippable = true,
 	--- @type table<string, Command>
 	commands = {},
 }
 
+--- Wraps a function in a zero-argument closure, useful for passing callable tables (e.g., vim.lsp.buf methods) as command implementations.
+--- @param fn function The function to wrap.
+--- @return function
 function L.wrap(fn)
 	return function()
 		return fn()
@@ -15,8 +17,7 @@ function L.wrap(fn)
 end
 
 --- @class ShortCutOptions
---- @field range? boolean Indicates the shorcut uses current selection.
---- @field escape? boolean Indicates the shorcut includes <ESC> before running the command.
+--- @field escape? boolean Indicates the shortcut includes <ESC> before running the command.
 
 --- @alias CommandImplementation string|fun(opts?: table)
 
@@ -28,13 +29,15 @@ end
 --- @field range? boolean Indicates whether the command can be applied to a range of text.
 --- @field leave_insert_mode? boolean|nil Indicates whether the command should leave insert mode.
 --- @field implementations table<string, CommandImplementation> Implementations per filetype.
-Command = {}
+local Command = {}
+L.Command = Command
 
 --- Constructor
 --- @param desc string Command description.
 --- @param default_implementation? CommandImplementation Default implementation.
 --- @param icon? string Icon to show for the command.
 --- @param range? boolean Indicates whether the command can be applied to a range of text.
+--- @param leave_insert_mode? boolean Indicates whether the command should leave insert mode.
 --- @return Command
 function Command:new(desc, default_implementation, icon, range, leave_insert_mode)
 	local o = setmetatable({}, self)
@@ -49,7 +52,7 @@ function Command:new(desc, default_implementation, icon, range, leave_insert_mod
 	return o
 end
 
---- Implements the command for one or many file types.
+--- Implements the command for one or many filetypes.
 --- @param filetype string A filetype.
 --- @param implementation CommandImplementation An implementation of the command.
 function Command:implement_for_filetype(filetype, implementation)
@@ -60,14 +63,14 @@ function Command:implement_for_filetype(filetype, implementation)
 	end
 end
 
---- Implements the command for one or many file types.
+--- Implements the command for one or many filetypes.
 --- @param target string|string[] One filetype or a list of filetypes.
 --- @param implementation CommandImplementation An implementation of the command.
 function Command:implement_for(target, implementation)
 	if type(target) == "string" then
 		self:implement_for_filetype(target, implementation)
 	elseif type(target) == "table" then
-		for _, f in pairs(target) do
+		for _, f in ipairs(target) do
 			self:implement_for_filetype(f, implementation)
 		end
 	else
@@ -75,12 +78,13 @@ function Command:implement_for(target, implementation)
 	end
 end
 
---- Executes the command implementation corresponding to the current file type or the default one if no specific implementation is available.
+--- Executes the command implementation corresponding to the current filetype or the default one if no specific implementation is available.
 --- If no implementation is found, a warning is shown.
 --- @param opts? table Options for the command execution.
 function Command:execute(opts)
-	-- Looks for the current file type command implementation
+	-- Looks for the current filetype command implementation
 	local filetype = vim.bo.filetype
+	-- Just for safety, we check if the filetype is set. It should always be set, but in case it's not, we show an error and return.
 	if not filetype then
 		vim.notify("Filetype is not set", vim.log.levels.ERROR)
 		return
@@ -136,11 +140,11 @@ function Command:shortcut(opts)
 	return L.command_shortcut(self.name, opts)
 end
 
---- Returns the command as a string command to be run in vim
+--- Returns the command as a string command to be run in vim.
+--- @param mode string The current vim mode (e.g., "n", "v", "i").
+--- @return string
 function Command:as_vim_command(mode)
-	if self.range and utils.contains({ "v", "x" }, mode) then
-		return self:shortcut({ range = true })
-	elseif self.leave_insert_mode and mode == "i" then
+	if self.leave_insert_mode and mode == "i" then
 		return self:shortcut({ escape = true })
 	else
 		return self:shortcut()
@@ -153,47 +157,50 @@ end
 --- @return boolean
 function L.execute_implementation(implementation, opts)
 	if type(implementation) == "string" and implementation ~= "" then
-		---Executes a command
-		--- @param command string
-		local ok, _ = pcall(function(command)
-			return vim.cmd(command)
-		end, implementation)
+		local ok, _ = pcall(vim.cmd --[[@as function]], implementation)
 		if not ok then
 			vim.notify("Command execution failed: " .. implementation, vim.log.levels.ERROR)
 		end
 		return true
 	elseif type(implementation) == "function" then
-		implementation(opts)
+		local ok, err = pcall(implementation, opts)
+		if not ok then
+			vim.notify("Command execution failed: " .. tostring(err), vim.log.levels.ERROR)
+		end
 		return true
 	elseif type(implementation) == "table" and implementation.name then
-		L.execute_implementation(":" .. implementation.name, opts)
+		return L.execute_implementation(":" .. implementation.name, opts)
 	end
 	return false
 end
-
---- @class LYRD.commands.settings
---- @field commands table<string, table<string, CommandImplementation>>
 
 --- @class LYRD.commands.implementation
 --- @field [1] Command
 --- @field [2] CommandImplementation
 
---- Prints a list of commands that don't have an implementation (default or per filetype)
+--- Prints a list of commands that don't have any implementation (neither default nor filetype-specific).
+--- Output goes to :messages via print, as the list can be large.
 function L.list_unimplemented()
 	print("The following commands are not implemented for any type of file")
 	for name, cmd in pairs(L.commands) do
-		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+		if (not cmd.default_implementation) and vim.tbl_isempty(cmd.implementations) then
 			print("-", name)
 		end
 	end
 	print("End of the list")
 end
 
+--- Prints a list of commands that have a default implementation.
+--- Output goes to :messages via print, as the list can be large.
 function L.list_implemented()
 	print("The following commands are implemented by default")
 	for name, cmd in pairs(L.commands) do
 		if cmd.default_implementation then
-			print("-", name, "=>", cmd.default_implementation)
+			local impl = cmd.default_implementation
+			if type(impl) == "function" then
+				impl = "<function>"
+			end
+			print("-", name, "=>", impl)
 		end
 	end
 	print("End of the list")
@@ -206,7 +213,7 @@ function L.implement(filetype, commands)
 	for _, command_info in ipairs(commands) do
 		local cmd, implementation = unpack(command_info)
 		if cmd == nil then
-			error("The command to be implemented does not exist. It's implementation would be: " .. implementation)
+			error("The command to be implemented does not exist. Its implementation would be: " .. implementation)
 		end
 		cmd:implement_for(filetype, implementation)
 	end
@@ -220,14 +227,10 @@ function L.register(commands)
 	end
 end
 
---- @param commandName string Name of the command to generate the shortcut
+--- @param command_name string Name of the command to generate the shortcut
 --- @param opts? ShortCutOptions Options for the generated shortcut
-function L.command_shortcut(commandName, opts)
-	local sequence = commandName
-	-- if opts and opts.range then
-	-- 	sequence = "'<,'>" .. sequence
-	-- end
-	sequence = "<cmd>" .. sequence .. "<CR>"
+function L.command_shortcut(command_name, opts)
+	local sequence = "<cmd>" .. command_name .. "<CR>"
 	if opts and opts.escape then
 		sequence = "<ESC>" .. sequence
 	end
@@ -237,7 +240,7 @@ end
 
 --- This function return a handler function which will execute the given callback function with the given arguments.
 --- @param callback function to be executed with the given arguments
---- @vararg any list of arguments to be passed to the callback function
+--- @param ... any list of arguments to be passed to the callback function
 --- @return function
 function L.handler(callback, ...)
 	local params = { ... }
@@ -246,13 +249,14 @@ function L.handler(callback, ...)
 	end
 end
 
+--- Reports unimplemented commands as health warnings via :checkhealth.
 function L.healthcheck()
 	vim.health.start(L.name)
 	local unimplemented_commands = {}
 	for name, cmd in pairs(L.commands) do
-		if (not cmd.default_implementation) and (#cmd.implementations == 0) then
+		if (not cmd.default_implementation) and vim.tbl_isempty(cmd.implementations) then
 			table.insert(unimplemented_commands, name)
-			vim.health.warn(name .. " commmand is not implemented")
+			vim.health.warn(name .. " command is not implemented")
 		end
 	end
 	if #unimplemented_commands == 0 then

@@ -4,9 +4,18 @@ local setup = require("LYRD.setup")
 local L = {
 	name = "Icons",
 	vscode_compatible = true,
+	unskippable = true,
 	no_icon = " ",
 	unicode = {
 		lightbulb = "💡",
+	},
+	ai = {
+		assistant = "󱜙 ",
+		cli = "󰶭 ",
+		prompt = "󰍩 ",
+		edit = "󱆿 ",
+		select = " ",
+		document = "󱋄 ",
 	},
 	cloud = {
 		cloud = "󰅟 ",
@@ -92,6 +101,7 @@ local L = {
 		keys = " ",
 	},
 	action = {
+		compare = " ",
 		exit = "󰩈 ",
 		clean = "󰃢 ",
 		install = "󰃘 ",
@@ -232,6 +242,7 @@ local L = {
 		blame = " ",
 		init = " ",
 		worktree = " ",
+		conflict = " ",
 		-- Status
 		unstaged = " ",
 		staged = "✓ ",
@@ -240,6 +251,24 @@ local L = {
 		untracked = "★ ",
 		deleted = " ",
 		ignored = "◌ ",
+		-- Github
+		github = " ",
+		issue = {
+			list = " ",
+			draft = " ",
+			open = " ",
+			closed = " ",
+			reopened = " ",
+			create_branch = "󱓊 ",
+			develop_branch = "󱓏 ",
+		},
+		pr = {
+			list = " ",
+			pull_request = " ",
+			draft = " ",
+			open = " ",
+			closed = " ",
+		},
 	},
 	git_gutter = {
 		add = "┃",
@@ -314,6 +343,10 @@ local L = {
 		sln = "󰘐 ",
 		project = "󰘐 ",
 		package = " ",
+	},
+	ui = {
+		checkbox_checked = "󰄵 ",
+		checkbox_unchecked = "󰄱 ",
 	},
 }
 

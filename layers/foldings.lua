@@ -2,7 +2,7 @@ local setup = require("LYRD.setup")
 local icons = require("LYRD.layers.icons")
 
 ---@class LYRD.layer.Foldings: LYRD.setup.Module
-local L = { name = "Foldings" }
+local L = { name = "Code Foldings" }
 
 function L.plugins()
 	setup.plugin({

@@ -1,19 +1,14 @@
-local setup = require("LYRD.setup")
-local lsp = require("LYRD.layers.lsp")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.Bash: LYRD.setup.Module
-local L = { name = "Bash" }
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Bash Scripting",
+	required_mason_packages = {
+		"bashls",
+	},
+	required_enabled_lsp_servers = {
+		"bashls",
+	},
+}
 
-function L.plugins()
-	setup.plugin({})
-end
-
-function L.preparation()
-	lsp.mason_ensure({ "bashls" })
-end
-
-function L.complete()
-	vim.lsp.enable("bashls")
-end
-
-return L
+return declarative_layer.apply(L)
