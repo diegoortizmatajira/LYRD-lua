@@ -36,6 +36,10 @@ local L = {
 			},
 		},
 		{
+			"weilbith/neotest-gradle",
+			ft = "java",
+		},
+		{
 			"JavaHello/spring-boot.nvim",
 			ft = "java",
 			dependencies = {
@@ -87,6 +91,7 @@ local L = {
 	},
 	required_test_adapters = {
 		"neotest-java",
+		"neotest-gradle",
 	},
 }
 
