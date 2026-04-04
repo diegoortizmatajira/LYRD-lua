@@ -39,6 +39,7 @@
   - [Kotlin](#kotlin)
   - [Bash](#bash)
   - [Pascal](#pascal)
+  - [LaTeX](#latex)
   - [Other Languages](#other-languages)
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
@@ -1038,6 +1039,27 @@ projects
 - **Syntax highlighting**: Treesitter-based highlighting
 
 **Perfect for**: Legacy Pascal projects, Free Pascal development
+
+### LaTeX
+
+**What you get**:
+
+- **Language Server**: texlab for completions, references, and diagnostics
+- **Syntax highlighting**: Treesitter-based highlighting for LaTeX and BibTeX
+- **Formatting**: latexindent for consistent document formatting
+- **Compilation**: VimTeX integration with continuous compilation via `latexmk`
+- **PDF Viewing**: Zathura PDF viewer with forward/inverse search
+- **Error Reporting**: Quick access to compilation errors
+
+**How it helps you**:
+
+- Compile and preview documents without leaving the editor
+- Navigate compilation errors quickly
+- Format your LaTeX source consistently
+- Get intelligent completions for commands, environments, and citations
+
+**Perfect for**: Academic papers, theses, technical documentation, scientific
+publishing
 
 ### Other Languages
 
