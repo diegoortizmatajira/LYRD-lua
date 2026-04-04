@@ -38,13 +38,6 @@ local L = {
 				"nvim-tree/nvim-web-devicons",
 			},
 		},
-		{
-			"Nedra1998/nvim-mdlink",
-			opts = { max_depth = 5, keymap = true, cmp = true },
-			dependencies = {
-				"hrsh7th/nvim-cmp",
-			},
-		},
 	},
 	required_mason_packages = {
 		"prettier",
