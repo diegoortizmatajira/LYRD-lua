@@ -13,6 +13,9 @@ local L = {
 			end,
 		},
 		{ "Bilal2453/luvit-meta", lazy = true },
+		{
+			"nvim-neotest/neotest-plenary",
+		},
 	},
 	required_mason_packages = {
 		"lua-language-server",
@@ -35,6 +38,9 @@ local L = {
 			target_filetype = { "lua", "luau" },
 			format_settings = { "stylua" },
 		},
+	},
+	required_test_adapters = {
+		"neotest-plenary",
 	},
 }
 
