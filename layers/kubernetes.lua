@@ -4,7 +4,8 @@ local lsp = require("LYRD.layers.lsp")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local YAML_K8S_FILETYPE = "yaml.kubernetes"
+local MANIFEST_FILETYPE = "yaml.kubernetes"
+local HELM_FILETYPE = "yaml.helm"
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
@@ -12,7 +13,7 @@ local L = {
 	required_plugins = {
 		{
 			"qvalentin/helm-ls.nvim",
-			ft = "helm",
+			ft = HELM_FILETYPE,
 			opts = {
 				-- leave empty or see below
 			},
@@ -33,17 +34,25 @@ local L = {
 	},
 	required_filetype_definitions = {
 		pattern = {
+		    -- Common Kubernetes manifest patterns
 			[".*/.kube/config"] = "yaml",
-			[".*/k8s/.*%.yaml"] = YAML_K8S_FILETYPE,
-			[".*/k8s/.*%.yml"] = YAML_K8S_FILETYPE,
-			[".*/kubernetes/.*%.yaml"] = YAML_K8S_FILETYPE,
-			[".*/kubernetes/.*%.yml"] = YAML_K8S_FILETYPE,
-			[".*/kube/.*%.yaml"] = YAML_K8S_FILETYPE,
-			[".*/kube/.*%.yml"] = YAML_K8S_FILETYPE,
-			[".*/manifests/.*%.yaml"] = YAML_K8S_FILETYPE,
-			[".*/manifests/.*%.yml"] = YAML_K8S_FILETYPE,
-			[".*/deploy/.*%.yaml"] = YAML_K8S_FILETYPE,
-			[".*/deploy/.*%.yml"] = YAML_K8S_FILETYPE,
+			[".*/k8s/.*%.yaml"] = MANIFEST_FILETYPE,
+			[".*/k8s/.*%.yml"] = MANIFEST_FILETYPE,
+			[".*/kubernetes/.*%.yaml"] = MANIFEST_FILETYPE,
+			[".*/kubernetes/.*%.yml"] = MANIFEST_FILETYPE,
+			[".*/kube/.*%.yaml"] = MANIFEST_FILETYPE,
+			[".*/kube/.*%.yml"] = MANIFEST_FILETYPE,
+			[".*/manifests/.*%.yaml"] = MANIFEST_FILETYPE,
+			[".*/manifests/.*%.yml"] = MANIFEST_FILETYPE,
+			[".*/deploy/.*%.yaml"] = MANIFEST_FILETYPE,
+			[".*/deploy/.*%.yml"] = MANIFEST_FILETYPE,
+			-- Helm patterns
+			[".*/templates/.*%.tpl"] = HELM_FILETYPE,
+			[".*/templates/.*%.ya?ml"] = HELM_FILETYPE,
+			[".*/templates/.*%.txt"] = HELM_FILETYPE,
+			["helmfile.*%.ya?ml"] = HELM_FILETYPE,
+			["helmfile.*%.ya?ml.gotmpl"] = HELM_FILETYPE,
+			["values.*%.yaml"] = "yaml.helm-values",
 		},
 	},
 	focus_terminal_on_run = true,
@@ -100,11 +109,11 @@ local function kubernetes_generate_actions()
 end
 
 function L.preparation()
-	lsp.register_code_actions({ YAML_K8S_FILETYPE }, kubernetes_generate_actions)
+	lsp.register_code_actions({ MANIFEST_FILETYPE }, kubernetes_generate_actions)
 end
 
 function L.settings()
-	commands.implement(YAML_K8S_FILETYPE, {
+	commands.implement(MANIFEST_FILETYPE, {
 		{
 			cmd.LYRDCodeRun,
 			function()
