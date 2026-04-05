@@ -27,6 +27,11 @@ local L = {
 			"fredrikaverpil/neotest-golang",
 			ft = "go",
 		},
+		-- lazy.nvim --
+		{
+			"ngynkvn/gotmpl.nvim",
+			opts = {},
+		},
 	},
 	required_mason_packages = {
 		"delve",

@@ -6,25 +6,17 @@ local ts = require("LYRD.layers.treesitter")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
 local MANIFEST_FILETYPE = "yaml.kubernetes"
-local HELM_FILETYPE = "yaml.helm"
+local HELM_FILETYPE = "yaml.helm" -- Using specifically "helm" as plugin attaches to that filetype, and we can define it via pattern matching below for both .tpl and .yaml files in Helm charts.
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Kubernetes",
-	required_plugins = {
-		{
-			"qvalentin/helm-ls.nvim",
-			ft = HELM_FILETYPE,
-			opts = {
-				-- leave empty or see below
-			},
-		},
-	},
 	required_mason_packages = {
 		"helm_ls",
 	},
 	required_treesitter_parsers = {
 		"helm",
+		"gotmpl", -- For Helm templates, which often use Go template syntax
 	},
 	required_enabled_lsp_servers = {
 		"helm_ls",
