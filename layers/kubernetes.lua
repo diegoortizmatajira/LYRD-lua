@@ -1,6 +1,7 @@
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local lsp = require("LYRD.layers.lsp")
+local ts = require("LYRD.layers.treesitter")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
@@ -34,7 +35,7 @@ local L = {
 	},
 	required_filetype_definitions = {
 		pattern = {
-		    -- Common Kubernetes manifest patterns
+			-- Common Kubernetes manifest patterns
 			[".*/.kube/config"] = "yaml",
 			[".*/k8s/.*%.yaml"] = MANIFEST_FILETYPE,
 			[".*/k8s/.*%.yml"] = MANIFEST_FILETYPE,
@@ -56,11 +57,26 @@ local L = {
 		},
 	},
 	focus_terminal_on_run = true,
+	ts_document_query = [[
+(stream
+  (document) @document
+)
+]],
 }
 
 function L.toggle_k9s()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.toggle_external_app_terminal("k9s")
+end
+
+--- Returns the YAML text of the document under the cursor, or nil if not found.
+--- @return string|nil
+function L.get_document_at_cursor()
+	local text = ts.get_match_text_at_cursor(L.ts_document_query, "yaml", "document", "document")
+	if text == "" then
+		return nil
+	end
+	return text
 end
 
 --- Runs a kubectl command against the current file.
@@ -87,29 +103,88 @@ local function kubectl_file_task(command, extra_args)
 	})
 end
 
+--- Runs a kubectl command by piping YAML text via stdin.
+--- @param command string The kubectl subcommand to execute.
+--- @param yaml_text string The YAML content to pipe.
+--- @param extra_args? string[] Additional arguments to pass to kubectl.
+local function kubectl_stdin_task(command, yaml_text, extra_args)
+	local kubectl_args = { command, "-f", "-" }
+	if extra_args then
+		vim.list_extend(kubectl_args, extra_args)
+	end
+	local shell_args = vim.tbl_map(vim.fn.shellescape, kubectl_args)
+	local tasks = require("LYRD.layers.tasks")
+	tasks.run_task({
+		name = "kubectl " .. command .. " (document)",
+		cmd = "sh",
+		args = {
+			"-c",
+			string.format("echo %s | kubectl %s", vim.fn.shellescape(yaml_text), table.concat(shell_args, " ")),
+		},
+		cwd = vim.fn.expand("%:p:h"),
+		open_in_split = true,
+		focus = L.focus_terminal_on_run,
+	})
+end
+
+--- @class KubectlAction
+--- @field label string Display label for the action.
+--- @field command string The kubectl subcommand.
+--- @field args? string[] Extra arguments.
+
+--- @type KubectlAction[]
+local kubectl_commands = {
+	{ label = "apply", command = "apply" },
+	{ label = "delete", command = "delete" },
+	{ label = "describe", command = "describe" },
+	{ label = "create", command = "create" },
+	{ label = "diff", command = "diff" },
+	{ label = "apply (dry-run client)", command = "apply", args = { "--dry-run=client" } },
+	{ label = "apply (dry-run server)", command = "apply", args = { "--dry-run=server" } },
+}
+
 local function kubernetes_generate_actions()
-	local prefix = "Kubernetes: "
-	local file_commands = {
-		{ label = "apply", command = "apply" },
-		{ label = "delete", command = "delete" },
-		{ label = "describe", command = "describe" },
-		{ label = "create", command = "create" },
-		{ label = "diff", command = "diff" },
-		{ label = "apply (dry-run client)", command = "apply", args = { "--dry-run=client" } },
-		{ label = "apply (dry-run server)", command = "apply", args = { "--dry-run=server" } },
-	}
-	return vim.tbl_map(function(c)
+	local prefix = "Manifest file: "
+	--- File-level actions
+	local result = vim.tbl_map(function(c)
 		return {
-			title = prefix .. c.label,
+			title = prefix .. c.label .. " (file)",
 			action = function()
 				kubectl_file_task(c.command, c.args)
 			end,
 		}
-	end, file_commands)
+	end, kubectl_commands)
+	--- Document-at-cursor actions
+	prefix = "Selected: "
+	local doc_text = L.get_document_at_cursor()
+	if doc_text then
+		vim.list_extend(
+			result,
+			vim.tbl_map(function(c)
+				return {
+					title = prefix .. c.label .. " (at cursor)",
+					action = function()
+						kubectl_stdin_task(c.command, doc_text, c.args)
+					end,
+				}
+			end, kubectl_commands)
+		)
+	end
+	return result
 end
 
 function L.preparation()
 	lsp.register_code_actions({ MANIFEST_FILETYPE }, kubernetes_generate_actions)
+end
+
+--- Applies the document under the cursor via kubectl, or the whole file if not in a document.
+function L.kubectl_apply_document_at_cursor()
+	local doc_text = L.get_document_at_cursor()
+	if doc_text then
+		kubectl_stdin_task("apply", doc_text)
+	else
+		kubectl_file_task("apply")
+	end
 end
 
 function L.settings()
@@ -120,6 +195,7 @@ function L.settings()
 				kubectl_file_task("apply")
 			end,
 		},
+		{ cmd.LYRDCodeRunSelection, L.kubectl_apply_document_at_cursor },
 	})
 	commands.implement("*", {
 		{ cmd.LYRDKubernetesUI, L.toggle_k9s },
