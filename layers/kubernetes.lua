@@ -1,7 +1,10 @@
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local lsp = require("LYRD.layers.lsp")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
+
+local YAML_K8S_FILETYPE = "yaml.kubernetes"
 
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
@@ -26,7 +29,24 @@ local L = {
 	},
 	required_executables = {
 		"k9s",
+		"kubectl",
 	},
+	required_filetype_definitions = {
+		pattern = {
+			[".*/.kube/config"] = "yaml",
+			[".*/k8s/.*%.yaml"] = YAML_K8S_FILETYPE,
+			[".*/k8s/.*%.yml"] = YAML_K8S_FILETYPE,
+			[".*/kubernetes/.*%.yaml"] = YAML_K8S_FILETYPE,
+			[".*/kubernetes/.*%.yml"] = YAML_K8S_FILETYPE,
+			[".*/kube/.*%.yaml"] = YAML_K8S_FILETYPE,
+			[".*/kube/.*%.yml"] = YAML_K8S_FILETYPE,
+			[".*/manifests/.*%.yaml"] = YAML_K8S_FILETYPE,
+			[".*/manifests/.*%.yml"] = YAML_K8S_FILETYPE,
+			[".*/deploy/.*%.yaml"] = YAML_K8S_FILETYPE,
+			[".*/deploy/.*%.yml"] = YAML_K8S_FILETYPE,
+		},
+	},
+	focus_terminal_on_run = true,
 }
 
 function L.toggle_k9s()
@@ -34,7 +54,64 @@ function L.toggle_k9s()
 	ui.toggle_external_app_terminal("k9s")
 end
 
+--- Runs a kubectl command against the current file.
+--- @param command string The kubectl subcommand to execute (e.g., "apply", "delete", "describe").
+--- @param extra_args? string[] Additional arguments to pass to kubectl.
+local function kubectl_file_task(command, extra_args)
+	local file = vim.fn.expand("%:p")
+	if file == "" then
+		vim.notify("No file to run kubectl against", vim.log.levels.WARN)
+		return
+	end
+	local args = { command, "-f", file }
+	if extra_args then
+		vim.list_extend(args, extra_args)
+	end
+	local tasks = require("LYRD.layers.tasks")
+	tasks.run_task({
+		name = "kubectl " .. command,
+		cmd = "kubectl",
+		args = args,
+		cwd = vim.fn.expand("%:p:h"),
+		open_in_split = true,
+		focus = L.focus_terminal_on_run,
+	})
+end
+
+local function kubernetes_generate_actions()
+	local prefix = "Kubernetes: "
+	local file_commands = {
+		{ label = "apply", command = "apply" },
+		{ label = "delete", command = "delete" },
+		{ label = "describe", command = "describe" },
+		{ label = "create", command = "create" },
+		{ label = "diff", command = "diff" },
+		{ label = "apply (dry-run client)", command = "apply", args = { "--dry-run=client" } },
+		{ label = "apply (dry-run server)", command = "apply", args = { "--dry-run=server" } },
+	}
+	return vim.tbl_map(function(c)
+		return {
+			title = prefix .. c.label,
+			action = function()
+				kubectl_file_task(c.command, c.args)
+			end,
+		}
+	end, file_commands)
+end
+
+function L.preparation()
+	lsp.register_code_actions({ YAML_K8S_FILETYPE }, kubernetes_generate_actions)
+end
+
 function L.settings()
+	commands.implement(YAML_K8S_FILETYPE, {
+		{
+			cmd.LYRDCodeRun,
+			function()
+				kubectl_file_task("apply")
+			end,
+		},
+	})
 	commands.implement("*", {
 		{ cmd.LYRDKubernetesUI, L.toggle_k9s },
 	})
