@@ -42,7 +42,7 @@ function L.plugins()
 				"nvim-lua/plenary.nvim",
 				"nvim-treesitter/nvim-treesitter",
 			},
-			opt = {
+			opts = {
 				-- prompt for return type
 				prompt_func_return_type = { go = true, cpp = true, c = true, java = true },
 				-- prompt for function parameters
@@ -85,8 +85,8 @@ function L.get_matches(query_string, lang, filter_func, map_func, max_results)
 	local query = vim.treesitter.query.parse(lang, query_string)
 
 	-- Get the root syntax tree node
-	local parser = vim.treesitter.get_parser(bufnr, lang)
-	if not parser then
+	local ok, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+	if not ok or not parser then
 		return {}
 	end
 	local trees = parser:parse()

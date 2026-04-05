@@ -1,8 +1,8 @@
 local L = { name = "Generator" }
 
 local function get_root(bufnr)
-	local parser = vim.treesitter.get_parser(bufnr, "go", {})
-	if not parser then
+	local ok, parser = pcall(vim.treesitter.get_parser, bufnr, "go", {})
+	if not ok or not parser then
 		error("No parser found for buffer " .. bufnr)
 	end
 	local tree = parser:parse()[1]
@@ -10,7 +10,7 @@ local function get_root(bufnr)
 end
 
 local function get_structs_in_file_query()
-	return vim.treesitter.parse_query(
+	return vim.treesitter.query.parse(
 		"go",
 		[[
 (type_spec .
@@ -22,7 +22,7 @@ local function get_structs_in_file_query()
 end
 
 local function get_fields_in_structure_query(structure_name)
-	return vim.treesitter.parse_query(
+	return vim.treesitter.query.parse(
 		"go",
 		string.format(
 			[[
@@ -54,7 +54,7 @@ local function select_structure(bufnr, callback)
 	local root = get_root(bufnr)
 	local struct_names = {}
 	for _, captures, _ in structures:iter_matches(root, bufnr) do
-		local struct_name = vim.treesitter.query.get_node_text(captures[1], bufnr)
+		local struct_name = vim.treesitter.get_node_text(captures[1][1], bufnr)
 		table.insert(struct_names, struct_name)
 	end
 
@@ -76,9 +76,9 @@ local function process_fields_from_struct(bufnr, structure_name, string_generato
 	local root = get_root(bufnr)
 	local new_lines = { "" }
 	for _, captures, _ in fields:iter_matches(root, bufnr) do
-		local struct_name = vim.treesitter.query.get_node_text(captures[1], bufnr)
-		local field_name = vim.treesitter.query.get_node_text(captures[2], bufnr)
-		local field_type = vim.treesitter.query.get_node_text(captures[3], bufnr)
+		local struct_name = vim.treesitter.get_node_text(captures[1][1], bufnr)
+		local field_name = vim.treesitter.get_node_text(captures[2][1], bufnr)
+		local field_type = vim.treesitter.get_node_text(captures[3][1], bufnr)
 		local text = string_generator(struct_name, field_name, field_type)
 		table.insert(new_lines, text)
 	end
