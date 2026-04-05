@@ -180,6 +180,13 @@ function L.kubectl_apply_document_at_cursor()
 end
 
 function L.settings()
+	vim.treesitter.language.register("helm", "yaml.helm")
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = HELM_FILETYPE,
+		callback = function(args)
+			vim.treesitter.start(args.buf, "helm")
+		end,
+	})
 	commands.implement(MANIFEST_FILETYPE, {
 		{
 			cmd.LYRDCodeRun,
