@@ -6,8 +6,23 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 --- @type table|LYRD.setup.DeclarativeLayer
 local L = {
 	name = "Kubernetes",
+	required_plugins = {
+		{
+			"qvalentin/helm-ls.nvim",
+			ft = "helm",
+			opts = {
+				-- leave empty or see below
+			},
+		},
+	},
+	required_mason_packages = {
+		"helm_ls",
+	},
 	required_treesitter_parsers = {
 		"helm",
+	},
+	required_enabled_lsp_servers = {
+		"helm_ls",
 	},
 	required_executables = {
 		"k9s",
