@@ -74,6 +74,7 @@ local L = {
 		LYRDDebugToggleRepl = Command:new("Toggle Debug Repl", nil, icons.action.toggle_on),
 		LYRDDebugToggleUI = Command:new("Debug UI", nil, icons.debug.breakpoint),
 		LYRDDiagnosticLinesToggle = Command:new("Toggle diagnostic lines", nil, icons.action.toggle_on),
+		LYRDEditTextCase = Command:new("Change text case", nil, icons.other.text_case),
 		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),
 		LYRDGrammarToggle = Command:new("Toggle grammar checker", nil, icons.action.toggle_on),
 		LYRDGitBrowseOnWeb = Command:new("Browse line on web", nil, icons.apps.browser),

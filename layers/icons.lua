@@ -57,6 +57,7 @@ local L = {
 		launch = " ",
 		eye = " ",
 		macro = "󱃸 ",
+		text_case = "󰬴 ",
 	},
 	images = {
 		default = " ",
