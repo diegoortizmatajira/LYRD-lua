@@ -19,7 +19,10 @@ local L = {
 		"gotmpl", -- For Helm templates, which often use Go template syntax
 	},
 	required_enabled_lsp_servers = {
-		"helm_ls",
+		{
+			"helm_ls",
+			config = { filetypes = { "helm", "yaml.helm", "yaml.helm-values" } },
+		},
 	},
 	required_executables = {
 		"k9s",

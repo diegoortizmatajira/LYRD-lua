@@ -22,7 +22,12 @@ local L = {
 	required_enabled_lsp_servers = {
 		"dockerls",
 		"docker_language_server",
-		"docker_compose_language_service",
+		{
+			"docker_compose_language_service",
+			config = {
+				filetypes = { "yaml.docker-compose", "docker-compose" },
+			},
+		},
 	},
 	required_executables = {
 		"docker",
