@@ -54,7 +54,9 @@ local L = {
 	focus_terminal_on_run = true,
 	ts_document_query = [[
 (stream
-  (document) @document
+  (document
+    (block_node) @block_node
+  ) @document
 )
 ]],
 	--- @type KubectlAction[]
@@ -130,7 +132,8 @@ function L.kubectl_run_at_cursor()
 		treesitter_selector = {
 			query_string = L.ts_document_query,
 			lang = "yaml",
-			node_capture_name = "document",
+			node_capture_name = "block_node",
+				text_capture_name = "block_node",
 		},
 		generator = function(file, document)
 			local result = {}
