@@ -4,7 +4,6 @@ return {
 		"yaml.docker-compose",
 		"yaml.gitlab",
 		"yaml.kubernetes",
-		"yaml.helm",
 	},
 	settings = {
 		yaml = {
