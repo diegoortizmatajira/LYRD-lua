@@ -46,6 +46,7 @@ local L = {
 			[".*/templates/.*%.tpl"] = HELM_FILETYPE,
 			[".*/templates/.*%.ya?ml"] = HELM_FILETYPE,
 			[".*/templates/.*%.txt"] = HELM_FILETYPE,
+			[".*/charts/.*%.ya?ml"] = HELM_FILETYPE,
 			["helmfile.*%.ya?ml"] = HELM_FILETYPE,
 			["helmfile.*%.ya?ml.gotmpl"] = HELM_FILETYPE,
 			["values.*%.yaml"] = "yaml.helm-values",
@@ -133,7 +134,7 @@ function L.kubectl_run_at_cursor()
 			query_string = L.ts_document_query,
 			lang = "yaml",
 			node_capture_name = "block_node",
-				text_capture_name = "block_node",
+			text_capture_name = "block_node",
 		},
 		generator = function(file, document)
 			local result = {}
