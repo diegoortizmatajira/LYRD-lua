@@ -26,6 +26,23 @@ local L = {
 		{
 			"nvim-svelte/nvim-svelte-snippets",
 		},
+		{
+			"mhiro2/i18n-status.nvim",
+			build = "./scripts/download-binary.sh",
+			opts = {
+				-- Source-of-truth language (used for inline rendering + doctor comparisons).
+				primary_lang = "en",
+
+				auto_hover = {
+					enabled = true, -- auto-show hover on cursor hold (default: true)
+				},
+
+				inline = {
+					-- Controls how inline virtual text is displayed. (JSON files always use "eol")
+					position = "eol", -- set to "after_key" to draw text directly after the key
+				},
+			},
+		},
 	},
 	required_mason_packages = {
 		"vue-language-server",
