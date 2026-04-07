@@ -1,7 +1,5 @@
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local lsp = require("LYRD.layers.lsp")
-local ts = require("LYRD.layers.treesitter")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
@@ -119,7 +117,6 @@ local function kubectl_stdin_task(command, yaml_text, extra_args)
 		args = {
 			"-c",
 			string.format("printf '%%s' %s | kubectl %s", vim.fn.shellescape(yaml_text), table.concat(shell_args, " ")),
-
 		},
 		cwd = vim.fn.expand("%:p:h"),
 		open_in_split = true,
