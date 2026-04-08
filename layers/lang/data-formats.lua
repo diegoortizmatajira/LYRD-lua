@@ -11,6 +11,15 @@ local L = {
 			"VPavliashvili/json-nvim",
 			ft = "json",
 		},
+		{
+			"cenk1cenk2/jq.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"muniftanjim/nui.nvim",
+				"grapp-dev/nui-components.nvim",
+			},
+			opts = {},
+		},
 	},
 	required_mason_packages = {
 		"json-lsp",
@@ -90,14 +99,24 @@ local L = {
 			})
 		end,
 	},
-}
-
-function L.settings()
-	vim.filetype.add({
+	required_filetype_definitions = {
 		filename = {
 			["tasks.json"] = "jsonc",
 			["launch.json"] = "jsonc",
 		},
+	},
+}
+
+function L.run_query()
+	require("jq").run()
+end
+
+function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+	commands.implement("json", {
+		{ cmd.LYRDCodeRunSelection, L.run_query },
+		{ cmd.LYRDCodeRun, L.run_query },
 	})
 end
 
