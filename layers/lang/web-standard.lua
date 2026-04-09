@@ -13,6 +13,20 @@ local L = {
 			},
 			opts = {},
 		},
+		{
+			"ankushbhagats/liveserver.nvim",
+			event = { "BufReadPost", "BufNewFile" },
+			build = "npm i -g live-server",
+			opts = {
+				colortype = "hex", -- hex | hl
+				args = { -- accepts live-server cli arguments.
+					port = 8080,
+					["no-browser"] = false,
+					-- filetypes = "*", -- show lualine component for all files.
+					-- ... add more ...
+				},
+			},
+		},
 	},
 	required_mason_packages = {
 		"html-lsp",
@@ -37,5 +51,34 @@ local L = {
 		}),
 	},
 }
+
+function L.StartDevServer()
+	local liveserver = require("liveserver")
+	vim.ui.input({ prompt = "Enter port number:", default = "3000" }, function(port)
+		local current_dir = vim.fn.getcwd()
+		vim.ui.input(
+			{ prompt = "Folder to serve (leave blank for current directory):", default = current_dir },
+			function(folder)
+				-- Check if the provided folder is valid
+				if folder == "" then
+					folder = current_dir
+				elseif not vim.fn.isdirectory(folder) then
+					vim.notify("Invalid folder path: " .. folder, vim.log.levels.ERROR)
+					return
+				end
+				liveserver.start(folder, { port = tonumber(port) })
+			end
+		)
+	end)
+end
+
+function L.settings()
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+	commands.implement("*", {
+		{ cmd.LYRDDevServerStart, L.StartDevServer },
+		{ cmd.LYRDDevServerStop, ":LiveServerSelect" },
+	})
+end
 
 return declarative_layer.apply(L)

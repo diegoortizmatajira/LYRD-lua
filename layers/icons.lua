@@ -80,6 +80,7 @@ local L = {
 		browser = "󰖟 ",
 		terminal = " ",
 		file_explorer = "󱏓 ",
+		server = " ",
 	},
 	diagnostic = {
 		search = "󰺅 ",
@@ -131,6 +132,8 @@ local L = {
 		replace_in_files = "󰬳 ",
 		run_task = "󱖑 ",
 		delete = "󰗨 ",
+		start = " ",
+		stop = " ",
 	},
 	arrow = {
 		swap = " ",

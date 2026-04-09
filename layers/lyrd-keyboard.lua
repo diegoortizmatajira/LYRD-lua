@@ -302,6 +302,10 @@ function L.keybindings()
 			{ "S", cmd.LYRDBufferSaveAll },
 		}, icons.file.default),
 		menu_header("c", "Code", {
+			menu_header("d", "Development Server", {
+				{ "s", cmd.LYRDDevServerStart },
+				{ "x", cmd.LYRDDevServerStop },
+			}, icons.apps.server),
 			menu_header("g", "Code Generation", {
 				{ "x", cmd.LYRDCodeGenerate },
 				{ "g", cmd.LYRDCodeProduceGetter },
@@ -338,7 +342,7 @@ function L.keybindings()
 			{ "b", cmd.LYRDCodeBuildAll },
 			{ "c", cmd.LYRDCodeTooling },
 			{ "C", cmd.LYRDCodeGlobalCheck },
-			{ "d", cmd.LYRDCodeAddDocumentation },
+			{ "D", cmd.LYRDCodeAddDocumentation },
 			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },
 			{ "i", cmd.LYRDCodeFixImports },
