@@ -84,7 +84,6 @@ function L.settings()
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement("*", {
 		{ cmd.LYRDDevServerStart, L.StartDevServer },
-		{ cmd.LYRDDevServerStop, ":OverseerOpen" },
 	})
 end
 
