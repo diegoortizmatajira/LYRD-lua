@@ -23,6 +23,8 @@
   - [Database Management](#database-management)
   - [Grammar Checking](#grammar-checking)
   - [Static Website Development](#static-website-development)
+  - [Internationalization (i18n)](#internationalization-i18n)
+  - [Development Server](#development-server)
   - [Tmux Integration](#tmux-integration)
   - [Media and Images](#media-and-images)
   - [Neovide Support](#neovide-support)
@@ -483,21 +485,37 @@ container-based development.
 - **Dockerfile support**: Syntax highlighting and language server for
   Dockerfiles
 - **Docker Compose**: Full support for compose files with service visualization
-- **Linting**: Catch Dockerfile problems with hadolint
+  and automatic filetype detection
+- **Run services from compose files**: Place your cursor on a service in a
+  Docker Compose file and run commands (up, down, start, stop, restart, build,
+  pull, logs) directly on that service or the entire compose file
+- **Service indicators**: Visual signs in the gutter mark each service defined
+  in your compose file
+- **Linting**: Catch Dockerfile problems with hadolint (Linux)
 - **LazyDocker integration**: Visual Docker management in a terminal UI
 - **Quick actions**: Start, stop, and manage containers from your editor
 
 **Kubernetes Features**:
 
+- **Run manifests from the editor**: Apply, delete, describe, create, or diff
+  Kubernetes manifests directly from the current file — either the whole file or
+  the individual YAML document under the cursor
+- **Dry-run support**: Test manifests with client-side or server-side dry-run
+  before applying
 - **k9s integration**: Full-featured Kubernetes cluster management
-- **Helm support**: Work with Helm charts and templates
+- **Helm support**: Work with Helm charts and templates with dedicated filetype
+  detection and language server
 - **YAML validation**: Ensure your Kubernetes configs are correct
-- **Quick deployment**: Deploy and manage apps from your editor
+- **Smart filetype detection**: Automatically recognizes manifests in common
+  directory patterns (k8s/, kubernetes/, manifests/, deploy/)
 
 **How it helps you**:
 
-- **Faster development**: Manage containers without leaving your editor
-- **Catch issues early**: Linting prevents deployment problems
+- **Faster development**: Manage containers and deployments without leaving your
+  editor
+- **Run services in place**: Execute Docker Compose commands or apply Kubernetes
+  manifests from the file you are editing
+- **Catch issues early**: Linting and dry-run prevent deployment problems
 - **Visual management**: See your containers and clusters clearly
 - **Simplified workflows**: Common Docker/K8s operations are just keystrokes
   away
@@ -505,6 +523,8 @@ container-based development.
 
 **Real-world benefit**: Container-based development becomes as smooth as local
 development. You can develop, test, and deploy containerized apps efficiently.
+Running a Docker Compose service or applying a Kubernetes manifest is as simple
+as triggering the run command on the file you are editing.
 
 ### CI/CD Pipeline Support
 
@@ -658,6 +678,58 @@ polished without needing to copy text into an external grammar tool.
 
 **Real-world benefit**: Static site development becomes as smooth as any other
 project type, with all Hugo commands accessible from your editor.
+
+### Internationalization (i18n)
+
+**What it does**: Provides inline translation status and diagnostics for
+internationalized web applications.
+
+**Features**:
+
+- **Inline translation preview**: See translated text directly in your code as
+  virtual text annotations
+- **Primary language display**: Shows the primary language value next to
+  translation keys
+- **Auto-hover**: Automatically displays translation details when your cursor
+  rests on a key
+- **Translation diagnostics**: Compare translations against the primary language
+  to find missing or outdated entries
+
+**How it helps you**:
+
+- **Stay in context**: See translations without switching to JSON files or
+  external tools
+- **Catch missing translations**: Identify gaps in your translation coverage
+  early
+- **Faster development**: No need to cross-reference translation files manually
+- **Better quality**: Ensure all languages are complete before shipping
+
+**Real-world benefit**: Managing translations in multi-language web applications
+becomes much less error-prone. You see the actual translated text right next to
+the keys in your code, catching issues before they reach users.
+
+### Development Server
+
+**What it does**: Starts a local development server for previewing web projects
+directly from your editor.
+
+**Features**:
+
+- **Live reload**: Uses live-server for automatic browser refresh on file
+  changes
+- **Configurable port**: Choose which port to serve on (defaults to 3000)
+- **Custom folder**: Serve any directory, not just the project root
+- **Task integration**: Runs as an Overseer task with real-time output
+
+**How it helps you**:
+
+- **Quick previews**: Launch a dev server without leaving Neovim
+- **Flexible setup**: Serve any folder on any port
+- **Live feedback**: See changes in your browser instantly as you edit
+
+**Real-world benefit**: Frontend and static site development becomes faster.
+Start a live-reloading server with a single keybinding and iterate on your HTML,
+CSS, and JavaScript with immediate visual feedback.
 
 ### Tmux Integration
 
@@ -876,6 +948,10 @@ learning
 - **Package Management**: npm, yarn, pnpm support
 - **HTML/CSS**: Emmet support for rapid HTML writing
 - **Auto-tags**: Automatic closing tags for HTML/JSX
+- **Internationalization**: Inline translation previews and diagnostics via
+  i18n-status
+- **Development Server**: Start a live-reloading local server for previewing web
+  projects
 
 **How it helps you**:
 
@@ -884,6 +960,8 @@ learning
 - Component-based development with framework-specific tools
 - Fast refactoring across multiple files
 - Test-driven development with visual test runners
+- See translations inline and catch missing i18n keys early
+- Preview web projects with live reload without leaving Neovim
 
 **Perfect for**: Frontend development, full-stack JavaScript, Node.js
 applications, modern web frameworks (React, Vue, Angular, Svelte)
@@ -1112,7 +1190,7 @@ publishing
 - **Git**: For cloning the repository and managing plugins
 - **A Nerd Font**: For icons to display correctly (recommended: JetBrains Mono
   Nerd Font, FiraCode Nerd Font, or Hack Nerd Font)
-- **ripgrep**: For fast text searching (`<Space>s/` and `<Ctrl-t>`)
+- **ripgrep**: For fast text searching
 - **fd**: For fast file finding (optional but recommended)
 - **Node.js**: Required for many language servers
 - **Python 3**: Required for Python development and some plugins
@@ -1162,11 +1240,8 @@ LYRD will prompt you to install language servers and tools as needed. You can
 also manually install tools:
 
 1. Open Neovim
-2. Press `<Space>pt` - This opens Mason (the tool manager)
-3. Browse and install the tools you need:
-   - Press `i` to install a tool
-   - Press `u` to update a tool
-   - Press `X` to uninstall a tool
+2. Run the `LYRDToolManager` command to open Mason (the tool manager)
+3. Browse and install the tools you need
 
 **Common tools to install**:
 
@@ -1204,7 +1279,7 @@ personal configuration is stored in:
 
 To edit your local configuration:
 
-1. Press `<Space>pl` in Neovim
+1. Run the `LYRDEditLocalConfig` command in Neovim
 2. Or manually create/edit the file
 
 ### Skipping Layers
@@ -1257,11 +1332,9 @@ Codeium, TabNine).
 
 ### Theme Customization
 
-LYRD comes with multiple themes. To cycle through themes:
-
-- Press `,t` or `<Space>vt`
-
-To apply the current theme permanently, press `<Space>vT`
+LYRD comes with multiple themes. Use the `LYRDApplyNextTheme` command to cycle
+through themes, and `LYRDApplyCurrentTheme` to apply the current theme
+permanently.
 
 ### Project-Specific Settings
 
@@ -1284,7 +1357,7 @@ git pull
 
 Then in Neovim, update plugins:
 
-1. Press `<Space>pu` - Update all plugins
+1. Run the `LYRDPluginsUpdate` command to update all plugins
 2. Restart Neovim
 
 ### Troubleshooting
@@ -1296,7 +1369,7 @@ Then in Neovim, update plugins:
 
 **Language features not working?**
 
-- Install the language server via Mason: `<Space>pt`
+- Install the language server via Mason using the `LYRDToolManager` command
 - Check `:LspInfo` to see if the server is running
 - Run `:checkhealth lsp`
 
@@ -1313,23 +1386,25 @@ Then in Neovim, update plugins:
 
 ### Getting Help
 
-- **In-editor help**: Press `<Space>?` to see buffer-specific keymaps
-- **Command palette**: Press `<Space>s,` to search all available commands
-- **Mason tools**: Press `<Space>pt` to manage language servers and tools
+- **In-editor help**: Run `LYRDSearchKeyMappings` to see buffer-specific keymaps
+- **Command palette**: Run `LYRDSearchCommands` to search all available commands
+- **Mason tools**: Run `LYRDToolManager` to manage language servers and tools
 - **Health check**: Run `:checkhealth LYRD` to diagnose issues
 
 ### Learning Resources
 
 **Start small**: Focus on learning a few commands at a time:
 
-1. **Week 1**: File navigation (`<Ctrl-p>`, `<Ctrl-t>`, file tree with `F2`)
-2. **Week 2**: Code navigation (`gd`, `gr`, `K` for hover info)
-3. **Week 3**: Running and testing (`<Space>cx`, `<Space>tt`)
-4. **Week 4**: Git integration (`<Space>gs`, `<Space>gc`)
-5. **Week 5**: Debugging (`F5`, `F9`, `F10`)
+1. **Week 1**: File navigation and search
+2. **Week 2**: Code navigation (go to definition, find references, hover docs)
+3. **Week 3**: Running and testing
+4. **Week 4**: Git integration
+5. **Week 5**: Debugging
 
-**Explore gradually**: Press `<Space>` or `,` and pause to see what commands are
-available. The which-key popup will show you all options with descriptions.
+**Explore gradually**: Press a leader key and pause to see what commands are
+available. The which-key popup will show you all options with descriptions. See
+the [Keyboard-Driven Workflow](#keyboard-driven-workflow) section for detailed
+shortcut mappings.
 
 **Customize to your needs**: Don't be afraid to skip features you don't use and
 add your own customizations.
