@@ -75,6 +75,7 @@ local L = {
 		LYRDDebugToggleUI = Command:new("Debug UI", nil, icons.debug.breakpoint),
 		LYRDDevServerStart = Command:new("Start development server", nil, icons.apps.server),
 		LYRDDevExposeLocalServer = Command:new("Expose local server to the web", nil, icons.apps.exposed_server),
+		LYRDScanForSecrets = Command:new("Scan current workspace for secrets", nil, icons.other.secret),
 		LYRDDiagnosticLinesToggle = Command:new("Toggle diagnostic lines", nil, icons.action.toggle_on),
 		LYRDEditTextCase = Command:new("Change text case", nil, icons.other.text_case),
 		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),

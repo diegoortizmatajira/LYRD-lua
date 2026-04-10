@@ -39,6 +39,7 @@ local L = {
 	required_executables = {
 		"live-server",
 		"ngrok",
+		"trufflehog",
 	},
 }
 
@@ -83,7 +84,29 @@ local function expose_server(port)
 	})
 end
 
-function L.StartDevServer()
+function L.scan_for_secrets()
+	local command = "trufflehog"
+	if vim.fn.executable(command) == 0 then
+		vim.notify("trufflehog is not installed. Please install it.", vim.log.levels.ERROR)
+		return
+	end
+	local tasks = require("LYRD.layers.tasks")
+	tasks.run_task({
+		name = "Scanning for secrets with TruffleHog",
+		cmd = command,
+		args = {
+			"filesystem",
+			"--json",
+			"--force-skip-binaries",
+			"--force-skip-archives",
+			".",
+		},
+		open_in_split = true,
+		focus = true,
+	})
+end
+
+function L.start_dev_server()
 	vim.ui.input({ prompt = "Enter port number:", default = "3000" }, function(port)
 		local current_dir = vim.fn.getcwd()
 		vim.ui.input(
@@ -102,7 +125,7 @@ function L.StartDevServer()
 	end)
 end
 
-function L.ExposeLocalServer()
+function L.expose_local_server()
 	vim.ui.input({ prompt = "Enter port to expose:", default = "3000" }, function(port)
 		expose_server(port)
 	end)
@@ -112,14 +135,15 @@ function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement("*", {
-		{ cmd.LYRDDevServerStart, L.StartDevServer },
-		{ cmd.LYRDDevExposeLocalServer, L.ExposeLocalServer },
+		{ cmd.LYRDDevServerStart, L.start_dev_server },
+		{ cmd.LYRDDevExposeLocalServer, L.expose_local_server },
 		{
 			cmd.LYRDSearchMacros,
 			function()
 				require("telescope").extensions.macroni.saved_macros()
 			end,
 		},
+		{ cmd.LYRDScanForSecrets, L.scan_for_secrets },
 	})
 end
 

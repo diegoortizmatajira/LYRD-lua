@@ -481,6 +481,7 @@ function L.keybindings()
 			{ "T", cmd.LYRDTerminalList },
 			{ "s", cmd.LYRDDevServerStart },
 			{ "S", cmd.LYRDDevExposeLocalServer },
+			{ "x", cmd.LYRDScanForSecrets },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
 			{ "h", cmd.LYRDHardModeToggle },
