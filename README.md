@@ -173,6 +173,8 @@ feedback.
 - **Floating Terminals**: Pop-up terminals that don't disturb your layout
 - **Focus Mode**: Dims everything except the current code block for
   distraction-free coding
+- **Inline Color Preview**: Displays color swatches next to hex, RGB, and other
+  color values in your code
 
 **How it helps you**:
 
@@ -234,7 +236,12 @@ projects.
   etc.)
 - **Symbol search**: Find any function or class in your project by name
 - **Recent files**: Quickly reopen files you were just working on
-- **Bookmarks**: Mark important locations in your code and jump back to them
+- **Bookmarks**: Mark important locations in your code and jump back to them,
+  with visual indicators in the sign column for marks
+- **TODO Search**: Find and navigate all TODO, FIXME, HACK, and NOTE comments
+  across your project with highlighted annotations
+- **Saved Macros**: Save and search recorded macros via Telescope for reuse
+  across sessions
 - **File browser**: Visual tree of your project structure
 
 **How it helps you**:
@@ -720,12 +727,18 @@ directly from your editor.
 - **Configurable port**: Choose which port to serve on (defaults to 3000)
 - **Custom folder**: Serve any directory, not just the project root
 - **Task integration**: Runs as an Overseer task with real-time output
+- **Server exposure**: Expose local servers to the internet via ngrok tunnels
+  for sharing or testing on other devices
+- **Environment variables**: Load and inspect `.env` files directly from the
+  editor
 
 **How it helps you**:
 
 - **Quick previews**: Launch a dev server without leaving Neovim
 - **Flexible setup**: Serve any folder on any port
 - **Live feedback**: See changes in your browser instantly as you edit
+- **Share instantly**: Expose your local server for external access with one
+  command
 
 **Real-world benefit**: Frontend and static site development becomes faster.
 Start a live-reloading server with a single keybinding and iterate on your HTML,
