@@ -1,4 +1,4 @@
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 
 --- @class LYRD.setup.LocalConfig
 --- @field skip_layers? string[] List of layers to skip loading

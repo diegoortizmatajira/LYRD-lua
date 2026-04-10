@@ -2,7 +2,7 @@ local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 local goku = require("LYRD.shared.resources.goku")
 local title = require("LYRD.shared.resources.title")
 

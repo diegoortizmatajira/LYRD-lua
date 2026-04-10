@@ -1,4 +1,4 @@
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 local icons = require("LYRD.layers.icons")
 
 local UI = {}

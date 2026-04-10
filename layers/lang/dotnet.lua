@@ -112,7 +112,7 @@ local L = {
 						end
 						local path = ""
 						local home_dir = vim.fn.expand("~")
-						local utils = require("LYRD.utils")
+						local utils = require("LYRD.shared.utils")
 						if require("easy-dotnet.extensions").isWindows() then
 							path = utils.join_paths(
 								home_dir,

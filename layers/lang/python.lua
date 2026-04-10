@@ -86,7 +86,7 @@ local L = {
 
 -- Opens the .env file in the current directory
 local function open_dotenv()
-	local utils = require("LYRD.utils")
+	local utils = require("LYRD.shared.utils")
 	utils.open_or_create_file(".env")
 end
 

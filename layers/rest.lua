@@ -47,7 +47,7 @@ end
 
 --- Returns the closest environment file for the current working directory. Starts with the current file directory and checks parent directories until it finds the file or reaches the root.
 function L.get_closest_environment_file()
-	local utils = require("LYRD.utils")
+	local utils = require("LYRD.shared.utils")
 	local env_file = "http-client.env.json"
 
 	local function file_exists(path)

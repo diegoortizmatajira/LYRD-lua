@@ -22,7 +22,7 @@ local L = {}
 --- Runs the code using the provided options.
 --- @param opts LYRD.RunCodeOptions
 function L.run_selection(opts)
-	local utils = require("LYRD.utils")
+	local utils = require("LYRD.shared.utils")
 	local selected_text = nil
 	--- Attempts to use the visually selected text as the code to run if
 	--- use_visual_selection is true.

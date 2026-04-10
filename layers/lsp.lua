@@ -1,5 +1,5 @@
 local setup = require("LYRD.setup")
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")

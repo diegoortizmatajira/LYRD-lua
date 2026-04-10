@@ -3,8 +3,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 local lsp = require("LYRD.layers.lsp")
 local ts = require("LYRD.layers.treesitter")
 local icons = require("LYRD.layers.icons")
-require("LYRD.utils.signs")
-local utils = require("LYRD.utils")
+require("LYRD.shared.utils.signs")
+local utils = require("LYRD.shared.utils")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 

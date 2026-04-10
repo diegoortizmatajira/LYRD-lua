@@ -1,7 +1,7 @@
 local setup = require("LYRD.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 
 ---@class LYRD.layer.Treesitter: LYRD.setup.Module
 local L = {

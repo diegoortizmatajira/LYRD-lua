@@ -1,5 +1,5 @@
 local setup = require("LYRD.setup")
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 
 ---@class LYRD.layer.FileTemplates: LYRD.setup.Module
 local L = {

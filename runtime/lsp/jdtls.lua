@@ -1,5 +1,5 @@
 local lsp = require("LYRD.layers.lsp")
-local join = require("LYRD.utils").join_paths
+local join = require("LYRD.shared.utils").join_paths
 local jdtls = require("jdtls")
 local jdtls_install = lsp.get_pkg_path("jdtls")
 
