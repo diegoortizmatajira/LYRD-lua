@@ -25,6 +25,7 @@ end
 --- @field name string
 --- @field open_in_split boolean?
 --- @field focus boolean?
+--- @field auto_close boolean?
 --- @field diagnostics_parser table?
 
 --- Runs a task in a terminal
@@ -42,6 +43,11 @@ function L.run_task(opts)
 				},
 			},
 		})
+		table.insert(components, 2, {
+			"on_result_diagnostics_quickfix",
+			open = true,
+			close = true,
+		})
 	end
 	if opts.open_in_split then
 		table.insert(components, 1, {
@@ -51,17 +57,22 @@ function L.run_task(opts)
 			on_complete = "always",
 		})
 	end
-	overseer
-		.new_task({
-			cmd = opts.cmd,
-			args = opts.args,
-			env = opts.env,
-			cwd = opts.cwd,
-			name = opts.name,
-			strategy = "terminal",
-			components = components,
-		})
-		:start()
+	local task = overseer.new_task({
+		cmd = opts.cmd,
+		args = opts.args,
+		env = opts.env,
+		cwd = opts.cwd,
+		name = opts.name,
+		strategy = "terminal",
+		components = components,
+	})
+	if opts.auto_close then
+		task:subscribe("on_complete", function()
+			require("overseer.window").close()
+			return false
+		end)
+	end
+	task:start()
 end
 
 function L.plugins()

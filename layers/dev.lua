@@ -84,6 +84,33 @@ local function expose_server(port)
 	})
 end
 
+local function parse_trufflehog_line(line)
+	local ok, result = pcall(vim.json.decode, line)
+	if not ok or type(result) ~= "table" then
+		return
+	end
+	local metadata = result.SourceMetadata
+	if not metadata or not metadata.Data then
+		return
+	end
+	local file, lnum
+	for _, source_data in pairs(metadata.Data) do
+		if type(source_data) == "table" then
+			file = source_data.file
+			lnum = source_data.line
+			break
+		end
+	end
+	if not file then
+		return
+	end
+	local detector = result.DetectorName or "Unknown"
+	local verified = result.Verified and "verified" or "unverified"
+	local redacted = result.Redacted or ""
+	local text = string.format("[%s] %s secret found: %s", verified, detector, redacted)
+	return file, tostring(lnum or 0), "0", text
+end
+
 function L.scan_for_secrets()
 	local command = "trufflehog"
 	if vim.fn.executable(command) == 0 then
@@ -101,8 +128,10 @@ function L.scan_for_secrets()
 			"--force-skip-archives",
 			".",
 		},
+		diagnostics_parser = { "extract", parse_trufflehog_line, "filename", "lnum", "col", "text" },
 		open_in_split = true,
-		focus = true,
+		auto_close = true,
+		focus = false,
 	})
 end
 
