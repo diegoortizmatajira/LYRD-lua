@@ -2,7 +2,7 @@ local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.ui.special_type
+---@class LYRD.shared.ui.special_type
 ---@field type_id string
 ---@field title? string
 ---@field allow_saving? boolean
@@ -14,14 +14,14 @@ local L = {
 	name = "Buffer Management",
 
 	unskippable = true,
-	---@type LYRD.ui.special_type[]
+	---@type LYRD.shared.ui.special_type[]
 	special_filenames = {
 
 		{ type_id = "fugitive:" },
 		{ type_id = "diffview:" },
 		{ type_id = "kulala:" },
 	},
-	---@type LYRD.ui.special_type[]
+	---@type LYRD.shared.ui.special_type[]
 	special_filetypes = {
 		-- You can add entries here to mark special filetypes that have a header in their
 		-- sidebar or that should close with their window (unless the value true is provided)
@@ -56,7 +56,7 @@ local L = {
 		{ type_id = "trouble" },
 		{ type_id = "tsplayground", title = "Treesitter Playground" },
 	},
-	---@type LYRD.ui.special_type[]
+	---@type LYRD.shared.ui.special_type[]
 	special_buffertypes = {
 		{ type_id = "terminal" },
 	},

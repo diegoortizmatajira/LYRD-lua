@@ -1,4 +1,3 @@
-local utils = require("LYRD.shared.utils")
 local icons = require("LYRD.layers.icons")
 
 local UI = {}
@@ -190,7 +189,6 @@ function UI.show(settings)
 	local opts = { buffer = buf, nowait = true, silent = true }
 	vim.keymap.set("n", "<CR>", toggle_current, opts)
 	vim.keymap.set("n", "<Space>", toggle_current, opts)
-	vim.keymap.set("n", "s", save, opts)
 	vim.keymap.set("n", "S", save, opts)
 	vim.keymap.set("n", "q", close_win, opts)
 	vim.keymap.set("n", "<Esc>", close_win, opts)

@@ -407,7 +407,7 @@ function L.settings()
 		{
 			cmd.LYRDEditLocalConfig,
 			function()
-				require("LYRD.ui.local_config").show(setup.config)
+				require("LYRD.shared.ui.local_config").show(setup.config)
 			end,
 		},
 	})
