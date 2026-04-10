@@ -1,10 +1,9 @@
-local setup = require("LYRD.setup")
+local declarative_layer = require("LYRD.shared.declarative_layer")
 
----@class LYRD.layer.Development: LYRD.setup.Module
-local L = { name = "Development Tools" }
-
-function L.plugins()
-	setup.plugin({
+--- @type table|LYRD.setup.DeclarativeLayer
+local L = {
+	name = "Development Tools",
+	required_plugins = {
 		{
 			-- Adds support for commenting code with TODOs, FIXMEs, etc.
 			"folke/todo-comments.nvim",
@@ -36,8 +35,12 @@ function L.plugins()
 			event = "VeryLazy",
 			opts = {},
 		},
-	})
-end
+	},
+	required_executables = {
+		"live-server",
+		"ngrok",
+	},
+}
 
 local function run_local_server(port, folder)
 	local command = "live-server"
@@ -55,6 +58,25 @@ local function run_local_server(port, folder)
 		args = {
 			string.format("--port=%s", port),
 			folder,
+		},
+		open_in_split = true,
+		focus = true,
+	})
+end
+
+local function expose_server(port)
+	local command = "ngrok"
+	if vim.fn.executable(command) == 0 then
+		vim.notify("ngrok is not installed. Please install it.", vim.log.levels.ERROR)
+		return
+	end
+	local tasks = require("LYRD.layers.tasks")
+	tasks.run_task({
+		name = string.format("Exposing Local server (port: %s)", port),
+		cmd = command,
+		args = {
+			"http",
+			port,
 		},
 		open_in_split = true,
 		focus = true,
@@ -80,11 +102,18 @@ function L.StartDevServer()
 	end)
 end
 
+function L.ExposeLocalServer()
+	vim.ui.input({ prompt = "Enter port to expose:", default = "3000" }, function(port)
+		expose_server(port)
+	end)
+end
+
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	commands.implement("*", {
 		{ cmd.LYRDDevServerStart, L.StartDevServer },
+		{ cmd.LYRDDevExposeLocalServer, L.ExposeLocalServer },
 		{
 			cmd.LYRDSearchMacros,
 			function()
@@ -94,4 +123,4 @@ function L.settings()
 	})
 end
 
-return L
+return declarative_layer.apply(L)

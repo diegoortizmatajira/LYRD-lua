@@ -480,6 +480,7 @@ function L.keybindings()
 			{ "t", cmd.LYRDTerminal },
 			{ "T", cmd.LYRDTerminalList },
 			{ "s", cmd.LYRDDevServerStart },
+			{ "S", cmd.LYRDDevExposeLocalServer },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
 			{ "h", cmd.LYRDHardModeToggle },

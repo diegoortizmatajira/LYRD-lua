@@ -81,6 +81,7 @@ local L = {
 		terminal = " ",
 		file_explorer = "󱏓 ",
 		server = " ",
+		exposed_server = "󰒒 ",
 	},
 	diagnostic = {
 		search = "󰺅 ",
