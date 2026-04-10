@@ -1,7 +1,7 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 local filetypes = { "c", "cpp", "h" }
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "C and C++ Languages",
 	required_plugins = {

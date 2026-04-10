@@ -1,4 +1,4 @@
---- @class LYRD.layer.Commands: LYRD.setup.Module
+--- @class LYRD.layer.Commands: LYRD.shared.setup.Module
 local L = {
 	name = "Command Registration and Management",
 	vscode_compatible = true,

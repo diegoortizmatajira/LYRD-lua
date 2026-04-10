@@ -1,6 +1,6 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
----@class LYRD.layer.General: LYRD.setup.Module
+---@class LYRD.layer.General: LYRD.shared.setup.Module
 local L = {
 	name = "General Settings",
 	vscode_compatible = true,

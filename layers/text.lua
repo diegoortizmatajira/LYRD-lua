@@ -1,6 +1,6 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
----@class LYRD.layer.Text: LYRD.setup.Module
+---@class LYRD.layer.Text: LYRD.shared.setup.Module
 local L = { name = "Text functions" }
 
 function L.plugins()

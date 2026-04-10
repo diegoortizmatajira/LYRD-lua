@@ -1,9 +1,9 @@
 local commands = require("LYRD.layers.commands")
 local Command = commands.Command
 local icons = require("LYRD.layers.icons")
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
----@class LYRD.layer.LYRDCommands: LYRD.setup.Module
+---@class LYRD.layer.LYRDCommands: LYRD.shared.setup.Module
 local L = {
 	name = "LYRD Commands",
 	vscode_compatible = true,

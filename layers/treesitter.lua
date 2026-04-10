@@ -1,9 +1,9 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local utils = require("LYRD.shared.utils")
 
----@class LYRD.layer.Treesitter: LYRD.setup.Module
+---@class LYRD.layer.Treesitter: LYRD.shared.setup.Module
 local L = {
 	name = "Treesitter Parsing",
 	unskippable = true,

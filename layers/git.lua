@@ -29,7 +29,7 @@ local function current_branch()
 	return head
 end
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Git Integration",
 	required_plugins = {

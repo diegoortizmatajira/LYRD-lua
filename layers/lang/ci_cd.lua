@@ -1,6 +1,6 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "CI/CD YAML: GitLab CI, GitHub Actions, Azure Pipelines",
 	required_mason_packages = {

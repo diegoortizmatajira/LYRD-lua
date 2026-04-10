@@ -1,15 +1,15 @@
 local utils = require("LYRD.shared.utils")
 
---- @class LYRD.setup.LocalConfig
+--- @class LYRD.shared.setup.LocalConfig
 --- @field skip_layers? string[] List of layers to skip loading
 ---
----@class LYRD.setup.Settings: LYRD.setup.LocalConfig
+---@class LYRD.shared.setup.Settings: LYRD.shared.setup.LocalConfig
 ---@field layers string[] contains the list of layers provided in init script
----@field loaded_layers? LYRD.setup.Module[] contains the list of names of the loaded layers
+---@field loaded_layers? LYRD.shared.setup.Module[] contains the list of names of the loaded layers
 ---@field plugins? LazySpec[] contains the list of plugins loaded
 ---@field commands? table<string, table<string, string|function>> contains the list of implemented commands
 
----@class LYRD.setup.Module
+---@class LYRD.shared.setup.Module
 ---@field name string Name of the layer
 ---@field unskippable? nil|boolean If true, the layer cannot be skipped
 ---@field condition? nil|boolean Condition to check if the layer should be loaded
@@ -27,7 +27,7 @@ local setup = {
 	runtime_path = utils.get_lyrd_path("runtime"),
 	data_path = utils.get_lyrd_data_path(),
 	local_config_path = utils.get_lyrd_data_path("lyrd-local.lua"),
-	---@type LYRD.setup.Settings
+	---@type LYRD.shared.setup.Settings
 	config = {
 		commands = {},
 		plugins = {},
@@ -128,7 +128,7 @@ end
 --- condition, and verifies compatibility with VSCode if applicable.
 ---
 --- @param layer_module string The module name of the layer to load.
---- @return LYRD.setup.Module|nil The loaded layer module or nil if it should not be loaded
+--- @return LYRD.shared.setup.Module|nil The loaded layer module or nil if it should not be loaded
 local function load_if_should_be_loaded(layer_module)
 	--- Check if the layer is in the skip list (doesn't even load it)
 	if vim.list_contains(setup.config.skip_layers or {}, layer_module) then
@@ -144,7 +144,7 @@ local function load_if_should_be_loaded(layer_module)
 		vim.notify("Layer '" .. layer_module .. "' did not return a table", vim.log.levels.WARN)
 		return nil
 	end
-	--- @type LYRD.setup.Module
+	--- @type LYRD.shared.setup.Module
 	--- Check if the layer has a condition and if it is not met
 	if layer.condition ~= nil and not layer.condition then
 		return nil
@@ -189,7 +189,7 @@ end
 --- commands are associated with specified filetypes and are ensured to execute only once
 --- per filetype. Autocommands are created dynamically to manage these filetype-specific actions.
 ---
---- @param s LYRD.setup.Settings The setup configuration table containing layers, plugins, and commands.
+--- @param s LYRD.shared.setup.Settings The setup configuration table containing layers, plugins, and commands.
 function setup.load(s)
 	setup.config = vim.tbl_deep_extend("force", setup.config, s)
 	read_local_config()

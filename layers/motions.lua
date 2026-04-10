@@ -1,11 +1,11 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local c = commands.command_shortcut
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Motions: LYRD.setup.Module
+---@class LYRD.layer.Motions: LYRD.shared.setup.Module
 local L = {
 	name = "Navigation Motions",
 	vscode_compatible = true,

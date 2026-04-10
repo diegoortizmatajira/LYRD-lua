@@ -1,4 +1,4 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local keyboard = require("LYRD.layers.lyrd-keyboard")
@@ -9,7 +9,7 @@ local ai_providers = {
 	TABNINE = "tabnine",
 }
 
----@class LYRD.layer.AIDev: LYRD.setup.Module
+---@class LYRD.layer.AIDev: LYRD.shared.setup.Module
 local L = {
 	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,

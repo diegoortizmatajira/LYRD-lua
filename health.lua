@@ -1,5 +1,5 @@
 local M = {}
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
 function M.check_executable(filename)
 	if vim.fn.executable(filename) then

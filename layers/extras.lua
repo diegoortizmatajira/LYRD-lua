@@ -1,8 +1,8 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.Extras: LYRD.setup.Module
+---@class LYRD.layer.Extras: LYRD.shared.setup.Module
 local L = { name = "Extra Utilities" }
 
 function L.plugins()

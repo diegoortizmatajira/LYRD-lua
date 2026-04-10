@@ -10,13 +10,13 @@ return function (buf)
     }
 end
 ---
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 local lsp = require("LYRD.layers.lsp")
 
----@class LYRD.layer.${module_name}: LYRD.setup.Module
+---@class LYRD.layer.${module_name}: LYRD.shared.setup.Module
 local L = { name = "${module_name}" }
 
 function L.plugins()

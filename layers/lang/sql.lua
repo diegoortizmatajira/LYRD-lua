@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 local default_dialect = "ansi"
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "SQL language",
 	required_plugins = {

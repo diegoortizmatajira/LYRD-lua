@@ -2,7 +2,7 @@ local icons = require("LYRD.layers.icons")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 local dotnet_languages = { "cs", "vb" }
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = ".NET languages: C#, F#, VB",
 	required_plugins = {

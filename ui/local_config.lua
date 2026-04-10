@@ -32,7 +32,7 @@ end
 --- Writes the local config file with the given skip_layers list.
 --- @param skip_layers string[] List of layer module paths to skip
 local function save_local_config(skip_layers)
-	local setup = require("LYRD.setup")
+	local setup = require("LYRD.shared.setup")
 	local path = setup.local_config_path
 	local dir = vim.fn.fnamemodify(path, ":h")
 	if vim.fn.isdirectory(dir) == 0 then
@@ -40,9 +40,9 @@ local function save_local_config(skip_layers)
 	end
 
 	local lines = {
-		'require("LYRD.setup")',
+		'require("LYRD.shared.setup")',
 		"",
-		"--- @type LYRD.setup.LocalConfig",
+		"--- @type LYRD.shared.setup.LocalConfig",
 		"return {",
 		"\tskip_layers = {",
 	}
@@ -77,7 +77,7 @@ local function line_to_layer_index(line_nr, header_count)
 end
 
 --- Displays a dialog for selecting the local configuration to use.
---- @param settings LYRD.setup.Settings The current configuration settings.
+--- @param settings LYRD.shared.setup.Settings The current configuration settings.
 function UI.show(settings)
 	-- Filter out unskippable layers and collect display names
 	local layers = {}

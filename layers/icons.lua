@@ -1,6 +1,6 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
----@class LYRD.layer.Icons: LYRD.setup.Module
+---@class LYRD.layer.Icons: LYRD.shared.setup.Module
 local L = {
 	name = "Icons",
 	vscode_compatible = true,

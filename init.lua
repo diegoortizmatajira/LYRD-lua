@@ -1,4 +1,4 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
 setup.load({
 	layers = {

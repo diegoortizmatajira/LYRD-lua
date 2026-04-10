@@ -8,7 +8,7 @@ local utils = require("LYRD.shared.utils")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Docker Containers and Compose",
 	required_mason_packages = {

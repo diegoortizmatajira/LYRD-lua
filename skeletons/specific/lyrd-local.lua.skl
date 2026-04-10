@@ -1,6 +1,6 @@
-require("LYRD.setup")
+require("LYRD.shared.setup")
 
---- @type LYRD.setup.LocalConfig
+--- @type LYRD.shared.setup.LocalConfig
 return {
 	skip_layers = {
 	    --Include layer names to skip here

@@ -11,7 +11,7 @@ local HELM_FILETYPE = "yaml.helm" -- Using specifically "helm" as plugin attache
 --- @field command string The kubectl subcommand.
 --- @field args? string[] Extra arguments.
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Kubernetes",
 	required_mason_packages = {

@@ -1,4 +1,4 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
@@ -9,7 +9,7 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 ---@field prevent_closing? boolean
 ---@field map_q? boolean
 
----@class LYRD.layer.Buffers: LYRD.setup.Module
+---@class LYRD.layer.Buffers: LYRD.shared.setup.Module
 local L = {
 	name = "Buffer Management",
 

@@ -1,11 +1,11 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.LYRDKeyboard: LYRD.setup.Module
+---@class LYRD.layer.LYRDKeyboard: LYRD.shared.setup.Module
 local L = {
 	name = "LYRD Keyboard",
 	vscode_compatible = true,
