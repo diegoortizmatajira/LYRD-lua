@@ -25,6 +25,7 @@
   - [Static Website Development](#static-website-development)
   - [Internationalization (i18n)](#internationalization-i18n)
   - [Development Server](#development-server)
+  - [Secret Scanning](#secret-scanning)
   - [Tmux Integration](#tmux-integration)
   - [Media and Images](#media-and-images)
   - [Neovide Support](#neovide-support)
@@ -743,6 +744,34 @@ directly from your editor.
 **Real-world benefit**: Frontend and static site development becomes faster.
 Start a live-reloading server with a single keybinding and iterate on your HTML,
 CSS, and JavaScript with immediate visual feedback.
+
+### Secret Scanning
+
+**What it does**: Scans your project for accidentally committed secrets,
+credentials, and API keys using TruffleHog.
+
+**Features**:
+
+- **Filesystem scanning**: Scans the current working directory for secrets using
+  TruffleHog's filesystem mode
+- **Diagnostics integration**: Results appear as Neovim diagnostics, allowing
+  you to jump between findings with quickfix navigation
+- **Verified vs unverified**: Each finding indicates whether the secret was
+  verified as active or just a potential match
+- **Detector details**: Shows which type of secret was detected (e.g., AWS keys,
+  GitHub tokens, private keys) along with a redacted preview
+- **Task integration**: Runs as an Overseer task with real-time output and
+  auto-closes when the scan completes
+
+**How it helps you**:
+
+- **Catch leaks early**: Find secrets before they reach a public repository
+- **Quick navigation**: Jump directly to the file and line containing the secret
+- **Non-blocking**: The scan runs in the background so you can keep working
+
+**Real-world benefit**: Prevent credential leaks by scanning your codebase from
+within your editor. One keybinding triggers a full scan, and results land in
+your diagnostics list so you can fix them immediately.
 
 ### Tmux Integration
 
