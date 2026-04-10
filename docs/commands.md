@@ -43,7 +43,6 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDBufferSplitV`                      | Vertical split                          | `<Leader><Leader>v`<br>`<Space>bv`                             | `*`                         |
 | `LYRDBufferToggleWrap`                  | Toggle line wrap                        | `<M-z>`<br>`<Space>vw`                                         | `default`                   |
 | `LYRDClearSearchHighlights`             | Clear search highlights                 | `<Leader><Space>`                                              | `default`                   |
-| `LYRDCodeAddDocumentation`              | Add documentation                       | `<Space>cd`                                                    | `default`                   |
 | `LYRDCodeAlternateFile`                 | Toggle alternate file                   | `<Space>ct`                                                    | `go`                        |
 | `LYRDCodeBuild`                         | Build                                   | `<C-M-b>`<br>`<Space>cB`                                       | `go`                        |
 | `LYRDCodeBuildAll`                      | Build all                               | `<C-B>`<br>`<Space>cb`                                         | `java`                      |
@@ -115,7 +114,6 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDGitWorkTreeCreate`                 | Create Worktree                         | `<Space>gwn`                                                   | `*`                         |
 | `LYRDGitWorkTreeCreateExistingBranch`   | Create Worktree for existing branch     | `<Space>gwe`                                                   | `*`                         |
 | `LYRDGitWorkTreeList`                   | List GIT Worktrees                      | `<Space>gwt`                                                   | `*`                         |
-| `LYRDGitWrite`                          | Write                                   | -                                                              | `default`                   |
 | `LYRDGithubIssueClose`                  | Close GitHub issue                      | `<Space>ghx`                                                   | `*`                         |
 | `LYRDGithubIssueCreate`                 | Create GitHub issue                     | `<Space>ghc`                                                   | `*`                         |
 | `LYRDGithubIssueDevelop`                | Develop GitHub issue                    | `<Space>gho`                                                   | `*`                         |
@@ -235,9 +233,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDViewLocationList`                  | Location list                           | `<Leader><Leader>l`                                            | `*`                         |
 | `LYRDViewMarks`                         | Marks                                   | `<Space>sm`                                                    | `*`                         |
 | `LYRDViewQuickFixList`                  | QuickFix                                | `<Leader><Leader>q`                                            | `*`                         |
-| `LYRDViewRegisters`                     | Registers                               | `<Leader><Leader>R`                                            | `default`                   |
 | `LYRDViewTreeSitterPlayground`          | TreeSitter playground                   | `<Leader><Leader>P`                                            | `*`                         |
-| `LYRDViewYankList`                      | Yank list                               | `<Leader><Leader>y`                                            | `default`                   |
 | `LYRDWindowClose`                       | Close window                            | `<Space>q.`                                                    | `default`                   |
 | `LYRDWindowCloseAll`                    | Close all                               | -                                                              | `default`                   |
 | `LYRDWindowForceCloseAll`               | Force Quit                              | `<Space>qQ`<br>`<Space>qq`                                     | `default`                   |

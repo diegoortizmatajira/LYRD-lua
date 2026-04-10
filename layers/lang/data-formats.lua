@@ -38,7 +38,6 @@ local L = {
 		"yaml",
 		"json",
 		"json5",
-		"jsonc",
 		"toml",
 		"xml",
 		"proto",

@@ -307,6 +307,7 @@ function L.settings()
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
+		{ cmd.LYRDGitViewLog, ":DiffviewFileHistory" },
 		{ cmd.LYRDGitFlowInit, L.git_flow_init() },
 		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
 		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
