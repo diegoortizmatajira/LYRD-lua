@@ -167,6 +167,60 @@ function L.get_match_text_at_cursor(query_string, lang, node_capture_name, text_
 	return matches and matches[1] or ""
 end
 
+--- Gets the texts of one or more captures at the cursor position, searching recursively up the syntax tree if necessary.
+--- @param query_string string The treesitter query string
+--- @param lang string The language of the current buffer
+--- @param node_capture_name string The name of the capture that contains the node to check
+--- @param text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
+--- @return string[] The list of texts of the captures at the cursor position, or an empty string if not found
+function L.get_match_texts_at_cursor_recursive(query_string, lang, node_capture_name, text_capture_name)
+	--- Example: SELECT Name FROM (SELECT Name FROM Employees) AS Subquery
+	--- If cursor is on the inner Name, we want to return both the inner and outer
+	--- Name captures (it can be the full "SELECT...FROM.."). We can achieve
+	--- this by recursively checking the parent nodes until we find no more
+	--- matches. This is useful for cases like function calls where the same
+	--- identifier may be captured at multiple levels of the syntax tree.
+	local node_at_cursor = vim.treesitter.get_node()
+	if not node_at_cursor then
+		return {}
+	end
+	if not text_capture_name then
+		text_capture_name = node_capture_name
+	end
+
+	-- Collect all matches as {node, text} pairs
+	local entries = L.get_matches(query_string, lang, nil, function(match, captures)
+		local node_idx = utils.index_of(captures, node_capture_name)
+		local text_idx = utils.index_of(captures, text_capture_name)
+		if not node_idx or not text_idx then
+			return nil
+		end
+		local bufnr = vim.api.nvim_get_current_buf()
+		return {
+			node = match[node_idx][1],
+			text = vim.treesitter.get_node_text(match[text_idx][1], bufnr),
+		}
+	end)
+
+	-- Walk from cursor node up to root, collecting texts at each matching level.
+	-- TSNode == uses a __eq metamethod, so we must compare explicitly rather
+	-- than using nodes as table keys (which would use rawequal).
+	local results = {}
+	--- @type TSNode?
+	local current = node_at_cursor
+	while current do
+		for _, entry in ipairs(entries) do
+			if entry.node == current then
+				table.insert(results, entry.text)
+				break
+			end
+		end
+		current = current:parent()
+	end
+
+	return results
+end
+
 function L.settings()
 	-- Install required parsers
 	require("nvim-treesitter").install(L.required)

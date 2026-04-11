@@ -153,3 +153,120 @@ describe("treesitter.get_match_text_at_cursor", function()
 		assert.are.equal("", result)
 	end)
 end)
+
+-- Query that matches function declarations at any nesting level
+local nested_function_query = [[
+(function_declaration name: (identifier) @name) @func
+]]
+
+describe("treesitter.get_match_texts_at_cursor_recursive", function()
+	local bufnr
+
+	after_each(function()
+		if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+			vim.api.nvim_buf_delete(bufnr, { force = true })
+		end
+	end)
+
+	it("returns innermost match first, then outer matches", function()
+		bufnr = setup_buffer({
+			"function outer()",
+			"  function inner()",
+			"    return 1",
+			"  end",
+			"end",
+		}, "lua")
+		set_cursor(3, 4) -- inside inner()
+
+		local results = treesitter.get_match_texts_at_cursor_recursive(
+			nested_function_query, "lua", "func", "name"
+		)
+
+		assert.are.equal(2, #results)
+		assert.are.equal("inner", results[1])
+		assert.are.equal("outer", results[2])
+	end)
+
+	it("returns a single match when there is no nesting", function()
+		bufnr = setup_buffer({
+			"function solo()",
+			"  return 1",
+			"end",
+		}, "lua")
+		set_cursor(2, 3)
+
+		local results = treesitter.get_match_texts_at_cursor_recursive(
+			nested_function_query, "lua", "func", "name"
+		)
+
+		assert.are.equal(1, #results)
+		assert.are.equal("solo", results[1])
+	end)
+
+	it("returns empty table when cursor is outside any match", function()
+		bufnr = setup_buffer({
+			"-- just a comment",
+			"local x = 1",
+		}, "lua")
+		set_cursor(1, 0)
+
+		local results = treesitter.get_match_texts_at_cursor_recursive(
+			nested_function_query, "lua", "func", "name"
+		)
+
+		assert.are.same({}, results)
+	end)
+
+	it("returns empty table for an empty buffer", function()
+		bufnr = setup_buffer({ "" }, "lua")
+		set_cursor(1, 0)
+
+		local results = treesitter.get_match_texts_at_cursor_recursive(
+			nested_function_query, "lua", "func", "name"
+		)
+
+		assert.are.same({}, results)
+	end)
+
+	it("returns all three levels for triple-nested functions", function()
+		bufnr = setup_buffer({
+			"function a()",
+			"  function b()",
+			"    function c()",
+			"      return 1",
+			"    end",
+			"  end",
+			"end",
+		}, "lua")
+		set_cursor(4, 6) -- inside c()
+
+		local results = treesitter.get_match_texts_at_cursor_recursive(
+			nested_function_query, "lua", "func", "name"
+		)
+
+		assert.are.equal(3, #results)
+		assert.are.equal("c", results[1])
+		assert.are.equal("b", results[2])
+		assert.are.equal("a", results[3])
+	end)
+
+	it("uses node_capture_name as text_capture_name when text_capture_name is nil", function()
+		bufnr = setup_buffer({
+			"function outer()",
+			"  function inner()",
+			"    return 1",
+			"  end",
+			"end",
+		}, "lua")
+		set_cursor(3, 4)
+
+		local results = treesitter.get_match_texts_at_cursor_recursive(
+			nested_function_query, "lua", "func", nil
+		)
+
+		assert.are.equal(2, #results)
+		-- Each result should be the full function text
+		assert.truthy(results[1]:find("function inner"))
+		assert.truthy(results[2]:find("function outer"))
+	end)
+end)
