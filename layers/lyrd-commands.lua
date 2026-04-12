@@ -157,7 +157,6 @@ local L = {
 		LYRDSearchRecentFiles = Command:new("Recent files", nil, icons.search.history),
 		LYRDSearchRegisters = Command:new("Registers", nil, icons.search.default),
 		LYRDSearchSymbols = Command:new("Symbols", nil, icons.search.default),
-		LYRDSearchWorkspaceSymbols = Command:new("Workspace Symbols", nil, icons.search.default),
 		LYRDSearchSnippets = Command:new("Snippets", nil, icons.code.snippet),
 		LYRDSearchMacros = Command:new("Macros", nil, icons.other.macro),
 		LYRDResumeLastSearch = Command:new("Resume last search", nil, icons.search.history),
