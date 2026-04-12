@@ -42,6 +42,7 @@ setup.load({
 		"LYRD.layers.lang.java",
 		"LYRD.layers.lang.cpp",
 		"LYRD.layers.lang.kotlin",
+		"LYRD.layers.lang.groovy",
 		"LYRD.layers.lang.latex",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.markdown",
