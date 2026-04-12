@@ -97,11 +97,40 @@ local L = {
 	required_null_ls_sources = {
 		"null-ls.builtins.diagnostics.markdownlint_cli2",
 	},
+	required_executables = {
+		"mdwatch",
+	},
 }
+
+function L.preview_markdown()
+	local command = "mdwatch"
+	if vim.fn.executable(command) == 0 then
+		vim.notify("mdwatch is not installed. Please install it using 'cargo install mdwatch'", vim.log.levels.ERROR)
+		return
+	end
+	local tasks = require("LYRD.layers.tasks")
+	local file = vim.api.nvim_buf_get_name(0)
+	tasks.run_task({
+		name = "Markdown Preview",
+		cmd = command,
+		args = {
+			file,
+		},
+		open_in_split = true,
+		focus = false,
+	})
+end
 
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
+
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
+	commands.implement("markdown", {
+		{ cmd.LYRDDevServerStart, L.preview_markdown },
+	})
 end
 
 return declarative_layer.apply(L)
