@@ -130,6 +130,7 @@ function L.settings()
 		{ cmd.LYRDSearchCurrentString, ":Telescope grep_string" },
 		{ cmd.LYRDSearchCommands, ":Telescope commands" },
 		{ cmd.LYRDSearchSymbols, ":Telescope aerial" },
+		{ cmd.LYRDSearchWorkspaceSymbols, ":Telescope lsp_workspace_symbols" },
 		{ cmd.LYRDLSPFindReferences, ":Telescope lsp_references" },
 		{ cmd.LYRDLSPFindDocumentSymbols, ":Telescope lsp_document_symbols" },
 		{ cmd.LYRDLSPFindWorkspaceSymbols, ":Telescope lsp_workspace_symbols" },

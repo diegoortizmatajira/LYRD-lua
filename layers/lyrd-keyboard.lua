@@ -378,6 +378,7 @@ function L.keybindings()
 			{ "l", cmd.LYRDSearchBufferLines },
 			{ "m", cmd.LYRDViewMarks },
 			{ "o", cmd.LYRDSearchSymbols },
+			{ "O", cmd.LYRDSearchWorkspaceSymbols },
 			{ "p", cmd.LYRDSearchRegisters },
 			{ "q", cmd.LYRDSearchQuickFixes },
 			{ "R", cmd.LYRDReplace },
