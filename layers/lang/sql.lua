@@ -72,7 +72,44 @@ local L = {
 			{ extra_args = { "--dialect", default_dialect } }
 		),
 	},
+	sql_command_ts_query = [[
+[
+    (program)
+    (statement)
+    (subquery)
+] @sql-command
+	]],
 }
+
+--- Executes a SQL command at the cursor position.
+--- Uses a Tree-sitter query to select the SQL command node, and allows running it with a database CLI adapter.
+---
+--- @param csv? boolean If true, outputs the result in CSV format.
+function L.run_at_cursor(csv)
+	require("LYRD.shared.run_code").run_selection({
+		title = "Confirm SQL instruction to run",
+		treesitter_selector = {
+			query_string = L.sql_command_ts_query,
+			lang = "sql",
+			node_capture_name = "sql-command",
+			recursive_search = true,
+		},
+		generator = function(_, command, i)
+			return {
+				{
+					name = string.format("Run candidate command %d", i),
+					preview = string.format("SQL command:\n%s", command),
+					runner = function()
+						local db_cli_adapter = require("db-cli-adapter")
+						db_cli_adapter.run_with_buffer_connection(command, csv)
+					end,
+				},
+			}
+		end,
+
+		display_one_option_list = true,
+	})
+end
 
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")
@@ -87,8 +124,18 @@ function L.settings()
 	})
 	commands.implement("sql", {
 		{ cmd.LYRDCodeRun, ":DbCliRunBuffer" },
-		{ cmd.LYRDCodeRunSelection, ":DbCliRunAtCursor" },
-		{ cmd.LYRDCodeQuerySelection, ":DbCliRunAtCursorCsv" },
+		{
+			cmd.LYRDCodeRunSelection,
+			function()
+				L.run_at_cursor()
+			end,
+		},
+		{
+			cmd.LYRDCodeQuerySelection,
+			function()
+				L.run_at_cursor(true)
+			end,
+		},
 	})
 	commands.implement({ "sql", "db-cli-sidebar" }, {
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },

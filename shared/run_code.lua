@@ -1,11 +1,11 @@
 local L = {}
 --- @class LYRD.RunCodeDefinition
 --- @field name string The name of the task definition.
---- @field preview? string|fun(code?:string):string A function that takes the code to run and returns a preview string to show in the selector.
---- @field runner fun(code?:string) A function that takes the code to run and executes it.
+--- @field preview? string|fun():string A function that takes the code to run and returns a preview string to show in the selector.
+--- @field runner fun() A function that takes the code to run and executes it.
 
 --- @class LYRD.TreeSitterSelectorOptions
---- @field global_search? boolean Whether to search for matches in the whole buffer or just at the cursor position
+--- @field recursive_search? boolean Whether to run a recursive search up to find multiple matches or just get the match at the cursor position. Defaults to false (only get match at cursor).
 --- @field query_string string The treesitter query string
 --- @field lang string The language of the current buffer
 --- @field node_capture_name string The name of the capture that contains the node to check
@@ -17,47 +17,59 @@ local L = {}
 --- @field selector? fun():string A function that returns the code to run. This is used when use_selection is false or when there is no selection.
 --- @field treesitter_selector? LYRD.TreeSitterSelectorOptions A set of options to use a Tree-sitter query to select the code to run. This is used when use_selection is false or when there is no selection and no selector provided.
 --- @field fail_if_no_selected_code? boolean Whether to fail if there is no selected code and no selector provided.
---- @field generator fun(filename: string,code?:string):LYRD.RunCodeDefinition[] A function that takes the code to run and returns a list of task definitions to choose from.
+--- @field display_one_option_list? boolean Whether to display the selection menu even if there is only one task definition generated. Defaults to false (if there is only one task definition, it will be run directly without showing the selection menu).
+--- @field generator fun(filename: string,code?:string, iteration: number):LYRD.RunCodeDefinition[] A function that takes the code to run and returns a list of task definitions to choose from.
 
 --- Runs the code using the provided options.
 --- @param opts LYRD.RunCodeOptions
 function L.run_selection(opts)
 	local utils = require("LYRD.shared.utils")
-	local selected_text = nil
+	--- @type string[]
+	local candidate_selected_texts = {}
+	local function has_selection()
+		if #candidate_selected_texts == 0 then
+			return false
+		end
+		if #candidate_selected_texts == 1 and candidate_selected_texts[1] == "" then
+			return false
+		end
+	end
 	--- Attempts to use the visually selected text as the code to run if
 	--- use_visual_selection is true.
 	if opts.use_visual_selection then
-		selected_text = utils.get_visual_selection()
+		candidate_selected_texts = { utils.get_visual_selection() }
 	end
 	--- If there is no visually selected text, or if use_visual_selection is
 	--- false, it falls back to using the selector function to get the code to
 	--- run.
-	if (not selected_text or selected_text == "") and opts.selector then
-		selected_text = opts.selector()
+	if not has_selection() and opts.selector then
+		candidate_selected_texts = { opts.selector() }
 	end
 	--- If there is still no code to run, and treesitter_selector is provided, it
 	--- uses the Tree-sitter query to get the code to run.
-	if (not selected_text or selected_text == "") and opts.treesitter_selector then
+	if not has_selection() and opts.treesitter_selector then
 		local ts = require("LYRD.layers.treesitter")
-		if opts.treesitter_selector.global_search then
-			selected_text = ts.get_match_texts(
-				opts.treesitter_selector.query_string,
-				opts.treesitter_selector.lang,
-				opts.treesitter_selector.node_capture_name,
-				opts.treesitter_selector.text_capture_name
-			)[1] or ""
-		else
-			selected_text = ts.get_match_text_at_cursor(
+		if opts.treesitter_selector.recursive_search then
+			candidate_selected_texts = ts.get_match_texts_at_cursor_recursive(
 				opts.treesitter_selector.query_string,
 				opts.treesitter_selector.lang,
 				opts.treesitter_selector.node_capture_name,
 				opts.treesitter_selector.text_capture_name
 			)
+		else
+			candidate_selected_texts = {
+				ts.get_match_text_at_cursor(
+					opts.treesitter_selector.query_string,
+					opts.treesitter_selector.lang,
+					opts.treesitter_selector.node_capture_name,
+					opts.treesitter_selector.text_capture_name
+				),
+			}
 		end
 	end
 	--- If there is still no code to run, and fail_if_no_selected_code is true,
 	--- it shows a warning notification and returns early.
-	if (not selected_text or selected_text == "") and opts.fail_if_no_selected_code then
+	if has_selection() and opts.fail_if_no_selected_code then
 		vim.notify("No code to run", vim.log.levels.WARN)
 		return
 	end
@@ -65,15 +77,22 @@ function L.run_selection(opts)
 	--- It generates a list of task definitions by calling the generator
 	--- function with the selected text. If there are no task definitions
 	--- generated, it shows a warning notification and returns early.
-	local task_definitions = opts.generator(filename, selected_text)
+	--- @type LYRD.RunCodeDefinition[]
+	local task_definitions = {}
+	for i, selected_text in ipairs(candidate_selected_texts) do
+		local generated_definitions = opts.generator(filename, selected_text, i)
+		if generated_definitions and #generated_definitions > 0 then
+			vim.list_extend(task_definitions, generated_definitions)
+		end
+	end
 	if #task_definitions == 0 then
 		vim.notify("No task definitions generated", vim.log.levels.WARN)
 		return
 	end
 	--- If there is only one task definition generated, it runs it directly
 	--- with the selected text and returns early.
-	if #task_definitions == 1 then
-		task_definitions[1].runner(selected_text)
+	if #task_definitions == 1 and not opts.display_one_option_list then
+		task_definitions[1].runner()
 		return
 	end
 	--- If there are multiple task definitions generated, it shows a selection
@@ -111,7 +130,7 @@ function L.run_selection(opts)
 						local preview_bufnr = self.state.bufnr
 						local preview_value = entry.value.preview
 						if type(preview_value) == "function" then
-							preview_value = preview_value(selected_text)
+							preview_value = preview_value()
 						end
 						local lines = vim.split(preview_value, "\n", { plain = true })
 						vim.api.nvim_buf_set_lines(preview_bufnr, 0, -1, false, lines)
@@ -124,7 +143,7 @@ function L.run_selection(opts)
 						if not selection then
 							return
 						end
-						local ok, err = pcall(selection.value.runner, selected_text)
+						local ok, err = pcall(selection.value.runner)
 						if not ok then
 							vim.notify("Error running task: " .. err, vim.log.levels.ERROR)
 						end
