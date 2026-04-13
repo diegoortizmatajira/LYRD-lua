@@ -37,10 +37,18 @@
   - [Git Graph](#git-graph)
   - [Test Sidebar](#test-sidebar)
   - [Tasks Panel (Overseer)](#tasks-panel-overseer)
+  - [Debugging UI](#debugging-ui)
   - [Database Sidebar](#database-sidebar)
+  - [Code Outline](#code-outline)
   - [Search and Replace in Files](#search-and-replace-in-files)
   - [Diagnostics Panel](#diagnostics-panel)
   - [Quickfix List](#quickfix-list)
+  - [Integrated Terminal](#integrated-terminal)
+  - [AI Chat Panel](#ai-chat-panel)
+  - [REPL Panel](#repl-panel)
+  - [REST Client](#rest-client)
+  - [Containers and Kubernetes](#containers-and-kubernetes)
+  - [Focus Mode](#focus-mode)
   - [Local Configuration](#local-configuration)
 - [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Language Support](#language-support)
@@ -861,6 +869,8 @@ coexists with your editing buffers.
 
 ### File Tree
 
+![File Tree Panel](docs/images/file-tree-panel.png)
+
 **Plugin**: nvim-tree.lua **Layer**: `layers/filetree.lua`
 
 A sidebar file tree that shows your project structure with Git status
@@ -890,6 +900,9 @@ new entries. Changes are applied when you save the buffer.
 
 ### Git UI
 
+![LazyGit](docs/images/lazy-git.png)
+![Git Status Panel](docs/images/git-status-panel.png)
+
 **Plugins**: lazygit.nvim, neogit, diffview.nvim, gitsigns.nvim, blame.nvim,
 git-conflict.nvim, octo.nvim, worktrees.nvim **Layer**: `layers/git.lua`
 
@@ -913,6 +926,8 @@ workflows.
 
 ### Git Graph
 
+![Git Graph](docs/images/git-chart.png)
+
 **Plugin**: External `tig` TUI **Layer**: `layers/git.lua`
 
 A text-based Git history graph viewer. Opens `tig` — a ncurses-based Git
@@ -924,6 +939,8 @@ LazyGit also includes an integrated commit graph accessible from its own UI.
 **Requires**: `tig` installed on the system.
 
 ### Test Sidebar
+
+![Test Sidebar](docs/images/tests-panel.png)
 
 **Plugin**: neotest **Layer**: `layers/test.lua`
 
@@ -951,7 +968,31 @@ elapsed time.
 - Task output viewable inline or in a quickfix list
 - Custom task templates for Python, Java (Maven, Gradle), and .NET (Cake)
 
+### Debugging UI
+
+![Debugging Panels](docs/images/debug-panels.png)
+
+**Plugin**: nvim-dap-ui
+**Layer**: `layers/debug.lua`
+
+A multi-panel debugging interface that opens automatically when a debug session
+starts and closes when it ends. Organizes debugging information into two layout
+groups:
+
+- **Bottom panels**: Scopes (local/global variables and their values) and
+  Watches (user-defined watch expressions)
+- **Right panels**: Stack traces, breakpoints list, debug REPL (interactive
+  evaluation), and console output
+
+The UI includes playback controls (continue, step over, step into, step out,
+terminate) displayed in the REPL element. Variables can be expanded to inspect
+nested structures, and the REPL accepts arbitrary expressions for evaluation
+during a paused session. Virtual text annotations from nvim-dap-virtual-text
+show variable values inline next to the source code.
+
 ### Database Sidebar
+
+![Database Panel](docs/images/database-panel.png)
 
 **Plugin**: db-cli-adapter.nvim **Layer**: `layers/lang/sql.lua`
 
@@ -965,6 +1006,17 @@ formatting and Excel-like navigation.
   fields, Enter/Shift-Enter between rows)
 - Connection switching and management
 - Current database connection shown in the status line
+
+### Code Outline
+
+**Plugin**: aerial.nvim
+**Layer**: `layers/telescope.lua`
+
+A sidebar that displays the structure of the current file — functions, classes,
+methods, variables, and other symbols — in a navigable tree. Selecting an entry
+jumps to its location in the source. The outline updates as you edit and closes
+on selection by default. Positioned on the right side of the editor. Also
+integrates with Telescope for fuzzy symbol search across the document.
 
 ### Search and Replace in Files
 
@@ -999,6 +1051,76 @@ a filterable, navigable panel.
 An enhanced quickfix list powered by Trouble, providing a structured and
 navigable view of quickfix entries. Auto-populated by LSP diagnostics, build
 errors, search results, and task output.
+
+### Integrated Terminal
+
+**Plugin**: toggleterm.nvim
+**Layer**: `layers/lyrd-ui.lua`
+
+A terminal emulator embedded in Neovim that can be toggled open and closed
+without losing session state. Supports multiple terminal instances that can be
+listed and switched between. Also serves as the backend for floating terminal
+applications like LazyGit, lazydocker, k9s, and tig.
+
+### AI Chat Panel
+
+**Plugin**: avante.nvim
+**Layer**: `layers/ai-dev.lua`
+
+A toggleable sidebar for AI-assisted development. Supports asking questions
+about code, requesting edits with visual diff review, generating documentation,
+and getting refactoring suggestions. Works with GitHub Copilot, and other AI
+providers. The panel shows a conversation history and can apply suggested changes
+directly to your buffers.
+
+### REPL Panel
+
+**Plugins**: iron.nvim, NotebookNavigator.nvim, molten-nvim
+**Layer**: `layers/repl.lua`
+
+A horizontal split panel that hosts an interactive REPL session. Supports
+sending code from the editor to the REPL for immediate execution. Includes
+notebook-style cell navigation and execution — define cells with comment markers,
+run them individually or in sequence, and move cells up or down. Currently
+supports Python (IPython/Python) with Jupyter notebook integration via jupytext.
+
+### REST Client
+
+**Plugin**: kulala.nvim
+**Layer**: `layers/rest.lua`
+
+A response viewer panel for HTTP requests. Write requests in `.http` or `.rest`
+files and execute them to see formatted responses including headers, body, and
+statistics. Supports environment variables via `http-client.env.json` files,
+request inspection, curl import/export, and a scratchpad for quick one-off
+requests.
+
+### Containers and Kubernetes
+
+**Plugins**: lazydocker (external), k9s (external)
+**Layers**: `layers/docker.lua`, `layers/kubernetes.lua`
+
+Floating terminal panels that launch external TUI tools for container and
+cluster management:
+
+- **lazydocker** — visual Docker container, image, volume, and compose
+  management with logs, stats, and lifecycle controls
+- **k9s** — full-featured Kubernetes cluster browser for pods, deployments,
+  services, and logs
+
+Both tools run inside Neovim's floating terminal and can be toggled without
+losing state.
+
+**Requires**: `lazydocker` and/or `k9s` installed on the system.
+
+### Focus Mode
+
+**Plugin**: twilight.nvim
+**Layer**: `layers/lyrd-ui.lua`
+
+A toggle that dims all code outside the current context (function, block, or
+paragraph), drawing attention to the section you are actively editing. Useful for
+reducing visual noise when working in large files.
 
 ### Local Configuration
 
