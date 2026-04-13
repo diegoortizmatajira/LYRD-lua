@@ -26,17 +26,15 @@ function L.run_selection(opts)
 	local utils = require("LYRD.shared.utils")
 	--- @type string[]
 	local candidate_selected_texts = {}
+
 	local function has_selection()
-		if #candidate_selected_texts == 0 then
-			return false
-		end
-		if #candidate_selected_texts == 1 and candidate_selected_texts[1] == "" then
-			return false
-		end
+		return #candidate_selected_texts >= 1
 	end
+
+	--- A helper function to set the selected text and log it for debugging purposes.
+	--- @param text string
 	local function set_selected_text(text)
 		if text and text ~= "" then
-			vim.notify("Using selector text: " .. text, vim.log.levels.DEBUG, { title = "Selector" })
 			candidate_selected_texts = { text }
 		end
 	end
@@ -75,7 +73,7 @@ function L.run_selection(opts)
 	end
 	--- If there is still no code to run, and fail_if_no_selected_code is true,
 	--- it shows a warning notification and returns early.
-	if has_selection() and opts.fail_if_no_selected_code then
+	if not has_selection() and opts.fail_if_no_selected_code then
 		vim.notify("No code to run", vim.log.levels.WARN)
 		return
 	end
