@@ -136,6 +136,7 @@ function L.kubectl_run_at_cursor()
 			node_capture_name = "block_node",
 			text_capture_name = "block_node",
 		},
+		skip_visual_selection = true,
 		generator = function(file, document)
 			local result = {}
 			if document and document ~= "" then

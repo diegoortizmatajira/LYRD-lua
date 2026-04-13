@@ -157,6 +157,7 @@ function L.docker_compose_run_at_cursor()
 			node_capture_name = "service-node",
 			text_capture_name = "service-name",
 		},
+		skip_visual_selection = true,
 		generator = function(_, service)
 			local result = {}
 			-- If a service name is found at the cursor, generate commands specific to that service

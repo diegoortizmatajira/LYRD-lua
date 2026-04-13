@@ -13,7 +13,7 @@ local L = {}
 
 --- @class LYRD.RunCodeOptions
 --- @field title? string The title to show in the selector when there are multiple task definitions to choose from.
---- @field use_visual_selection? boolean Whether to run the selected text or just fallback to selector
+--- @field skip_visual_selection? boolean Whether to skip using the visually selected text as the code to run. If true, it will not attempt to get the visual selection and will directly use the selector or treesitter_selector to get the code to run.
 --- @field selector? fun():string A function that returns the code to run. This is used when use_selection is false or when there is no selection.
 --- @field treesitter_selector? LYRD.TreeSitterSelectorOptions A set of options to use a Tree-sitter query to select the code to run. This is used when use_selection is false or when there is no selection and no selector provided.
 --- @field fail_if_no_selected_code? boolean Whether to fail if there is no selected code and no selector provided.
@@ -34,16 +34,22 @@ function L.run_selection(opts)
 			return false
 		end
 	end
+	local function set_selected_text(text)
+		if text and text ~= "" then
+			vim.notify("Using selector text: " .. text, vim.log.levels.DEBUG, { title = "Selector" })
+			candidate_selected_texts = { text }
+		end
+	end
 	--- Attempts to use the visually selected text as the code to run if
 	--- use_visual_selection is true.
-	if opts.use_visual_selection then
-		candidate_selected_texts = { utils.get_visual_selection() }
+	if not opts.skip_visual_selection then
+		set_selected_text(utils.get_visual_selection())
 	end
 	--- If there is no visually selected text, or if use_visual_selection is
 	--- false, it falls back to using the selector function to get the code to
 	--- run.
 	if not has_selection() and opts.selector then
-		candidate_selected_texts = { opts.selector() }
+		set_selected_text(opts.selector())
 	end
 	--- If there is still no code to run, and treesitter_selector is provided, it
 	--- uses the Tree-sitter query to get the code to run.
