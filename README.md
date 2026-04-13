@@ -30,6 +30,18 @@
   - [Media and Images](#media-and-images)
   - [Neovide Support](#neovide-support)
   - [VSCode Compatibility](#vscode-compatibility)
+- [TUI Panels and Sidebars](#tui-panels-and-sidebars)
+  - [File Tree](#file-tree)
+  - [File Explorer](#file-explorer)
+  - [Git UI](#git-ui)
+  - [Git Graph](#git-graph)
+  - [Test Sidebar](#test-sidebar)
+  - [Tasks Panel (Overseer)](#tasks-panel-overseer)
+  - [Database Sidebar](#database-sidebar)
+  - [Search and Replace in Files](#search-and-replace-in-files)
+  - [Diagnostics Panel](#diagnostics-panel)
+  - [Quickfix List](#quickfix-list)
+  - [Local Configuration](#local-configuration)
 - [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Language Support](#language-support)
   - [Python](#python)
@@ -840,6 +852,166 @@ VSCode's Neovim extension.
 
 **Real-world benefit**: Use your familiar Neovim keybindings and motions inside
 VSCode when needed, without breaking either environment.
+
+## TUI Panels and Sidebars
+
+LYRD provides a set of integrated TUI panels that give you an IDE-like layout
+entirely within the terminal. Each panel can be toggled independently and
+coexists with your editing buffers.
+
+### File Tree
+
+**Plugin**: nvim-tree.lua **Layer**: `layers/filetree.lua`
+
+A sidebar file tree that shows your project structure with Git status
+indicators, diagnostics, and bookmarks in the sign column.
+
+- Positioned on the right side with 60-character default width
+- Git status glyphs (unstaged, staged, unmerged, renamed, untracked, deleted,
+  ignored) shown inline next to each file
+- Diagnostics icons (error, warning, info, hint) in the sign column
+- Indent guides with tree-line characters
+- Filters out `.git`, `node_modules`, `bin`, `obj` by default
+- Opens the file and closes the tree on selection
+
+### File Explorer
+
+**Plugins**: tfm.nvim (yazi backend), oil.nvim **Layer**: `layers/filetree.lua`
+
+Two alternative file browsing modes that complement the file tree.
+
+**yazi** opens as a floating terminal with full file management capabilities —
+rename, move, copy, delete — using the yazi TUI. Selected files open in the
+current window, a split, or a new tab.
+
+**oil.nvim** opens the current directory as an editable buffer. Rename files by
+editing their names, delete by removing lines, and create new files by typing
+new entries. Changes are applied when you save the buffer.
+
+### Git UI
+
+**Plugins**: lazygit.nvim, neogit, diffview.nvim, gitsigns.nvim, blame.nvim,
+git-conflict.nvim, octo.nvim, worktrees.nvim **Layer**: `layers/git.lua`
+
+A comprehensive Git interface combining multiple tools:
+
+- **LazyGit** — full-featured Git TUI in a floating terminal for staging,
+  committing, branching, rebasing, and more
+- **Neogit** — a Magit-inspired status buffer for staging hunks, committing, and
+  pushing without leaving Neovim
+- **Diffview** — side-by-side diff viewer for file history, merge conflicts, and
+  commit comparisons
+- **Gitsigns** — gutter indicators showing added, changed, and deleted lines
+- **Blame** — toggle line-by-line Git blame annotations
+- **Git Conflict** — visual merge conflict resolution with choose-ours,
+  choose-theirs, and choose-both actions
+- **Octo** — GitHub issues and pull request management
+- **Worktrees** — Git worktree creation and switching
+
+Also includes Git Flow commands for feature, release, and hotfix branch
+workflows.
+
+### Git Graph
+
+**Plugin**: External `tig` TUI **Layer**: `layers/git.lua`
+
+A text-based Git history graph viewer. Opens `tig` — a ncurses-based Git
+repository browser — in a floating terminal window. Provides a scrollable commit
+graph with branch topology, commit details, and diff viewing.
+
+LazyGit also includes an integrated commit graph accessible from its own UI.
+
+**Requires**: `tig` installed on the system.
+
+### Test Sidebar
+
+**Plugin**: neotest **Layer**: `layers/test.lua`
+
+A sidebar panel that displays test results in a hierarchical tree — organized by
+file, suite, and individual test. Shows pass/fail status with icons and allows
+jumping to failing tests.
+
+- Run individual tests, files, or the entire suite from the sidebar
+- Debug failing tests with DAP integration
+- View test output in a dedicated panel
+- Toggle coverage display with nvim-coverage
+- Adapters for Python, Go, Rust, Java, .NET, C++, Lua, JavaScript (Jest, Vitest)
+
+### Tasks Panel (Overseer)
+
+**Plugin**: overseer.nvim **Layer**: `layers/tasks.lua`
+
+A bottom dock panel that shows running and completed tasks — builds, test runs,
+dev servers, and custom commands. Each task displays its status, output, and
+elapsed time.
+
+- Docked at the bottom with configurable height (default 25 lines)
+- Imports tasks from `.vscode/tasks.json`
+- Integrates with neotest (test runs appear as tasks) and DAP (debug sessions)
+- Task output viewable inline or in a quickfix list
+- Custom task templates for Python, Java (Maven, Gradle), and .NET (Cake)
+
+### Database Sidebar
+
+**Plugin**: db-cli-adapter.nvim **Layer**: `layers/lang/sql.lua`
+
+A sidebar for browsing database connections, schemas, tables, views, and their
+fields. Query results are displayed in a separate output panel with CSV
+formatting and Excel-like navigation.
+
+- Browse connections, schemas, tables, views, and columns in a tree sidebar
+- Execute queries from the buffer or at cursor position
+- CSV-formatted output with field-level navigation (Tab/Shift-Tab between
+  fields, Enter/Shift-Enter between rows)
+- Connection switching and management
+- Current database connection shown in the status line
+
+### Search and Replace in Files
+
+**Plugin**: grug-far.nvim **Layer**: `layers/lyrd-ui.lua`
+
+A search-and-replace panel that opens as a split with live preview of matches
+and replacements across your project or within the current file.
+
+- Live preview of all matches and replacements before applying
+- Regex support
+- Scope to current file or entire project
+- Path filtering
+
+### Diagnostics Panel
+
+**Plugin**: trouble.nvim **Layer**: `layers/lsp.lua`
+
+A structured list of all diagnostics (errors, warnings, info, hints) for the
+current buffer or the entire workspace. Replaces the default location list with
+a filterable, navigable panel.
+
+- Filter by current buffer or entire workspace
+- Sorted by severity (errors first)
+- Jump to diagnostic location on selection
+- Virtual diagnostic lines toggle for inline multi-line diagnostic display
+- Telescope integration for fuzzy searching diagnostics
+
+### Quickfix List
+
+**Plugin**: trouble.nvim **Layer**: `layers/lsp.lua`
+
+An enhanced quickfix list powered by Trouble, providing a structured and
+navigable view of quickfix entries. Auto-populated by LSP diagnostics, build
+errors, search results, and task output.
+
+### Local Configuration
+
+**Module**: `shared/ui/local_config.lua`
+
+A floating window for toggling which LYRD layers are active. Opens a checklist
+of all skippable layers — toggle a layer on or off, then save to apply. Changes
+are written to `~/.local/share/nvim/lyrd/lyrd-local.lua` and take effect after
+restarting Neovim.
+
+- Centered floating window (50% width) listing all skippable layers
+- Visual toggle indicators
+- Excludes core unskippable layers (LSP, Debug, Test, UI, Commands, Keyboard)
 
 ## Keyboard-Driven Workflow
 
