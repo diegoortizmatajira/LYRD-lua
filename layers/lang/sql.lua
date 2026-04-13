@@ -1,4 +1,5 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local filetype = require("vim.filetype")
 
 local default_dialect = "ansi"
 
@@ -98,7 +99,8 @@ function L.run_at_cursor(csv)
 			return {
 				{
 					name = string.format("Run candidate command %d", i),
-					preview = string.format("SQL command:\n%s", command),
+					preview = command,
+					filetype = "sql",
 					runner = function()
 						local db_cli_adapter = require("db-cli-adapter")
 						db_cli_adapter.run_with_buffer_connection(command, csv)
@@ -106,7 +108,6 @@ function L.run_at_cursor(csv)
 				},
 			}
 		end,
-
 		display_one_option_list = true,
 	})
 end

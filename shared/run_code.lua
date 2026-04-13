@@ -2,6 +2,7 @@ local L = {}
 --- @class LYRD.RunCodeDefinition
 --- @field name string The name of the task definition.
 --- @field preview? string|fun():string A function that takes the code to run and returns a preview string to show in the selector.
+--- @field filetype? string Filetype to apply to the preview buffer for syntax highlighting.
 --- @field runner fun() A function that takes the code to run and executes it.
 
 --- @class LYRD.TreeSitterSelectorOptions
@@ -138,6 +139,9 @@ function L.run_selection(opts)
 						end
 						local lines = vim.split(preview_value, "\n", { plain = true })
 						vim.api.nvim_buf_set_lines(preview_bufnr, 0, -1, false, lines)
+						if entry.value.filetype then
+							require("telescope.previewers.utils").highlighter(preview_bufnr, entry.value.filetype)
+						end
 					end,
 				}),
 				attach_mappings = function(prompt_bufnr)
