@@ -886,6 +886,8 @@ indicators, diagnostics, and bookmarks in the sign column.
 
 ### File Explorer
 
+![File Explorer](docs/images/file-explorer.png)
+
 **Plugins**: tfm.nvim (yazi backend), oil.nvim **Layer**: `layers/filetree.lua`
 
 Two alternative file browsing modes that complement the file tree.
@@ -956,6 +958,8 @@ jumping to failing tests.
 
 ### Tasks Panel (Overseer)
 
+![Overseer Panel](docs/images/overseer-panel.png)
+
 **Plugin**: overseer.nvim **Layer**: `layers/tasks.lua`
 
 A bottom dock panel that shows running and completed tasks — builds, test runs,
@@ -972,8 +976,7 @@ elapsed time.
 
 ![Debugging Panels](docs/images/debug-panels.png)
 
-**Plugin**: nvim-dap-ui
-**Layer**: `layers/debug.lua`
+**Plugin**: nvim-dap-ui **Layer**: `layers/debug.lua`
 
 A multi-panel debugging interface that opens automatically when a debug session
 starts and closes when it ends. Organizes debugging information into two layout
@@ -1009,8 +1012,9 @@ formatting and Excel-like navigation.
 
 ### Code Outline
 
-**Plugin**: aerial.nvim
-**Layer**: `layers/telescope.lua`
+![Code Outline](docs/images/outline-panel.png)
+
+**Plugin**: aerial.nvim **Layer**: `layers/telescope.lua`
 
 A sidebar that displays the structure of the current file — functions, classes,
 methods, variables, and other symbols — in a navigable tree. Selecting an entry
@@ -1019,6 +1023,8 @@ on selection by default. Positioned on the right side of the editor. Also
 integrates with Telescope for fuzzy symbol search across the document.
 
 ### Search and Replace in Files
+
+![Search and Replace](docs/images/replace-in-files-panel.png)
 
 **Plugin**: grug-far.nvim **Layer**: `layers/lyrd-ui.lua`
 
@@ -1054,8 +1060,7 @@ errors, search results, and task output.
 
 ### Integrated Terminal
 
-**Plugin**: toggleterm.nvim
-**Layer**: `layers/lyrd-ui.lua`
+**Plugin**: toggleterm.nvim **Layer**: `layers/lyrd-ui.lua`
 
 A terminal emulator embedded in Neovim that can be toggled open and closed
 without losing session state. Supports multiple terminal instances that can be
@@ -1064,30 +1069,31 @@ applications like LazyGit, lazydocker, k9s, and tig.
 
 ### AI Chat Panel
 
-**Plugin**: avante.nvim
-**Layer**: `layers/ai-dev.lua`
+![AI Chat Panel](docs/images/ai-panel.png)
+
+**Plugin**: avante.nvim **Layer**: `layers/ai-dev.lua`
 
 A toggleable sidebar for AI-assisted development. Supports asking questions
 about code, requesting edits with visual diff review, generating documentation,
 and getting refactoring suggestions. Works with GitHub Copilot, and other AI
-providers. The panel shows a conversation history and can apply suggested changes
-directly to your buffers.
+providers. The panel shows a conversation history and can apply suggested
+changes directly to your buffers.
 
 ### REPL Panel
 
-**Plugins**: iron.nvim, NotebookNavigator.nvim, molten-nvim
-**Layer**: `layers/repl.lua`
+**Plugins**: iron.nvim, NotebookNavigator.nvim, molten-nvim **Layer**:
+`layers/repl.lua`
 
 A horizontal split panel that hosts an interactive REPL session. Supports
 sending code from the editor to the REPL for immediate execution. Includes
-notebook-style cell navigation and execution — define cells with comment markers,
-run them individually or in sequence, and move cells up or down. Currently
-supports Python (IPython/Python) with Jupyter notebook integration via jupytext.
+notebook-style cell navigation and execution — define cells with comment
+markers, run them individually or in sequence, and move cells up or down.
+Currently supports Python (IPython/Python) with Jupyter notebook integration via
+jupytext.
 
 ### REST Client
 
-**Plugin**: kulala.nvim
-**Layer**: `layers/rest.lua`
+**Plugin**: kulala.nvim **Layer**: `layers/rest.lua`
 
 A response viewer panel for HTTP requests. Write requests in `.http` or `.rest`
 files and execute them to see formatted responses including headers, body, and
@@ -1097,8 +1103,8 @@ requests.
 
 ### Containers and Kubernetes
 
-**Plugins**: lazydocker (external), k9s (external)
-**Layers**: `layers/docker.lua`, `layers/kubernetes.lua`
+**Plugins**: lazydocker (external), k9s (external) **Layers**:
+`layers/docker.lua`, `layers/kubernetes.lua`
 
 Floating terminal panels that launch external TUI tools for container and
 cluster management:
@@ -1115,14 +1121,15 @@ losing state.
 
 ### Focus Mode
 
-**Plugin**: twilight.nvim
-**Layer**: `layers/lyrd-ui.lua`
+**Plugin**: twilight.nvim **Layer**: `layers/lyrd-ui.lua`
 
 A toggle that dims all code outside the current context (function, block, or
-paragraph), drawing attention to the section you are actively editing. Useful for
-reducing visual noise when working in large files.
+paragraph), drawing attention to the section you are actively editing. Useful
+for reducing visual noise when working in large files.
 
 ### Local Configuration
+
+![Local Configuration](docs/images/local-settings-dialog.png)
 
 **Module**: `shared/ui/local_config.lua`
 
