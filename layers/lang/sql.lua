@@ -174,6 +174,13 @@ local L = {
 			end,
 		}),
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "sql",
+			use_lsp = true,
+			lsp_name = "null-ls",
+		},
+	},
 	sql_command_ts_query = [[
 [
     (program)
