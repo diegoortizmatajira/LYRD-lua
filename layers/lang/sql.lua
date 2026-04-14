@@ -82,6 +82,20 @@ local function map_adapter_to_dialect(adapter)
 	return result or default_dialect
 end
 
+--- Converts an SQL command string into a concise representative title for display in the UI.
+--- This function removes extra whitespace, line breaks, and truncates the command to a reasonable length for display.
+--- @param sql string The SQL command to convert.
+local function sql_to_representative_title(sql)
+	local single_line = sql:gsub("%s+", " ")
+	local trimmed = single_line:match("^%s*(.-)%s*$") or ""
+	local max_length = 60
+	if #trimmed > max_length then
+		return trimmed:sub(1, max_length) .. "..."
+	else
+		return trimmed
+	end
+end
+
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "SQL language",
@@ -101,16 +115,13 @@ local L = {
 						end,
 					},
 				},
-			},
-			config = function(_, opts)
-				opts.connection_change_handler = function(bufnr, new_connection)
+				connection_change_handler = function(bufnr, new_connection)
 					-- Use the default connection change handler from the db-cli-adapter configuration
 					require("db-cli-adapter.config").sqls_connection_change_handler(bufnr, new_connection)
 					-- Set the SQL dialect based on the new connection's adapter
 					set_dialect(map_adapter_to_dialect(new_connection.adapter))
-				end
-				require("db-cli-adapter").setup(opts)
-			end,
+				end,
+			},
 		},
 		{
 			"hat0uma/csvview.nvim",
@@ -180,6 +191,24 @@ function L.select_dialect()
 	end)
 end
 
+function L.get_db_connection()
+	--- @type string|nil
+	local adapter_connection = require("db-cli-adapter").get_current_db_connection()
+	if adapter_connection and adapter_connection == "" then
+		adapter_connection = nil
+	end
+	local dialect = vim.b.sqlfluff_dialect
+	if adapter_connection or dialect then
+		return string.format(
+			"%s (SQL dialect: %s)",
+			adapter_connection or "[No connection]",
+			dialect or default_dialect
+		)
+	else
+		return ""
+	end
+end
+
 --- Executes a SQL command at the cursor position.
 --- Uses a Tree-sitter query to select the SQL command node, and allows running it with a database CLI adapter.
 ---
@@ -196,7 +225,7 @@ function L.run_at_cursor(csv)
 		generator = function(_, command, i)
 			return {
 				{
-					name = string.format("Run candidate command %d", i),
+					name = string.format("%d - %s", i, sql_to_representative_title(command)),
 					preview = command,
 					filetype = "sql",
 					runner = function()

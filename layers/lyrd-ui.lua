@@ -39,7 +39,7 @@ local function macro_recording()
 end
 
 local function current_database()
-	return require("db-cli-adapter").get_current_db_connection()
+	return require("LYRD.layers.lang.sql").get_db_connection()
 end
 
 --- Registers implementations for toggling UI decorations for a specific filetype.
