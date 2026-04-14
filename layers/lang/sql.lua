@@ -1,10 +1,86 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
-local filetype = require("vim.filetype")
 
 local default_dialect = "ansi"
 --- @class LYRD.layer.sql.Dialect
 --- @field name string
 --- @field description string
+
+--- @type LYRD.layer.sql.Dialect[]
+local available_dialects = {
+	{ name = "ansi", description = "ANSI dialect [inherits from 'nothing']" },
+	{ name = "athena", description = "AWS Athena dialect [inherits from 'ansi']" },
+	{ name = "bigquery", description = "Google BigQuery dialect [inherits from 'ansi']" },
+	{ name = "clickhouse", description = "ClickHouse dialect [inherits from 'ansi']" },
+	{ name = "databricks", description = "Databricks dialect [inherits from 'sparksql']" },
+	{ name = "db2", description = "IBM Db2 dialect [inherits from 'ansi']" },
+	{ name = "doris", description = "Apache Doris dialect [inherits from 'mysql']" },
+	{ name = "duckdb", description = "DuckDB dialect [inherits from 'postgres']" },
+	{ name = "exasol", description = "Exasol dialect [inherits from 'ansi']" },
+	{ name = "flink", description = "Apache Flink SQL dialect [inherits from 'ansi']" },
+	{ name = "greenplum", description = "Greenplum dialect [inherits from 'postgres']" },
+	{ name = "hive", description = "Apache Hive dialect [inherits from 'ansi']" },
+	{ name = "impala", description = "Apache Impala dialect [inherits from 'hive']" },
+	{ name = "mariadb", description = "MariaDB dialect [inherits from 'mysql']" },
+	{ name = "materialize", description = "Materialize dialect [inherits from 'postgres']" },
+	{ name = "mysql", description = "MySQL dialect [inherits from 'ansi']" },
+	{ name = "oracle", description = "Oracle dialect [inherits from 'ansi']" },
+	{ name = "postgres", description = "PostgreSQL dialect [inherits from 'ansi']" },
+	{ name = "redshift", description = "AWS Redshift dialect [inherits from 'postgres']" },
+	{ name = "snowflake", description = "Snowflake dialect [inherits from 'ansi']" },
+	{ name = "soql", description = "Salesforce Object Query Language (SOQL) dialect [inherits from 'ansi']" },
+	{ name = "sparksql", description = "Apache Spark SQL dialect [inherits from 'ansi']" },
+	{ name = "sqlite", description = "SQLite dialect [inherits from 'ansi']" },
+	{ name = "starrocks", description = "StarRocks dialect [inherits from 'mysql']" },
+	{ name = "teradata", description = "Teradata dialect [inherits from 'ansi']" },
+	{ name = "trino", description = "Trino dialect [inherits from 'ansi']" },
+	{ name = "tsql", description = "Microsoft T-SQL dialect [inherits from 'ansi']" },
+	{ name = "vertica", description = "Vertica dialect [inherits from 'ansi']" },
+}
+
+--- Sets the SQL dialect for the current buffer if valid and reloads the buffer.
+--- Notifies the user of any errors or changes in the SQL dialect.
+---
+--- @param dialect string|nil The name of the SQL dialect to set. If nil, no action is performed.
+local function set_dialect(dialect)
+	if not dialect then
+		return
+	end
+	if not vim.tbl_contains(
+		vim.tbl_map(function(d)
+			return d.name
+		end, available_dialects),
+		dialect
+	) then
+		vim.notify("Invalid SQL dialect: " .. dialect, vim.log.levels.ERROR)
+		return
+	end
+	vim.b.sqlfluff_dialect = dialect
+	vim.cmd("e")
+	vim.notify("SQL dialect set to: " .. dialect)
+end
+
+local function map_adapter_to_dialect(adapter)
+	local mapping = {
+		postgres = "postgres",
+		mysql = "mysql",
+		sqlite = "sqlite",
+		sqlite3 = "sqlite",
+		mssql = "tsql",
+		oracle = "oracle",
+	}
+	local result = mapping[adapter]
+	if not result then
+		vim.notify(
+			string.format(
+				"No SQL dialect mapping found for adapter '%s'. Using default dialect '%s'.",
+				adapter,
+				default_dialect
+			),
+			vim.log.levels.WARN
+		)
+	end
+	return result or default_dialect
+end
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
@@ -27,8 +103,12 @@ local L = {
 				},
 			},
 			config = function(_, opts)
-				-- Use the default connection change handler from the db-cli-adapter configuration
-				opts.connection_change_handler = require("db-cli-adapter.config").sqls_connection_change_handler
+				opts.connection_change_handler = function(bufnr, new_connection)
+					-- Use the default connection change handler from the db-cli-adapter configuration
+					require("db-cli-adapter.config").sqls_connection_change_handler(bufnr, new_connection)
+					-- Set the SQL dialect based on the new connection's adapter
+					set_dialect(map_adapter_to_dialect(new_connection.adapter))
+				end
 				require("db-cli-adapter").setup(opts)
 			end,
 		},
@@ -85,65 +165,19 @@ local L = {
     (subquery)
 ] @sql-command
 	]],
-	--- @type LYRD.layer.sql.Dialect[]|nil
-	available_dialects = {
-		{ name = "ansi", description = "ANSI dialect [inherits from 'nothing']" },
-		{ name = "athena", description = "AWS Athena dialect [inherits from 'ansi']" },
-		{ name = "bigquery", description = "Google BigQuery dialect [inherits from 'ansi']" },
-		{ name = "clickhouse", description = "ClickHouse dialect [inherits from 'ansi']" },
-		{ name = "databricks", description = "Databricks dialect [inherits from 'sparksql']" },
-		{ name = "db2", description = "IBM Db2 dialect [inherits from 'ansi']" },
-		{ name = "doris", description = "Apache Doris dialect [inherits from 'mysql']" },
-		{ name = "duckdb", description = "DuckDB dialect [inherits from 'postgres']" },
-		{ name = "exasol", description = "Exasol dialect [inherits from 'ansi']" },
-		{ name = "flink", description = "Apache Flink SQL dialect [inherits from 'ansi']" },
-		{ name = "greenplum", description = "Greenplum dialect [inherits from 'postgres']" },
-		{ name = "hive", description = "Apache Hive dialect [inherits from 'ansi']" },
-		{ name = "impala", description = "Apache Impala dialect [inherits from 'hive']" },
-		{ name = "mariadb", description = "MariaDB dialect [inherits from 'mysql']" },
-		{ name = "materialize", description = "Materialize dialect [inherits from 'postgres']" },
-		{ name = "mysql", description = "MySQL dialect [inherits from 'ansi']" },
-		{ name = "oracle", description = "Oracle dialect [inherits from 'ansi']" },
-		{ name = "postgres", description = "PostgreSQL dialect [inherits from 'ansi']" },
-		{ name = "redshift", description = "AWS Redshift dialect [inherits from 'postgres']" },
-		{ name = "snowflake", description = "Snowflake dialect [inherits from 'ansi']" },
-		{ name = "soql", description = "Salesforce Object Query Language (SOQL) dialect [inherits from 'ansi']" },
-		{ name = "sparksql", description = "Apache Spark SQL dialect [inherits from 'ansi']" },
-		{ name = "sqlite", description = "SQLite dialect [inherits from 'ansi']" },
-		{ name = "starrocks", description = "StarRocks dialect [inherits from 'mysql']" },
-		{ name = "teradata", description = "Teradata dialect [inherits from 'ansi']" },
-		{ name = "trino", description = "Trino dialect [inherits from 'ansi']" },
-		{ name = "tsql", description = "Microsoft T-SQL dialect [inherits from 'ansi']" },
-		{ name = "vertica", description = "Vertica dialect [inherits from 'ansi']" },
-	},
 }
 
---- Prompts the user to select a SQL dialect for sqlfluff diagnostics and formatting in the current buffer.
+--- Selects an SQL dialect for the current buffer using a UI prompt.
+--- Updates the SQL dialect used by 'sqlfluff' and reloads the buffer with the selected dialect.
 function L.select_dialect()
-	vim.ui.select(L.available_dialects, {
+	vim.ui.select(available_dialects, {
 		prompt = "Select SQL dialect:",
 		format_item = function(item)
 			return item.description
 		end,
-	}, L.set_dialect)
-end
-
-function L.set_dialect(dialect)
-	if not dialect then
-		return
-	end
-	if not vim.tbl_contains(
-		vim.tbl_map(function(d)
-			return d.name
-		end, L.available_dialects),
-		dialect
-	) then
-		vim.notify("Invalid SQL dialect: " .. dialect, vim.log.levels.ERROR)
-		return
-	end
-	vim.b.sqlfluff_dialect = dialect
-	vim.cmd("e")
-	vim.notify("SQL dialect set to: " .. dialect)
+	}, function(dialect)
+		set_dialect(dialect and dialect.name)
+	end)
 end
 
 --- Executes a SQL command at the cursor position.
