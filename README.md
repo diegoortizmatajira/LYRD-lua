@@ -1482,6 +1482,37 @@ projects
 **Perfect for**: Academic papers, theses, technical documentation, scientific
 publishing
 
+### SQL
+
+**What you get**:
+
+- **Language Server**: sqls for completions and database introspection
+- **Diagnostics and Formatting**: sqlfluff with per-buffer dialect awareness
+- **Dialect Selection**: 28 SQL dialects (PostgreSQL, MySQL, SQLite, T-SQL,
+  BigQuery, Snowflake, DuckDB, Oracle, and more) configurable per buffer,
+  dynamically adjusting diagnostics and formatting rules
+- **Automatic Dialect Detection**: Changing the active database connection
+  automatically sets the matching SQL dialect
+- **Database Connections**: db-cli-adapter integration for managing and switching
+  between multiple database connections
+- **Query Execution**: Run the entire buffer or individual queries against the
+  active connection
+- **Recursive Query Selection**: When running a selection, Tree-sitter walks
+  upward from the cursor to find all enclosing SQL statements (subqueries,
+  statements, full program), letting you choose which level to execute
+- **CSV Output**: Query results in CSV format with in-editor column-based
+  viewing via csvview
+
+**How it helps you**:
+
+- Work with multiple databases and dialects without leaving the editor
+- Get accurate linting and formatting tuned to each dialect
+- Execute queries at any nesting level with a single action
+- Browse query results as formatted tables inside Neovim
+
+**Perfect for**: Database development, data analysis, query authoring across
+multiple SQL engines
+
 ### Other Languages
 
 **Lua**:
@@ -1496,12 +1527,6 @@ publishing
 - Table of contents generation
 - Mermaid diagrams
 - Live preview
-
-**SQL**:
-
-- Multiple database support
-- Query execution and results
-- Syntax highlighting for various SQL dialects
 
 **Data Formats** (JSON, YAML, TOML, XML):
 
