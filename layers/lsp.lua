@@ -196,6 +196,14 @@ function L.organize_imports()
 	vim.lsp.buf.code_action({ only = { "source.organizeImports" }, apply = true })
 end
 
+--- Refreshes diagnostics from null-ls by notifying the client about an open text document.
+--- This function triggers a "textDocument/didOpen" event for the current buffer to refresh diagnostics.
+function L.refresh_null_ls_diagnostics()
+	require("null-ls.client").notify_client("textDocument/didOpen", {
+		textDocument = { uri = vim.uri_from_bufnr(0) },
+	})
+end
+
 function L.plugins()
 	local SymbolKind = vim.lsp.protocol.SymbolKind
 	setup.plugin({

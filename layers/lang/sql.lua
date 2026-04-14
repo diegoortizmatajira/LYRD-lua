@@ -42,6 +42,9 @@ local available_dialects = {
 ---
 --- @param dialect string|nil The name of the SQL dialect to set. If nil, no action is performed.
 local function set_dialect(dialect)
+	if vim.bo.filetype ~= "sql" then
+		return
+	end
 	if not dialect then
 		return
 	end
@@ -55,7 +58,9 @@ local function set_dialect(dialect)
 		return
 	end
 	vim.b.sqlfluff_dialect = dialect
-	vim.cmd("e")
+	-- Refresh diagnostics to apply the new dialect settings (as sqlfluff is
+	-- configured as a null-ls source)
+	require("LYRD.layers.lsp").refresh_null_ls_diagnostics()
 	vim.notify("SQL dialect set to: " .. dialect)
 end
 
