@@ -36,6 +36,12 @@ local L = {
 			opts = {},
 		},
 	},
+	required_mason_packages = {
+		"editorconfig-checker",
+	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.editorconfig_checker",
+	},
 	required_executables = {
 		"live-server",
 		"ngrok",
