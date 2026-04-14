@@ -51,6 +51,7 @@ local L = {
 		"js-debug-adapter",
 		"eslint-lsp",
 		"vtsls",
+		"deno"
 	},
 	required_treesitter_parsers = {
 		"javascript",
@@ -61,6 +62,7 @@ local L = {
 		"angular",
 	},
 	required_enabled_lsp_servers = {
+		"denols",
 		"vtsls",
 		"vue_ls",
 		"angularls",
