@@ -39,9 +39,6 @@ local function save_local_config(skip_layers)
 	end
 
 	local lines = {
-		'require("LYRD.shared.setup")',
-		"",
-		"--- @type LYRD.shared.setup.LocalConfig",
 		"return {",
 		"\tskip_layers = {",
 	}
