@@ -345,6 +345,7 @@ function L.keybindings()
 			{ "S", cmd.LYRDCodeSecrets },
 			{ "t", cmd.LYRDCodeAlternateFile },
 			{ "x", cmd.LYRDCodeRun },
+			{ "v", cmd.LYRDCodeLanguageVersion },
 			{ "o", cmd.LYRDCodeOrganizeFile },
 		}, icons.other.code, { "x" }),
 		menu_header("d", "Debug", {

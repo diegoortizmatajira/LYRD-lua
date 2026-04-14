@@ -125,14 +125,25 @@ function L.select_dialect()
 		format_item = function(item)
 			return item.description
 		end,
-	}, function(choice)
-		if not choice then
-			return
-		end
-		vim.b.sqlfluff_dialect = choice.name
-		vim.cmd("e")
-		vim.notify("SQL dialect set to: " .. choice.name)
-	end)
+	}, L.set_dialect)
+end
+
+function L.set_dialect(dialect)
+	if not dialect then
+		return
+	end
+	if not vim.tbl_contains(
+		vim.tbl_map(function(d)
+			return d.name
+		end, L.available_dialects),
+		dialect
+	) then
+		vim.notify("Invalid SQL dialect: " .. dialect, vim.log.levels.ERROR)
+		return
+	end
+	vim.b.sqlfluff_dialect = dialect
+	vim.cmd("e")
+	vim.notify("SQL dialect set to: " .. dialect)
 end
 
 --- Executes a SQL command at the cursor position.
@@ -178,7 +189,7 @@ function L.settings()
 	})
 	commands.implement("sql", {
 		{
-			cmd.LYRDCodeTooling,
+			cmd.LYRDCodeLanguageVersion,
 			function()
 				L.select_dialect()
 			end,
