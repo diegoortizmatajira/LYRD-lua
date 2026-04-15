@@ -56,6 +56,12 @@ local function avante_dependencies()
 	return result
 end
 
+local function sidekick_nvim_env()
+	return {
+		NVIM = vim.v.servername,
+	}
+end
+
 --- Treesitter node types that represent documentable elements.
 local documentable_node_types = {
 	"function_definition",
@@ -280,6 +286,11 @@ function L.plugins()
 					mux = {
 						backend = "tmux",
 						enabled = true,
+					},
+					tools = {
+						claude = { env = sidekick_nvim_env() },
+						codex = { env = sidekick_nvim_env() },
+						copilot = { env = sidekick_nvim_env() },
 					},
 				},
 				nes = {
