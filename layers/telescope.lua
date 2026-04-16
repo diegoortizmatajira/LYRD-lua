@@ -9,7 +9,13 @@ local L = {
 	name = "Telescope",
 	unskippable = true,
 	use_frecency = false,
-	command_palette_frecency_file = utils.get_lyrd_data_path("command_palette_frecency.json"),
+	command_palette = {
+		frecency_enabled = true,
+		frecency_file = utils.get_lyrd_data_path("command_palette_frecency.json"),
+		--- @type CommandListItem[]|nil
+		cached_commands = nil,
+		frecency = nil,
+	},
 }
 
 function L.plugins()
@@ -109,6 +115,9 @@ function L.select_file_and_execute(callback, title, filter, working_directory)
 	})
 end
 
+--- Telescope Command Palette handler.
+--- Provides a UI for selecting and executing commands with telescope.
+--- Commands are sorted by name or frecency, and a cache is used for performance.
 local function telescopeCommandPalette()
 	local actions = require("telescope.actions")
 	local action_state = require("telescope.actions.state")
@@ -116,13 +125,45 @@ local function telescopeCommandPalette()
 	local entry_display = require("telescope.pickers.entry_display")
 	local finders = require("telescope.finders")
 	local pickers = require("telescope.pickers")
-	local frecency = frecency_utils.load(L.command_palette_frecency_file)
-	local items = commands.get_command_list()
-	frecency_utils.sort(items, frecency, function(item)
-		return item.cmd and item.cmd.name or nil
-	end, function(item)
-		return item.label
-	end)
+
+	--- Retrieves the list of commands for the command palette, sorted by frecency if enabled.
+	--- Utilizes a cache for previously loaded commands to enhance performance.
+	--- Loads frecency data from a configured file and sorts commands accordingly.
+	--- Sorts commands either by their name or label.
+	--- @param invalidate_cache boolean Whether to invalidate the cached commands and reload them
+	--- @return CommandListItem[] The list of commands sorted and ready for display in the command palette.
+	local function get_command_list(invalidate_cache)
+		if L.command_palette.cached_commands and not invalidate_cache then
+			return L.command_palette.cached_commands
+		end
+		L.command_palette.cached_commands = commands.get_command_list()
+		if L.command_palette.frecency_enabled then
+			L.command_palette.frecency = frecency_utils.load(L.command_palette.frecency_file)
+			local items = L.command_palette.cached_commands or {}
+			frecency_utils.sort(items, L.command_palette.frecency, function(item)
+				return item.cmd and item.cmd.name or nil
+			end, function(item)
+				return item.label
+			end)
+			L.command_palette.cached_commands = items
+		end
+		return L.command_palette.cached_commands
+	end
+
+	--- Updates the frecency of a selected command.
+	--- This ensures that frequently used commands are prioritized in the UI.
+	--- @param command_name string The name of the command to update frecency for.
+	local function update_command_frecency(command_name)
+		if not L.command_palette.frecency_enabled then
+			return
+		end
+		L.command_palette.frecency = L.command_palette.frecency or {}
+		frecency_utils.increment(L.command_palette.frecency, command_name)
+		frecency_utils.save(L.command_palette.frecency_file, L.command_palette.frecency)
+		get_command_list(true) -- Invalidate cache to re-sort commands based on updated frecency
+	end
+
+	local items = get_command_list()
 	local command_name_width = 0
 	for _, item in ipairs(items) do
 		local name = item.cmd and item.cmd.name or ""
@@ -170,9 +211,8 @@ local function telescopeCommandPalette()
 					local selection = action_state.get_selected_entry()
 					actions.close(prompt_bufnr)
 					if selection and selection.value and selection.value.cmd then
-						frecency_utils.increment(frecency, selection.value.cmd.name)
-						frecency_utils.save(L.command_palette_frecency_file, frecency)
 						selection.value.cmd:execute()
+						update_command_frecency(selection.value.cmd.name)
 					end
 				end)
 				return true
