@@ -1,6 +1,65 @@
 local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local utils = require("LYRD.shared.utils")
+
+local command_palette_frecency_file = utils.get_lyrd_data_path("command_palette_frecency.json")
+
+--- @return table<string, integer>
+local function load_command_palette_frecency()
+	if vim.fn.filereadable(command_palette_frecency_file) == 0 then
+		return {}
+	end
+	local content = table.concat(vim.fn.readfile(command_palette_frecency_file), "\n")
+	if content == "" then
+		return {}
+	end
+	local ok, data = pcall(vim.json.decode, content)
+	if not ok or type(data) ~= "table" then
+		return {}
+	end
+	return data
+end
+
+--- @param frecency table<string, integer>
+local function save_command_palette_frecency(frecency)
+	local dir = vim.fn.fnamemodify(command_palette_frecency_file, ":h")
+	if vim.fn.isdirectory(dir) == 0 then
+		vim.fn.mkdir(dir, "p")
+	end
+	local ok, encoded = pcall(vim.json.encode, frecency)
+	if not ok then
+		vim.notify("Could not encode command frecency data", vim.log.levels.ERROR)
+		return
+	end
+	vim.fn.writefile(vim.split(encoded, "\n", { plain = true }), command_palette_frecency_file)
+end
+
+--- @param items CommandListItem[]
+--- @param frecency table<string, integer>
+local function sort_command_palette_items_by_frecency(items, frecency)
+	table.sort(items, function(a, b)
+		local a_name = a.cmd and a.cmd.name or ""
+		local b_name = b.cmd and b.cmd.name or ""
+		local a_count = frecency[a_name] or 0
+		local b_count = frecency[b_name] or 0
+		if a_count == b_count then
+			return a.label < b.label
+		end
+		return a_count > b_count
+	end)
+end
+
+--- @param item CommandListItem
+--- @param frecency table<string, integer>
+local function track_command_palette_usage(item, frecency)
+	local command_name = item and item.cmd and item.cmd.name
+	if not command_name or command_name == "" then
+		return
+	end
+	frecency[command_name] = (frecency[command_name] or 0) + 1
+	save_command_palette_frecency(frecency)
+end
 
 ---@class LYRD.layer.Telescope: LYRD.shared.setup.Module
 local L = {
@@ -113,7 +172,9 @@ local function telescopeCommandPalette()
 	local entry_display = require("telescope.pickers.entry_display")
 	local finders = require("telescope.finders")
 	local pickers = require("telescope.pickers")
+	local frecency = load_command_palette_frecency()
 	local items = commands.get_command_list()
+	sort_command_palette_items_by_frecency(items, frecency)
 	local command_name_width = 0
 	for _, item in ipairs(items) do
 		local name = item.cmd and item.cmd.name or ""
@@ -139,7 +200,7 @@ local function telescopeCommandPalette()
 				entry_maker = function(item)
 					return {
 						value = item,
-						ordinal = item.label,
+						ordinal = string.format("%s %s", item.cmd and item.cmd.desc or "", item.cmd and item.cmd.name or ""),
 						display = function(entry)
 							local command_name = entry.value.cmd and entry.value.cmd.name or ""
 							return displayer({
@@ -157,6 +218,7 @@ local function telescopeCommandPalette()
 					local selection = action_state.get_selected_entry()
 					actions.close(prompt_bufnr)
 					if selection and selection.value and selection.value.cmd then
+						track_command_palette_usage(selection.value, frecency)
 						selection.value.cmd:execute()
 					end
 				end)
