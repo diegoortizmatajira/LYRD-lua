@@ -61,8 +61,10 @@
   - [C and C++](#c-and-c)
   - [Kotlin](#kotlin)
   - [Bash](#bash)
+  - [PHP](#php)
   - [Pascal](#pascal)
   - [LaTeX](#latex)
+  - [SQL](#sql)
   - [Other Languages](#other-languages)
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
@@ -1452,6 +1454,16 @@ projects
 
 **Perfect for**: Shell scripting, automation, DevOps workflows
 
+### PHP
+
+**What you get**:
+
+- **Language Servers**: Intelephense and Laravel Language Server
+- **Formatting**: php-cs-fixer for consistent code style
+- **Syntax highlighting**: Treesitter-based PHP parsing and highlighting
+
+**Perfect for**: PHP applications, Laravel projects, backend web development
+
 ### Pascal
 
 **What you get**:
@@ -1493,8 +1505,8 @@ publishing
   dynamically adjusting diagnostics and formatting rules
 - **Automatic Dialect Detection**: Changing the active database connection
   automatically sets the matching SQL dialect
-- **Database Connections**: db-cli-adapter integration for managing and switching
-  between multiple database connections
+- **Database Connections**: db-cli-adapter integration for managing and
+  switching between multiple database connections
 - **Query Execution**: Run the entire buffer or individual queries against the
   active connection
 - **Recursive Query Selection**: When running a selection, Tree-sitter walks
@@ -1616,6 +1628,7 @@ also manually install tools:
 - Python: `basedpyright`, `ruff`, `debugpy`
 - JavaScript/TypeScript: `typescript-language-server`, `prettier`
 - Java: `jdtls`, `java-debug-adapter`
+- PHP: `intelephense`, `laravel-ls`, `php-cs-fixer`
 - Go: `gopls`, `delve`
 - Rust: `rust-analyzer`, `codelldb`
 - C/C++: `clangd`, `clang-format`
