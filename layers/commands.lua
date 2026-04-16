@@ -264,5 +264,21 @@ function L.healthcheck()
 	end
 end
 
-
+--- @class CommandListItem
+--- @field label string The label to show for the command, usually including its description and name
+--- @field cmd Command The command instance
+--- @field icon string An icon to show for the command
+--- Returns a list of all registered commands, with their description and name as label, to be used in a picker or similar UI component.
+function L.get_command_list()
+	local icons = require("LYRD.layers.icons")
+	local items = {}
+	for name, cmd in pairs(L.commands) do
+		table.insert(items, {
+			label = cmd.desc and string.format("%s (%s)", cmd.desc, cmd.name) or name,
+			cmd = cmd,
+			icon = cmd.icon or icons.other.command,
+		})
+	end
+	return items
+end
 return L

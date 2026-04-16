@@ -3,13 +3,7 @@ local Command = commands.Command
 local icons = require("LYRD.layers.icons")
 
 local function commandPalette()
-	local items = {}
-	for name, cmd in pairs(commands.commands) do
-		table.insert(items, {
-			label = cmd.desc and string.format("%s (%s)", cmd.desc, cmd.name) or name,
-			cmd = cmd,
-		})
-	end
+	local items = commands.get_command_list()
 
 	vim.ui.select(items, {
 		prompt = "Select a command to execute",
@@ -22,6 +16,7 @@ local function commandPalette()
 		end
 	end)
 end
+
 ---@class LYRD.layer.LYRDCommands: LYRD.shared.setup.Module
 local L = {
 	name = "LYRD Commands",
