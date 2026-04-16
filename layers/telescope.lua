@@ -106,6 +106,66 @@ function L.select_file_and_execute(callback, title, filter, working_directory)
 	})
 end
 
+local function telescopeCommandPalette()
+	local actions = require("telescope.actions")
+	local action_state = require("telescope.actions.state")
+	local conf = require("telescope.config").values
+	local entry_display = require("telescope.pickers.entry_display")
+	local finders = require("telescope.finders")
+	local pickers = require("telescope.pickers")
+	local items = commands.get_command_list()
+	local command_name_width = 0
+	for _, item in ipairs(items) do
+		local name = item.cmd and item.cmd.name or ""
+		command_name_width = math.max(command_name_width, vim.fn.strdisplaywidth(name))
+	end
+	command_name_width = command_name_width + 2
+
+	local displayer = entry_display.create({
+		separator = " ",
+		items = {
+			{ width = 3 },
+			{ width = command_name_width },
+			{ remaining = true, right_justify = true },
+		},
+	})
+
+	pickers
+		.new({}, {
+			prompt_title = "Select a command to execute",
+			finder = finders.new_table({
+				results = items,
+				---@param item CommandListItem
+				entry_maker = function(item)
+					return {
+						value = item,
+						ordinal = item.label,
+						display = function(entry)
+							local command_name = entry.value.cmd and entry.value.cmd.name or ""
+							return displayer({
+								{ entry.value.icon, "TelescopeResultsConstant" },
+								entry.value.cmd.desc,
+								{ command_name, "TelescopeResultsComment" },
+							})
+						end,
+					}
+				end,
+			}),
+			sorter = conf.generic_sorter({}),
+			attach_mappings = function(prompt_bufnr)
+				actions.select_default:replace(function()
+					local selection = action_state.get_selected_entry()
+					actions.close(prompt_bufnr)
+					if selection and selection.value and selection.value.cmd then
+						selection.value.cmd:execute()
+					end
+				end)
+				return true
+			end,
+		})
+		:find()
+end
+
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSearchFiles, L.use_frecency and ":Telescope frecency workspace=CWD" or "Telescope find_files" },
@@ -141,6 +201,7 @@ function L.settings()
 		{ cmd.LYRDCodeInsertSnippet, "Telescope luasnip" },
 		{ cmd.LYRDViewCodeOutline, ":AerialToggle" },
 		{ cmd.LYRDViewMarks, ":Telescope marks" },
+		{ cmd.LYRDCommandPalette, telescopeCommandPalette },
 	})
 end
 
