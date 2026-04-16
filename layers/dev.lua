@@ -49,23 +49,6 @@ local L = {
 	},
 }
 
-local function run_git_ignore(command)
-	local url = "https://www.toptal.com/developers/gitignore/api/%s"
-	if vim.fn.executable("curl") == 0 then
-		vim.notify("curl is not installed. Please install it to use the gitignore generator.", vim.log.levels.ERROR)
-		return
-	end
-
-	local result = vim.system({ "curl", "-sL", string.format(url, command) }, {
-		text = true,
-	}):wait()
-	if result.code ~= 0 then
-		vim.notify("Failed to fetch .gitignore templates: " .. result.stderr, vim.log.levels.ERROR)
-		return
-	end
-	return result.stdout
-end
-
 local function run_local_server(port, folder)
 	local command = "live-server"
 	if vim.fn.executable(command) == 0 then
@@ -156,24 +139,6 @@ function L.scan_for_secrets()
 		auto_close = true,
 		focus = false,
 	})
-end
-
-function L.populate_gitignore(buf)
-	local LIST_COMMAND = "list?format=lines"
-	local available_templates = run_git_ignore(LIST_COMMAND)
-	if not available_templates then
-		return {}
-	end
-	vim.ui.select(vim.split(available_templates, "\n"), { prompt = "Select a .gitignore template:" }, function(choice)
-		if choice then
-			local content = run_git_ignore(choice)
-			if content then
-				vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(content, "\n"))
-			end
-		else
-			vim.notify("No template selected. Aborting .gitignore generation.", vim.log.levels.INFO)
-		end
-	end)
 end
 
 function L.start_dev_server()
