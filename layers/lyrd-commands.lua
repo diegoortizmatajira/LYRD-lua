@@ -1,8 +1,27 @@
 local commands = require("LYRD.layers.commands")
 local Command = commands.Command
 local icons = require("LYRD.layers.icons")
-local setup = require("LYRD.shared.setup")
 
+local function commandPalette()
+	local items = {}
+	for name, cmd in pairs(commands.commands) do
+		table.insert(items, {
+			label = cmd.desc and string.format("%s (%s)", cmd.desc, cmd.name) or name,
+			cmd = cmd,
+		})
+	end
+
+	vim.ui.select(items, {
+		prompt = "Select a command to execute",
+		format_item = function(item)
+			return item.label
+		end,
+	}, function(item)
+		if item and item.cmd then
+			item.cmd:execute()
+		end
+	end)
+end
 ---@class LYRD.layer.LYRDCommands: LYRD.shared.setup.Module
 local L = {
 	name = "LYRD Commands",
@@ -249,6 +268,7 @@ local L = {
 		LYRDDiffThis = Command:new("Add to comparisson", ":diffthis", icons.action.compare),
 		LYRDDiffOff = Command:new("Turn comparisson off", ":diffoff", icons.action.compare),
 		LYRDBindScroll = Command:new("Bind scroll on buffers", ":set scrollbind", icons.action.compare),
+		LYRDCommandPalette = Command:new("Command Palette", commandPalette, icons.other.palette),
 	},
 }
 

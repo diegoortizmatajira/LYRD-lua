@@ -497,6 +497,7 @@ function L.keybindings()
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),
+		{ "<Space>", cmd.LYRDCommandPalette },
 	})
 end
 
