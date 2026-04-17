@@ -482,6 +482,7 @@ function L.keybindings()
 			{ "s", cmd.LYRDDevServerStart },
 			{ "S", cmd.LYRDDevExposeLocalServer },
 			{ "x", cmd.LYRDScanForSecrets },
+			{ "<Space>", cmd.LYRDCommandPalette },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
 			{ "h", cmd.LYRDHardModeToggle },
@@ -497,7 +498,6 @@ function L.keybindings()
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),
-		{ "<Space>", cmd.LYRDCommandPalette },
 	})
 end
 

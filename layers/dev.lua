@@ -162,6 +162,9 @@ end
 
 function L.expose_local_server()
 	vim.ui.input({ prompt = "Enter port to expose:", default = "3000" }, function(port)
+		if not port or port == "" then
+			return
+		end
 		expose_server(port)
 	end)
 end
