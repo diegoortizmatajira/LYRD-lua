@@ -10,12 +10,6 @@ local L = {
 			config = function()
 				-- WARN: Using 'uv' for uv projects support, otherwise skip.
 				require("dap-python").setup("uv")
-				table.insert(require("dap").configurations.python, {
-					type = "python",
-					request = "launch",
-					name = "My custom launch configuration",
-					program = "${file}",
-				})
 			end,
 			ft = "python",
 		},
