@@ -1,5 +1,5 @@
 return {
 	command = "dotenv-linter",
-	args = { "fix", "$FILENAME" },
+	args = { "fix", "--no-backup", "$FILENAME" },
 	stdin = false,
 }
