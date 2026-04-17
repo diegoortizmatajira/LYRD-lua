@@ -38,9 +38,23 @@ local L = {
 	},
 	required_mason_packages = {
 		"editorconfig-checker",
+		"dotenv-linter",
+	},
+	required_formatters = {
+		["dotenv_linter"] = require("LYRD.shared.conform.dotenv-linter"),
+	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "env",
+			format_settings = { "dotenv_linter" },
+		},
 	},
 	required_null_ls_sources = {
 		"null-ls.builtins.diagnostics.editorconfig_checker",
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.dotenv_linter", {
+			args = { "check", "$FILENAME" },
+			extra_filetypes = { "env" },
+		}),
 	},
 	required_executables = {
 		"live-server",
