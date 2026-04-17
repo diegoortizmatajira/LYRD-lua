@@ -154,6 +154,7 @@ function L.plugins()
 						".gitignore",
 						".env",
 						".dockerignore",
+						".vscode",
 					},
 				},
 				actions = {
