@@ -17,11 +17,13 @@ local L = {
 		"laravel_ls",
 	},
 	required_executables = {},
-	required_formatters = {},
+	required_formatters = {
+		php_cs_fixer = require("LYRD.shared.conform.php_cs_fixer"),
+	},
 	required_formatter_per_filetype = {
 		{
 			target_filetype = "php",
-			format_settings = { "php-cs-fixer" },
+			format_settings = { "php_cs_fixer" },
 		},
 	},
 	required_test_adapters = {},
