@@ -272,6 +272,14 @@ function L.plugins()
 					ask = false,
 					edit = false,
 				},
+				behaviour = {
+					auto_apply_diff_after_generation = true,
+					auto_add_current_file = true, -- Whether to automatically add the current file when opening a new chat. Default to true.
+					auto_approve_tool_permissions = false, -- Default: auto-approve all tools (no prompts)
+					-- Examples:
+					-- auto_approve_tool_permissions = false,                -- Show permission prompts for all tools
+					-- auto_approve_tool_permissions = {"bash", "str_replace"}, -- Auto-approve specific tools only
+				},
 			},
 			-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 			build = "make",
