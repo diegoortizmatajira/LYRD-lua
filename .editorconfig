@@ -1,0 +1,32 @@
+# .editorconfig
+# EditorConfig helps maintain consistent coding styles for multiple developers
+# working on the same project across various editors and IDEs.
+
+root = true
+
+[*]  # Matches all files
+
+# Charset
+charset = utf-8  # Default to UTF-8
+
+# End of line
+end_of_line = lf  # Options: lf | cr | crlf, default "lf"
+
+# Indentation style
+indent_style = space  # Options: space | tab, default "space"
+indent_size = 4       # Number of spaces, default 4
+tab_width = 4         # For when indent_style is tab
+
+# Insert final newline
+insert_final_newline = true  # Add newline at end of file, default true
+
+# Line length
+max_line_length = 80  # Set preferred maximum line length, default 80
+
+# Trim trailing white space
+trim_trailing_whitespace = true  # Remove whitespaces, useful for code
+
+
+# Examples that speccy  files
+.Block **xml specific  reuloe .... insert region db default
+
