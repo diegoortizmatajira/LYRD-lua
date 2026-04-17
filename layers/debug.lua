@@ -120,7 +120,8 @@ end
 
 function L.is_running()
 	local dap = require("dap")
-	return dap.status() ~= ""
+	local status, _ = pcall(dap.status)
+	return status and status ~= ""
 end
 
 function L.start_handler(implementation)
