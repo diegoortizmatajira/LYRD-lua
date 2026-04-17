@@ -329,6 +329,25 @@ function L.git_view_graph()
 	end
 end
 
+--- Allows selecting a branch and use it name for an action, such as creating a
+--- pull request or viewing the log for that branch.
+--- @param action fun(branch: string) The action to perform, e.g. "create_pr" or "view_log"
+function L.act_on_branch(action)
+	local branches = vim.fn.system("git branch --format='%(refname:short)' --all")
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Failed to get git branches: " .. branches, vim.log.levels.ERROR)
+		return
+	end
+	local branch_list = vim.split(branches, "\n")
+	vim.ui.select(branch_list, { prompt = "Select a branch:" }, function(choice)
+		if choice then
+			action(choice)
+		else
+			vim.notify("No branch selected. Aborting action.", vim.log.levels.INFO)
+		end
+	end)
+end
+
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
@@ -343,6 +362,14 @@ function L.settings()
 		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitViewLog, ":DiffviewFileHistory" },
+		{
+			cmd.LYRDGitCompareWithBranch,
+			function()
+				L.act_on_branch(function(branch)
+					vim.cmd(string.format(":DiffviewOpen %s -- %%", branch))
+				end)
+			end,
+		},
 		{ cmd.LYRDGitFlowInit, L.git_flow_init() },
 		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
 		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },

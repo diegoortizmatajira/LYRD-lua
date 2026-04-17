@@ -117,6 +117,7 @@ local L = {
 		LYRDGitViewCurrentFileLog = Command:new("Git: Current file log", nil, icons.git.log),
 		LYRDGitViewDiff = Command:new("Git: View diff", nil, icons.git.diff),
 		LYRDGitViewLog = Command:new("Git: File log", nil, icons.git.log),
+		LYRDGitCompareWithBranch = Command:new("Git: Compare file with another branch", nil, icons.git.diff),
 		LYRDGithubIssueList = Command:new("Github: List issues", nil, icons.git.issue.list),
 		LYRDGithubIssueClose = Command:new("GitHub: Close issue", nil, icons.git.issue.closed),
 		LYRDGithubIssueReopen = Command:new("GitHub: Reopen issue", nil, icons.git.issue.reopened),

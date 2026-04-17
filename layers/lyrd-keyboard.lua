@@ -431,6 +431,7 @@ function L.keybindings()
 			{ "P", cmd.LYRDGitPush },
 			{ "p", cmd.LYRDGitPull },
 			{ "d", cmd.LYRDGitViewDiff },
+			{ "D", cmd.LYRDGitCompareWithBranch },
 			{ "a", cmd.LYRDGitStageAll },
 			{ "b", cmd.LYRDGitViewBlame },
 			{ "l", cmd.LYRDGitViewCurrentFileLog },
