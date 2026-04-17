@@ -76,6 +76,16 @@ end
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
+	-- Ensure both .http and .rest buffers attach the HTTP parser for TS highlighting.
+	vim.treesitter.language.register("http", "rest")
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = { "http", "rest" },
+		callback = function(args)
+			vim.treesitter.start(args.buf, "http")
+		end,
+	})
+
 	commands.implement("http", {
 		{
 			cmd.LYRDCodeRunSelection,
