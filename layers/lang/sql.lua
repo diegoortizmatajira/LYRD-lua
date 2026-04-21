@@ -225,7 +225,8 @@ end
 --- Uses a Tree-sitter query to select the SQL command node, and allows running it with a database CLI adapter.
 ---
 --- @param csv? boolean If true, outputs the result in CSV format.
-function L.run_at_cursor(csv)
+--- @param editable? boolean If true, opens the result in an editable buffer instead of a read-only output.
+function L.run_at_cursor(csv, editable)
 	require("LYRD.shared.run_code").run_selection({
 		title = "Confirm SQL instruction to run",
 		treesitter_selector = {
@@ -242,7 +243,8 @@ function L.run_at_cursor(csv)
 					filetype = "sql",
 					runner = function()
 						local db_cli_adapter = require("db-cli-adapter")
-						db_cli_adapter.run_with_buffer_connection(command, csv)
+						local opts = { editable = editable }
+						db_cli_adapter.run_with_buffer_connection(command, csv, opts)
 					end,
 				},
 			}
@@ -282,6 +284,16 @@ function L.settings()
 				L.run_at_cursor(true)
 			end,
 		},
+		{
+			cmd.LYRDCodeQuerySelectionAsEditable,
+			function()
+				L.run_at_cursor(true, true)
+			end,
+		},
+	})
+	commands.implement("db-cli-output.csv", {
+		{ cmd.LYRDBufferSave, ":DbCliResultPreviewChanges" },
+		{ cmd.LYRDBufferClose, ":DbCliOutputHide" },
 	})
 	commands.implement({ "sql", "db-cli-sidebar" }, {
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },

@@ -74,6 +74,12 @@ local L = {
 		LYRDCodeRunSelection = Command:new("Code: Run selection", nil, icons.code.run, true),
 		LYRDCodeRun = Command:new("Code: Run file", nil, icons.code.run),
 		LYRDCodeQuerySelection = Command:new("Code: Run selection as query", nil, icons.code.run, true),
+		LYRDCodeQuerySelectionAsEditable = Command:new(
+			"Code: Run selection as query with editable results",
+			nil,
+			icons.code.run,
+			true
+		),
 		LYRDCodeSelectEnvironment = Command:new("Code: Select environment", nil, icons.other.environment),
 		LYRDCodeSecrets = Command:new("Project: Edit Secrets", nil, icons.other.secret),
 		LYRDCodeLanguageVersion = Command:new("Code: Select language version/dialect", nil, icons.action.switch),

@@ -35,7 +35,6 @@ local L = {
 		{ type_id = "checkhealth", map_q = true },
 		{ type_id = "code-stdout", title = "Playground output" },
 		{ type_id = "copilot-chat", title = "AI Chat" },
-		{ type_id = "db-cli-output.csv" },
 		{ type_id = "db-cli-output.text" },
 		{ type_id = "db-cli-sidebar" },
 		{ type_id = "dbout" },

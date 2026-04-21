@@ -272,6 +272,7 @@ function L.keybindings()
 		{ "t", cmd.LYRDEditTextCase, { "x" } },
 		{ "T", cmd.LYRDApplyNextTheme },
 		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
+		{ "Y", cmd.LYRDCodeQuerySelectionAsEditable, { "x" } },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
 		{ "X", cmd.LYRDCodeRun },
 		{ "]", cmd.LYRDBufferNext },
