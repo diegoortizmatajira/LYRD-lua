@@ -254,6 +254,8 @@ function L.run_at_cursor(csv, editable)
 end
 
 function L.settings()
+	--- Disable default omni completion mappings for SQL to avoid conflicts with custom keybindings or plugins.
+	vim.g.omni_sql_no_default_maps = 1
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("sql", { ":CsvViewToggle" })
 
