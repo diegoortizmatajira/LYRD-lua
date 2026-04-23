@@ -348,6 +348,11 @@ function L.act_on_branch(action)
 	end)
 end
 
+function L.create_github_release()
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.toggle_external_app_terminal("gh release create")
+end
+
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
@@ -402,6 +407,7 @@ function L.settings()
 		{ cmd.LYRDGithubPullRequestCreate, ":Octo pr create" },
 		{ cmd.LYRDGithubPullRequestClose, ":Octo pr close" },
 		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
+		{ cmd.LYRDGithubReleaseCreate, L.create_github_release },
 	})
 end
 

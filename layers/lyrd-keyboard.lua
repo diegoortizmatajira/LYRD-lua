@@ -416,12 +416,15 @@ function L.keybindings()
 					{ "x", cmd.LYRDGithubIssueClose },
 					{ "r", cmd.LYRDGithubIssueReopen },
 					{ "d", cmd.LYRDGithubIssueDevelop },
-				}),
+				}, icons.git.issue.open),
 				menu_header("p", "Pull Request", {
 					{ "c", cmd.LYRDGithubPullRequestCreate },
 					{ "l", cmd.LYRDGithubPullRequestList },
 					{ "x", cmd.LYRDGithubPullRequestClose },
-				}),
+				}, icons.git.pull_request),
+				menu_header("r", "Release", {
+					{ "c", cmd.LYRDGithubReleaseCreate },
+				}, icons.git.tag),
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },

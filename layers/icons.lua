@@ -259,6 +259,10 @@ local L = {
 		untracked = "★ ",
 		-- Github
 		github = " ",
+		tag = "󰓹 ",
+		release = {
+			open = "󱜯 ",
+		},
 		issue = {
 			closed = " ",
 			create_branch = "󱓊 ",

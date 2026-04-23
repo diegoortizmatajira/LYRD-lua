@@ -138,6 +138,7 @@ local L = {
 			nil,
 			icons.folder.new
 		),
+		LYRDGithubReleaseCreate = Command:new("GitHub: Create release", nil, icons.git.release.open),
 		LYRDGitWorkTreeList = Command:new("Git: List Worktrees", nil, icons.git.worktree),
 		LYRDGitViewGraph = Command:new("Git: View Repository Graph", nil, icons.git.branch),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
