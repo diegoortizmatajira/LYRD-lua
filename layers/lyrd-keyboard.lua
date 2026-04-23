@@ -410,14 +410,18 @@ function L.keybindings()
 				{ "M", cmd.LYRDGitCheckoutMain },
 			}),
 			menu_header("h", "GitHub", {
-				{ "l", cmd.LYRDGithubIssueList },
-				{ "c", cmd.LYRDGithubIssueCreate },
-				{ "x", cmd.LYRDGithubIssueClose },
-				{ "O", cmd.LYRDGithubIssueReopen },
-				{ "o", cmd.LYRDGithubIssueDevelop },
-				{ "C", cmd.LYRDGithubPullRequestCreate },
-				{ "L", cmd.LYRDGithubPullRequestList },
-				{ "X", cmd.LYRDGithubPullRequestClose },
+				menu_header("i", "Issue", {
+					{ "l", cmd.LYRDGithubIssueList },
+					{ "c", cmd.LYRDGithubIssueCreate },
+					{ "x", cmd.LYRDGithubIssueClose },
+					{ "r", cmd.LYRDGithubIssueReopen },
+					{ "d", cmd.LYRDGithubIssueDevelop },
+				}),
+				menu_header("p", "Pull Request", {
+					{ "c", cmd.LYRDGithubPullRequestCreate },
+					{ "l", cmd.LYRDGithubPullRequestList },
+					{ "x", cmd.LYRDGithubPullRequestClose },
+				}),
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
