@@ -1,7 +1,7 @@
 local lsp = require("LYRD.layers.lsp")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Java language",
 	required_plugins = {
@@ -34,6 +34,10 @@ local L = {
 				"mfussenegger/nvim-jdtls",
 				"mfussenegger/nvim-dap",
 			},
+		},
+		{
+			"weilbith/neotest-gradle",
+			ft = "java",
 		},
 		{
 			"JavaHello/spring-boot.nvim",
@@ -87,6 +91,7 @@ local L = {
 	},
 	required_test_adapters = {
 		"neotest-java",
+		"neotest-gradle",
 	},
 }
 

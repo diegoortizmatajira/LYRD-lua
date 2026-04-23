@@ -1,9 +1,9 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local lsp = require("LYRD.layers.lsp")
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Completion: LYRD.setup.Module
-local L = { name = "Completion" }
+---@class LYRD.layer.Completion: LYRD.shared.setup.Module
+local L = { name = "Code Completion" }
 
 local kind_icons = {
 	Class = icons.code.class,

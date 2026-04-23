@@ -2,8 +2,8 @@ local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.Grammar: LYRD.setup.Module
-local L = { name = "Grammar" }
+---@class LYRD.layer.Grammar: LYRD.shared.setup.Module
+local L = { name = "Grammar Checking" }
 
 local enabled = false
 

@@ -1,4 +1,10 @@
 return {
+	filetypes = {
+		"yaml",
+		"yaml.docker-compose",
+		"yaml.gitlab",
+		"yaml.kubernetes",
+	},
 	settings = {
 		yaml = {
 			hover = true,

@@ -1,10 +1,10 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.Themes: LYRD.setup.Module
+---@class LYRD.layer.Themes: LYRD.shared.setup.Module
 local L = {
-	name = "Themes",
+	name = "Color Themes",
 	favorite_themes = {
 		{
 			name = "gruvbox - dark",

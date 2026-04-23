@@ -1,0 +1,6 @@
+return function(buf)
+    local git = require("LYRD.layers.git")
+    git.populate_gitignore(buf)
+    return {}
+end
+---

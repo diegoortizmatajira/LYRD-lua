@@ -1,13 +1,13 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local c = commands.command_shortcut
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Motions: LYRD.setup.Module
+---@class LYRD.layer.Motions: LYRD.shared.setup.Module
 local L = {
-	name = "Motions",
+	name = "Navigation Motions",
 	vscode_compatible = true,
 }
 
@@ -56,8 +56,8 @@ function L.plugins()
 				mappings_enabled = false, -- If the value is false, only valid for global keymaps: toggle、add、delete_on_virt、show_desc
 				sign_icon = icons.other.bookmark, -- if it is not empty, show icon in signColumn.
 			},
-			config = function()
-				require("bookmarks").setup()
+			config = function(_, opts)
+				require("bookmarks").setup(opts)
 				require("telescope").load_extension("bookmarks")
 			end,
 		},

@@ -1,10 +1,10 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Filetree: LYRD.setup.Module
-local L = { name = "File tree" }
+---@class LYRD.layer.Filetree: LYRD.shared.setup.Module
+local L = { name = "File Explorer" }
 
 function L.plugins()
 	setup.plugin({
@@ -154,6 +154,7 @@ function L.plugins()
 						".gitignore",
 						".env",
 						".dockerignore",
+						".vscode",
 					},
 				},
 				actions = {

@@ -1,5 +1,5 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "REST Client",
 	required_plugins = {
@@ -22,15 +22,13 @@ local L = {
 			format_settings = { "kulala-fmt" },
 		},
 	},
-}
-
-function L.preparation()
-	vim.filetype.add({
+	required_filetype_definitions = {
 		extension = {
 			["http"] = "http",
+			["rest"] = "rest",
 		},
-	})
-end
+	},
+}
 
 function L.keybindings()
 	local mappings = require("LYRD.layers.mappings")
@@ -49,7 +47,7 @@ end
 
 --- Returns the closest environment file for the current working directory. Starts with the current file directory and checks parent directories until it finds the file or reaches the root.
 function L.get_closest_environment_file()
-	local utils = require("LYRD.utils")
+	local utils = require("LYRD.shared.utils")
 	local env_file = "http-client.env.json"
 
 	local function file_exists(path)
@@ -78,6 +76,16 @@ end
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
+	-- Ensure both .http and .rest buffers attach the HTTP parser for TS highlighting.
+	vim.treesitter.language.register("http", "rest")
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = { "http", "rest" },
+		callback = function(args)
+			vim.treesitter.start(args.buf, "http")
+		end,
+	})
+
 	commands.implement("http", {
 		{
 			cmd.LYRDCodeRunSelection,

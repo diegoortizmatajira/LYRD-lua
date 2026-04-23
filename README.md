@@ -17,15 +17,39 @@
   - [AI-Powered Development](#ai-powered-development)
   - [Code Snippets and Templates](#code-snippets-and-templates)
   - [Container and Cloud Development](#container-and-cloud-development)
+  - [CI/CD Pipeline Support](#cicd-pipeline-support)
   - [Interactive Programming (REPL)](#interactive-programming-repl)
   - [REST API Testing](#rest-api-testing)
   - [Database Management](#database-management)
   - [Grammar Checking](#grammar-checking)
   - [Static Website Development](#static-website-development)
+  - [Internationalization (i18n)](#internationalization-i18n)
+  - [Development Server](#development-server)
+  - [Secret Scanning](#secret-scanning)
   - [Tmux Integration](#tmux-integration)
   - [Media and Images](#media-and-images)
   - [Neovide Support](#neovide-support)
   - [VSCode Compatibility](#vscode-compatibility)
+- [TUI Panels and Sidebars](#tui-panels-and-sidebars)
+  - [File Tree](#file-tree)
+  - [File Explorer](#file-explorer)
+  - [Git UI](#git-ui)
+  - [Git Graph](#git-graph)
+  - [Test Sidebar](#test-sidebar)
+  - [Tasks Panel (Overseer)](#tasks-panel-overseer)
+  - [Debugging UI](#debugging-ui)
+  - [Database Sidebar](#database-sidebar)
+  - [Code Outline](#code-outline)
+  - [Search and Replace in Files](#search-and-replace-in-files)
+  - [Diagnostics Panel](#diagnostics-panel)
+  - [Quickfix List](#quickfix-list)
+  - [Integrated Terminal](#integrated-terminal)
+  - [AI Chat Panel](#ai-chat-panel)
+  - [REPL Panel](#repl-panel)
+  - [REST Client](#rest-client)
+  - [Containers and Kubernetes](#containers-and-kubernetes)
+  - [Focus Mode](#focus-mode)
+  - [Local Configuration](#local-configuration)
 - [Keyboard-Driven Workflow](#keyboard-driven-workflow)
 - [Language Support](#language-support)
   - [Python](#python)
@@ -37,7 +61,10 @@
   - [C and C++](#c-and-c)
   - [Kotlin](#kotlin)
   - [Bash](#bash)
+  - [PHP](#php)
   - [Pascal](#pascal)
+  - [LaTeX](#latex)
+  - [SQL](#sql)
   - [Other Languages](#other-languages)
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
@@ -169,6 +196,8 @@ feedback.
 - **Floating Terminals**: Pop-up terminals that don't disturb your layout
 - **Focus Mode**: Dims everything except the current code block for
   distraction-free coding
+- **Inline Color Preview**: Displays color swatches next to hex, RGB, and other
+  color values in your code
 
 **How it helps you**:
 
@@ -230,7 +259,12 @@ projects.
   etc.)
 - **Symbol search**: Find any function or class in your project by name
 - **Recent files**: Quickly reopen files you were just working on
-- **Bookmarks**: Mark important locations in your code and jump back to them
+- **Bookmarks**: Mark important locations in your code and jump back to them,
+  with visual indicators in the sign column for marks
+- **TODO Search**: Find and navigate all TODO, FIXME, HACK, and NOTE comments
+  across your project with highlighted annotations
+- **Saved Macros**: Save and search recorded macros via Telescope for reuse
+  across sessions
 - **File browser**: Visual tree of your project structure
 
 **How it helps you**:
@@ -409,8 +443,8 @@ improve code.
 
 **CLI AI Tools** (Sidekick):
 
-- **CLI integration**: Use external AI CLI tools (Claude Code, GitHub Copilot CLI,
-  etc.) directly from within Neovim
+- **CLI integration**: Use external AI CLI tools (Claude Code, GitHub Copilot
+  CLI, etc.) directly from within Neovim
 - **Tmux backend**: Runs CLI tools in a Tmux pane alongside your editor
 - **Tool selection**: Switch between different CLI AI tools on the fly
 - **Send prompts**: Send prompts to CLI AI tools with project context
@@ -433,8 +467,8 @@ improve code.
   without leaving Neovim
 
 **Real-world benefit**: Multiple AI integration points — inline completions for
-fast coding, Avante for chat-based editing and questions, and Sidekick for
-full CLI AI tools — give you the right level of AI assistance for each task.
+fast coding, Avante for chat-based editing and questions, and Sidekick for full
+CLI AI tools — give you the right level of AI assistance for each task.
 
 ### Code Snippets and Templates
 
@@ -481,21 +515,37 @@ container-based development.
 - **Dockerfile support**: Syntax highlighting and language server for
   Dockerfiles
 - **Docker Compose**: Full support for compose files with service visualization
-- **Linting**: Catch Dockerfile problems with hadolint
+  and automatic filetype detection
+- **Run services from compose files**: Place your cursor on a service in a
+  Docker Compose file and run commands (up, down, start, stop, restart, build,
+  pull, logs) directly on that service or the entire compose file
+- **Service indicators**: Visual signs in the gutter mark each service defined
+  in your compose file
+- **Linting**: Catch Dockerfile problems with hadolint (Linux)
 - **LazyDocker integration**: Visual Docker management in a terminal UI
 - **Quick actions**: Start, stop, and manage containers from your editor
 
 **Kubernetes Features**:
 
+- **Run manifests from the editor**: Apply, delete, describe, create, or diff
+  Kubernetes manifests directly from the current file — either the whole file or
+  the individual YAML document under the cursor
+- **Dry-run support**: Test manifests with client-side or server-side dry-run
+  before applying
 - **k9s integration**: Full-featured Kubernetes cluster management
-- **Helm support**: Work with Helm charts and templates
+- **Helm support**: Work with Helm charts and templates with dedicated filetype
+  detection and language server
 - **YAML validation**: Ensure your Kubernetes configs are correct
-- **Quick deployment**: Deploy and manage apps from your editor
+- **Smart filetype detection**: Automatically recognizes manifests in common
+  directory patterns (k8s/, kubernetes/, manifests/, deploy/)
 
 **How it helps you**:
 
-- **Faster development**: Manage containers without leaving your editor
-- **Catch issues early**: Linting prevents deployment problems
+- **Faster development**: Manage containers and deployments without leaving your
+  editor
+- **Run services in place**: Execute Docker Compose commands or apply Kubernetes
+  manifests from the file you are editing
+- **Catch issues early**: Linting and dry-run prevent deployment problems
 - **Visual management**: See your containers and clusters clearly
 - **Simplified workflows**: Common Docker/K8s operations are just keystrokes
   away
@@ -503,6 +553,37 @@ container-based development.
 
 **Real-world benefit**: Container-based development becomes as smooth as local
 development. You can develop, test, and deploy containerized apps efficiently.
+Running a Docker Compose service or applying a Kubernetes manifest is as simple
+as triggering the run command on the file you are editing.
+
+### CI/CD Pipeline Support
+
+**What it does**: Provides language server support and linting for CI/CD
+pipeline configuration files across major platforms.
+
+**Features**:
+
+- **GitHub Actions**: Language server for workflow files with completions,
+  validation, and diagnostics
+- **GitLab CI**: Language server for `.gitlab-ci.yml` with schema validation and
+  autocompletion
+- **Azure Pipelines**: Language server for Azure DevOps pipeline YAML files
+- **Actionlint**: Linting for GitHub Actions workflow files to catch common
+  mistakes
+- **Custom filetype detection**: Automatic recognition of `.gitlab-ci.yml` as a
+  GitLab CI file
+
+**How it helps you**:
+
+- **Catch errors early**: Validate pipeline configs before pushing
+- **Faster authoring**: Autocompletion for pipeline-specific syntax and keywords
+- **Multi-platform**: Work with GitHub, GitLab, and Azure pipelines in the same
+  editor
+- **Less context switching**: No need to check documentation for correct syntax
+
+**Real-world benefit**: Writing and maintaining CI/CD pipelines becomes much
+faster and less error-prone. You get instant feedback on syntax issues and
+schema violations without waiting for a pipeline run to fail.
 
 ### Interactive Programming (REPL)
 
@@ -628,6 +709,92 @@ polished without needing to copy text into an external grammar tool.
 **Real-world benefit**: Static site development becomes as smooth as any other
 project type, with all Hugo commands accessible from your editor.
 
+### Internationalization (i18n)
+
+**What it does**: Provides inline translation status and diagnostics for
+internationalized web applications.
+
+**Features**:
+
+- **Inline translation preview**: See translated text directly in your code as
+  virtual text annotations
+- **Primary language display**: Shows the primary language value next to
+  translation keys
+- **Auto-hover**: Automatically displays translation details when your cursor
+  rests on a key
+- **Translation diagnostics**: Compare translations against the primary language
+  to find missing or outdated entries
+
+**How it helps you**:
+
+- **Stay in context**: See translations without switching to JSON files or
+  external tools
+- **Catch missing translations**: Identify gaps in your translation coverage
+  early
+- **Faster development**: No need to cross-reference translation files manually
+- **Better quality**: Ensure all languages are complete before shipping
+
+**Real-world benefit**: Managing translations in multi-language web applications
+becomes much less error-prone. You see the actual translated text right next to
+the keys in your code, catching issues before they reach users.
+
+### Development Server
+
+**What it does**: Starts a local development server for previewing web projects
+directly from your editor.
+
+**Features**:
+
+- **Live reload**: Uses live-server for automatic browser refresh on file
+  changes
+- **Configurable port**: Choose which port to serve on (defaults to 3000)
+- **Custom folder**: Serve any directory, not just the project root
+- **Task integration**: Runs as an Overseer task with real-time output
+- **Server exposure**: Expose local servers to the internet via ngrok tunnels
+  for sharing or testing on other devices
+- **Environment variables**: Load and inspect `.env` files directly from the
+  editor
+
+**How it helps you**:
+
+- **Quick previews**: Launch a dev server without leaving Neovim
+- **Flexible setup**: Serve any folder on any port
+- **Live feedback**: See changes in your browser instantly as you edit
+- **Share instantly**: Expose your local server for external access with one
+  command
+
+**Real-world benefit**: Frontend and static site development becomes faster.
+Start a live-reloading server with a single keybinding and iterate on your HTML,
+CSS, and JavaScript with immediate visual feedback.
+
+### Secret Scanning
+
+**What it does**: Scans your project for accidentally committed secrets,
+credentials, and API keys using TruffleHog.
+
+**Features**:
+
+- **Filesystem scanning**: Scans the current working directory for secrets using
+  TruffleHog's filesystem mode
+- **Diagnostics integration**: Results appear as Neovim diagnostics, allowing
+  you to jump between findings with quickfix navigation
+- **Verified vs unverified**: Each finding indicates whether the secret was
+  verified as active or just a potential match
+- **Detector details**: Shows which type of secret was detected (e.g., AWS keys,
+  GitHub tokens, private keys) along with a redacted preview
+- **Task integration**: Runs as an Overseer task with real-time output and
+  auto-closes when the scan completes
+
+**How it helps you**:
+
+- **Catch leaks early**: Find secrets before they reach a public repository
+- **Quick navigation**: Jump directly to the file and line containing the secret
+- **Non-blocking**: The scan runs in the background so you can keep working
+
+**Real-world benefit**: Prevent credential leaks by scanning your codebase from
+within your editor. One keybinding triggers a full scan, and results land in
+your diagnostics list so you can fix them immediately.
+
 ### Tmux Integration
 
 **What it does**: Seamless navigation and window management between Neovim and
@@ -695,6 +862,287 @@ VSCode's Neovim extension.
 
 **Real-world benefit**: Use your familiar Neovim keybindings and motions inside
 VSCode when needed, without breaking either environment.
+
+## TUI Panels and Sidebars
+
+LYRD provides a set of integrated TUI panels that give you an IDE-like layout
+entirely within the terminal. Each panel can be toggled independently and
+coexists with your editing buffers.
+
+### File Tree
+
+![File Tree Panel](docs/images/file-tree-panel.png)
+
+**Plugin**: nvim-tree.lua **Layer**: `layers/filetree.lua`
+
+A sidebar file tree that shows your project structure with Git status
+indicators, diagnostics, and bookmarks in the sign column.
+
+- Positioned on the right side with 60-character default width
+- Git status glyphs (unstaged, staged, unmerged, renamed, untracked, deleted,
+  ignored) shown inline next to each file
+- Diagnostics icons (error, warning, info, hint) in the sign column
+- Indent guides with tree-line characters
+- Filters out `.git`, `node_modules`, `bin`, `obj` by default
+- Opens the file and closes the tree on selection
+
+### File Explorer
+
+![File Explorer](docs/images/file-explorer.png)
+
+**Plugins**: tfm.nvim (yazi backend), oil.nvim **Layer**: `layers/filetree.lua`
+
+Two alternative file browsing modes that complement the file tree.
+
+**yazi** opens as a floating terminal with full file management capabilities —
+rename, move, copy, delete — using the yazi TUI. Selected files open in the
+current window, a split, or a new tab.
+
+**oil.nvim** opens the current directory as an editable buffer. Rename files by
+editing their names, delete by removing lines, and create new files by typing
+new entries. Changes are applied when you save the buffer.
+
+### Git UI
+
+![LazyGit](docs/images/lazy-git.png)
+![Git Status Panel](docs/images/git-status-panel.png)
+
+**Plugins**: lazygit.nvim, neogit, diffview.nvim, gitsigns.nvim, blame.nvim,
+git-conflict.nvim, octo.nvim, worktrees.nvim **Layer**: `layers/git.lua`
+
+A comprehensive Git interface combining multiple tools:
+
+- **LazyGit** — full-featured Git TUI in a floating terminal for staging,
+  committing, branching, rebasing, and more
+- **Neogit** — a Magit-inspired status buffer for staging hunks, committing, and
+  pushing without leaving Neovim
+- **Diffview** — side-by-side diff viewer for file history, merge conflicts, and
+  commit comparisons
+- **Gitsigns** — gutter indicators showing added, changed, and deleted lines
+- **Blame** — toggle line-by-line Git blame annotations
+- **Git Conflict** — visual merge conflict resolution with choose-ours,
+  choose-theirs, and choose-both actions
+- **Octo** — GitHub issues and pull request management
+- **Worktrees** — Git worktree creation and switching
+
+Also includes Git Flow commands for feature, release, and hotfix branch
+workflows.
+
+### Git Graph
+
+![Git Graph](docs/images/git-chart.png)
+
+**Plugin**: External `tig` TUI **Layer**: `layers/git.lua`
+
+A text-based Git history graph viewer. Opens `tig` — a ncurses-based Git
+repository browser — in a floating terminal window. Provides a scrollable commit
+graph with branch topology, commit details, and diff viewing.
+
+LazyGit also includes an integrated commit graph accessible from its own UI.
+
+**Requires**: `tig` installed on the system.
+
+### Test Sidebar
+
+![Test Sidebar](docs/images/tests-panel.png)
+
+**Plugin**: neotest **Layer**: `layers/test.lua`
+
+A sidebar panel that displays test results in a hierarchical tree — organized by
+file, suite, and individual test. Shows pass/fail status with icons and allows
+jumping to failing tests.
+
+- Run individual tests, files, or the entire suite from the sidebar
+- Debug failing tests with DAP integration
+- View test output in a dedicated panel
+- Toggle coverage display with nvim-coverage
+- Adapters for Python, Go, Rust, Java, .NET, C++, Lua, JavaScript (Jest, Vitest)
+
+### Tasks Panel (Overseer)
+
+![Overseer Panel](docs/images/overseer-panel.png)
+
+**Plugin**: overseer.nvim **Layer**: `layers/tasks.lua`
+
+A bottom dock panel that shows running and completed tasks — builds, test runs,
+dev servers, and custom commands. Each task displays its status, output, and
+elapsed time.
+
+- Docked at the bottom with configurable height (default 25 lines)
+- Imports tasks from `.vscode/tasks.json`
+- Integrates with neotest (test runs appear as tasks) and DAP (debug sessions)
+- Task output viewable inline or in a quickfix list
+- Custom task templates for Python, Java (Maven, Gradle), and .NET (Cake)
+
+### Debugging UI
+
+![Debugging Panels](docs/images/debug-panels.png)
+
+**Plugin**: nvim-dap-ui **Layer**: `layers/debug.lua`
+
+A multi-panel debugging interface that opens automatically when a debug session
+starts and closes when it ends. Organizes debugging information into two layout
+groups:
+
+- **Bottom panels**: Scopes (local/global variables and their values) and
+  Watches (user-defined watch expressions)
+- **Right panels**: Stack traces, breakpoints list, debug REPL (interactive
+  evaluation), and console output
+
+The UI includes playback controls (continue, step over, step into, step out,
+terminate) displayed in the REPL element. Variables can be expanded to inspect
+nested structures, and the REPL accepts arbitrary expressions for evaluation
+during a paused session. Virtual text annotations from nvim-dap-virtual-text
+show variable values inline next to the source code.
+
+### Database Sidebar
+
+![Database Panel](docs/images/database-panel.png)
+
+**Plugin**: db-cli-adapter.nvim **Layer**: `layers/lang/sql.lua`
+
+A sidebar for browsing database connections, schemas, tables, views, and their
+fields. Query results are displayed in a separate output panel with CSV
+formatting and Excel-like navigation.
+
+- Browse connections, schemas, tables, views, and columns in a tree sidebar
+- Execute queries from the buffer or at cursor position
+- CSV-formatted output with field-level navigation (Tab/Shift-Tab between
+  fields, Enter/Shift-Enter between rows)
+- Connection switching and management
+- Current database connection shown in the status line
+
+### Code Outline
+
+![Code Outline](docs/images/outline-panel.png)
+
+**Plugin**: aerial.nvim **Layer**: `layers/telescope.lua`
+
+A sidebar that displays the structure of the current file — functions, classes,
+methods, variables, and other symbols — in a navigable tree. Selecting an entry
+jumps to its location in the source. The outline updates as you edit and closes
+on selection by default. Positioned on the right side of the editor. Also
+integrates with Telescope for fuzzy symbol search across the document.
+
+### Search and Replace in Files
+
+![Search and Replace](docs/images/replace-in-files-panel.png)
+
+**Plugin**: grug-far.nvim **Layer**: `layers/lyrd-ui.lua`
+
+A search-and-replace panel that opens as a split with live preview of matches
+and replacements across your project or within the current file.
+
+- Live preview of all matches and replacements before applying
+- Regex support
+- Scope to current file or entire project
+- Path filtering
+
+### Diagnostics Panel
+
+**Plugin**: trouble.nvim **Layer**: `layers/lsp.lua`
+
+A structured list of all diagnostics (errors, warnings, info, hints) for the
+current buffer or the entire workspace. Replaces the default location list with
+a filterable, navigable panel.
+
+- Filter by current buffer or entire workspace
+- Sorted by severity (errors first)
+- Jump to diagnostic location on selection
+- Virtual diagnostic lines toggle for inline multi-line diagnostic display
+- Telescope integration for fuzzy searching diagnostics
+
+### Quickfix List
+
+**Plugin**: trouble.nvim **Layer**: `layers/lsp.lua`
+
+An enhanced quickfix list powered by Trouble, providing a structured and
+navigable view of quickfix entries. Auto-populated by LSP diagnostics, build
+errors, search results, and task output.
+
+### Integrated Terminal
+
+**Plugin**: toggleterm.nvim **Layer**: `layers/lyrd-ui.lua`
+
+A terminal emulator embedded in Neovim that can be toggled open and closed
+without losing session state. Supports multiple terminal instances that can be
+listed and switched between. Also serves as the backend for floating terminal
+applications like LazyGit, lazydocker, k9s, and tig.
+
+### AI Chat Panel
+
+![AI Chat Panel](docs/images/ai-panel.png)
+
+**Plugin**: avante.nvim **Layer**: `layers/ai-dev.lua`
+
+A toggleable sidebar for AI-assisted development. Supports asking questions
+about code, requesting edits with visual diff review, generating documentation,
+and getting refactoring suggestions. Works with GitHub Copilot, and other AI
+providers. The panel shows a conversation history and can apply suggested
+changes directly to your buffers.
+
+### REPL Panel
+
+**Plugins**: iron.nvim, NotebookNavigator.nvim, molten-nvim **Layer**:
+`layers/repl.lua`
+
+A horizontal split panel that hosts an interactive REPL session. Supports
+sending code from the editor to the REPL for immediate execution. Includes
+notebook-style cell navigation and execution — define cells with comment
+markers, run them individually or in sequence, and move cells up or down.
+Currently supports Python (IPython/Python) with Jupyter notebook integration via
+jupytext.
+
+### REST Client
+
+**Plugin**: kulala.nvim **Layer**: `layers/rest.lua`
+
+A response viewer panel for HTTP requests. Write requests in `.http` or `.rest`
+files and execute them to see formatted responses including headers, body, and
+statistics. Supports environment variables via `http-client.env.json` files,
+request inspection, curl import/export, and a scratchpad for quick one-off
+requests.
+
+### Containers and Kubernetes
+
+**Plugins**: lazydocker (external), k9s (external) **Layers**:
+`layers/docker.lua`, `layers/kubernetes.lua`
+
+Floating terminal panels that launch external TUI tools for container and
+cluster management:
+
+- **lazydocker** — visual Docker container, image, volume, and compose
+  management with logs, stats, and lifecycle controls
+- **k9s** — full-featured Kubernetes cluster browser for pods, deployments,
+  services, and logs
+
+Both tools run inside Neovim's floating terminal and can be toggled without
+losing state.
+
+**Requires**: `lazydocker` and/or `k9s` installed on the system.
+
+### Focus Mode
+
+**Plugin**: twilight.nvim **Layer**: `layers/lyrd-ui.lua`
+
+A toggle that dims all code outside the current context (function, block, or
+paragraph), drawing attention to the section you are actively editing. Useful
+for reducing visual noise when working in large files.
+
+### Local Configuration
+
+![Local Configuration](docs/images/local-settings-dialog.png)
+
+**Module**: `shared/ui/local_config.lua`
+
+A floating window for toggling which LYRD layers are active. Opens a checklist
+of all skippable layers — toggle a layer on or off, then save to apply. Changes
+are written to `~/.local/share/nvim/lyrd/lyrd-local.lua` and take effect after
+restarting Neovim.
+
+- Centered floating window (50% width) listing all skippable layers
+- Visual toggle indicators
+- Excludes core unskippable layers (LSP, Debug, Test, UI, Commands, Keyboard)
 
 ## Keyboard-Driven Workflow
 
@@ -845,6 +1293,10 @@ learning
 - **Package Management**: npm, yarn, pnpm support
 - **HTML/CSS**: Emmet support for rapid HTML writing
 - **Auto-tags**: Automatic closing tags for HTML/JSX
+- **Internationalization**: Inline translation previews and diagnostics via
+  i18n-status
+- **Development Server**: Start a live-reloading local server for previewing web
+  projects
 
 **How it helps you**:
 
@@ -853,6 +1305,8 @@ learning
 - Component-based development with framework-specific tools
 - Fast refactoring across multiple files
 - Test-driven development with visual test runners
+- See translations inline and catch missing i18n keys early
+- Preview web projects with live reload without leaving Neovim
 
 **Perfect for**: Frontend development, full-stack JavaScript, Node.js
 applications, modern web frameworks (React, Vue, Angular, Svelte)
@@ -1000,6 +1454,16 @@ projects
 
 **Perfect for**: Shell scripting, automation, DevOps workflows
 
+### PHP
+
+**What you get**:
+
+- **Language Servers**: Intelephense and Laravel Language Server
+- **Formatting**: php-cs-fixer for consistent code style
+- **Syntax highlighting**: Treesitter-based PHP parsing and highlighting
+
+**Perfect for**: PHP applications, Laravel projects, backend web development
+
 ### Pascal
 
 **What you get**:
@@ -1008,6 +1472,58 @@ projects
 - **Syntax highlighting**: Treesitter-based highlighting
 
 **Perfect for**: Legacy Pascal projects, Free Pascal development
+
+### LaTeX
+
+**What you get**:
+
+- **Language Server**: texlab for completions, references, and diagnostics
+- **Syntax highlighting**: Treesitter-based highlighting for LaTeX and BibTeX
+- **Formatting**: latexindent for consistent document formatting
+- **Compilation**: VimTeX integration with continuous compilation via `latexmk`
+- **PDF Viewing**: Zathura PDF viewer with forward/inverse search
+- **Error Reporting**: Quick access to compilation errors
+
+**How it helps you**:
+
+- Compile and preview documents without leaving the editor
+- Navigate compilation errors quickly
+- Format your LaTeX source consistently
+- Get intelligent completions for commands, environments, and citations
+
+**Perfect for**: Academic papers, theses, technical documentation, scientific
+publishing
+
+### SQL
+
+**What you get**:
+
+- **Language Server**: sqls for completions and database introspection
+- **Diagnostics and Formatting**: sqlfluff with per-buffer dialect awareness
+- **Dialect Selection**: 28 SQL dialects (PostgreSQL, MySQL, SQLite, T-SQL,
+  BigQuery, Snowflake, DuckDB, Oracle, and more) configurable per buffer,
+  dynamically adjusting diagnostics and formatting rules
+- **Automatic Dialect Detection**: Changing the active database connection
+  automatically sets the matching SQL dialect
+- **Database Connections**: db-cli-adapter integration for managing and
+  switching between multiple database connections
+- **Query Execution**: Run the entire buffer or individual queries against the
+  active connection
+- **Recursive Query Selection**: When running a selection, Tree-sitter walks
+  upward from the cursor to find all enclosing SQL statements (subqueries,
+  statements, full program), letting you choose which level to execute
+- **CSV Output**: Query results in CSV format with in-editor column-based
+  viewing via csvview
+
+**How it helps you**:
+
+- Work with multiple databases and dialects without leaving the editor
+- Get accurate linting and formatting tuned to each dialect
+- Execute queries at any nesting level with a single action
+- Browse query results as formatted tables inside Neovim
+
+**Perfect for**: Database development, data analysis, query authoring across
+multiple SQL engines
 
 ### Other Languages
 
@@ -1023,12 +1539,6 @@ projects
 - Table of contents generation
 - Mermaid diagrams
 - Live preview
-
-**SQL**:
-
-- Multiple database support
-- Query execution and results
-- Syntax highlighting for various SQL dialects
 
 **Data Formats** (JSON, YAML, TOML, XML):
 
@@ -1060,7 +1570,7 @@ projects
 - **Git**: For cloning the repository and managing plugins
 - **A Nerd Font**: For icons to display correctly (recommended: JetBrains Mono
   Nerd Font, FiraCode Nerd Font, or Hack Nerd Font)
-- **ripgrep**: For fast text searching (`<Space>s/` and `<Ctrl-t>`)
+- **ripgrep**: For fast text searching
 - **fd**: For fast file finding (optional but recommended)
 - **Node.js**: Required for many language servers
 - **Python 3**: Required for Python development and some plugins
@@ -1110,17 +1620,15 @@ LYRD will prompt you to install language servers and tools as needed. You can
 also manually install tools:
 
 1. Open Neovim
-2. Press `<Space>pt` - This opens Mason (the tool manager)
-3. Browse and install the tools you need:
-   - Press `i` to install a tool
-   - Press `u` to update a tool
-   - Press `X` to uninstall a tool
+2. Run the `LYRDToolManager` command to open Mason (the tool manager)
+3. Browse and install the tools you need
 
 **Common tools to install**:
 
 - Python: `basedpyright`, `ruff`, `debugpy`
 - JavaScript/TypeScript: `typescript-language-server`, `prettier`
 - Java: `jdtls`, `java-debug-adapter`
+- PHP: `intelephense`, `laravel-ls`, `php-cs-fixer`
 - Go: `gopls`, `delve`
 - Rust: `rust-analyzer`, `codelldb`
 - C/C++: `clangd`, `clang-format`
@@ -1152,7 +1660,7 @@ personal configuration is stored in:
 
 To edit your local configuration:
 
-1. Press `<Space>pl` in Neovim
+1. Run the `LYRDEditLocalConfig` command in Neovim
 2. Or manually create/edit the file
 
 ### Skipping Layers
@@ -1205,11 +1713,9 @@ Codeium, TabNine).
 
 ### Theme Customization
 
-LYRD comes with multiple themes. To cycle through themes:
-
-- Press `,t` or `<Space>vt`
-
-To apply the current theme permanently, press `<Space>vT`
+LYRD comes with multiple themes. Use the `LYRDApplyNextTheme` command to cycle
+through themes, and `LYRDApplyCurrentTheme` to apply the current theme
+permanently.
 
 ### Project-Specific Settings
 
@@ -1232,7 +1738,7 @@ git pull
 
 Then in Neovim, update plugins:
 
-1. Press `<Space>pu` - Update all plugins
+1. Run the `LYRDPluginsUpdate` command to update all plugins
 2. Restart Neovim
 
 ### Troubleshooting
@@ -1244,7 +1750,7 @@ Then in Neovim, update plugins:
 
 **Language features not working?**
 
-- Install the language server via Mason: `<Space>pt`
+- Install the language server via Mason using the `LYRDToolManager` command
 - Check `:LspInfo` to see if the server is running
 - Run `:checkhealth lsp`
 
@@ -1261,23 +1767,25 @@ Then in Neovim, update plugins:
 
 ### Getting Help
 
-- **In-editor help**: Press `<Space>?` to see buffer-specific keymaps
-- **Command palette**: Press `<Space>s,` to search all available commands
-- **Mason tools**: Press `<Space>pt` to manage language servers and tools
+- **In-editor help**: Run `LYRDSearchKeyMappings` to see buffer-specific keymaps
+- **Command palette**: Run `LYRDSearchCommands` to search all available commands
+- **Mason tools**: Run `LYRDToolManager` to manage language servers and tools
 - **Health check**: Run `:checkhealth LYRD` to diagnose issues
 
 ### Learning Resources
 
 **Start small**: Focus on learning a few commands at a time:
 
-1. **Week 1**: File navigation (`<Ctrl-p>`, `<Ctrl-t>`, file tree with `F2`)
-2. **Week 2**: Code navigation (`gd`, `gr`, `K` for hover info)
-3. **Week 3**: Running and testing (`<Space>cx`, `<Space>tt`)
-4. **Week 4**: Git integration (`<Space>gs`, `<Space>gc`)
-5. **Week 5**: Debugging (`F5`, `F9`, `F10`)
+1. **Week 1**: File navigation and search
+2. **Week 2**: Code navigation (go to definition, find references, hover docs)
+3. **Week 3**: Running and testing
+4. **Week 4**: Git integration
+5. **Week 5**: Debugging
 
-**Explore gradually**: Press `<Space>` or `,` and pause to see what commands are
-available. The which-key popup will show you all options with descriptions.
+**Explore gradually**: Press a leader key and pause to see what commands are
+available. The which-key popup will show you all options with descriptions. See
+the [Keyboard-Driven Workflow](#keyboard-driven-workflow) section for detailed
+shortcut mappings.
 
 **Customize to your needs**: Don't be afraid to skip features you don't use and
 add your own customizations.

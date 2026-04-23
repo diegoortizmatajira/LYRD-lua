@@ -1,8 +1,107 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
 local default_dialect = "ansi"
+--- @class LYRD.layer.sql.Dialect
+--- @field name string
+--- @field description string
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type LYRD.layer.sql.Dialect[]
+local available_dialects = {
+	{ name = "ansi", description = "ANSI dialect [inherits from 'nothing']" },
+	{ name = "athena", description = "AWS Athena dialect [inherits from 'ansi']" },
+	{ name = "bigquery", description = "Google BigQuery dialect [inherits from 'ansi']" },
+	{ name = "clickhouse", description = "ClickHouse dialect [inherits from 'ansi']" },
+	{ name = "databricks", description = "Databricks dialect [inherits from 'sparksql']" },
+	{ name = "db2", description = "IBM Db2 dialect [inherits from 'ansi']" },
+	{ name = "doris", description = "Apache Doris dialect [inherits from 'mysql']" },
+	{ name = "duckdb", description = "DuckDB dialect [inherits from 'postgres']" },
+	{ name = "exasol", description = "Exasol dialect [inherits from 'ansi']" },
+	{ name = "flink", description = "Apache Flink SQL dialect [inherits from 'ansi']" },
+	{ name = "greenplum", description = "Greenplum dialect [inherits from 'postgres']" },
+	{ name = "hive", description = "Apache Hive dialect [inherits from 'ansi']" },
+	{ name = "impala", description = "Apache Impala dialect [inherits from 'hive']" },
+	{ name = "mariadb", description = "MariaDB dialect [inherits from 'mysql']" },
+	{ name = "materialize", description = "Materialize dialect [inherits from 'postgres']" },
+	{ name = "mysql", description = "MySQL dialect [inherits from 'ansi']" },
+	{ name = "oracle", description = "Oracle dialect [inherits from 'ansi']" },
+	{ name = "postgres", description = "PostgreSQL dialect [inherits from 'ansi']" },
+	{ name = "redshift", description = "AWS Redshift dialect [inherits from 'postgres']" },
+	{ name = "snowflake", description = "Snowflake dialect [inherits from 'ansi']" },
+	{ name = "soql", description = "Salesforce Object Query Language (SOQL) dialect [inherits from 'ansi']" },
+	{ name = "sparksql", description = "Apache Spark SQL dialect [inherits from 'ansi']" },
+	{ name = "sqlite", description = "SQLite dialect [inherits from 'ansi']" },
+	{ name = "starrocks", description = "StarRocks dialect [inherits from 'mysql']" },
+	{ name = "teradata", description = "Teradata dialect [inherits from 'ansi']" },
+	{ name = "trino", description = "Trino dialect [inherits from 'ansi']" },
+	{ name = "tsql", description = "Microsoft T-SQL dialect [inherits from 'ansi']" },
+	{ name = "vertica", description = "Vertica dialect [inherits from 'ansi']" },
+}
+
+--- Sets the SQL dialect for the current buffer if valid and reloads the buffer.
+--- Notifies the user of any errors or changes in the SQL dialect.
+---
+--- @param dialect string|nil The name of the SQL dialect to set. If nil, no action is performed.
+local function set_dialect(dialect)
+	if vim.bo.filetype ~= "sql" then
+		return
+	end
+	if not dialect then
+		return
+	end
+	if not vim.tbl_contains(
+		vim.tbl_map(function(d)
+			return d.name
+		end, available_dialects),
+		dialect
+	) then
+		vim.notify("Invalid SQL dialect: " .. dialect, vim.log.levels.ERROR)
+		return
+	end
+	vim.b.sqlfluff_dialect = dialect
+	-- Refresh diagnostics to apply the new dialect settings (as sqlfluff is
+	-- configured as a null-ls source)
+	require("LYRD.layers.lsp").refresh_null_ls_diagnostics()
+	vim.notify("SQL dialect set to: " .. dialect)
+end
+
+local function map_adapter_to_dialect(adapter)
+	local mapping = {
+		postgres = "postgres",
+		mysql = "mysql",
+		sqlite = "sqlite",
+		sqlite3 = "sqlite",
+		mssql = "tsql",
+		oracle = "oracle",
+	}
+	local result = mapping[adapter]
+	if not result then
+		vim.notify(
+			string.format(
+				"No SQL dialect mapping found for adapter '%s'. Using default dialect '%s'.",
+				adapter,
+				default_dialect
+			),
+			vim.log.levels.WARN
+		)
+	end
+	return result or default_dialect
+end
+
+--- Converts an SQL command string into a concise representative title for display in the UI.
+--- This function removes extra whitespace, line breaks, and truncates the command to a reasonable length for display.
+--- @param sql string The SQL command to convert.
+local function sql_to_representative_title(sql)
+	local single_line = sql:gsub("%s+", " ")
+	local trimmed = single_line:match("^%s*(.-)%s*$") or ""
+	local max_length = 60
+	if #trimmed > max_length then
+		return trimmed:sub(1, max_length) .. "..."
+	else
+		return trimmed
+	end
+end
+
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "SQL language",
 	required_plugins = {
@@ -21,12 +120,13 @@ local L = {
 						end,
 					},
 				},
+				connection_change_handler = function(bufnr, new_connection)
+					-- Use the default connection change handler from the db-cli-adapter configuration
+					require("db-cli-adapter.config").sqls_connection_change_handler(bufnr, new_connection)
+					-- Set the SQL dialect based on the new connection's adapter
+					set_dialect(map_adapter_to_dialect(new_connection.adapter))
+				end,
 			},
-			config = function(_, opts)
-				-- Use the default connection change handler from the db-cli-adapter configuration
-				opts.connection_change_handler = require("db-cli-adapter.config").sqls_connection_change_handler
-				require("db-cli-adapter").setup(opts)
-			end,
 		},
 		{
 			"hat0uma/csvview.nvim",
@@ -63,18 +163,99 @@ local L = {
 		"sqls",
 	},
 	required_null_ls_sources = {
-		declarative_layer.source_with_opts(
-			"null-ls.builtins.diagnostics.sqlfluff",
-			{ extra_args = { "--dialect", default_dialect } }
-		),
-		declarative_layer.source_with_opts(
-			"null-ls.builtins.formatting.sqlfluff",
-			{ extra_args = { "--dialect", default_dialect } }
-		),
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.sqlfluff", {
+			extra_args = function()
+				return { "--dialect", vim.b.sqlfluff_dialect or default_dialect }
+			end,
+		}),
+		declarative_layer.source_with_opts("null-ls.builtins.formatting.sqlfluff", {
+			extra_args = function()
+				return { "--dialect", vim.b.sqlfluff_dialect or default_dialect }
+			end,
+		}),
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "sql",
+			use_lsp = true,
+			lsp_name = "null-ls",
+		},
+	},
+	sql_command_ts_query = [[
+[
+    (program)
+    (statement)
+    (subquery)
+] @sql-command
+	]],
 }
 
+--- Selects an SQL dialect for the current buffer using a UI prompt.
+--- Updates the SQL dialect used by 'sqlfluff' and reloads the buffer with the selected dialect.
+function L.select_dialect()
+	vim.ui.select(available_dialects, {
+		prompt = "Select SQL dialect:",
+		format_item = function(item)
+			return item.description
+		end,
+	}, function(dialect)
+		set_dialect(dialect and dialect.name)
+	end)
+end
+
+function L.get_db_connection()
+	--- @type string|nil
+	local adapter_connection = require("db-cli-adapter").get_current_db_connection()
+	if adapter_connection and adapter_connection == "" then
+		adapter_connection = nil
+	end
+	local dialect = vim.b.sqlfluff_dialect
+	if adapter_connection or dialect then
+		return string.format(
+			"%s (SQL dialect: %s)",
+			adapter_connection or "[No connection]",
+			dialect or default_dialect
+		)
+	else
+		return ""
+	end
+end
+
+--- Executes a SQL command at the cursor position.
+--- Uses a Tree-sitter query to select the SQL command node, and allows running it with a database CLI adapter.
+---
+--- @param csv? boolean If true, outputs the result in CSV format.
+--- @param editable? boolean If true, opens the result in an editable buffer instead of a read-only output.
+function L.run_at_cursor(csv, editable)
+	require("LYRD.shared.run_code").run_selection({
+		title = "Confirm SQL instruction to run",
+		treesitter_selector = {
+			query_string = L.sql_command_ts_query,
+			lang = "sql",
+			node_capture_name = "sql-command",
+			recursive_search = true,
+		},
+		generator = function(_, command, i)
+			return {
+				{
+					name = string.format("%d - %s", i, sql_to_representative_title(command)),
+					preview = command,
+					filetype = "sql",
+					runner = function()
+						local db_cli_adapter = require("db-cli-adapter")
+						local opts = { editable = editable }
+						db_cli_adapter.run_with_buffer_connection(command, csv, opts)
+					end,
+				},
+			}
+		end,
+		display_one_option_list = true,
+	})
+end
+
 function L.settings()
+	--- Disable default omni completion mappings for SQL to avoid conflicts with custom keybindings or plugins.
+	vim.g.omni_sql_no_default_maps = 1
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("sql", { ":CsvViewToggle" })
 
@@ -86,9 +267,36 @@ function L.settings()
 		{ cmd.LYRDDatabaseOutput, ":DbCliOutputToggle" },
 	})
 	commands.implement("sql", {
+		{
+			cmd.LYRDCodeLanguageVersion,
+			function()
+				L.select_dialect()
+			end,
+		},
 		{ cmd.LYRDCodeRun, ":DbCliRunBuffer" },
-		{ cmd.LYRDCodeRunSelection, ":DbCliRunAtCursor" },
-		{ cmd.LYRDCodeQuerySelection, ":DbCliRunAtCursorCsv" },
+		{
+			cmd.LYRDCodeRunSelection,
+			function()
+				L.run_at_cursor()
+			end,
+		},
+		{
+			cmd.LYRDCodeQuerySelection,
+			function()
+				L.run_at_cursor(true)
+			end,
+		},
+		{
+			cmd.LYRDCodeQuerySelectionAsEditable,
+			function()
+				L.run_at_cursor(true, true)
+			end,
+		},
+	})
+	commands.implement("db-cli-output.csv", {
+		{ cmd.LYRDBufferSave, ":DbCliResultPreviewChanges" },
+		{ cmd.LYRDBufferClose, ":DbCliOutputHide" },
+		{ cmd.LYRDBufferReload, ":DbCliResultRefresh" },
 	})
 	commands.implement({ "sql", "db-cli-sidebar" }, {
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },

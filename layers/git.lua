@@ -29,9 +29,26 @@ local function current_branch()
 	return head
 end
 
---- @type table|LYRD.setup.DeclarativeLayer
+local function run_git_ignore(command)
+	local url = "https://www.toptal.com/developers/gitignore/api/%s"
+	if vim.fn.executable("curl") == 0 then
+		vim.notify("curl is not installed. Please install it to use the gitignore generator.", vim.log.levels.ERROR)
+		return
+	end
+
+	local result = vim.system({ "curl", "-sL", string.format(url, command) }, {
+		text = true,
+	}):wait()
+	if result.code ~= 0 then
+		vim.notify("Failed to fetch .gitignore templates: " .. result.stderr, vim.log.levels.ERROR)
+		return
+	end
+	return result.stdout
+end
+
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Git",
+	name = "Git Integration",
 	required_plugins = {
 		{
 			"NeogitOrg/neogit",
@@ -222,6 +239,24 @@ local L = {
 	},
 }
 
+function L.populate_gitignore(buf)
+	local LIST_COMMAND = "list?format=lines"
+	local available_templates = run_git_ignore(LIST_COMMAND)
+	if not available_templates then
+		return {}
+	end
+	vim.ui.select(vim.split(available_templates, "\n"), { prompt = "Select a .gitignore template:" }, function(choice)
+		if choice then
+			local content = run_git_ignore(choice)
+			if content then
+				vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(content, "\n"))
+			end
+		else
+			vim.notify("No template selected. Aborting .gitignore generation.", vim.log.levels.INFO)
+		end
+	end)
+end
+
 function L.git_flow_init()
 	return function()
 		local output = vim.fn.system("git flow init -d")
@@ -294,6 +329,30 @@ function L.git_view_graph()
 	end
 end
 
+--- Allows selecting a branch and use it name for an action, such as creating a
+--- pull request or viewing the log for that branch.
+--- @param action fun(branch: string) The action to perform, e.g. "create_pr" or "view_log"
+function L.act_on_branch(action)
+	local branches = vim.fn.system("git branch --format='%(refname:short)' --all")
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Failed to get git branches: " .. branches, vim.log.levels.ERROR)
+		return
+	end
+	local branch_list = vim.split(branches, "\n")
+	vim.ui.select(branch_list, { prompt = "Select a branch:" }, function(choice)
+		if choice then
+			action(choice)
+		else
+			vim.notify("No branch selected. Aborting action.", vim.log.levels.INFO)
+		end
+	end)
+end
+
+function L.create_github_release()
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.toggle_external_app_terminal("gh release create")
+end
+
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
@@ -307,6 +366,15 @@ function L.settings()
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, ":!git add ." },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
+		{ cmd.LYRDGitViewLog, ":DiffviewFileHistory" },
+		{
+			cmd.LYRDGitCompareWithBranch,
+			function()
+				L.act_on_branch(function(branch)
+					vim.cmd(string.format(":DiffviewOpen %s -- %%", branch))
+				end)
+			end,
+		},
 		{ cmd.LYRDGitFlowInit, L.git_flow_init() },
 		{ cmd.LYRDGitFlowFeatureStart, L.git_flow_start("feature") },
 		{ cmd.LYRDGitFlowFeatureFinish, L.git_flow_finish("feature") },
@@ -339,6 +407,7 @@ function L.settings()
 		{ cmd.LYRDGithubPullRequestCreate, ":Octo pr create" },
 		{ cmd.LYRDGithubPullRequestClose, ":Octo pr close" },
 		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
+		{ cmd.LYRDGithubReleaseCreate, L.create_github_release },
 	})
 end
 

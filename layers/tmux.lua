@@ -1,9 +1,9 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.Tmux: LYRD.setup.Module
-local L = { name = "Tmux" }
+---@class LYRD.layer.Tmux: LYRD.shared.setup.Module
+local L = { name = "TMUX Integration" }
 
 function L.plugins()
 	setup.plugin({

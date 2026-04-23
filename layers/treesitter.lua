@@ -1,11 +1,12 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 
----@class LYRD.layer.Treesitter: LYRD.setup.Module
+---@class LYRD.layer.Treesitter: LYRD.shared.setup.Module
 local L = {
-	name = "Treesitter",
+	name = "Treesitter Parsing",
+	unskippable = true,
 	required = {
 		"query",
 		"regex",
@@ -25,34 +26,15 @@ function L.plugins()
 	setup.plugin({
 		{
 			"nvim-treesitter/nvim-treesitter",
-			opts = {
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "gnn", -- set to `false` to disable one of the mappings
-						node_incremental = "grn",
-						scope_incremental = "grc",
-						node_decremental = "grm",
-					},
-				},
-			},
-			-- branch = "main",
-			build = function()
-				require("nvim-treesitter.install").update({ with_sync = true })()
-			end,
+			branch = "main",
+			build = ":TSUpdate",
 		},
 		{ -- Additional text objects via treesitter
 			"nvim-treesitter/nvim-treesitter-textobjects",
+			branch = "main",
 			dependencies = {
 				"nvim-treesitter/nvim-treesitter",
 			},
-		},
-		{
-			"nvim-treesitter/playground",
-			dependencies = {
-				"nvim-treesitter/nvim-treesitter",
-			},
-			cmd = { "TSPlaygroundToggle" },
 		},
 		{
 			"ThePrimeagen/refactoring.nvim",
@@ -60,16 +42,12 @@ function L.plugins()
 				"nvim-lua/plenary.nvim",
 				"nvim-treesitter/nvim-treesitter",
 			},
-			opt = {
+			opts = {
 				-- prompt for return type
 				prompt_func_return_type = { go = true, cpp = true, c = true, java = true },
 				-- prompt for function parameters
 				prompt_func_param_type = { go = true, cpp = true, c = true, java = true },
 			},
-			config = function(_, opts)
-				require("refactoring").setup(opts)
-				require("telescope").load_extension("refactoring")
-			end,
 		},
 	})
 end
@@ -97,16 +75,18 @@ end
 ---
 --- @return table A list of captured nodes that match the query, filtered and transformed as specified.
 function L.get_matches(query_string, lang, filter_func, map_func, max_results)
-	local ts_utils = require("nvim-treesitter.ts_utils")
-	local ts_query = require("vim.treesitter.query")
-
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	-- Parse the query
-	local query = ts_query.parse(lang, query_string)
+	local query = vim.treesitter.query.parse(lang, query_string)
 
 	-- Get the root syntax tree node
-	local root = ts_utils.get_root_for_position(unpack(vim.api.nvim_win_get_cursor(0)))
+	local ok, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+	if not ok or not parser then
+		return {}
+	end
+	local trees = parser:parse()
+	local root = trees[1] and trees[1]:root()
 	if not root then
 		return {}
 	end
@@ -183,78 +163,119 @@ function L.get_match_text_at_cursor(query_string, lang, node_capture_name, text_
 	return matches and matches[1] or ""
 end
 
+--- Gets the texts of one or more captures at the cursor position, searching recursively up the syntax tree if necessary.
+--- @param query_string string The treesitter query string
+--- @param lang string The language of the current buffer
+--- @param node_capture_name string The name of the capture that contains the node to check
+--- @param text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
+--- @return string[] The list of texts of the captures at the cursor position, or an empty string if not found
+function L.get_match_texts_at_cursor_recursive(query_string, lang, node_capture_name, text_capture_name)
+	--- Example: SELECT Name FROM (SELECT Name FROM Employees) AS Subquery
+	--- If cursor is on the inner Name, we want to return both the inner and outer
+	--- Name captures (it can be the full "SELECT...FROM.."). We can achieve
+	--- this by recursively checking the parent nodes until we find no more
+	--- matches. This is useful for cases like function calls where the same
+	--- identifier may be captured at multiple levels of the syntax tree.
+	local node_at_cursor = vim.treesitter.get_node()
+	if not node_at_cursor then
+		return {}
+	end
+	if not text_capture_name then
+		text_capture_name = node_capture_name
+	end
+
+	-- Collect all matches as {node, text} pairs
+	local entries = L.get_matches(query_string, lang, nil, function(match, captures)
+		local node_idx = utils.index_of(captures, node_capture_name)
+		local text_idx = utils.index_of(captures, text_capture_name)
+		if not node_idx or not text_idx then
+			return nil
+		end
+		local bufnr = vim.api.nvim_get_current_buf()
+		return {
+			node = match[node_idx][1],
+			text = vim.treesitter.get_node_text(match[text_idx][1], bufnr),
+		}
+	end)
+
+	-- Walk from cursor node up to root, collecting texts at each matching level.
+	-- TSNode == uses a __eq metamethod, so we must compare explicitly rather
+	-- than using nodes as table keys (which would use rawequal).
+	local results = {}
+	--- @type TSNode?
+	local current = node_at_cursor
+	while current do
+		for _, entry in ipairs(entries) do
+			if entry.node == current then
+				table.insert(results, entry.text)
+				break
+			end
+		end
+		current = current:parent()
+	end
+
+	return results
+end
+
 function L.settings()
-	---@diagnostic disable-next-line: missing-fields
-	require("nvim-treesitter.configs").setup({
-		ensure_installed = L.required,
-		highlight = {
-			enable = true,
+	-- Install required parsers
+	require("nvim-treesitter").install(L.required)
+
+	-- Textobjects configuration
+	require("nvim-treesitter-textobjects").setup({
+		select = {
+			lookahead = true,
 		},
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = "gnn",
-				node_incremental = "grn",
-				scope_incremental = "grc",
-				node_decremental = "grm",
-			},
-		},
-		indent = {
-			enable = true,
-			disable = { "python" },
-		},
-		playground = {
-			enable = true,
-		},
-		textobjects = {
-			select = {
-				enable = true,
-				lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-				keymaps = {
-					-- You can use the capture groups defined in textobjects.scm
-					["aa"] = "@parameter.outer",
-					["ia"] = "@parameter.inner",
-					["af"] = "@function.outer",
-					["if"] = "@function.inner",
-					["ac"] = "@class.outer",
-					["ic"] = "@class.inner",
-				},
-			},
-			move = {
-				enable = true,
-				set_jumps = true, -- whether to set jumps in the jumplist
-				goto_next_start = {
-					["]m"] = "@function.outer",
-					["]]"] = "@class.outer",
-				},
-				goto_next_end = {
-					["]M"] = "@function.outer",
-					["]["] = "@class.outer",
-				},
-				goto_previous_start = {
-					["[m"] = "@function.outer",
-					["[["] = "@class.outer",
-				},
-				goto_previous_end = {
-					["[M"] = "@function.outer",
-					["[]"] = "@class.outer",
-				},
-			},
-			swap = {
-				enable = true,
-				swap_next = {
-					["<leader>Sa"] = "@parameter.inner",
-				},
-				swap_previous = {
-					["<leader>SA"] = "@parameter.inner",
-				},
-			},
+		move = {
+			set_jumps = true,
 		},
 	})
+
+	-- Textobject select keymaps
+	local select_textobject = require("nvim-treesitter-textobjects.select").select_textobject
+	for _, mapping in ipairs({
+		{ "aa", "@parameter.outer" },
+		{ "ia", "@parameter.inner" },
+		{ "af", "@function.outer" },
+		{ "if", "@function.inner" },
+		{ "ac", "@class.outer" },
+		{ "ic", "@class.inner" },
+	}) do
+		vim.keymap.set({ "x", "o" }, mapping[1], function()
+			select_textobject(mapping[2], "textobjects")
+		end)
+	end
+
+	-- Textobject move keymaps
+	local move = require("nvim-treesitter-textobjects.move")
+	for _, mapping in ipairs({
+		{ "]m", move.goto_next_start, "@function.outer" },
+		{ "]]", move.goto_next_start, "@class.outer" },
+		{ "]M", move.goto_next_end, "@function.outer" },
+		{ "][", move.goto_next_end, "@class.outer" },
+		{ "[m", move.goto_previous_start, "@function.outer" },
+		{ "[[", move.goto_previous_start, "@class.outer" },
+		{ "[M", move.goto_previous_end, "@function.outer" },
+		{ "[]", move.goto_previous_end, "@class.outer" },
+	}) do
+		vim.keymap.set({ "n", "x", "o" }, mapping[1], function()
+			mapping[2](mapping[3], "textobjects")
+		end)
+	end
+
+	-- Textobject swap keymaps
+	local swap = require("nvim-treesitter-textobjects.swap")
+	vim.keymap.set("n", "<leader>Sa", function()
+		swap.swap_next("@parameter.inner")
+	end)
+	vim.keymap.set("n", "<leader>SA", function()
+		swap.swap_previous("@parameter.inner")
+	end)
+
 	local wrap = require("LYRD.layers.commands").wrap
 	commands.implement("*", {
 		{ cmd.LYRDCodeRefactor, wrap(require("refactoring").select_refactor) },
-		{ cmd.LYRDViewTreeSitterPlayground, ":TSPlaygroundToggle" },
+		{ cmd.LYRDViewTreeSitterPlayground, ":InspectTree" },
 	})
 end
 

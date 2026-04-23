@@ -1,6 +1,6 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Python language",
 	required_plugins = {
@@ -10,12 +10,6 @@ local L = {
 			config = function()
 				-- WARN: Using 'uv' for uv projects support, otherwise skip.
 				require("dap-python").setup("uv")
-				table.insert(require("dap").configurations.python, {
-					type = "python",
-					request = "launch",
-					name = "My custom launch configuration",
-					program = "${file}",
-				})
 			end,
 			ft = "python",
 		},
@@ -86,7 +80,7 @@ local L = {
 
 -- Opens the .env file in the current directory
 local function open_dotenv()
-	local utils = require("LYRD.utils")
+	local utils = require("LYRD.shared.utils")
 	utils.open_or_create_file(".env")
 end
 

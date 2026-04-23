@@ -1,10 +1,13 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Debug: LYRD.setup.Module
-local L = { name = "Debug" }
+---@class LYRD.layer.Debug: LYRD.shared.setup.Module
+local L = {
+	name = "Debugger",
+	unskippable = true,
+}
 
 function L.plugins()
 	setup.plugin({
@@ -117,7 +120,8 @@ end
 
 function L.is_running()
 	local dap = require("dap")
-	return dap.status() ~= ""
+	local status, _ = pcall(dap.status)
+	return status and status ~= ""
 end
 
 function L.start_handler(implementation)
@@ -173,7 +177,12 @@ function L.settings()
 		{ cmd.LYRDDebugStepOut, ":DapStepOut" },
 		{ cmd.LYRDDebugStepOver, ":DapStepOver" },
 		{ cmd.LYRDDebugStop, ":DapTerminate" },
-		{ cmd.LYRDDebugToggleUI, function() require("dapui").toggle() end },
+		{
+			cmd.LYRDDebugToggleUI,
+			function()
+				require("dapui").toggle()
+			end,
+		},
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
 	})
 end

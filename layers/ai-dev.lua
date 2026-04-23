@@ -1,4 +1,4 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local keyboard = require("LYRD.layers.lyrd-keyboard")
@@ -9,7 +9,7 @@ local ai_providers = {
 	TABNINE = "tabnine",
 }
 
----@class LYRD.layer.AIDev: LYRD.setup.Module
+---@class LYRD.layer.AIDev: LYRD.shared.setup.Module
 local L = {
 	name = "AI Assistance",
 	avante_provider = ai_providers.COPILOT,
@@ -54,6 +54,12 @@ local function avante_dependencies()
 		table.insert(result, "zbirenbaum/copilot.lua")
 	end
 	return result
+end
+
+local function sidekick_nvim_env()
+	return {
+		NVIM = vim.v.servername,
+	}
 end
 
 --- Treesitter node types that represent documentable elements.
@@ -128,10 +134,10 @@ local function generate_commit_message()
 		return
 	end
 	local lines = vim.split(diff, "\n")
+	local diff_line_count = #lines
 	local commit_win = vim.api.nvim_get_current_win()
-	vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-	local line_count = vim.api.nvim_buf_line_count(0)
-	require("avante.api").edit(L.commit_message_prompt, 1, line_count)
+	vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+	require("avante.api").edit(L.commit_message_prompt, 1, diff_line_count)
 	-- Avante's PromptInput floating window corrupts Neovim's prevwin chain.
 	-- When the commit editor later closes on Submit, Neovim can't find its way
 	-- back to the Neogit status panel. Fix both hops of the chain:
@@ -266,6 +272,14 @@ function L.plugins()
 					ask = false,
 					edit = false,
 				},
+				behaviour = {
+					auto_apply_diff_after_generation = true,
+					auto_add_current_file = true, -- Whether to automatically add the current file when opening a new chat. Default to true.
+					auto_approve_tool_permissions = false, -- Default: auto-approve all tools (no prompts)
+					-- Examples:
+					-- auto_approve_tool_permissions = false,                -- Show permission prompts for all tools
+					-- auto_approve_tool_permissions = {"bash", "str_replace"}, -- Auto-approve specific tools only
+				},
 			},
 			-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 			build = "make",
@@ -280,6 +294,11 @@ function L.plugins()
 					mux = {
 						backend = "tmux",
 						enabled = true,
+					},
+					tools = {
+						claude = { env = sidekick_nvim_env() },
+						codex = { env = sidekick_nvim_env() },
+						copilot = { env = sidekick_nvim_env() },
 					},
 				},
 				nes = {

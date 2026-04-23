@@ -6,12 +6,12 @@ return {
 	languages = { "Pascal" },
 	categories = { "LSP" },
 	source = {
-		id = "pkg:github/Axiomworks/pascal-language-server-isopod@master",
+		id = "pkg:github/castle-engine/pascal-language-server@master",
 		build = {
 			run = "git submodule update --init --recursive && cd server && lazbuild pasls.lpi",
 		},
 	},
 	bin = {
-		["pasls"] = "exec:server/lib/x86_64-linux/pasls",
+		["pasls"] = "exec:server/pasls",
 	},
 }

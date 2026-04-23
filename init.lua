@@ -1,4 +1,4 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
 setup.load({
 	layers = {
@@ -42,15 +42,20 @@ setup.load({
 		"LYRD.layers.lang.java",
 		"LYRD.layers.lang.cpp",
 		"LYRD.layers.lang.kotlin",
+		"LYRD.layers.lang.groovy",
+		"LYRD.layers.lang.latex",
 		"LYRD.layers.lang.lua",
 		"LYRD.layers.lang.markdown",
 		"LYRD.layers.lang.pascal",
 		"LYRD.layers.lang.python",
 		"LYRD.layers.lang.rust",
+		"LYRD.layers.lang.php",
 		"LYRD.layers.lang.sql",
 		"LYRD.layers.lang.data-formats",
 		"LYRD.layers.lang.web-frontend",
 		"LYRD.layers.lang.web-standard",
+		"LYRD.layers.lang.ci_cd",
+		"LYRD.layers.lang.nginx",
 		"LYRD.layers.static-website",
 		"LYRD.layers.grammar",
 		"LYRD.layers.extras",

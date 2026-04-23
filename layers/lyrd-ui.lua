@@ -1,15 +1,16 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 local goku = require("LYRD.shared.resources.goku")
 local title = require("LYRD.shared.resources.title")
 
----@class LYRD.layer.LYRDUI: LYRD.setup.Module
+---@class LYRD.layer.LYRDUI: LYRD.shared.setup.Module
 --- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype
 local L = {
 	name = "LYRD UI",
+	unskippable = true,
 	decoration_togglers = {},
 }
 
@@ -38,7 +39,7 @@ local function macro_recording()
 end
 
 local function current_database()
-	return require("db-cli-adapter").get_current_db_connection()
+	return require("LYRD.layers.lang.sql").get_db_connection()
 end
 
 --- Registers implementations for toggling UI decorations for a specific filetype.
@@ -403,6 +404,12 @@ function L.settings()
 		},
 		{ cmd.LYRDReplaceInFiles, ":GrugFar" },
 		{ cmd.LYRDToggleBufferDecorations, L.toggle_decorations },
+		{
+			cmd.LYRDEditLocalConfig,
+			function()
+				require("LYRD.shared.ui.local_config").show(setup.config)
+			end,
+		},
 	})
 end
 

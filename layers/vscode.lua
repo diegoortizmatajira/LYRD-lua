@@ -1,10 +1,10 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.VsCode: LYRD.setup.Module
+---@class LYRD.layer.VsCode: LYRD.shared.setup.Module
 local L = {
-	name = "VsCode Compatibility",
+	name = "VS Code Compatibility",
 	vscode_compatible = true,
 	condition = vim.g.vscode ~= nil,
 }

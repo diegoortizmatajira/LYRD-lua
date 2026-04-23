@@ -1,12 +1,12 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local utils = require("LYRD.utils")
+local utils = require("LYRD.shared.utils")
 
----@class LYRD.layer.Snippets: LYRD.setup.Module
+---@class LYRD.layer.Snippets: LYRD.shared.setup.Module
 local L = {
-	name = "Snippets",
+	name = "Code Snippets",
 	snippets_path = utils.get_lyrd_path("snippets"),
 }
 

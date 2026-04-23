@@ -1,0 +1,135 @@
+{
+  "document": {
+    "prefix": "doc",
+    "body": [
+      "\\documentclass{${1:article}}",
+      "",
+      "\\usepackage[utf8]{inputenc}",
+      "\\usepackage[T1]{fontenc}",
+      "\\usepackage{${2:amsmath,graphicx}}",
+      "",
+      "\\title{${3:Title}}",
+      "\\author{${4:Author}}",
+      "\\date{${5:\\today}}",
+      "",
+      "\\begin{document}",
+      "",
+      "\\maketitle",
+      "",
+      "${0}",
+      "",
+      "\\end{document}"
+    ],
+    "description": "Document skeleton"
+  },
+  "section": {
+    "prefix": "sec",
+    "body": [
+      "\\section{${1:Title}}",
+      "\\label{sec:${2:label}}",
+      "",
+      "${0}"
+    ],
+    "description": "Section"
+  },
+  "subsection": {
+    "prefix": "ssec",
+    "body": [
+      "\\subsection{${1:Title}}",
+      "\\label{subsec:${2:label}}",
+      "",
+      "${0}"
+    ],
+    "description": "Subsection"
+  },
+  "subsubsection": {
+    "prefix": "sssec",
+    "body": [
+      "\\subsubsection{${1:Title}}",
+      "\\label{subsubsec:${2:label}}",
+      "",
+      "${0}"
+    ],
+    "description": "Subsubsection"
+  },
+  "environment": {
+    "prefix": "env",
+    "body": [
+      "\\begin{${1:environment}}",
+      "\t${0}",
+      "\\end{${1:environment}}"
+    ],
+    "description": "Generic environment"
+  },
+  "equation": {
+    "prefix": "eq",
+    "body": [
+      "\\begin{equation}",
+      "\t\\label{eq:${1:label}}",
+      "\t${0}",
+      "\\end{equation}"
+    ],
+    "description": "Equation environment"
+  },
+  "figure": {
+    "prefix": "fig",
+    "body": [
+      "\\begin{figure}[${1:htbp}]",
+      "\t\\centering",
+      "\t\\includegraphics[width=${2:0.8}\\textwidth]{${3:filename}}",
+      "\t\\caption{${4:Caption}}",
+      "\t\\label{fig:${5:label}}",
+      "\\end{figure}"
+    ],
+    "description": "Figure environment"
+  },
+  "table": {
+    "prefix": "tab",
+    "body": [
+      "\\begin{table}[${1:htbp}]",
+      "\t\\centering",
+      "\t\\caption{${2:Caption}}",
+      "\t\\label{tab:${3:label}}",
+      "\t\\begin{tabular}{${4:cc}}",
+      "\t\t\\hline",
+      "\t\t${0}",
+      "\t\t\\\\\\hline",
+      "\t\\end{tabular}",
+      "\\end{table}"
+    ],
+    "description": "Table environment"
+  },
+  "itemize": {
+    "prefix": "item",
+    "body": [
+      "\\begin{itemize}",
+      "\t\\item ${0}",
+      "\\end{itemize}"
+    ],
+    "description": "Itemize environment"
+  },
+  "enumerate": {
+    "prefix": "enum",
+    "body": [
+      "\\begin{enumerate}",
+      "\t\\item ${0}",
+      "\\end{enumerate}"
+    ],
+    "description": "Enumerate environment"
+  },
+  "bold": {
+    "prefix": "bf",
+    "body": "\\textbf{${1:text}}",
+    "description": "Bold text"
+  },
+  "italic": {
+    "prefix": "it",
+    "body": "\\textit{${1:text}}",
+    "description": "Italic text"
+  },
+  "monospace": {
+    "prefix": "tt",
+    "body": "\\texttt{${1:text}}",
+    "description": "Monospace text"
+  }
+}

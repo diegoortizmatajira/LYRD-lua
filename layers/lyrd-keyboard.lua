@@ -1,14 +1,15 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.LYRDKeyboard: LYRD.setup.Module
+---@class LYRD.layer.LYRDKeyboard: LYRD.shared.setup.Module
 local L = {
 	name = "LYRD Keyboard",
 	vscode_compatible = true,
+	unskippable = true,
 	ai_keys = {
 		-- Accept the current completion.
 		-- accept = "<C-l>",
@@ -242,7 +243,6 @@ function L.keybindings()
 			{ "D", cmd.LYRDLSPShowWorkspaceDiagnosticLocList },
 			{ "E", cmd.LYRDViewFileExplorerAlt },
 			{ "P", cmd.LYRDViewTreeSitterPlayground },
-			{ "R", cmd.LYRDViewRegisters },
 			{ "T", cmd.LYRDTestOutput },
 			{ "X", cmd.LYRDTerminal },
 			{ "b", cmd.LYRDDatabaseOutput },
@@ -259,7 +259,6 @@ function L.keybindings()
 			{ "v", cmd.LYRDBufferSplitV },
 			{ "w", cmd.LYRDTasksToggle },
 			{ "x", cmd.LYRDTerminalList },
-			{ "y", cmd.LYRDViewYankList },
 		}, icons.action.split_v),
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
@@ -270,8 +269,10 @@ function L.keybindings()
 		{ "k", cmd.LYRDToggleBufferDecorations },
 		{ "d", cmd.LYRDDiagnosticLinesToggle },
 		{ "p", cmd.LYRDPasteFromHistory },
-		{ "t", cmd.LYRDApplyNextTheme },
+		{ "t", cmd.LYRDEditTextCase, { "x" } },
+		{ "T", cmd.LYRDApplyNextTheme },
 		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
+		{ "Y", cmd.LYRDCodeQuerySelectionAsEditable, { "x" } },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
 		{ "X", cmd.LYRDCodeRun },
 		{ "]", cmd.LYRDBufferNext },
@@ -336,7 +337,6 @@ function L.keybindings()
 			{ "b", cmd.LYRDCodeBuildAll },
 			{ "c", cmd.LYRDCodeTooling },
 			{ "C", cmd.LYRDCodeGlobalCheck },
-			{ "d", cmd.LYRDCodeAddDocumentation },
 			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },
 			{ "i", cmd.LYRDCodeFixImports },
@@ -346,6 +346,7 @@ function L.keybindings()
 			{ "S", cmd.LYRDCodeSecrets },
 			{ "t", cmd.LYRDCodeAlternateFile },
 			{ "x", cmd.LYRDCodeRun },
+			{ "v", cmd.LYRDCodeLanguageVersion },
 			{ "o", cmd.LYRDCodeOrganizeFile },
 		}, icons.other.code, { "x" }),
 		menu_header("d", "Debug", {
@@ -363,26 +364,29 @@ function L.keybindings()
 			{ ",", cmd.LYRDSearchCommands },
 			{ ".", cmd.LYRDSearchFiles },
 			{ "/", cmd.LYRDSearchLiveGrep },
-			{ "H", cmd.LYRDSearchHighlights },
-			{ "R", cmd.LYRDReplaceInFiles },
-			{ "S", cmd.LYRDSearchCurrentString },
-			{ "b", cmd.LYRDBookmarkSearch },
 			{ "B", cmd.LYRDSearchBuffers },
-			{ "c", cmd.LYRDSearchCommandHistory },
+			{ "C", cmd.LYRDSearchCommandHistory },
+			{ "G", cmd.LYRDSearchBufferTags },
+			{ "H", cmd.LYRDSearchHighlights },
+			{ "M", cmd.LYRDSearchMacros },
+			{ "r", cmd.LYRDReplaceInFiles },
+			{ "S", cmd.LYRDSearchCurrentString },
+			{ "T", cmd.LYRDTerminalList },
+			{ "b", cmd.LYRDBookmarkSearch },
 			{ "f", cmd.LYRDSearchFiletypes },
-			{ "g", cmd.LYRDSearchBufferTags },
 			{ "g", cmd.LYRDSearchGitFiles },
 			{ "h", cmd.LYRDSearchRecentFiles },
+			{ "k", cmd.LYRDSearchKeyMappings },
 			{ "l", cmd.LYRDSearchBufferLines },
-			{ "m", cmd.LYRDSearchKeyMappings },
-			{ "m", cmd.LYRDSearchMacros },
+			{ "m", cmd.LYRDViewMarks },
+			{ "n", cmd.LYRDSearchSnippets },
 			{ "o", cmd.LYRDSearchSymbols },
 			{ "p", cmd.LYRDSearchRegisters },
 			{ "q", cmd.LYRDSearchQuickFixes },
-			{ "r", cmd.LYRDReplace },
-			{ "s", cmd.LYRDSearchSnippets },
+			{ "R", cmd.LYRDReplace },
+			{ "s", cmd.LYRDLSPFindDocumentSymbols },
+			{ "S", cmd.LYRDLSPFindWorkspaceSymbols },
 			{ "t", cmd.LYRDSearchColorSchemes },
-			{ "T", cmd.LYRDTerminalList },
 		}, icons.search.default),
 		menu_header("g", "Git", {
 			menu_header("f", "Gitflow", {
@@ -406,14 +410,21 @@ function L.keybindings()
 				{ "M", cmd.LYRDGitCheckoutMain },
 			}),
 			menu_header("h", "GitHub", {
-				{ "l", cmd.LYRDGithubIssueList },
-				{ "c", cmd.LYRDGithubIssueCreate },
-				{ "x", cmd.LYRDGithubIssueClose },
-				{ "O", cmd.LYRDGithubIssueReopen },
-				{ "o", cmd.LYRDGithubIssueDevelop },
-				{ "C", cmd.LYRDGithubPullRequestCreate },
-				{ "L", cmd.LYRDGithubPullRequestList },
-				{ "X", cmd.LYRDGithubPullRequestClose },
+				menu_header("i", "Issue", {
+					{ "l", cmd.LYRDGithubIssueList },
+					{ "c", cmd.LYRDGithubIssueCreate },
+					{ "x", cmd.LYRDGithubIssueClose },
+					{ "r", cmd.LYRDGithubIssueReopen },
+					{ "d", cmd.LYRDGithubIssueDevelop },
+				}, icons.git.issue.open),
+				menu_header("p", "Pull Request", {
+					{ "c", cmd.LYRDGithubPullRequestCreate },
+					{ "l", cmd.LYRDGithubPullRequestList },
+					{ "x", cmd.LYRDGithubPullRequestClose },
+				}, icons.git.pull_request),
+				menu_header("r", "Release", {
+					{ "c", cmd.LYRDGithubReleaseCreate },
+				}, icons.git.tag),
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
@@ -428,6 +439,7 @@ function L.keybindings()
 			{ "P", cmd.LYRDGitPush },
 			{ "p", cmd.LYRDGitPull },
 			{ "d", cmd.LYRDGitViewDiff },
+			{ "D", cmd.LYRDGitCompareWithBranch },
 			{ "a", cmd.LYRDGitStageAll },
 			{ "b", cmd.LYRDGitViewBlame },
 			{ "l", cmd.LYRDGitViewCurrentFileLog },
@@ -476,6 +488,10 @@ function L.keybindings()
 			{ "k", cmd.LYRDKubernetesUI },
 			{ "t", cmd.LYRDTerminal },
 			{ "T", cmd.LYRDTerminalList },
+			{ "s", cmd.LYRDDevServerStart },
+			{ "S", cmd.LYRDDevExposeLocalServer },
+			{ "x", cmd.LYRDScanForSecrets },
+			{ "<Space>", cmd.LYRDCommandPalette },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
 			{ "h", cmd.LYRDHardModeToggle },
@@ -485,6 +501,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDDiffThis },
 			{ "D", cmd.LYRDDiffOff },
 			{ "f", cmd.LYRDViewFocusMode },
+			{ "l", cmd.LYRDViewLSPInfo },
 			{ "w", cmd.LYRDBufferToggleWrap },
 			{ "s", cmd.LYRDBindScroll },
 			{ "T", cmd.LYRDApplyCurrentTheme },

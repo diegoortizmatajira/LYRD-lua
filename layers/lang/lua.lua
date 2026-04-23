@@ -1,6 +1,6 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Lua Language",
 	required_plugins = {
@@ -13,6 +13,9 @@ local L = {
 			end,
 		},
 		{ "Bilal2453/luvit-meta", lazy = true },
+		{
+			"nvim-neotest/neotest-plenary",
+		},
 	},
 	required_mason_packages = {
 		"lua-language-server",
@@ -35,6 +38,9 @@ local L = {
 			target_filetype = { "lua", "luau" },
 			format_settings = { "stylua" },
 		},
+	},
+	required_test_adapters = {
+		"neotest-plenary",
 	},
 }
 

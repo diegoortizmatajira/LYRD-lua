@@ -1,10 +1,10 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.Media: LYRD.setup.Module
-local L = { name = "Media Files" }
+---@class LYRD.layer.Media: LYRD.shared.setup.Module
+local L = { name = "Media Files: Images" }
 
 function L.plugins()
 	setup.plugin({

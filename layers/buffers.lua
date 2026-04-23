@@ -1,26 +1,27 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.ui.special_type
+---@class LYRD.shared.ui.special_type
 ---@field type_id string
 ---@field title? string
 ---@field allow_saving? boolean
 ---@field prevent_closing? boolean
 ---@field map_q? boolean
 
----@class LYRD.layer.Buffers: LYRD.setup.Module
+---@class LYRD.layer.Buffers: LYRD.shared.setup.Module
 local L = {
-	name = "Buffers",
+	name = "Buffer Management",
 
-	---@type LYRD.ui.special_type[]
+	unskippable = true,
+	---@type LYRD.shared.ui.special_type[]
 	special_filenames = {
 
 		{ type_id = "fugitive:" },
 		{ type_id = "diffview:" },
 		{ type_id = "kulala:" },
 	},
-	---@type LYRD.ui.special_type[]
+	---@type LYRD.shared.ui.special_type[]
 	special_filetypes = {
 		-- You can add entries here to mark special filetypes that have a header in their
 		-- sidebar or that should close with their window (unless the value true is provided)
@@ -31,9 +32,9 @@ local L = {
 		{ type_id = "NvimTree", title = "Explorer" },
 		{ type_id = "OverseerList" },
 		{ type_id = "aerial", title = "Outline" },
+		{ type_id = "checkhealth", map_q = true },
 		{ type_id = "code-stdout", title = "Playground output" },
 		{ type_id = "copilot-chat", title = "AI Chat" },
-		{ type_id = "db-cli-output.csv" },
 		{ type_id = "db-cli-output.text" },
 		{ type_id = "db-cli-sidebar" },
 		{ type_id = "dbout" },
@@ -54,7 +55,7 @@ local L = {
 		{ type_id = "trouble" },
 		{ type_id = "tsplayground", title = "Treesitter Playground" },
 	},
-	---@type LYRD.ui.special_type[]
+	---@type LYRD.shared.ui.special_type[]
 	special_buffertypes = {
 		{ type_id = "terminal" },
 	},

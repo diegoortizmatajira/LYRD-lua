@@ -1,9 +1,13 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
----@class LYRD.layer.Test: LYRD.setup.Module
-local L = { name = "Test", test_adapters = {} }
+---@class LYRD.layer.Test: LYRD.shared.setup.Module
+local L = {
+	name = "Test Runner",
+	unskippable = true,
+	test_adapters = {},
+}
 
 function L.plugins()
 	setup.plugin({
@@ -42,7 +46,7 @@ function L.settings()
 			open_on_run = true, -- Automatically open the output window
 		},
 		consumers = {
-		    --- uses overseer to run tests
+			--- uses overseer to run tests
 			--- @diagnostic disable-next-line: assign-type-mismatch
 			overseer = require("neotest.consumers.overseer"),
 		},

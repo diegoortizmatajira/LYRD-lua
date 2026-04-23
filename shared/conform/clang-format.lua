@@ -1,5 +1,5 @@
-local setup = require("LYRD.setup")
-local join = require("LYRD.utils").join_paths
+local setup = require("LYRD.shared.setup")
+local join = require("LYRD.shared.utils").join_paths
 ---@type conform.FileFormatterConfig
 return {
 	append_args = {

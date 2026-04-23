@@ -1,12 +1,13 @@
-local setup = require("LYRD.setup")
-local utils = require("LYRD.utils")
+local setup = require("LYRD.shared.setup")
+local utils = require("LYRD.shared.utils")
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
----@class LYRD.layer.LSP: LYRD.setup.Module
+---@class LYRD.layer.LSP: LYRD.shared.setup.Module
 local L = {
-	name = "LSP",
+	name = "Language Server Protocol",
+	unskippable = true,
 	required_tools = {},
 	null_ls_sources = {},
 	null_ls_registered = {},
@@ -193,6 +194,14 @@ end
 
 function L.organize_imports()
 	vim.lsp.buf.code_action({ only = { "source.organizeImports" }, apply = true })
+end
+
+--- Refreshes diagnostics from null-ls by notifying the client about an open text document.
+--- This function triggers a "textDocument/didOpen" event for the current buffer to refresh diagnostics.
+function L.refresh_null_ls_diagnostics()
+	require("null-ls.client").notify_client("textDocument/didOpen", {
+		textDocument = { uri = vim.uri_from_bufnr(0) },
+	})
 end
 
 function L.plugins()

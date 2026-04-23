@@ -2,9 +2,9 @@ local icons = require("LYRD.layers.icons")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Markdown",
+	name = "Markdown Documents",
 	required_plugins = {
 		{
 			"MeanderingProgrammer/render-markdown.nvim",
@@ -12,6 +12,11 @@ local L = {
 			ft = { "markdown", "Avante", "codecompanion" },
 			opts = {
 				file_types = { "markdown", "Avante", "codecompanion" },
+				completions = {
+					lsp = {
+						enabled = true,
+					},
+				},
 				heading = {
 					sign = false,
 					icons = {
@@ -31,13 +36,6 @@ local L = {
 			dependencies = {
 				"nvim-treesitter/nvim-treesitter",
 				"nvim-tree/nvim-web-devicons",
-			},
-		},
-		{
-			"Nedra1998/nvim-mdlink",
-			opts = { max_depth = 5, keymap = true, cmp = true },
-			dependencies = {
-				"hrsh7th/nvim-cmp",
 			},
 		},
 	},
@@ -99,11 +97,40 @@ local L = {
 	required_null_ls_sources = {
 		"null-ls.builtins.diagnostics.markdownlint_cli2",
 	},
+	required_executables = {
+		"mdwatch",
+	},
 }
+
+function L.preview_markdown()
+	local command = "mdwatch"
+	if vim.fn.executable(command) == 0 then
+		vim.notify("mdwatch is not installed. Please install it using 'cargo install mdwatch'", vim.log.levels.ERROR)
+		return
+	end
+	local tasks = require("LYRD.layers.tasks")
+	local file = vim.api.nvim_buf_get_name(0)
+	tasks.run_task({
+		name = "Markdown Preview",
+		cmd = command,
+		args = {
+			file,
+		},
+		open_in_split = true,
+		focus = false,
+	})
+end
 
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
+
+	local commands = require("LYRD.layers.commands")
+	local cmd = require("LYRD.layers.lyrd-commands").cmd
+
+	commands.implement("markdown", {
+		{ cmd.LYRDDevServerStart, L.preview_markdown },
+	})
 end
 
 return declarative_layer.apply(L)

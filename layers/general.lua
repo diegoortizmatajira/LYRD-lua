@@ -1,9 +1,10 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 
----@class LYRD.layer.General: LYRD.setup.Module
+---@class LYRD.layer.General: LYRD.shared.setup.Module
 local L = {
-	name = "General",
+	name = "General Settings",
 	vscode_compatible = true,
+	unskippable = true,
 }
 
 function L.plugins()
@@ -105,6 +106,34 @@ function L.preparation()
 	})
 
 	vim.cmd([[ set autoread ]])
+
+	-- Clean up v:oldfiles to remove non-file entries (terminals, special buffers, etc.)
+	local dominated_patterns = { "^term://", "^ministarter://", "^diffview://", "Neotest Summary$", "Neotest Output Panel$" }
+	local cleaned = {}
+	for _, f in ipairs(vim.v.oldfiles) do
+		local dominated = false
+		for _, pattern in ipairs(dominated_patterns) do
+			if f:match(pattern) then
+				dominated = true
+				break
+			end
+		end
+		if not dominated then
+			table.insert(cleaned, f)
+		end
+	end
+	vim.v.oldfiles = cleaned
+
+	-- Prevent special buffers from being recorded in shada/oldfiles going forward
+	local oldfiles_cleanup_group = vim.api.nvim_create_augroup("lyrd_oldfiles_cleanup", {})
+	vim.api.nvim_create_autocmd("BufNew", {
+		group = oldfiles_cleanup_group,
+		pattern = { "term://*", "ministarter://*", "diffview://*" },
+		callback = function(args)
+			vim.bo[args.buf].buflisted = false
+		end,
+		desc = "Prevent special buffers from polluting oldfiles",
+	})
 
 	-- Sets the cursor
 	vim.cmd([[set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50]])

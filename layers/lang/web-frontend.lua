@@ -1,8 +1,8 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Web frontend",
+	name = "Web frontend languages: JavaScript, TypeScript, Vue, Svelte, Angular",
 	required_plugins = {
 		{
 			"pangloss/vim-javascript",
@@ -26,6 +26,23 @@ local L = {
 		{
 			"nvim-svelte/nvim-svelte-snippets",
 		},
+		{
+			"mhiro2/i18n-status.nvim",
+			build = "./scripts/download-binary.sh",
+			opts = {
+				-- Source-of-truth language (used for inline rendering + doctor comparisons).
+				primary_lang = "en",
+
+				auto_hover = {
+					enabled = true, -- auto-show hover on cursor hold (default: true)
+				},
+
+				inline = {
+					-- Controls how inline virtual text is displayed. (JSON files always use "eol")
+					position = "eol", -- set to "after_key" to draw text directly after the key
+				},
+			},
+		},
 	},
 	required_mason_packages = {
 		"vue-language-server",
@@ -34,6 +51,7 @@ local L = {
 		"js-debug-adapter",
 		"eslint-lsp",
 		"vtsls",
+		"deno"
 	},
 	required_treesitter_parsers = {
 		"javascript",
@@ -44,6 +62,7 @@ local L = {
 		"angular",
 	},
 	required_enabled_lsp_servers = {
+		"denols",
 		"vtsls",
 		"vue_ls",
 		"angularls",
@@ -89,7 +108,7 @@ function L.run_npm_build()
 		return
 	end
 	local tasks = require("LYRD.layers.tasks")
-	local utils = require("LYRD.utils")
+	local utils = require("LYRD.shared.utils")
 	--- Get the current working directory as the folder where the current file is located
 	local cwd = utils.find_root_dir(L.ts_root_markers) or vim.fn.getcwd()
 	tasks.run_task({

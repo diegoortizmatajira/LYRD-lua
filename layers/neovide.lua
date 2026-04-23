@@ -1,8 +1,8 @@
-local setup = require("LYRD.setup")
+local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
 
----@class LYRD.layer.Neovide: LYRD.setup.Module
-local L = { name = "Neovide" }
+---@class LYRD.layer.Neovide: LYRD.shared.setup.Module
+local L = { name = "Neovide GUI Compatibility" }
 
 function L.plugins()
 	setup.plugin({})

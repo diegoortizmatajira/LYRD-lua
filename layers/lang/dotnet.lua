@@ -2,9 +2,9 @@ local icons = require("LYRD.layers.icons")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 local dotnet_languages = { "cs", "vb" }
 
---- @type table|LYRD.setup.DeclarativeLayer
+--- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Dotnet languages: C#, F#, Vb",
+	name = ".NET languages: C#, F#, VB",
 	required_plugins = {
 		{
 			"nsidorenco/neotest-vstest",
@@ -112,7 +112,7 @@ local L = {
 						end
 						local path = ""
 						local home_dir = vim.fn.expand("~")
-						local utils = require("LYRD.utils")
+						local utils = require("LYRD.shared.utils")
 						if require("easy-dotnet.extensions").isWindows() then
 							path = utils.join_paths(
 								home_dir,
