@@ -36,6 +36,30 @@ Start here, then jump to the topic you need:
 - **Consistent commands** across languages.
 - **Terminal-native** workflow that works locally and over SSH.
 
+## Quick IDE Comparison (for new users)
+
+| Area                        | LYRD                                                       | VS Code                            | JetBrains IDEs                      | Visual Studio                   |
+| --------------------------- | ---------------------------------------------------------- | ---------------------------------- | ----------------------------------- | ------------------------------- |
+| Core model                  | Neovim-first, layer-based, keyboard-driven                 | Extension-based editor             | Full IDE suites per stack           | Full IDE focused on .NET/C++    |
+| Out-of-box dev workflow     | Strong defaults with integrated testing, debug, tasks, Git | Good base, usually extension-heavy | Very strong, integrated by product  | Very strong for Microsoft stack |
+| Customization depth         | Very high (Lua + layers)                                   | Very high (settings + extensions)  | Moderate to high (plugins/settings) | Moderate (extensions/settings)  |
+| Terminal/SSH-first workflow | Native strength                                            | Good                               | Available, less terminal-native     | Available, less terminal-native |
+| Performance profile         | Lightweight, fast startup and navigation                   | Lightweight to medium              | Medium to heavy (feature-rich)      | Medium to heavy (feature-rich)  |
+
+### Features at a glance
+
+LYRD includes integrated LSP tooling, formatting, testing, debugging, Git
+workflows, task automation, AI-assisted coding, REST client, database tooling,
+container/Kubernetes support, and keyboard-first discovery workflows.
+
+### Supported language ecosystems (high level)
+
+Python, JavaScript/TypeScript, Java, .NET (C#/F#/VB.NET), Go, Rust, C/C++,
+Kotlin, Bash, PHP, Pascal, LaTeX, SQL, plus common formats like
+JSON/YAML/TOML/XML, Markdown, CMake, Protocol Buffers, and CSV/TSV.
+
+For full details, see [docs/language-support.md](docs/language-support.md).
+
 ## Contributing
 
 LYRD is open for contributions. If you find bugs, want to add features, or have
