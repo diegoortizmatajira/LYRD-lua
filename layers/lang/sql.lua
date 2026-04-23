@@ -296,6 +296,7 @@ function L.settings()
 	commands.implement("db-cli-output.csv", {
 		{ cmd.LYRDBufferSave, ":DbCliResultPreviewChanges" },
 		{ cmd.LYRDBufferClose, ":DbCliOutputHide" },
+		{ cmd.LYRDBufferReload, ":DbCliResultRefresh" },
 	})
 	commands.implement({ "sql", "db-cli-sidebar" }, {
 		{ cmd.LYRDCodeSelectEnvironment, ":DbCliSelectConnection" },
