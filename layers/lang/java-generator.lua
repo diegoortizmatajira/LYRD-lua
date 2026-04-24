@@ -8,6 +8,14 @@ local L = {
 	--- A list of available Java runtimes on the system.
 	--- @type JavaRuntime[]?
 	runtimes = nil,
+	runtime_env_vars = {
+		"JDK_HOME",
+		"JRE_HOME",
+		"JAVA8_HOME",
+		"JAVA11_HOME",
+		"JAVA17_HOME",
+		"JAVA21_HOME",
+	},
 }
 
 ---@param path string
@@ -165,15 +173,7 @@ function L.get_runtimes()
 		add_runtime(result, seen, java_home, true)
 	end
 
-	local runtime_env_vars = {
-		"JDK_HOME",
-		"JRE_HOME",
-		"JAVA8_HOME",
-		"JAVA11_HOME",
-		"JAVA17_HOME",
-		"JAVA21_HOME",
-	}
-	for _, env_name in ipairs(runtime_env_vars) do
+	for _, env_name in ipairs(L.runtime_env_vars) do
 		local env_path = os.getenv(env_name)
 		if env_path then
 			add_runtime(result, seen, env_path, false)
