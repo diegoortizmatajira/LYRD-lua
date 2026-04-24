@@ -118,6 +118,13 @@ local function add_runtime_children(root, runtimes, seen, opts)
 	end
 end
 
+---@param env_name string
+---@param default_path string
+---@return string
+local function resolve_dir_from_env(env_name, default_path)
+	return os.getenv(env_name) or default_path
+end
+
 local function find_closest_root(current_path)
 	local java_index = string.find(current_path, "/java/")
 	if java_index then
@@ -175,14 +182,19 @@ function L.get_runtimes()
 
 	local home = os.getenv("HOME")
 	if home and home ~= "" then
-		add_runtime_children(home .. "/.sdkman/candidates/java", result, seen, {
+		local sdkman_root = resolve_dir_from_env("SDKMAN_DIR", home .. "/.sdkman")
+		local asdf_root = resolve_dir_from_env("ASDF_DATA_DIR", home .. "/.asdf")
+		local jabba_root = resolve_dir_from_env("JABBA_HOME", home .. "/.jabba")
+		local jenv_root = resolve_dir_from_env("JENV_ROOT", home .. "/.jenv")
+
+		add_runtime_children(sdkman_root .. "/candidates/java", result, seen, {
 			filter = function(candidate)
 				return vim.fn.fnamemodify(candidate, ":t") ~= "current"
 			end,
 		})
-		add_runtime_children(home .. "/.asdf/installs/java", result, seen)
-		add_runtime_children(home .. "/.jabba/jdk", result, seen)
-		add_runtime_children(home .. "/.jenv/versions", result, seen)
+		add_runtime_children(asdf_root .. "/installs/java", result, seen)
+		add_runtime_children(jabba_root .. "/jdk", result, seen)
+		add_runtime_children(jenv_root .. "/versions", result, seen)
 	end
 
 	add_runtime_children("/usr/lib/jvm", result, seen)
