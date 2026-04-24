@@ -1,6 +1,4 @@
-local lsp = require("LYRD.layers.lsp")
 local generator = require("LYRD.layers.lang.go-generator")
-
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
