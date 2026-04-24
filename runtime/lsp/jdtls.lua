@@ -2,6 +2,7 @@ local lsp = require("LYRD.layers.lsp")
 local join = require("LYRD.shared.utils").join_paths
 local jdtls = require("jdtls")
 local jdtls_install = lsp.get_pkg_path("jdtls")
+local generator = require("LYRD.layers.lang.java-generator")
 
 local bundles = {}
 
@@ -40,33 +41,6 @@ local plug_jar_map = {
 	["spring-boot-tools"] = { dir = "jars", patterns = { "*.jar" } },
 }
 
-local default_runtimes = {
-	-- Note: the field `name` must be a valid `ExecutionEnvironment`,
-	-- you can find the list here:
-	-- https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
-	{
-		name = "JavaSE-1.8",
-		path = "/usr/lib/jvm/java-8-openjdk",
-	},
-	{
-		name = "JavaSE-11",
-		path = "/usr/lib/jvm/java-11-openjdk",
-	},
-	{
-		name = "JavaSE-17",
-		path = "/usr/lib/jvm/java-17-openjdk",
-		default = true,
-	},
-	{
-		name = "JavaSE-21",
-		path = "/usr/lib/jvm/java-21-openjdk",
-	},
-	{
-		name = "JavaSE-24",
-		path = "/usr/lib/jvm/java-24-openjdk",
-	},
-}
-
 local function get_workspace_path()
 	local project_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h")
 	local project_path_hash = string.gsub(project_path, "[/\\:+-]", "_")
@@ -98,7 +72,7 @@ local paths = {
 	data_dir = join(vim.fn.stdpath("cache"), "nvim-jdtls"),
 	java_agent = join(lombok_install, "lombok.jar"),
 	launcher_jar = vim.fn.glob(join(jdtls_install, "plugins", "org.eclipse.equinox.launcher_*.jar")),
-	runtimes = default_runtimes,
+	runtimes = generator.get_runtimes(),
 	workspace_path = get_workspace_path(),
 	jdtls_config = join(vim.fn.stdpath("cache"), "jdtls", "config"),
 }
