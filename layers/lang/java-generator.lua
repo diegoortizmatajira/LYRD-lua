@@ -10,6 +10,114 @@ local L = {
 	runtimes = nil,
 }
 
+---@param path string
+---@return boolean
+local function is_valid_java_home(path)
+	if path == nil or path == "" then
+		return false
+	end
+	if vim.fn.isdirectory(path) ~= 1 then
+		return false
+	end
+	return vim.fn.executable(path .. "/bin/java") == 1
+end
+
+---@param path string
+---@return string?
+local function java_version_from_release(path)
+	local release_file = path .. "/release"
+	local file = io.open(release_file, "r")
+	if file == nil then
+		return nil
+	end
+	local content = file:read("*a")
+	file:close()
+	if content == nil then
+		return nil
+	end
+	return content:match('JAVA_VERSION="([^"]+)"')
+end
+
+---@param version string?
+---@return string?
+local function runtime_name_from_version(version)
+	if not version then
+		return nil
+	end
+	local major = tonumber(version:match("^(%d+)"))
+	if not major then
+		return nil
+	end
+	if major <= 8 then
+		return "JavaSE-1." .. tostring(major)
+	end
+	return "JavaSE-" .. tostring(major)
+end
+
+---@param path string
+---@return string
+local function runtime_name_from_path(path)
+	local version = java_version_from_release(path)
+	local name = runtime_name_from_version(version)
+	if name then
+		return name
+	end
+	return "JDK-" .. vim.fn.fnamemodify(path, ":t")
+end
+
+---@param path string
+---@return string
+local function normalize_path(path)
+	return vim.fn.fnamemodify(path, ":p")
+end
+
+---@param runtimes JavaRuntime[]
+---@param seen table<string, boolean>
+---@param path string
+---@param is_default boolean?
+local function add_runtime(runtimes, seen, path, is_default)
+	if not is_valid_java_home(path) then
+		return
+	end
+	local normalized_path = normalize_path(path)
+	if seen[normalized_path] then
+		return
+	end
+	seen[normalized_path] = true
+	local runtime = {
+		name = runtime_name_from_path(normalized_path),
+		path = normalized_path,
+	}
+	if is_default then
+		runtime.default = true
+	end
+	table.insert(runtimes, runtime)
+end
+
+---@param root string
+---@param runtimes JavaRuntime[]
+---@param seen table<string, boolean>
+---@param opts table?
+local function add_runtime_children(root, runtimes, seen, opts)
+	opts = opts or {}
+	if vim.fn.isdirectory(root) ~= 1 then
+		return
+	end
+	local pattern = root .. "/*"
+	local candidates = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
+	for _, candidate in ipairs(candidates) do
+		if opts.filter and not opts.filter(candidate) then
+			goto continue
+		end
+		local java_home = candidate
+		if opts.transform then
+			java_home = opts.transform(candidate)
+		end
+		add_runtime(runtimes, seen, java_home, false)
+		::continue::
+	end
+end
+
 local function find_closest_root(current_path)
 	local java_index = string.find(current_path, "/java/")
 	if java_index then
@@ -43,12 +151,50 @@ function L.get_runtimes()
 		return L.runtimes
 	end
 	local result = {}
+	local seen = {}
 	--- Obtain the runtime from environment variables
 	local java_home = os.getenv("JAVA_HOME")
 	if java_home then
-		table.insert(result, { name = "JAVA_HOME", path = java_home, default = true })
+		add_runtime(result, seen, java_home, true)
 	end
-	return result
+
+	local runtime_env_vars = {
+		"JDK_HOME",
+		"JRE_HOME",
+		"JAVA8_HOME",
+		"JAVA11_HOME",
+		"JAVA17_HOME",
+		"JAVA21_HOME",
+	}
+	for _, env_name in ipairs(runtime_env_vars) do
+		local env_path = os.getenv(env_name)
+		if env_path then
+			add_runtime(result, seen, env_path, false)
+		end
+	end
+
+	local home = os.getenv("HOME")
+	if home and home ~= "" then
+		add_runtime_children(home .. "/.sdkman/candidates/java", result, seen, {
+			filter = function(candidate)
+				return vim.fn.fnamemodify(candidate, ":t") ~= "current"
+			end,
+		})
+		add_runtime_children(home .. "/.asdf/installs/java", result, seen)
+		add_runtime_children(home .. "/.jabba/jdk", result, seen)
+		add_runtime_children(home .. "/.jenv/versions", result, seen)
+	end
+
+	add_runtime_children("/usr/lib/jvm", result, seen)
+	add_runtime_children("/usr/java", result, seen)
+	add_runtime_children("/Library/Java/JavaVirtualMachines", result, seen, {
+		transform = function(candidate)
+			return candidate .. "/Contents/Home"
+		end,
+	})
+
+	L.runtimes = result
+	return L.runtimes
 end
 
 return L
