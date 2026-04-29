@@ -1,6 +1,6 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local ENV_FILETYPES = { "env", "dotenv", "edf", "sh", "conf" }
+local ENV_FILETYPES = { "env", "dotenv", "edf", "conf" }
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Development Tools",
@@ -59,7 +59,7 @@ local L = {
 	},
 	required_formatter_per_filetype = {
 		{
-			target_filetype = "env",
+			target_filetype = ENV_FILETYPES,
 			format_settings = { "dotenv_linter" },
 		},
 	},
@@ -67,13 +67,29 @@ local L = {
 		"null-ls.builtins.diagnostics.editorconfig_checker",
 		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.dotenv_linter", {
 			args = { "check", "$FILENAME" },
-			extra_filetypes = { "env" },
+			extra_filetypes = ENV_FILETYPES,
 		}),
 	},
 	required_executables = {
 		"live-server",
 		"ngrok",
 		"trufflehog",
+	},
+	required_filetype_definitions = {
+		-- Mappings based on file extension
+		extension = {
+			env = "env",
+		},
+		-- Mappings based on FULL filename
+		filename = {
+			[".env"] = "env",
+			["env"] = "env",
+		},
+		-- Mappings based on filename pattern match
+		pattern = {
+			-- Match filenames like ".env.development", "env.local" and so on
+			[".?env.*"] = "env",
+		},
 	},
 }
 
