@@ -1,5 +1,6 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
+local ENV_FILETYPES = { "env", "dotenv", "edf", "sh", "conf" }
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Development Tools",
@@ -22,6 +23,19 @@ local L = {
 			"ellisonleao/dotenv.nvim",
 			opts = {},
 			cmd = { "Dotenv", "DotenvGet" },
+		},
+		{
+			"ph1losof/ecolog2.nvim",
+			lazy = false,
+			build = "cargo install ecolog-lsp",
+			opts = {},
+		},
+		{
+			"ph1losof/shelter.nvim",
+			lazy = false,
+			opts = {
+				env_filetypes = ENV_FILETYPES,
+			},
 		},
 		{
 			"jesseleite/nvim-macroni",
@@ -196,6 +210,10 @@ function L.settings()
 			end,
 		},
 		{ cmd.LYRDScanForSecrets, L.scan_for_secrets },
+	})
+	commands.implement(ENV_FILETYPES, {
+		{ cmd.LYRDToggleBufferDecorations, ":Shelter toggle" },
+		{ cmd.LYRDLSPHoverInfo, "Shelter peek" },
 	})
 end
 

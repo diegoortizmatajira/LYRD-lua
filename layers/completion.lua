@@ -230,7 +230,7 @@ function L.plugins()
 						expandable_indicator = true,
 						fields = { "abbr", "kind", "menu" },
 						format = function(entry, vim_item)
-								local icon = kind_icons[vim_item.kind] or ""
+							local icon = kind_icons[vim_item.kind] or ""
 							vim_item.kind = string.format("%s %s", icon, vim_item.kind)
 							vim_item.menu = menu_texts[entry.source.name]
 							return vim_item
@@ -251,6 +251,7 @@ function L.plugins()
 						{ name = "easy-dotnet" },
 						{ name = "cmp-dbee" },
 						{ name = "mdlink" },
+						{ name = "ecolog" },
 					}, {
 						{ name = "buffer" },
 						{ name = "path" },
