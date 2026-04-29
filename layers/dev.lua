@@ -1,6 +1,5 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
-local ENV_FILETYPES = { "env", "dotenv", "edf", "conf" }
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Development Tools",
@@ -20,24 +19,6 @@ local L = {
 			"norcalli/nvim-colorizer.lua",
 		},
 		{
-			"ellisonleao/dotenv.nvim",
-			opts = {},
-			cmd = { "Dotenv", "DotenvGet" },
-		},
-		{
-			"ph1losof/ecolog2.nvim",
-			lazy = false,
-			build = "cargo install ecolog-lsp",
-			opts = {},
-		},
-		{
-			"ph1losof/shelter.nvim",
-			lazy = false,
-			opts = {
-				env_filetypes = ENV_FILETYPES,
-			},
-		},
-		{
 			"jesseleite/nvim-macroni",
 			lazy = false,
 			opts = {
@@ -52,44 +33,11 @@ local L = {
 	},
 	required_mason_packages = {
 		"editorconfig-checker",
-		"dotenv-linter",
-	},
-	required_formatters = {
-		["dotenv_linter"] = require("LYRD.shared.conform.dotenv-linter"),
-	},
-	required_formatter_per_filetype = {
-		{
-			target_filetype = ENV_FILETYPES,
-			format_settings = { "dotenv_linter" },
-		},
-	},
-	required_null_ls_sources = {
-		"null-ls.builtins.diagnostics.editorconfig_checker",
-		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.dotenv_linter", {
-			args = { "check", "$FILENAME" },
-			extra_filetypes = ENV_FILETYPES,
-		}),
 	},
 	required_executables = {
 		"live-server",
 		"ngrok",
 		"trufflehog",
-	},
-	required_filetype_definitions = {
-		-- Mappings based on file extension
-		extension = {
-			env = "env",
-		},
-		-- Mappings based on FULL filename
-		filename = {
-			[".env"] = "env",
-			["env"] = "env",
-		},
-		-- Mappings based on filename pattern match
-		pattern = {
-			-- Match filenames like ".env.development", "env.local" and so on
-			[".?env.*"] = "env",
-		},
 	},
 }
 
@@ -226,10 +174,6 @@ function L.settings()
 			end,
 		},
 		{ cmd.LYRDScanForSecrets, L.scan_for_secrets },
-	})
-	commands.implement(ENV_FILETYPES, {
-		{ cmd.LYRDToggleBufferDecorations, ":Shelter toggle" },
-		{ cmd.LYRDLSPHoverInfo, "Shelter peek" },
 	})
 end
 

@@ -16,6 +16,7 @@ setup.load({
 		"LYRD.layers.motions",
 		"LYRD.layers.file_templates",
 		"LYRD.layers.dev",
+		"LYRD.layers.environment",
 		"LYRD.layers.text",
 		"LYRD.layers.test",
 		"LYRD.layers.git",
