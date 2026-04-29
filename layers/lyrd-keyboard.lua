@@ -145,6 +145,7 @@ function L.keybindings()
 		{ "n", "s", "<nop>" },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-S-f>", cmd.LYRDBufferFormat },
+		{ "n", "ZX", cmd.LYRDWindowForceCloseAll },
 	})
 
 	mappings.create_menu("g", {
