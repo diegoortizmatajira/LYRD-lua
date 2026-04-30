@@ -12,7 +12,12 @@ local L = {
 	null_ls_sources = {},
 	null_ls_registered = {},
 	conform_formatters_by_ft = {},
-	conform_formatters = {},
+	conform_formatters = {
+		["prettier"] = {
+			inherit = "prettier",
+			prepend_args = { "--tab-width", "4" },
+		},
+	},
 	enable_usage_hints = false,
 }
 
