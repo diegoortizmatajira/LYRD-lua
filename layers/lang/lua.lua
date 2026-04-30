@@ -23,6 +23,7 @@ local L = {
 		"luaformatter",
 		"luau-lsp",
 		"stylua",
+		"selene",
 	},
 	required_treesitter_parsers = {
 		"lua",
@@ -32,6 +33,9 @@ local L = {
 	},
 	required_enabled_lsp_servers = {
 		"lua_ls",
+	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.selene",
 	},
 	required_formatter_per_filetype = {
 		{
