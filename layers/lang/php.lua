@@ -8,6 +8,7 @@ local L = {
 		"intelephense",
 		"laravel-ls",
 		"php-cs-fixer",
+		"phpcs",
 	},
 	required_treesitter_parsers = {
 		"php",
@@ -27,7 +28,9 @@ local L = {
 		},
 	},
 	required_test_adapters = {},
-	required_null_ls_sources = {},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.phpcs",
+	},
 	required_filetype_definitions = {},
 }
 

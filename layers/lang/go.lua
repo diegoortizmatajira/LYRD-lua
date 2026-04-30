@@ -53,6 +53,7 @@ local L = {
 	},
 	required_enabled_lsp_servers = {
 		"gopls",
+		"golangci_lint_ls",
 	},
 	required_formatter_per_filetype = {
 		{
