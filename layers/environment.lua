@@ -68,7 +68,8 @@ local L = {
 		-- Mappings based on filename pattern match
 		pattern = {
 			-- Match filenames like ".env.development", "env.local" and so on
-			[".?env.*"] = "env",
+			[".env.*"] = "env",
+			[".?env%.?[^%.]{3}$"] = "env", -- Updated criterion to exclude files with 3-character extensions.
 		},
 	},
 }
