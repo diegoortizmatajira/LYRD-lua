@@ -51,7 +51,7 @@ local L = {
 		"js-debug-adapter",
 		"eslint-lsp",
 		"vtsls",
-		"deno"
+		"deno",
 	},
 	required_treesitter_parsers = {
 		"javascript",
@@ -67,6 +67,7 @@ local L = {
 		"vue_ls",
 		"angularls",
 		"svelte",
+		"eslint",
 	},
 	required_formatter_per_filetype = {
 		{
