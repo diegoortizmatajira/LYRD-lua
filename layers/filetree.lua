@@ -151,6 +151,7 @@ function L.plugins()
 						"^obj$",
 					},
 					exclude = {
+						".editorconfig",
 						".gitignore",
 						".env",
 						".dockerignore",

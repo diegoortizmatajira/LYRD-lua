@@ -21,7 +21,7 @@ tab_width = 4         # For when indent_style is tab
 insert_final_newline = true  # Add newline at end of file, default true
 
 # Line length
-max_line_length = 80  # Set preferred maximum line length, default 80
+max_line_length = 120  # Set preferred maximum line length, default 80
 
 # Trim trailing white space
 trim_trailing_whitespace = true  # Remove whitespaces, useful for code
