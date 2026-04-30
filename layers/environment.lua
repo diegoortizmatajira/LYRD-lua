@@ -82,8 +82,4 @@ function L.settings()
 	})
 end
 
-function L.keybindings() end
-
-function L.complete() end
-
 return declarative_layer.apply(L)
