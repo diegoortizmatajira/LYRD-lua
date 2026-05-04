@@ -45,13 +45,12 @@ local L = {
 	focus_terminal_on_run = true,
 	ts_compose_services_query = [[
 (block_mapping_pair
-  key: ((flow_node) @services-key (#eq? @services-key "services"))
-  value: (block_node
-    (block_mapping (block_mapping_pair
-      key: (flow_node) @service-name
-    ) @service-node) 
-  ) 
-)]],
+	key: ((flow_node) @services-key (#eq? @services-key "services"))
+	value: (block_node
+		(block_mapping (block_mapping_pair
+		key: (flow_node) @service-name
+		) @service-node)
+))]],
 	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
 	docker_compose_filetype = "yaml.docker-compose",
 

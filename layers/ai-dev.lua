@@ -31,12 +31,15 @@ Format:
 Where <type> is one of: feat, fix, refactor, docs, style, test, chore, perf.
 
 Rules:
-- The summary line must describe the SPECIFIC change, not a category. Bad: "Update code". Good: "Add retry logic to S3 upload handler".
-- Each bullet must name the concrete thing that changed (file, function, config key, behavior) and why.
-- If the diff adds something, say what was added. If it removes something, say what was removed. If it changes behavior, describe the old vs new behavior.
-- Do NOT use filler like "improve maintainability" or "enhance functionality" — be specific about what improved and how.
-- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
-	]],
+	- The summary line must describe the SPECIFIC change, not a category. Bad:
+	"Update code". Good: "Add retry logic to S3 upload handler".
+	- Each bullet must name the concrete thing that changed (file, function, config key, behavior) and why.
+	- If the diff adds something, say what was added. If it removes something, say
+	what was removed. If it changes behavior, describe the old vs new behavior.
+	- Do NOT use filler like "improve maintainability" or "enhance
+	functionality" — be specific about what improved and how.
+	- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
+]],
 }
 
 local function avante_dependencies()
