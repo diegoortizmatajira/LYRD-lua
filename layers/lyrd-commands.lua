@@ -276,6 +276,7 @@ local L = {
 		LYRDDiffOff = Command:new("Diff: Turn comparisson off", ":diffoff", icons.action.compare),
 		LYRDBindScroll = Command:new("Diff: Bind scroll on buffers", ":set scrollbind", icons.action.compare),
 		LYRDCommandPalette = Command:new("Command Palette", commandPalette, icons.other.palette),
+		LYRDUpdateDistro = Command:new("Update LYRD Distro", nil, icons.action.update),
 	},
 }
 

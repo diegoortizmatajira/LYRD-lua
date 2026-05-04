@@ -458,12 +458,13 @@ function L.keybindings()
 			{ "v", cmd.LYRDTestSummary },
 		}, icons.code.test),
 		menu_header("p", "Preferences", {
-			{ "t", cmd.LYRDToolManager },
-			{ "p", cmd.LYRDPluginManager },
-			{ "i", cmd.LYRDPluginsInstall },
-			{ "u", cmd.LYRDPluginsUpdate },
 			{ "c", cmd.LYRDPluginsClean },
+			{ "d", cmd.LYRDUpdateDistro },
+			{ "i", cmd.LYRDPluginsInstall },
 			{ "l", cmd.LYRDEditLocalConfig },
+			{ "p", cmd.LYRDPluginManager },
+			{ "t", cmd.LYRDToolManager },
+			{ "u", cmd.LYRDPluginsUpdate },
 		}, icons.other.briefcase),
 		menu_header("q", "Quit", {
 			{ ".", cmd.LYRDWindowClose },

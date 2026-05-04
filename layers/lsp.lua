@@ -321,7 +321,7 @@ function L.plugins()
 
 				-- hl-groups can have any name
 				-- Stylua will mess up the formatting here, so disable it
-                -- stylua: ignore start
+				-- stylua: ignore start
 				vim.api.nvim_set_hl(0, "SymbolUsageRounding", { fg = h("CursorLine").bg, italic = true })
 				vim.api.nvim_set_hl( 0, "SymbolUsageContent", { bg = h("CursorLine").bg, fg = h("Comment").fg, italic = true })
 				vim.api.nvim_set_hl( 0, "SymbolUsageRef", { fg = h("Function").fg, bg = h("CursorLine").bg, italic = true })
