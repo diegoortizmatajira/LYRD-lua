@@ -50,6 +50,7 @@ setup.load({
 		"LYRD.layers.lang.pascal",
 		"LYRD.layers.lang.python",
 		"LYRD.layers.lang.rust",
+		"LYRD.layers.lang.ruby",
 		"LYRD.layers.lang.php",
 		"LYRD.layers.lang.sql",
 		"LYRD.layers.lang.data-formats",
