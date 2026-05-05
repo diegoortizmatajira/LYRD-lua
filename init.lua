@@ -58,6 +58,7 @@ setup.load({
 		"LYRD.layers.lang.web-standard",
 		"LYRD.layers.lang.ci_cd",
 		"LYRD.layers.lang.nginx",
+		"LYRD.layers.lang.nix",
 		"LYRD.layers.static-website",
 		"LYRD.layers.grammar",
 		"LYRD.layers.extras",
