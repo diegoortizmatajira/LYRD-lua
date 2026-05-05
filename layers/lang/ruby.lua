@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Ruby",
+	name = "Ruby Language",
 	required_mason_packages = {
 		"solargraph",
 		"rubocop",

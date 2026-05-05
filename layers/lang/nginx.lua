@@ -2,7 +2,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Nginx",
+	name = "Nginx configuration language",
 	required_mason_packages = {
 		-- "nginx-language-server",
 		"nginx-config-formatter",
