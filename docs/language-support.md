@@ -28,6 +28,7 @@ formatting, testing, debugging, and task workflows.
 - Maven/Gradle support
 - JUnit/TestNG test workflows
 - Spring Boot tooling support
+- Runtime selection via `LYRDCodeSelectEnvironment` (`:JdtSetRuntime`)
 
 ### .NET (C#, F#, VB.NET)
 
@@ -56,12 +57,50 @@ formatting, testing, debugging, and task workflows.
 
 ## Additional languages and formats
 
-- Kotlin, Bash, PHP, Pascal, LaTeX, SQL
+- Kotlin, Bash, Ruby, PHP, Nix, Groovy, Pascal, LaTeX, SQL
 - Lua, Markdown
 - JSON, YAML, TOML, XML
 - CMake
 - Protocol Buffers/gRPC
 - CSV/TSV
+
+## Ruby
+
+- Solargraph LSP support
+- RuboCop formatting and diagnostics
+- Tree-sitter parser integration
+
+## PHP
+
+- Intelephense and Laravel LS support
+- `php-cs-fixer` formatting
+- `phpcs` diagnostics
+- Tree-sitter parser integration
+
+## Nix
+
+- `nil_ls` language server support (`nil`)
+- Alejandra formatting
+
+## Groovy
+
+- `groovyls` language server support (`groovy-language-server`)
+- `npm-groovy-lint` formatting and diagnostics
+- Jenkinsfile diagnostics support
+- Tree-sitter parser integration
+
+## Bash
+
+- `bashls` language server support
+- `shfmt` formatting
+- `shellcheck` diagnostics via Bash language tooling
+- `LYRDCodeRun` support for running the current shell script as a task
+
+## Environment files (`.env` and variants)
+
+- Filetype support for `.env`, `.env.*`, `env`, and related env-style files
+- `dotenv-linter` formatting/diagnostics integration
+- Environment variable value masking and peek workflows via shelter/ecolog tooling
 
 ## SQL highlights
 

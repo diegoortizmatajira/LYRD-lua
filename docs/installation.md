@@ -58,7 +58,12 @@ Common tools:
 - Python: `basedpyright`, `ruff`, `debugpy`
 - JavaScript/TypeScript: `typescript-language-server`, `prettier`
 - Java: `jdtls`, `java-debug-adapter`
-- PHP: `intelephense`, `laravel-ls`, `php-cs-fixer`
+- Bash: `bash-language-server`, `shfmt`, `shellcheck`
+- Environment files: `dotenv-linter`
+- Ruby: `solargraph`, `rubocop`
+- PHP: `intelephense`, `laravel-ls`, `php-cs-fixer`, `phpcs`
+- Nix: `nil`, `alejandra`
+- Groovy: `groovy-language-server`, `npm-groovy-lint`
 - Go: `gopls`, `delve`
 - Rust: `rust-analyzer`, `codelldb`
 - C/C++: `clangd`, `clang-format`

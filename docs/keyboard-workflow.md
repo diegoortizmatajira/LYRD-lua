@@ -15,6 +15,7 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 - `<Space>c` - code/run/build actions
 - `<Space>d` - debugging
 - `<Space>g` - Git
+- `<Space>p` - preferences and tooling
 - `<Space>s` - search/navigation
 - `<Space>t` - testing
 - `<Space>r` - tasks and REPL
@@ -24,6 +25,7 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 - `,f` - format current buffer
 - `,x` - run selection
 - `,X` - run file
+- `<Space>pd` - update LYRD distro
 - `,c` - close buffer
 - `,[` / `,]` - previous/next buffer
 - `,<Space>` - clear search highlights

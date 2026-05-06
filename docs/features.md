@@ -69,6 +69,7 @@
 - REPL/notebook workflows (Python-focused).
 - REST API request execution from `.http`/`.rest`.
 - Database browsing/query execution.
+- Environment file workflows for `.env`-style files with linting and value masking support.
 - Grammar checking for docs/comments/strings.
 - Static-site workflows and dev-server support.
 - Secret scanning integration.

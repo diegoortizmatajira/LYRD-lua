@@ -61,10 +61,10 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDCodeQuerySelection`                | Run selected query                      | `<Leader>y`                                                      | `sql`                       |
 | `LYRDCodeRefactor`                      | Refactor                                | `<C-r><C-f>`<br>`<Leader>Rf`<br>`<Space>cr`                      | `*`                         |
 | `LYRDCodeRestorePackages`               | Restore packages                        | `<Space>cp`                                                      | `default`                   |
-| `LYRDCodeRun`                           | Run                                     | `<Leader>X`<br>`<Space>cx`                                       | `go`<br>`http`<br>`sql`     |
+| `LYRDCodeRun`                           | Run                                     | `<Leader>X`<br>`<Space>cx`                                       | `go`<br>`http`<br>`sh`<br>`sql` |
 | `LYRDCodeRunSelection`                  | Run selection code                      | `<Leader>x`<br>`<S-CR>`                                          | `http`<br>`python`<br>`sql` |
 | `LYRDCodeSecrets`                       | Edit Secrets                            | `<Space>cS`                                                      | `python`                    |
-| `LYRDCodeSelectEnvironment`             | Select environment                      | `<Space>ce`                                                      | `http`<br>`python`          |
+| `LYRDCodeSelectEnvironment`             | Select environment                      | `<Space>ce`                                                      | `http`<br>`java`<br>`python`<br>`sql` |
 | `LYRDCodeTooling`                       | Tooling                                 | `<Space>cc`                                                      | `python`                    |
 | `LYRDContainersUI`                      | Running containers UI                   | `<Space><SPACE>c`                                                | `*`                         |
 | `LYRDCopyAbsoluteFilePath`              | Copy absolute file path                 | `gya`                                                            | `*`                         |
@@ -122,6 +122,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDGithubPullRequestClose`            | Close GitHub pull request               | `<Space>ghX`                                                     | `*`                         |
 | `LYRDGithubPullRequestCreate`           | Create GitHub pull request              | `<Space>ghC`                                                     | `*`                         |
 | `LYRDGithubPullRequestList`             | List GitHub pull requests               | `<Space>ghL`                                                     | `*`                         |
+| `LYRDGithubReleaseCreate`               | Create GitHub release                   | `<Space>ghrc`                                                    | `*`                         |
 | `LYRDGrammarToggle`                     | Toggle grammar checker                  | `<Leader>g`                                                      | `*`                         |
 | `LYRDHardModeToggle`                    | Toggle hard mode                        | `<Space>uh`                                                      | `*`                         |
 | `LYRDInsertImage`                       | Insert image                            | `<Leader>ii`                                                     | `default`                   |
@@ -223,6 +224,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDTestSummary`                       | View test summary                       | `<F3>`<br>`<Leader><Leader>t`<br>`<Space>tv`                     | `*`                         |
 | `LYRDToggleBufferDecorations`           | Toggle buffer decorations               | `<Leader>k`                                                      | `csv`<br>`markdown`         |
 | `LYRDToolManager`                       | Tool Manager                            | `<Space>pt`                                                      | `*`                         |
+| `LYRDUpdateDistro`                      | Update LYRD Distro                      | `<Space>pd`                                                      | `*`                         |
 | `LYRDViewCodeOutline`                   | View code outline                       | `<F4>`<br>`<Leader><Leader>o`                                    | `*`                         |
 | `LYRDViewFileExplorer`                  | File Explorer                           | `<Leader><Leader>e`<br>`<Space><SPACE>f`                         | `*`                         |
 | `LYRDViewFileExplorerAlt`               | File Explorer (Alternative)             | `<Leader><Leader>E`<br>`<Space><SPACE>F`                         | `*`                         |
