@@ -123,9 +123,8 @@ describe("java-generator.get_package", function()
 			return orig_fnamemodify(path, modifier)
 		end
 
-		local result = generator.get_package(
-			"/project/src/main/java/com/example/internal/domain/model/entity/User.java"
-		)
+		local result =
+			generator.get_package("/project/src/main/java/com/example/internal/domain/model/entity/User.java")
 
 		assert.are.equal("com.example.internal.domain.model.entity", result)
 	end)

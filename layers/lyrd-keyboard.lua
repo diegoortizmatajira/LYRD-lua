@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
+local setup = require("LYRD.shared.setup")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
 local cmd = require("LYRD.layers.lyrd-commands").cmd

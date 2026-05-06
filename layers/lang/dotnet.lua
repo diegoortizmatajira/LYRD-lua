@@ -1,5 +1,5 @@
-local icons = require("LYRD.layers.icons")
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local icons = require("LYRD.layers.icons")
 local dotnet_languages = { "cs", "vb" }
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer

@@ -1,10 +1,10 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
-local utils = require("LYRD.shared.utils")
 local goku = require("LYRD.shared.resources.goku")
+local icons = require("LYRD.layers.icons")
 local title = require("LYRD.shared.resources.title")
+local utils = require("LYRD.shared.utils")
 
 ---@class LYRD.layer.LYRDUI: LYRD.shared.setup.Module
 --- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype

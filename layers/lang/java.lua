@@ -1,5 +1,5 @@
-local lsp = require("LYRD.layers.lsp")
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local lsp = require("LYRD.layers.lsp")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {

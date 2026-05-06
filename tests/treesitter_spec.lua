@@ -178,9 +178,7 @@ describe("treesitter.get_match_texts_at_cursor_recursive", function()
 		}, "lua")
 		set_cursor(3, 4) -- inside inner()
 
-		local results = treesitter.get_match_texts_at_cursor_recursive(
-			nested_function_query, "lua", "func", "name"
-		)
+		local results = treesitter.get_match_texts_at_cursor_recursive(nested_function_query, "lua", "func", "name")
 
 		assert.are.equal(2, #results)
 		assert.are.equal("inner", results[1])
@@ -195,9 +193,7 @@ describe("treesitter.get_match_texts_at_cursor_recursive", function()
 		}, "lua")
 		set_cursor(2, 3)
 
-		local results = treesitter.get_match_texts_at_cursor_recursive(
-			nested_function_query, "lua", "func", "name"
-		)
+		local results = treesitter.get_match_texts_at_cursor_recursive(nested_function_query, "lua", "func", "name")
 
 		assert.are.equal(1, #results)
 		assert.are.equal("solo", results[1])
@@ -210,9 +206,7 @@ describe("treesitter.get_match_texts_at_cursor_recursive", function()
 		}, "lua")
 		set_cursor(1, 0)
 
-		local results = treesitter.get_match_texts_at_cursor_recursive(
-			nested_function_query, "lua", "func", "name"
-		)
+		local results = treesitter.get_match_texts_at_cursor_recursive(nested_function_query, "lua", "func", "name")
 
 		assert.are.same({}, results)
 	end)
@@ -221,9 +215,7 @@ describe("treesitter.get_match_texts_at_cursor_recursive", function()
 		bufnr = setup_buffer({ "" }, "lua")
 		set_cursor(1, 0)
 
-		local results = treesitter.get_match_texts_at_cursor_recursive(
-			nested_function_query, "lua", "func", "name"
-		)
+		local results = treesitter.get_match_texts_at_cursor_recursive(nested_function_query, "lua", "func", "name")
 
 		assert.are.same({}, results)
 	end)
@@ -240,9 +232,7 @@ describe("treesitter.get_match_texts_at_cursor_recursive", function()
 		}, "lua")
 		set_cursor(4, 6) -- inside c()
 
-		local results = treesitter.get_match_texts_at_cursor_recursive(
-			nested_function_query, "lua", "func", "name"
-		)
+		local results = treesitter.get_match_texts_at_cursor_recursive(nested_function_query, "lua", "func", "name")
 
 		assert.are.equal(3, #results)
 		assert.are.equal("c", results[1])
@@ -260,9 +250,7 @@ describe("treesitter.get_match_texts_at_cursor_recursive", function()
 		}, "lua")
 		set_cursor(3, 4)
 
-		local results = treesitter.get_match_texts_at_cursor_recursive(
-			nested_function_query, "lua", "func", nil
-		)
+		local results = treesitter.get_match_texts_at_cursor_recursive(nested_function_query, "lua", "func", nil)
 
 		assert.are.equal(2, #results)
 		-- Each result should be the full function text

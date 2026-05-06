@@ -1,8 +1,8 @@
 ---@module "LYRD.layers.mappings"
 ---@Author: Diego Ortiz
 
-local setup = require("LYRD.shared.setup")
 local icons = require("LYRD.layers.icons")
+local setup = require("LYRD.shared.setup")
 local c = require("LYRD.layers.commands").command_shortcut
 
 ---@class LYRD.layer.Mappings: LYRD.shared.setup.Module

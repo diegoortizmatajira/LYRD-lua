@@ -1,8 +1,8 @@
 local commands = require("LYRD.layers.commands")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
+local icons = require("LYRD.layers.icons")
 local lsp = require("LYRD.layers.lsp")
 local ts = require("LYRD.layers.treesitter")
-local icons = require("LYRD.layers.icons")
 require("LYRD.shared.utils.signs")
 local utils = require("LYRD.shared.utils")
 

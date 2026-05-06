@@ -1,8 +1,8 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local utils = require("LYRD.shared.utils")
 local frecency_utils = require("LYRD.shared.utils.frecency")
+local utils = require("LYRD.shared.utils")
 
 ---@class LYRD.layer.Telescope: LYRD.shared.setup.Module
 local L = {

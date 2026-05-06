@@ -1,6 +1,6 @@
-local setup = require("LYRD.shared.setup")
-local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
+local lsp = require("LYRD.layers.lsp")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local utils = require("LYRD.shared.utils")
 
