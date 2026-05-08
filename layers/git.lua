@@ -46,6 +46,24 @@ local function run_git_ignore(command)
 	return result.stdout
 end
 
+--- Runs a git command in the current repository and opens the output in a new split.
+--- @args string[] The full command to run, e.g. { "pull" }
+--- @name string? The name of the task to display in the UI
+local function run_git_command(args, name)
+	return function()
+		local utils = require("LYRD.shared.utils")
+		local tasks = require("LYRD.layers.tasks")
+
+		tasks.run_task({
+			name = name or "Git Command",
+			cmd = "git",
+			args = args,
+			open_in_split = true,
+			focus = true,
+		})
+	end
+end
+
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Git Integration",
@@ -361,10 +379,10 @@ function L.settings()
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Neogit" },
 		{ cmd.LYRDGitCommit, require("neogit").action("commit", "commit", {}) },
-		{ cmd.LYRDGitPush, require("neogit").action("push", "to_pushremote") },
-		{ cmd.LYRDGitPull, require("neogit").action("pull", "from_pushremote") },
+		{ cmd.LYRDGitPush, run_git_command({ "push" }, "Git Push") },
+		{ cmd.LYRDGitPull, run_git_command({ "pull" }, "Git Pull") },
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
-		{ cmd.LYRDGitStageAll, ":!git add ." },
+		{ cmd.LYRDGitStageAll, run_git_command({ "add", "." }, "Stage All Changes") },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitViewLog, ":DiffviewFileHistory" },
 		{
