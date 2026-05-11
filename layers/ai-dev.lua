@@ -279,6 +279,7 @@ function L.plugins()
 				},
 				behaviour = {
 					-- Whether to automatically add the current file when opening a new chat. Default to true.
+					auto_set_keymaps = false,
 					auto_add_current_file = true,
 					auto_approve_tool_permissions = false, -- Default: auto-approve all tools (no prompts)
 				},
