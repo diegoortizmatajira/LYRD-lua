@@ -7,6 +7,9 @@ local L = {
 	required_plugins = {
 		{
 			"mfussenegger/nvim-jdtls",
+			dependencies = {
+				"mfussenegger/nvim-dap",
+			},
 			opts = nil,
 		},
 		{
