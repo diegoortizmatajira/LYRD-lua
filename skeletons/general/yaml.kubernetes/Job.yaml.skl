@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: #[[$title$]]#
+spec:
+  template:
+    spec:
+      containers:
+        - name: #[[$title$]]#
+          image: python:latest
+          command: ["python", "-c"]
+          args: ["print('Hello from the Kubernetes job')"]
+      restartPolicy: Never
+  backoffLimit: 4

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: #[[$netchecker$]]#
+spec:
+  selector:
+    matchLabels:
+      app: #[[$netchecker$]]#
+  template:
+    metadata:
+      labels:
+        app: #[[$netchecker$]]#
+    spec:
+      containers:
+        - name: #[[$busybox$]]#
+          image: #[[$busybox$]]#
+          args:
+            - /bin/sh
+            - -c
+            - 'while true; do ping -c 4 8.8.8.8; sleep 60; done'

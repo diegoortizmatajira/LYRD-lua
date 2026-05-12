@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: #[[$title$]]#
+  labels:
+    role: #[[$title$]]#
+spec:
+  containers:
+    - name: #[[$title$]]#
+      image: #[[$nginx$]]#
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: #[[$title$]]#
+          containerPort: #[[$80$]]#
+          protocol: #[[$TCP$]]#
+  restartPolicy: Always
