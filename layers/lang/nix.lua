@@ -7,6 +7,9 @@ local L = {
 		"nil",
 		"alejandra",
 	},
+	required_treesitter_parsers = {
+		"nix",
+	},
 	required_enabled_lsp_servers = {
 		"nil_ls",
 	},
