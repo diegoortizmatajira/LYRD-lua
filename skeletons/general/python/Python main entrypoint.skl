@@ -1,0 +1,12 @@
+return function ()
+  return {
+      _cursor = { 2, 4 }
+    }
+end
+---
+def main() -> None:
+    pass
+
+if __name__ == "__main__":
+    main()
+

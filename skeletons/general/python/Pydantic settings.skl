@@ -1,0 +1,19 @@
+return function (buf)
+  local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = text.to_pascal_case(basename:match("(.+)%..+$"))
+
+  return { 
+      type_name = basename,
+      _cursor = { 8, 4 }
+    }
+end
+---
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class ${type_name}(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_prefix="")
+
+    app_name: str = "app"
+
