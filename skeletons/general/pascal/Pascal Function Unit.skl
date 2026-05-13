@@ -1,0 +1,29 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+	local pascal_name = text.to_pascal_case(file_stem)
+
+	return {
+		unit_name = pascal_name,
+		function_name = pascal_name,
+		_cursor = { 10, 5 }
+	}
+end
+---
+unit ${unit_name};
+
+interface
+
+function ${function_name}: Integer;
+
+implementation
+
+function ${function_name}: Integer;
+begin
+    Result := 0;
+end;
+
+end.
+

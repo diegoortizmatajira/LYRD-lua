@@ -1,0 +1,30 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+	local pascal_name = text.to_pascal_case(file_stem)
+
+	return {
+		unit_name = pascal_name,
+		type_name = pascal_name,
+		_cursor = { 11, 9 }
+	}
+end
+---
+unit ${unit_name};
+
+{$mode objfpc}{$H+}
+
+interface
+
+type
+    I${type_name} = interface
+        ['{00000000-0000-0000-0000-000000000000}']
+        procedure Execute;
+    end;
+
+implementation
+
+end.
+
