@@ -1,0 +1,20 @@
+return function ()
+	return {
+		_cursor = { 4, 2 }
+	}
+end
+---
+pub fn add(lhs: i32, rhs: i32) -> i32 {
+	lhs + rhs
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn add_returns_sum() {
+		assert_eq!(add(1, 2), 3);
+	}
+}
+

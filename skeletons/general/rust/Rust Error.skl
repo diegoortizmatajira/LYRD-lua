@@ -1,0 +1,26 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		type_name = text.to_pascal_case(file_stem),
+		_cursor = { 8, 2 }
+	}
+end
+---
+use std::error::Error;
+use std::fmt::{Display, Formatter};
+
+#[derive(Debug)]
+pub struct ${type_name};
+
+impl Display for ${type_name} {
+	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+		write!(f, "${type_name}")
+	}
+}
+
+impl Error for ${type_name} {}
+
