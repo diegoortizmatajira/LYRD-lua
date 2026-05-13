@@ -13,6 +13,11 @@ local L = {
 	required_enabled_lsp_servers = {
 		"cmake",
 	},
+	required_filetype_definitions = {
+		filename = {
+			["CMakeLists.txt"] = "cmake",
+		},
+	},
 }
 
 function L.settings()
@@ -21,11 +26,6 @@ function L.settings()
 		group = vimrc_make_cmake_group,
 		pattern = { "make" },
 		command = [[setlocal noexpandtab]],
-	})
-	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-		group = vimrc_make_cmake_group,
-		pattern = { "CMakeLists.txt" },
-		command = [[setlocal filetype=cmake]],
 	})
 end
 
