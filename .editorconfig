@@ -12,8 +12,6 @@ charset = utf-8  # Default to UTF-8
 # End of line
 end_of_line = lf  # Options: lf | cr | crlf, default "lf"
 
-# Indentation style
-indent_style = space  # Options: space | tab, default "space"
 indent_size = 4       # Number of spaces, default 4
 tab_width = 4         # For when indent_style is tab
 
