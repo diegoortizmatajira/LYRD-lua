@@ -1,0 +1,24 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  local interface_name = basename
+  if not interface_name:match("^I[A-Z]") then
+    interface_name = "I" .. interface_name
+  end
+
+  return {
+      type_name = basename,
+      interface_name = interface_name,
+      namespace = generator.get_namespace(name),
+      _cursor = { 7, 5 }
+    }
+end
+---
+namespace ${namespace};
+
+public class ${type_name}
+    : ${interface_name}
+{
+}

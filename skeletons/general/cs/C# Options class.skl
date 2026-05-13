@@ -1,0 +1,25 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+    local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  local section_name = basename:gsub("Options$", "")
+
+  return {
+      type_name = basename,
+      section = text.to_pascal_case(section_name),
+      namespace = generator.get_namespace(name),
+      _cursor = { 8, 5 }
+    }
+end
+---
+namespace ${namespace};
+
+public class ${type_name}
+{
+    public const string SectionName = "${section}";
+
+    public string BaseUrl { get; set; } = string.Empty;
+}
+

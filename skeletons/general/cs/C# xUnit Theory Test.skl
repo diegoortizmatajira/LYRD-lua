@@ -1,0 +1,28 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return {
+      type_name = basename,
+      namespace = generator.get_namespace(name),
+      _cursor = { 11, 9 }
+    }
+end
+---
+using Xunit;
+
+namespace ${namespace};
+
+public class ${type_name}
+{
+    [Theory]
+    [InlineData(1, 1)]
+    public void ShouldMatch(int input, int expected)
+    {
+        var actual = input;
+
+        Assert.Equal(expected, actual);
+    }
+}
