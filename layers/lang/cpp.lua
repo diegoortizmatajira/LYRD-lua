@@ -18,17 +18,13 @@ local L = {
 		"codelldb",
 		"clang-format",
 		"cpplint",
-		"cmakelint",
-		"cmake-language-server",
 	},
 	required_treesitter_parsers = {
-		"cmake",
 		"c",
 		"cpp",
 	},
 	required_enabled_lsp_servers = {
 		"clangd",
-		"cmake",
 	},
 	required_formatters = {
 		["clang-format"] = require("LYRD.shared.conform.clang-format"),
@@ -46,7 +42,6 @@ local L = {
 	},
 	required_null_ls_sources = {
 		"none-ls.diagnostics.cpplint",
-		"null-ls.builtins.diagnostics.cmake_lint",
 	},
 }
 
