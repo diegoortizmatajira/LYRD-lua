@@ -1,0 +1,19 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		module_name = text.to_snake_case(file_stem),
+		header_file = text.to_snake_case(file_stem) .. ".h",
+		_cursor = { 6, 1 }
+	}
+end
+---
+#include "${header_file}"
+
+void ${module_name}_init(void)
+{
+}
+
