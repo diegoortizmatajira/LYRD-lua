@@ -1,0 +1,32 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.java-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return {
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 14, 9 }
+    }
+end
+---
+package ${package};
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ${type_name}
+{
+    @ParameterizedTest
+    @CsvSource({
+            "1,1",
+    })
+    void shouldWork(int input, int expected)
+    {
+        assertEquals(expected, input);
+    }
+}
+

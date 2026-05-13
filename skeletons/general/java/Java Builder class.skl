@@ -3,20 +3,31 @@ return function (buf)
   local name = vim.api.nvim_buf_get_name(buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
+  local product_type = basename:gsub("Builder$", "")
 
-  return { 
+  return {
       type_name = basename,
+      product_type = product_type,
       package = generator.get_package(name),
-      _cursor = { 7, 5 }
+      _cursor = { 8, 13 }
     }
 end
 ---
 package ${package};
 
-import lombok.Value;
-
-@Value
 public class ${type_name}
 {
-    
+    private String value;
+
+    public ${type_name} value(String value)
+    {
+        this.value = value;
+        return this;
+    }
+
+    public ${product_type} build()
+    {
+        return new ${product_type}(value);
+    }
 }
+

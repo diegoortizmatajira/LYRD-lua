@@ -1,0 +1,29 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.java-generator")
+    local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  local prefix_name = basename:gsub("Properties$", "")
+
+  return {
+      type_name = basename,
+      package = generator.get_package(name),
+      prefix = text.to_dash_case(prefix_name),
+      _cursor = { 11, 21 }
+    }
+end
+---
+package ${package};
+
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+@Validated
+@ConfigurationProperties(prefix = "${prefix}")
+public record ${type_name}(
+        @NotBlank String baseUrl
+) {
+}
+

@@ -4,16 +4,19 @@ return function (buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
 
-  return { 
+  return {
       type_name = basename,
       package = generator.get_package(name),
-      _cursor = { 5, 5 }
+      _cursor = { 7, 21 }
     }
 end
 ---
 package ${package};
 
-public record ${type_name}()
-{
-    
+import jakarta.validation.constraints.NotBlank;
+
+public record ${type_name}(
+        @NotBlank String value
+) {
 }
+

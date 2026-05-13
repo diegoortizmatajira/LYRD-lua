@@ -3,17 +3,23 @@ return function (buf)
   local name = vim.api.nvim_buf_get_name(buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
+  local source_type = basename:gsub("Mapper$", "")
 
-  return { 
+  return {
       type_name = basename,
+      source_type = source_type,
+      target_type = source_type .. "Dto",
       package = generator.get_package(name),
-      _cursor = { 5, 5 }
+      _cursor = { 7, 5 }
     }
 end
 ---
 package ${package};
 
-public record ${type_name}()
+public interface ${type_name}
 {
-    
+    ${target_type} toDto(${source_type} source);
+
+    ${source_type} toEntity(${target_type} source);
 }
+

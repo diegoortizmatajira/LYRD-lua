@@ -14,7 +14,7 @@ end
 package ${package};
 
 public class ${type_name} extends RuntimeException {
-  public ${NAME}(String message) {
+  public ${type_name}(String message) {
     super(message);
   }
 }

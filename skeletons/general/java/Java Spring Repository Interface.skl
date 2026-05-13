@@ -3,17 +3,22 @@ return function (buf)
   local name = vim.api.nvim_buf_get_name(buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
+  local entity_name = basename:gsub("Repository$", "")
 
-  return { 
+  return {
       type_name = basename,
       package = generator.get_package(name),
-      _cursor = { 5, 5 }
+      entity_name = entity_name,
+      _cursor = { 8, 5 }
     }
 end
 ---
 package ${package};
 
-public record ${type_name}()
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ${type_name} extends JpaRepository<${entity_name}, Long>
 {
-    
+
 }
+

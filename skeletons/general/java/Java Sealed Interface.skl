@@ -4,8 +4,9 @@ return function (buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
 
-  return { 
+  return {
       type_name = basename,
+      implementation_name = basename .. "Impl",
       package = generator.get_package(name),
       _cursor = { 5, 5 }
     }
@@ -13,7 +14,11 @@ end
 ---
 package ${package};
 
-public record ${type_name}()
+public sealed interface ${type_name} permits ${implementation_name}
 {
-    
 }
+
+final class ${implementation_name} implements ${type_name}
+{
+}
+

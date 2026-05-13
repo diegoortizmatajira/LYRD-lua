@@ -1,0 +1,31 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.java-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return {
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 7, 9 }
+    }
+end
+---
+package ${package};
+
+public record ${type_name}<T>(
+        boolean success,
+        String message,
+        T data
+) {
+    public static <T> ${type_name}<T> ok(T data)
+    {
+        return new ${type_name}<T>(true, "", data);
+    }
+
+    public static <T> ${type_name}<T> error(String message)
+    {
+        return new ${type_name}<T>(false, message, null);
+    }
+}
+

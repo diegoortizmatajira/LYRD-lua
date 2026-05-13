@@ -4,16 +4,20 @@ return function (buf)
   local basename = vim.fs.basename(name)
   basename = basename:match("(.+)%..+$")
 
-  return { 
+  return {
       type_name = basename,
       package = generator.get_package(name),
-      _cursor = { 5, 5 }
+      _cursor = { 9, 5 }
     }
 end
 ---
 package ${package};
 
-public record ${type_name}()
+import org.springframework.stereotype.Service;
+
+@Service
+public class ${type_name}
 {
-    
+
 }
+
