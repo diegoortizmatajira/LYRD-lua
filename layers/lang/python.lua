@@ -31,9 +31,6 @@ local L = {
 			ft = "python",
 		},
 		{
-			"raimon49/requirements.txt.vim",
-		},
-		{
 			"benomahony/uv.nvim",
 			ft = "python",
 			opts = {
@@ -57,6 +54,7 @@ local L = {
 	},
 	required_treesitter_parsers = {
 		"python",
+		"requirements",
 		"htmldjango",
 	},
 	required_enabled_lsp_servers = {
