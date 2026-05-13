@@ -1,0 +1,27 @@
+return function (buf)
+  local generator = require("LYRD.layers.lang.go-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return { 
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 6, 3 }
+    }
+end
+---
+package ${package}
+
+type ${type_name} struct {
+	message string
+}
+
+func (e ${type_name}) Error() string {
+	return e.message
+}
+
+func New${type_name}(message string) error {
+	return ${type_name}{message: message}
+}
+

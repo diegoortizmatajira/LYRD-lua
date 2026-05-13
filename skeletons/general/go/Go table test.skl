@@ -1,0 +1,37 @@
+return function (buf)
+  local generator = require("LYRD.layers.lang.go-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return { 
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 19, 3 }
+    }
+end
+---
+package ${package}_test
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func Test${type_name}(t *testing.T) {
+	tests := []struct {
+		name string
+		got  int
+		want int
+	}{
+		{name: "same values", got: 1, want: 1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, tt.got)
+		})
+	}
+}
+

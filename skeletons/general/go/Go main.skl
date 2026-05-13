@@ -1,0 +1,14 @@
+return function ()
+  return { 
+      _cursor = { 6, 2 }
+    }
+end
+---
+package main
+
+import "log"
+
+func main() {
+	log.Println("todo")
+}
+

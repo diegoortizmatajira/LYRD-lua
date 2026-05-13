@@ -1,0 +1,22 @@
+return function (buf)
+  local generator = require("LYRD.layers.lang.go-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return { 
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 8, 2 }
+    }
+end
+---
+package ${package}
+
+type ${type_name} int
+
+const (
+	${type_name}Unknown ${type_name} = iota
+	${type_name}Active
+)
+
