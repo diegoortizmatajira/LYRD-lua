@@ -1,0 +1,24 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		type_name = text.to_pascal_case(file_stem),
+		header_guard = text.to_capital_snake_case(file_stem) .. "_HPP",
+		_cursor = { 9, 2 }
+	}
+end
+---
+#ifndef ${header_guard}
+#define ${header_guard}
+
+class ${type_name}
+{
+public:
+	${type_name}();
+	~${type_name}();
+};
+
+#endif // ${header_guard}
