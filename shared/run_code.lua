@@ -1,25 +1,44 @@
 local L = {}
 --- @class LYRD.RunCodeDefinition
 --- @field name string The name of the task definition.
---- @field preview? string|fun():string A function that takes the code to run and returns a preview string to show in the selector.
+--- @field preview? string|fun():string A function that takes the code to run
+--- and returns a preview string to show in the selector.
 --- @field filetype? string Filetype to apply to the preview buffer for syntax highlighting.
 --- @field runner fun() A function that takes the code to run and executes it.
 
 --- @class LYRD.TreeSitterSelectorOptions
---- @field recursive_search? boolean Whether to run a recursive search up to find multiple matches or just get the match at the cursor position. Defaults to false (only get match at cursor).
+--- @field recursive_search? boolean Whether to run a recursive search up to
+--- find multiple matches or just get the match at the cursor position.
+--- Defaults to false (only get match at cursor).
 --- @field query_string string The treesitter query string
 --- @field lang string The language of the current buffer
---- @field node_capture_name string The name of the capture that contains the node to check
---- @field text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
+--- @field node_capture_name string The name of the capture that contains the
+--- node to check
+--- @field text_capture_name string|nil The name of the capture that contains
+--- the text to return (if different from node_capture_name)
 
 --- @class LYRD.RunCodeOptions
---- @field title? string The title to show in the selector when there are multiple task definitions to choose from.
---- @field skip_visual_selection? boolean Whether to skip using the visually selected text as the code to run. If true, it will not attempt to get the visual selection and will directly use the selector or treesitter_selector to get the code to run.
---- @field selector? fun():string A function that returns the code to run. This is used when use_selection is false or when there is no selection.
---- @field treesitter_selector? LYRD.TreeSitterSelectorOptions A set of options to use a Tree-sitter query to select the code to run. This is used when use_selection is false or when there is no selection and no selector provided.
---- @field fail_if_no_selected_code? boolean Whether to fail if there is no selected code and no selector provided.
---- @field display_one_option_list? boolean Whether to display the selection menu even if there is only one task definition generated. Defaults to false (if there is only one task definition, it will be run directly without showing the selection menu).
---- @field generator fun(filename: string,code?:string, iteration: number):LYRD.RunCodeDefinition[] A function that takes the code to run and returns a list of task definitions to choose from.
+--- @field title? string The title to show in the selector when there are
+--- multiple task definitions to choose from.
+--- @field skip_visual_selection? boolean Whether to skip using the visually
+--- selected text as the code to run. If true, it will not attempt to get the
+--- visual selection and will directly use the selector or treesitter_selector
+--- to get the code to run.
+--- @field selector? fun():string A function that returns the code to run. This
+--- is used when use_selection is false or when there is no selection.
+--- @field treesitter_selector? LYRD.TreeSitterSelectorOptions A set of options
+--- to use a Tree-sitter query to select the code to run. This is used when
+--- use_selection is false or when there is no selection and no selector
+--- provided.
+--- @field fail_if_no_selected_code? boolean Whether to fail if there is no
+--- selected code and no selector provided.
+--- @field display_one_option_list? boolean Whether to display the selection
+--- menu even if there is only one task definition generated. Defaults to false
+--- (if there is only one task definition, it will be run directly without
+--- showing the selection menu).
+--- @field generator fun(filename: string, code?:string,
+--- iteration: number):LYRD.RunCodeDefinition[] A function that takes the code
+--- to run and returns a list of task definitions to choose from.
 
 --- Runs the code using the provided options.
 --- @param opts LYRD.RunCodeOptions
@@ -170,7 +189,7 @@ function L.run_selection(opts)
 			if not choice then
 				return
 			end
-			local ok, err = pcall(choice.runner, filename, selected_text)
+			local ok, err = pcall(choice.runner, filename)
 			if not ok then
 				vim.notify("Error running task: " .. err, vim.log.levels.ERROR)
 			end
