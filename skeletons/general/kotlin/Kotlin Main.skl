@@ -1,0 +1,10 @@
+return function ()
+	return {
+		_cursor = { 2, 5 }
+	}
+end
+---
+fun main() {
+    println("Hello, world!")
+}
+

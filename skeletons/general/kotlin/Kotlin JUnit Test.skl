@@ -1,0 +1,24 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+	file_stem = file_stem:gsub("Test$", "")
+
+	return {
+		type_name = text.to_pascal_case(file_stem) .. "Test",
+		test_name = text.to_camel_case(file_stem) .. "Works",
+		_cursor = { 8, 5 }
+	}
+end
+---
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+
+class ${type_name} {
+    @Test
+    fun ${test_name}() {
+        assertEquals(1, 1)
+    }
+}
+
