@@ -1,0 +1,17 @@
+return function ()
+	return {
+		_cursor = { 6, 2 }
+	}
+end
+---
+#!/usr/bin/env lua
+
+---@type string[]
+local args = { ... }
+
+---@return nil
+local function main()
+	print("args:", table.concat(args, " "))
+end
+
+main()

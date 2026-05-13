@@ -1,0 +1,18 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	basename = basename:match("(.+)%..+$")
+
+	return {
+		test_name = text.to_snake_case(basename),
+		_cursor = { 3, 3 }
+	}
+end
+---
+---@diagnostic disable: undefined-global
+describe("${test_name}", function()
+	it("works", function()
+		assert.is_true(true)
+	end)
+end)

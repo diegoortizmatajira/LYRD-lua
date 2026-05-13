@@ -1,0 +1,24 @@
+return function ()
+	return {
+		_cursor = { 8, 3 }
+	}
+end
+---
+local uv = vim.uv or vim.loop
+
+---@param iterations integer
+---@param fn fun()
+---@return number elapsed_ms
+local function benchmark(iterations, fn)
+	local start = uv.hrtime()
+
+	for _ = 1, iterations do
+		fn()
+	end
+
+	local elapsed_ns = uv.hrtime() - start
+	local elapsed_ms = elapsed_ns / 1e6
+	return elapsed_ms
+end
+
+return benchmark
