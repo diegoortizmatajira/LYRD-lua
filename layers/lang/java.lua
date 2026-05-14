@@ -67,7 +67,6 @@ local L = {
 		"java-test",
 		"java-debug-adapter",
 		"spring-boot-tools",
-		"openjdk-17",
 	},
 	required_treesitter_parsers = {
 		"java",
