@@ -73,6 +73,7 @@ local documentable_node_types = {
 	"method_declaration",
 	"class_definition",
 	"class_declaration",
+	"record_declaration",
 	"class_specifier",
 	"struct_item",
 	"enum_item",
