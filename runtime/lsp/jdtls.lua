@@ -185,7 +185,11 @@ return {
 			useBlocks = true,
 		},
 	},
-	root_dir = jdtls.setup.find_root(root_files),
+	root_dir = function(bufnr, on_dir)
+		local fname = vim.api.nvim_buf_get_name(bufnr)
+		local root = jdtls.setup.find_root(root_files, fname)
+		on_dir(root or vim.fn.getcwd())
+	end,
 	flags = {
 		allow_incremental_sync = true,
 	},
