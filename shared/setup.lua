@@ -1,33 +1,11 @@
 local utils = require("LYRD.shared.utils")
 
---- @class LYRD.shared.setup.LocalConfig
---- @field skip_layers? string[] List of layers to skip loading
----
----@class LYRD.shared.setup.Settings: LYRD.shared.setup.LocalConfig
----@field layers string[] contains the list of layers provided in init script
----@field loaded_layers? LYRD.shared.setup.Module[] contains the list of names of the loaded layers
----@field plugins? LazySpec[] contains the list of plugins loaded
----@field commands? table<string, table<string, string|function>> contains the list of implemented commands
-
----@class LYRD.shared.setup.Module
----@field name string Name of the layer
----@field unskippable? nil|boolean If true, the layer cannot be skipped
----@field condition? nil|boolean Condition to check if the layer should be loaded
----@field vscode_compatible? nil|boolean If true, the layer is compatible with vscode
----@field plugins? nil|fun() Function to load the plugins for the layer
----@field preparation? nil|fun() Function to prepare the layer, called before settings
----@field settings? nil|fun() Function to set the settings for the layer, called after preparation
----@field keybindings? nil|fun() Function to set the keybindings for the layer, called after settings
----@field complete? nil|fun() Function to complete the layer, called after keybindings
----@field healthcheck? nil|fun() Function to check the health of the layer
----@field run_once_per_filetype? nil|table<string|string[], fun()> Allows to define actions to run once per filetype
-
 local setup = {
 	configs_path = utils.get_lyrd_path("configs"),
 	runtime_path = utils.get_lyrd_path("runtime"),
 	data_path = utils.get_lyrd_data_path(),
 	local_config_path = utils.get_lyrd_data_path("lyrd-local.lua"),
-	---@type LYRD.shared.setup.Settings
+	--- @type LYRD.shared.setup.Settings
 	config = {
 		commands = {},
 		plugins = {},
