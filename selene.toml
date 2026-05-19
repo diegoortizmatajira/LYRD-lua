@@ -2,3 +2,5 @@ std = "lua51+vim"
 
 [lints]
 mixed_table = "allow"
+[rule]
+allow_goto = true
