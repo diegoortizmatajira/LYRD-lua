@@ -67,6 +67,7 @@ local L = {
 		"java-test",
 		"java-debug-adapter",
 		"spring-boot-tools",
+		"gradle-language-server",
 	},
 	required_treesitter_parsers = {
 		"java",
@@ -75,6 +76,7 @@ local L = {
 	},
 	required_enabled_lsp_servers = {
 		"jdtls",
+		"gradle_ls",
 	},
 	required_executables = {
 		"java",
