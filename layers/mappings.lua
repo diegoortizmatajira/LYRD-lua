@@ -137,12 +137,14 @@ end
 ---Creates a key binding for a menu
 ---@param keys string
 ---@param title string|fun():string
----@param icon? string
+---@param icon? string|fun():string
 ---@param additional_modes? string[]
 local function map_menu(keys, title, icon, additional_modes)
 	local wk = require("which-key")
 	local icon_str = nil
-	if type(icon) == "string" then
+	if type(icon) == "function" then
+		icon_str = icons.icon(icon())
+	elseif type(icon) == "string" then
 		icon_str = icons.icon(icon)
 	else
 		icon_str = icon
@@ -164,7 +166,11 @@ local function map_menu(keys, title, icon, additional_modes)
 end
 
 ---Creates a set of key bindings
----@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {
+---[1]: string|string[],
+---[2]:string,
+---[3]:string|Command,
+---[4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys(mappings, options)
 	for _, mapping in ipairs(mappings) do
 		local mode, key, command, opt = unpack(mapping)
@@ -178,7 +184,11 @@ end
 ---Creates a set of key bindings
 ---@param filetypes string|string[] filetype or filetypes to create the mappings for
 ---@param prefix? string prefix for the mappings
----@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {
+---[1]: string|string[],
+---[2]:string,
+---[3]:string|Command,
+---[4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.keys_per_filetype(filetypes, prefix, mappings, options)
 	-- Create an auto command group for the filetype
 	local group = vim.api.nvim_create_augroup(filetypes .. "Mappings", { clear = true })
@@ -205,7 +215,11 @@ end
 
 ---Creates a set of key bindings for a filetype or filetypes
 ---@param filetypes string|string[] filetype or filetypes to create the mappings for
----@param mappings {[1]: string|string[], [2]:string, [3]:string|Command, [4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
+---@param mappings {
+---[1]: string|string[],
+---[2]:string,
+---[3]:string|Command,
+---[4]: table}[] contains the mapping definition as an array of (mode, key, command, options)
 function L.create_filetype_menu(filetypes, mappings, options)
 	L.keys_per_filetype(filetypes, "<leader>" .. L.filetype_specific_leader_prefix, mappings, options)
 end
