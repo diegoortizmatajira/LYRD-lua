@@ -1,3 +1,4 @@
+local base_url = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}"
 return {
 	name = "palantir-java-format",
 	description = "A modern, lambda-friendly, 120 character Java formatter (fork of google-java-format)",
@@ -6,24 +7,27 @@ return {
 	languages = { "Java" },
 	categories = { "Formatter" },
 	source = {
-		id = "pkg:generic/palantir-java-format@2.90.0",
+		id = "pkg:generic/palantir-java-format@2.91.0",
 		download = {
 			{
 				target = "linux_x64",
 				files = {
-					["palantir-java-format-{{version}}.bin"] = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}/palantir-java-format-native-{{version}}-nativeImage-linux-glibc_x86-64.bin",
+					["palantir-java-format-{{version}}.bin"] = base_url
+						.. "/palantir-java-format-native-{{version}}-nativeImage-linux-glibc_x86-64.bin",
 				},
 			},
 			{
 				target = "linux_arm64",
 				files = {
-					["palantir-java-format-{{version}}.bin"] = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}/palantir-java-format-native-{{version}}-nativeImage-linux-glibc_aarch64.bin",
+					["palantir-java-format-{{version}}.bin"] = base_url
+						.. "/palantir-java-format-native-{{version}}-nativeImage-linux-glibc_aarch64.bin",
 				},
 			},
 			{
 				target = "darwin_arm64",
 				files = {
-					["palantir-java-format-{{version}}.bin"] = "https://repo1.maven.org/maven2/com/palantir/javaformat/palantir-java-format-native/{{version}}/palantir-java-format-native-{{version}}-nativeImage-macos_aarch64.bin",
+					["palantir-java-format-{{version}}.bin"] = base_url
+						.. "/palantir-java-format-native-{{version}}-nativeImage-macos_aarch64.bin",
 				},
 			},
 		},
