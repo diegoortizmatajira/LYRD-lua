@@ -1,0 +1,205 @@
+{
+  "program": {
+    "prefix": "prog",
+    "body": [
+      "program ${1:ProgramName};",
+      "",
+      "{$mode objfpc}{$H+}",
+      "",
+      "uses",
+      "  ${2:SysUtils};",
+      "",
+      "begin",
+      "  ${0}",
+      "end."
+    ],
+    "description": "Program skeleton (Object Pascal / FreePascal)"
+  },
+  "unit": {
+    "prefix": "unit",
+    "body": [
+      "unit ${1:UnitName};",
+      "",
+      "{$mode objfpc}{$H+}",
+      "",
+      "interface",
+      "",
+      "uses",
+      "  ${2:Classes, SysUtils};",
+      "",
+      "type",
+      "  ${3:TMyClass} = class",
+      "  public",
+      "    ${4:constructor Create;}",
+      "  end;",
+      "",
+      "implementation",
+      "",
+      "${0}",
+      "",
+      "end."
+    ],
+    "description": "Unit skeleton"
+  },
+  "class": {
+    "prefix": "class",
+    "body": [
+      "type",
+      "  ${1:TClassName} = class(${2:TObject})",
+      "  private",
+      "    ${3:// fields}",
+      "  public",
+      "    ${4:constructor Create;}",
+      "    ${5:destructor Destroy; override;}",
+      "  end;"
+    ],
+    "description": "Class declaration"
+  },
+  "constructor": {
+    "prefix": "ctor",
+    "body": [
+      "constructor ${1:TClassName}.Create;",
+      "begin",
+      "  inherited Create;",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "Constructor implementation"
+  },
+  "destructor": {
+    "prefix": "dtor",
+    "body": [
+      "destructor ${1:TClassName}.Destroy;",
+      "begin",
+      "  ${2:// cleanup}",
+      "  inherited Destroy;",
+      "end;"
+    ],
+    "description": "Destructor implementation"
+  },
+  "procedure": {
+    "prefix": "proc",
+    "body": [
+      "procedure ${1:Name}(${2:Args});",
+      "begin",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "Procedure"
+  },
+  "function": {
+    "prefix": "func",
+    "body": [
+      "function ${1:Name}(${2:Args}): ${3:Boolean};",
+      "begin",
+      "  ${4:Result := False;}",
+      "end;"
+    ],
+    "description": "Function"
+  },
+  "if": {
+    "prefix": "if",
+    "body": [
+      "if ${1:Condition} then",
+      "begin",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "If block"
+  },
+  "ifelse": {
+    "prefix": "ife",
+    "body": [
+      "if ${1:Condition} then",
+      "begin",
+      "  ${2}",
+      "end",
+      "else",
+      "begin",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "If/Else block"
+  },
+  "for": {
+    "prefix": "for",
+    "body": [
+      "for ${1:i} := ${2:0} to ${3:10} do",
+      "begin",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "For loop"
+  },
+  "while": {
+    "prefix": "while",
+    "body": [
+      "while ${1:Condition} do",
+      "begin",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "While loop"
+  },
+  "case": {
+    "prefix": "case",
+    "body": [
+      "case ${1:Expr} of",
+      "  ${2:Value1}: ${3:begin end;}",
+      "  ${4:Value2}: ${5:begin end;}",
+      "else",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "Case statement"
+  },
+  "tryfinally": {
+    "prefix": "tryf",
+    "body": [
+      "try",
+      "  ${1}",
+      "finally",
+      "  ${0}",
+      "end;"
+    ],
+    "description": "Try/Finally"
+  },
+  "tryexcept": {
+    "prefix": "trye",
+    "body": [
+      "try",
+      "  ${1}",
+      "except",
+      "  on ${2:E}: Exception do",
+      "  begin",
+      "    ${0}",
+      "  end;",
+      "end;"
+    ],
+    "description": "Try/Except"
+  },
+  "record": {
+    "prefix": "record",
+    "body": [
+      "type",
+      "  ${1:TRecordName} = record",
+      "    ${2:Field}: ${3:Integer};",
+      "  end;"
+    ],
+    "description": "Record declaration"
+  },
+  "property": {
+    "prefix": "prop",
+    "body": [
+      "property ${1:Name}: ${2:String} read ${3:FName} write ${4:FName};"
+    ],
+    "description": "Class property"
+  },
+  "writeln": {
+    "prefix": "wr",
+    "body": [
+      "WriteLn(${1:'message'});"
+    ],
+    "description": "WriteLn"
+  }
+}

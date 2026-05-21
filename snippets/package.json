@@ -36,6 +36,18 @@
                 "language": [
                     "tex"
                 ]
+            },
+            {
+                "path": "./proto.json",
+                "language": [
+                    "proto"
+                ]
+            },
+            {
+                "path": "./pascal.json",
+                "language": [
+                    "pascal"
+                ]
             }
         ]
     },

@@ -1,0 +1,146 @@
+{
+  "syntax_proto3": {
+    "prefix": "proto3",
+    "body": [
+      "syntax = \"proto3\";",
+      "",
+      "$0"
+    ],
+    "description": "proto3 syntax declaration"
+  },
+  "package": {
+    "prefix": "pkg",
+    "body": [
+      "package ${1:my.service.v1};"
+    ],
+    "description": "Package declaration"
+  },
+  "import": {
+    "prefix": "imp",
+    "body": [
+      "import \"${1:google/protobuf/timestamp.proto}\";"
+    ],
+    "description": "Import another proto file"
+  },
+  "go_package": {
+    "prefix": "go_pkg",
+    "body": [
+      "option go_package = \"${1:github.com/org/repo/gen/${2:service}/v1;${3:servicev1}}\";"
+    ],
+    "description": "Go package option"
+  },
+  "java_package": {
+    "prefix": "java_pkg",
+    "body": [
+      "option java_package = \"${1:com.example.service.v1}\";"
+    ],
+    "description": "Java package option"
+  },
+  "message": {
+    "prefix": "msg",
+    "body": [
+      "message ${1:MessageName} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Message definition"
+  },
+  "enum": {
+    "prefix": "enum",
+    "body": [
+      "enum ${1:EnumName} {",
+      "\t${2:ENUM_NAME}_UNSPECIFIED = 0;",
+      "\t$0",
+      "}"
+    ],
+    "description": "Enum definition"
+  },
+  "oneof": {
+    "prefix": "oneof",
+    "body": [
+      "oneof ${1:choice} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "oneof field block"
+  },
+  "field_string": {
+    "prefix": "fs",
+    "body": [
+      "string ${1:name} = ${2:1};"
+    ],
+    "description": "String field"
+  },
+  "field_int32": {
+    "prefix": "fi32",
+    "body": [
+      "int32 ${1:name} = ${2:1};"
+    ],
+    "description": "int32 field"
+  },
+  "field_bool": {
+    "prefix": "fb",
+    "body": [
+      "bool ${1:name} = ${2:1};"
+    ],
+    "description": "Boolean field"
+  },
+  "field_repeated": {
+    "prefix": "frep",
+    "body": [
+      "repeated ${1:string} ${2:items} = ${3:1};"
+    ],
+    "description": "Repeated field"
+  },
+  "field_map": {
+    "prefix": "fmap",
+    "body": [
+      "map<${1:string}, ${2:string}> ${3:items} = ${4:1};"
+    ],
+    "description": "Map field"
+  },
+  "reserved": {
+    "prefix": "res",
+    "body": [
+      "reserved ${1:2, 15, 9 to 11};"
+    ],
+    "description": "Reserved field numbers"
+  },
+  "service": {
+    "prefix": "svc",
+    "body": [
+      "service ${1:ServiceName} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "gRPC service definition"
+  },
+  "rpc_unary": {
+    "prefix": "rpc",
+    "body": [
+      "rpc ${1:Method}(${2:Request}) returns (${3:Response});"
+    ],
+    "description": "Unary RPC method"
+  },
+  "rpc_server_stream": {
+    "prefix": "rpcss",
+    "body": [
+      "rpc ${1:Method}(${2:Request}) returns (stream ${3:Response});"
+    ],
+    "description": "Server streaming RPC method"
+  },
+  "rpc_client_stream": {
+    "prefix": "rpccs",
+    "body": [
+      "rpc ${1:Method}(stream ${2:Request}) returns (${3:Response});"
+    ],
+    "description": "Client streaming RPC method"
+  },
+  "rpc_bidi_stream": {
+    "prefix": "rpcbs",
+    "body": [
+      "rpc ${1:Method}(stream ${2:Request}) returns (stream ${3:Response});"
+    ],
+    "description": "Bidirectional streaming RPC method"
+  }
+}
