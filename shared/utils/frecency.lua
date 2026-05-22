@@ -2,7 +2,8 @@ local M = {}
 
 --- Loads and parses JSON data from a file.
 --- @param file_path string: The path of the file to load.
---- @return table<string, integer>: A table containing the parsed data, or an empty table if the file does not exist, is empty, or contains invalid data.
+--- @return table<string, integer>: A table containing the parsed data, or an
+--- empty table if the file does not exist, is empty, or contains invalid data.
 function M.load(file_path)
 	if vim.fn.filereadable(file_path) == 0 then
 		return {}
