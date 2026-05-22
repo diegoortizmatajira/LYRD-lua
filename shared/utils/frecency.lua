@@ -36,8 +36,10 @@ end
 
 --- Increments the frecency count for a given key.
 --- @param frecency table<string, integer>: A table containing frecency data.
---- @param key string|nil: The key for which the frecency count should be incremented. If nil or empty, the function exits.
---- @param amount? integer: The amount to increment the frecency count by. Defaults to 1 if not provided.
+--- @param key string|nil: The key for which the frecency count should be
+--- incremented. If nil or empty, the function exits.
+--- @param amount? integer: The amount to increment the frecency count by.
+--- Defaults to 1 if not provided.
 function M.increment(frecency, key, amount)
 	if not key or key == "" then
 		return
@@ -50,7 +52,8 @@ end
 --- @param items T[]: The list of items to be sorted.
 --- @param frecency table<string, integer>: A table containing frecency data used for sorting.
 --- @param get_key fun(item: T): string|nil: A function that retrieves the key for each item.
---- @param get_tiebreaker? fun(item: T): string: An optional function that provides a tiebreaker value if frecency counts are equal.
+--- @param get_tiebreaker? fun(item: T): string An optional function that
+--- provides a tiebreaker value if frecency counts are equal.
 function M.sort(items, frecency, get_key, get_tiebreaker)
 	table.sort(items, function(a, b)
 		local a_key = get_key(a) or ""
