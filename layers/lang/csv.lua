@@ -20,4 +20,9 @@ local L = {
 	},
 }
 
+function L.settings()
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.register_decoration_togglers("csv", { ":CsvViewToggle" })
+end
+
 return declarative_layer.apply(L)
