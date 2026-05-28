@@ -8,6 +8,14 @@ local utils = require("LYRD.shared.utils")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
+--- @class LYRD.DockerComposeCommandSpec
+--- @field pre_service_args? string[]
+--- @field post_service_args? string[]
+
+--- @class LYRD.DockerCommandSpecList
+--- @field [number] string
+--- @field [string] LYRD.DockerComposeCommandSpec
+
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Docker Containers and Compose",
@@ -54,6 +62,7 @@ local L = {
 	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
 	docker_compose_filetype = "yaml.docker-compose",
 
+	---@type LYRD.DockerCommandSpecList
 	docker_service_commands = {
 		"build",
 		"create",
@@ -62,14 +71,23 @@ local L = {
 		"restart",
 		"start",
 		"stop",
-		"up",
+		["up"] = {
+			pre_service_args = { "-d" },
+		},
 		"logs",
+		["exec"] = {
+			pre_service_args = { "-it" },
+			post_service_args = { "sh" },
+		},
 	},
+	---@type LYRD.DockerCommandSpecList
 	docker_compose_commands = {
 		"down",
 		"pull",
 		"restart",
-		"up",
+		["up"] = {
+			pre_service_args = { "-d" },
+		},
 	},
 }
 
@@ -94,33 +112,87 @@ function L.toggle_lazydocker()
 	ui.toggle_external_app_terminal("lazydocker")
 end
 
+local function docker_compose_command_preview(command, service, pre_service_args, post_service_args)
+	local args = {}
+	if pre_service_args and #pre_service_args > 0 then
+		vim.list_extend(args, pre_service_args)
+	end
+	if service and service ~= "" then
+		table.insert(args, service)
+	end
+	if post_service_args and #post_service_args > 0 then
+		vim.list_extend(args, post_service_args)
+	end
+	local extra = #args > 0 and (" " .. table.concat(args, " ")) or ""
+	return "docker compose " .. command .. extra
+end
+
+local function normalize_command_definitions(command_definitions)
+	--- @type {command: string, pre_service_args: string[]?, post_service_args: string[]?}[]
+	local definitions = {}
+	for _, command in ipairs(command_definitions) do
+		if type(command) == "string" then
+			table.insert(definitions, { command = command })
+		elseif type(command) == "table" then
+			local command_name = command.command or command.name
+			if command_name then
+				table.insert(definitions, {
+					command = command_name,
+					pre_service_args = command.pre_service_args,
+					post_service_args = command.post_service_args,
+				})
+			end
+		end
+	end
+	local map_keys = {}
+	for key, _ in pairs(command_definitions) do
+		if type(key) ~= "number" then
+			table.insert(map_keys, key)
+		end
+	end
+	table.sort(map_keys)
+	for _, key in ipairs(map_keys) do
+		local value = command_definitions[key]
+		if type(value) == "table" then
+			table.insert(definitions, {
+				command = key,
+				pre_service_args = value.pre_service_args,
+				post_service_args = value.post_service_args,
+			})
+		else
+			table.insert(definitions, { command = key })
+		end
+	end
+	return definitions
+end
+
 --- Runs a Docker Compose task with the specified command and optional service.
 ---
 --- This function constructs and executes a Docker Compose task based on the
---- provided command and service. It supports additional arguments for certain
---- commands like "up" and "run". The task is run in the current working
+--- provided command and service. The task is run in the current working
 --- directory and opens in a split terminal.
 ---
 --- @param command? string: The Docker Compose command to execute (e.g., "up", "down"). Defaults to "up".
 --- @param service? string: The name of the service to target with the command. Optional.
+--- @param pre_service_args? string[]: Args placed before the service name (e.g., "-it" for exec).
+--- @param post_service_args? string[]: Args placed after the service name (e.g., "sh").
 --- @usage
 --- -- Run all services with `docker-compose up -d`:
 --- docker_compose_task("up")
 ---
 --- -- Stop a specific service with `docker-compose stop web`:
 --- docker_compose_task("stop", "web")
-local function docker_compose_task(command, service)
+local function docker_compose_task(command, service, pre_service_args, post_service_args)
 	command = command or "up"
-	local additional_args = {
-		up = { "-d" },
-		run = { "-d" },
-	}
 	local args = { command }
-	if additional_args[command] then
-		vim.list_extend(args, additional_args[command])
+	if pre_service_args and #pre_service_args > 0 then
+		vim.list_extend(args, pre_service_args)
 	end
 	if service then
 		table.insert(args, service)
+	end
+	if post_service_args and #post_service_args > 0 then
+		vim.list_extend(args, post_service_args)
 	end
 	local tasks = require("LYRD.layers.tasks")
 	--- get the current working directory as the folder where the current file is located
@@ -161,27 +233,46 @@ function L.docker_compose_run_at_cursor()
 			local result = {}
 			-- If a service name is found at the cursor, generate commands specific to that service
 			if service and service ~= "" then
-				local service_result = vim.tbl_map(function(command)
+				local command_definitions = normalize_command_definitions(L.docker_service_commands)
+				local service_result = vim.tbl_map(function(definition)
+					local command = definition.command
 					return {
 						name = string.format("%s service: compose %s", service, string.upper(command)),
-						preview = "docker-compose " .. command .. " " .. service,
+						preview = docker_compose_command_preview(
+							command,
+							service,
+							definition.pre_service_args,
+							definition.post_service_args
+						),
 						runner = function()
-							docker_compose_task(command, service)
+							docker_compose_task(
+								command,
+								service,
+								definition.pre_service_args,
+								definition.post_service_args
+							)
 						end,
 					}
-				end, L.docker_service_commands)
+				end, command_definitions)
 				vim.list_extend(result, service_result)
 			end
 			-- Generate general Docker Compose commands that are not specific to any service
-			local compose_file_result = vim.tbl_map(function(command)
+			local compose_command_definitions = normalize_command_definitions(L.docker_compose_commands)
+			local compose_file_result = vim.tbl_map(function(definition)
+				local command = definition.command
 				return {
 					name = string.format("Docker compose file: compose %s", string.upper(command)),
-					preview = "docker-compose " .. command,
+					preview = docker_compose_command_preview(
+						command,
+						nil,
+						definition.pre_service_args,
+						definition.post_service_args
+					),
 					runner = function()
-						docker_compose_task(command)
+						docker_compose_task(command, nil, definition.pre_service_args, definition.post_service_args)
 					end,
 				}
-			end, L.docker_compose_commands)
+			end, compose_command_definitions)
 			vim.list_extend(result, compose_file_result)
 			return result
 		end,
