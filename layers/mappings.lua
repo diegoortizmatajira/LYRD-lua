@@ -246,6 +246,7 @@ function L.create_menu(prefix, items)
 				end
 			end
 			table.insert(heads, { "<Esc>", nil, { exit = true, desc = "Exit" } })
+			table.insert(heads, { "<Enter>", nil, { exit = true, desc = "Exit" } })
 			local color = "amaranth"
 			if item.accept_foreign_keys then
 				color = "pink"
