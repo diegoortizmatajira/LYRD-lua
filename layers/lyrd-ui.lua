@@ -319,12 +319,22 @@ function L.plugins()
 						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", {
 							noremap = true, silent = true })
 						goku.colorize(buf)
-						vim.api.nvim_create_autocmd("BufWinEnter", {
+						local refresh_goku = function()
+							if not vim.api.nvim_buf_is_valid(buf) then
+								return
+							end
+							if vim.api.nvim_get_current_buf() ~= buf then
+								return
+							end
+							vim.schedule(function()
+								if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_get_current_buf() == buf then
+									goku.colorize(buf)
+								end
+							end)
+						end
+						vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "FocusGained" }, {
 							group = lyrd_ui_group,
-							buffer = buf,
-							callback = function()
-								goku.colorize(buf)
-							end,
+							callback = refresh_goku,
 						})
 					end,
 				})
