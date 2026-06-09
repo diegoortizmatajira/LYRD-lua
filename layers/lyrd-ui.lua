@@ -311,13 +311,21 @@ function L.plugins()
 					pattern = "MiniStarterOpened",
 					--stylua: ignore
 					callback = function()
+						local buf = vim.api.nvim_get_current_buf()
 						vim.api.nvim_buf_del_keymap(0, "n", "<C-p>")
 						vim.api.nvim_buf_del_keymap(0, "n", "<C-n>")
 						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", {
 							noremap = true, silent = true })
 						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", {
 							noremap = true, silent = true })
-						goku.colorize(vim.api.nvim_get_current_buf())
+						goku.colorize(buf)
+						vim.api.nvim_create_autocmd("BufWinEnter", {
+							group = lyrd_ui_group,
+							buffer = buf,
+							callback = function()
+								goku.colorize(buf)
+							end,
+						})
 					end,
 				})
 			end,
