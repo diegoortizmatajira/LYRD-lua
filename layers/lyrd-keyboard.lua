@@ -264,7 +264,7 @@ function L.keybindings()
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
 		{ "c", cmd.LYRDBufferClose },
-		{ "f", cmd.LYRDBufferFormat },
+		{ "f", cmd.LYRDBufferFormat, { "x" } },
 		{ "g", cmd.LYRDGrammarToggle },
 		{ "j", cmd.LYRDSmartCoder },
 		{ "k", cmd.LYRDToggleBufferDecorations },
