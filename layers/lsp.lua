@@ -153,6 +153,125 @@ local function exclude_lsp_lines_from_filetypes(filetypes)
 	end
 end
 
+local function buffer_line_length(line_number)
+	local line = vim.api.nvim_buf_get_lines(0, line_number - 1, line_number, true)[1]
+	return line and #line or 0
+end
+
+local function git_repo_root(file_path)
+	local file_dir = vim.fn.fnamemodify(file_path, ":h")
+	local result = vim.system({ "git", "-C", file_dir, "rev-parse", "--show-toplevel" }, { text = true }):wait()
+	if result.code ~= 0 then
+		return nil
+	end
+	return vim.trim(result.stdout)
+end
+
+local function git_diff_hunks_for_buffer()
+	local file_path = vim.api.nvim_buf_get_name(0)
+	if file_path == "" then
+		vim.notify("Cannot format changed sections: current buffer has no file path", vim.log.levels.WARN)
+		return {}
+	end
+
+	local root = git_repo_root(file_path)
+	if not root or root == "" then
+		vim.notify("Cannot format changed sections: current buffer is not inside a git repository", vim.log.levels.WARN)
+		return {}
+	end
+
+	local relpath = file_path
+	if relpath:sub(1, #root + 1) == root .. "/" then
+		relpath = relpath:sub(#root + 2)
+	end
+
+	local base = vim.system({ "git", "-C", root, "show", ("HEAD:%s"):format(relpath) }, { text = true }):wait()
+	local base_lines = {}
+	if base.code == 0 and base.stdout ~= "" then
+		base_lines = vim.split(base.stdout, "\n", { plain = true, trimempty = false })
+	end
+
+	local base_path = vim.fn.tempname()
+	local current_path = vim.fn.tempname()
+	local ok_base = vim.fn.writefile(base_lines, base_path) == 0
+	local ok_current = vim.fn.writefile(vim.api.nvim_buf_get_lines(0, 0, -1, false), current_path) == 0
+	if not ok_base or not ok_current then
+		vim.notify("Failed to prepare git diff inputs", vim.log.levels.ERROR)
+		return {}
+	end
+
+	local diff = vim.system({
+		"git",
+		"-C",
+		root,
+		"diff",
+		"--no-index",
+		"--unified=0",
+		"--no-color",
+		"--no-ext-diff",
+		"--",
+		base_path,
+		current_path,
+	}, { text = true }):wait()
+
+	vim.fn.delete(base_path)
+	vim.fn.delete(current_path)
+
+	if diff.code > 1 then
+		vim.notify("Failed to compute git diff: " .. vim.trim(diff.stderr), vim.log.levels.ERROR)
+		return {}
+	end
+
+	local ranges = {}
+	for line in diff.stdout:gmatch("[^\r\n]+") do
+		local start_line, line_count = line:match("^@@%s%-%d+,?%d*%s+%+(%d+),?(%d*)%s+@@")
+		if start_line then
+			start_line = tonumber(start_line)
+			line_count = tonumber(line_count)
+			if line_count == nil then
+				line_count = 1
+			end
+			if line_count > 0 then
+				local end_line = start_line + line_count - 1
+				table.insert(ranges, {
+					start = { start_line, 0 },
+					["end"] = { end_line, buffer_line_length(end_line) },
+				})
+			end
+		end
+	end
+
+	table.sort(ranges, function(a, b)
+		if a.start[1] == b.start[1] then
+			return a["end"][1] > b["end"][1]
+		end
+		return a.start[1] > b.start[1]
+	end)
+
+	return ranges
+end
+
+local function format_changed_ranges(format_range, pre_logic, post_logic)
+	local ranges = git_diff_hunks_for_buffer()
+	if vim.tbl_isempty(ranges) then
+		vim.notify("Cannot format changed sections: no modified hunks were found", vim.log.levels.WARN)
+		return
+	end
+
+	if pre_logic then
+		pre_logic()
+	end
+
+	for _, range in ipairs(ranges) do
+		vim.notify(("Formatting changed lines %d-%d"):format(range.start[1], range["end"][1]), vim.log.levels.INFO)
+		format_range(range)
+	end
+
+	if post_logic then
+		post_logic()
+	end
+end
+
 function L.get_pkg_path(pkg, ...)
 	return utils.join_paths(vim.fn.expand("$MASON"), "packages", pkg, ...)
 end
@@ -484,6 +603,7 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDToolManager, ":Mason" },
 		{ cmd.LYRDBufferFormat, L.conform_format_handler() },
+		{ cmd.LYRDBufferFormatChangesOnly, L.conform_format_changes_only_handler() },
 		{ cmd.LYRDLSPFindReferences, commands.wrap(vim.lsp.buf.references) },
 		{ cmd.LYRDLSPFindCodeActions, commands.wrap(require("actions-preview").code_actions) },
 		{
@@ -571,6 +691,7 @@ end
 function L.format_with_lsp(filetype, lsp_name, pre_logic, post_logic)
 	commands.implement(filetype, {
 		{ cmd.LYRDBufferFormat, L.lsp_format_handler(lsp_name, pre_logic, post_logic) },
+		{ cmd.LYRDBufferFormatChangesOnly, L.lsp_format_changes_only_handler(lsp_name, pre_logic, post_logic) },
 	})
 end
 
@@ -590,6 +711,7 @@ function L.format_with_conform(filetype, format_settings, pre_logic, post_logic)
 	if pre_logic or post_logic then
 		commands.implement(filetype, {
 			{ cmd.LYRDBufferFormat, L.conform_format_handler(pre_logic, post_logic) },
+			{ cmd.LYRDBufferFormatChangesOnly, L.conform_format_changes_only_handler(pre_logic, post_logic) },
 		})
 	end
 end
@@ -643,6 +765,39 @@ function L.conform_format_handler(pre_logic, post_logic)
 				post_logic()
 			end
 		end)
+	end
+end
+
+--- Returns a handler that formats only the changed git diff sections using conform.
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.conform_format_changes_only_handler(pre_logic, post_logic)
+	return function()
+		format_changed_ranges(function(range)
+			require("conform").format({
+				async = false,
+				lsp_format = "fallback",
+				range = range,
+			})
+		end, pre_logic, post_logic)
+	end
+end
+
+--- Returns a handler that formats only the changed git diff sections using the given LSP server.
+--- @param server_name string name of the LSP server
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.lsp_format_changes_only_handler(server_name, pre_logic, post_logic)
+	return function()
+		format_changed_ranges(function(range)
+			vim.lsp.buf.format({
+				filter = function(client)
+					return client.name == server_name
+				end,
+				async = false,
+				range = range,
+			})
+		end, pre_logic, post_logic)
 	end
 end
 

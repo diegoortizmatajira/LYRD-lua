@@ -21,6 +21,7 @@
 - LSP-based completion, diagnostics, navigation, and hover docs.
 - Refactoring helpers and code actions.
 - Automatic formatting integration.
+- Diff-aware formatting for changed sections only, keeping review diffs small.
 
 ## Search and navigation
 

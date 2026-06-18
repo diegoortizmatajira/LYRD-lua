@@ -23,6 +23,7 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 ## Common quick actions
 
 - `,f` - format current buffer
+- `<Space>bF` - format only changed git diff sections
 - `,x` - run selection
 - `,X` - run file
 - `<Space>pd` - update LYRD distro

@@ -30,6 +30,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDBufferForceClose`                  | Force close buffer                      | `<Space>bD`                                                      | `*`                         |
 | `LYRDBufferForceCloseAll`               | Force close all buffers                 | `<Space>bX`                                                      | `default`                   |
 | `LYRDBufferFormat`                      | Format document                         | `<Leader>f`<br>`<M-S-f>`<br>`<Space>bf`                          | `*`<br>`go`                 |
+| `LYRDBufferFormatChangesOnly`           | Format only changed git diff sections    | `<Space>bF`                                                      | `*`<br>`go`                 |
 | `LYRDBufferJumpToLast`                  | Jump to last buffer                     | -                                                                | `default`                   |
 | `LYRDBufferNew`                         | New empty buffer                        | `<Space>be`                                                      | `default`                   |
 | `LYRDBufferNext`                        | Next buffer                             | `<Leader>]`<br>`<M-C-]>`<br>`<Space>bn`<br>`]b`                  | `*`                         |
