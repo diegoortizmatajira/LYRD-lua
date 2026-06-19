@@ -89,13 +89,9 @@ local L = {
 		},
 	},
 	required_formatter_per_filetype = {
-		-- {
-		-- 	target_filetype = { "markdown", "markdown.mdx" },
-		-- 	format_settings = { "prettier_markdown", "markdown-toc", "markdownlint-cli2" },
-		-- },
 		{
 			target_filetype = { "markdown", "markdown.mdx" },
-			format_settings = { "prettier" },
+			format_settings = { "prettier_markdown", "markdown-toc", "markdownlint-cli2" },
 		},
 	},
 	required_null_ls_sources = {
