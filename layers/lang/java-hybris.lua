@@ -85,10 +85,31 @@ local function find_extension_roots(base_dir)
 	return roots
 end
 
+-- Reads localextensions.xml to determine which extensions are active in this
+-- project. Returns a set of extension names (name → true), or nil when the
+-- file is absent (callers treat nil as "include all").
+---@param hybris_home string
+---@return table<string, boolean>?
+local function collect_active_extension_names(hybris_home)
+	local path = hybris_home .. "/config/localextensions.xml"
+	if vim.fn.filereadable(path) ~= 1 then
+		return nil
+	end
+	local active = {}
+	for _, line in ipairs(vim.fn.readfile(path)) do
+		local name = line:match('<extension%s+name="([^"]+)"')
+		if name then
+			active[name] = true
+		end
+	end
+	return active
+end
+
 ---@param hybris_home string
 ---@param extra_patterns string[]
+---@param active_extensions table<string, boolean>?
 ---@return string[]
-local function collect_platform_jars(hybris_home, extra_patterns)
+local function collect_platform_jars(hybris_home, extra_patterns, active_extensions)
 	local jars = {}
 	-- Platform core has a flat layout — direct globs are correct here.
 	local flat_patterns = {
@@ -104,15 +125,17 @@ local function collect_platform_jars(hybris_home, extra_patterns)
 
 	-- modules/ and ext-* both use extensioninfo.xml to locate extension roots.
 	-- lib/ (third-party deps) is always collected. bin/ (compiled classes) is
-	-- only collected when no source exists — when source is in sourcePaths,
-	-- adding bin/ too causes JDTLS to resolve from binary instead of source.
+	-- skipped for active extensions that have source (those go into sourcePaths);
+	-- inactive extensions or those without source still need their bin/*.jar.
 	local function collect_extension_jars(top_dir)
 		for _, ext_root in ipairs(find_extension_roots(top_dir)) do
+			local ext_name = vim.fn.fnamemodify(ext_root, ":t")
 			local lib_jars = vim.split(vim.fn.glob(ext_root .. "/lib/*.jar"), "\n", { trimempty = true })
 			vim.list_extend(jars, lib_jars)
+			local is_active = active_extensions == nil or active_extensions[ext_name]
 			local has_source = vim.fn.isdirectory(ext_root .. "/src") == 1
 				or vim.fn.isdirectory(ext_root .. "/gensrc") == 1
-			if not has_source then
+			if not (is_active and has_source) then
 				local bin_jars = vim.split(vim.fn.glob(ext_root .. "/bin/*.jar"), "\n", { trimempty = true })
 				vim.list_extend(jars, bin_jars)
 			end
@@ -194,12 +217,14 @@ end
 -- marks each actual extension root regardless of depth.
 ---@param hybris_home string
 ---@param extra_patterns string[]
+---@param active_extensions table<string, boolean>?
 ---@return string[]
-local function collect_source_paths(hybris_home, extra_patterns)
+local function collect_source_paths(hybris_home, extra_patterns, active_extensions)
 	local paths = {}
 	local source_subdirs = { "src", "gensrc", "web/src" }
 
 	-- Platform and standard custom/ are always flat — direct glob is sufficient.
+	-- Platform extensions are auto-loaded and not filtered by localextensions.xml.
 	local flat_patterns = {
 		hybris_home .. "/bin/platform/ext/*/src",
 		hybris_home .. "/bin/platform/ext/*/gensrc",
@@ -215,13 +240,18 @@ local function collect_source_paths(hybris_home, extra_patterns)
 		end
 	end
 
-	-- modules/ and ext-* both use extensioninfo.xml to handle arbitrary nesting depth.
+	-- modules/ and ext-* are filtered to active extensions only.
+	-- Inactive extensions still get binary JARs in referencedLibraries for
+	-- dependency resolution, but their source is not indexed by JDTLS.
 	local function collect_extension_sources(top_dir)
 		for _, ext_root in ipairs(find_extension_roots(top_dir)) do
-			for _, subdir in ipairs(source_subdirs) do
-				local candidate = ext_root .. "/" .. subdir
-				if vim.fn.isdirectory(candidate) == 1 then
-					table.insert(paths, candidate)
+			local ext_name = vim.fn.fnamemodify(ext_root, ":t")
+			if active_extensions == nil or active_extensions[ext_name] then
+				for _, subdir in ipairs(source_subdirs) do
+					local candidate = ext_root .. "/" .. subdir
+					if vim.fn.isdirectory(candidate) == 1 then
+						table.insert(paths, candidate)
+					end
 				end
 			end
 		end
@@ -267,9 +297,10 @@ local function load_hybris_solution()
 	local extra_label = #extra > 0 and (" + custom: " .. table.concat(extra, ", ")) or ""
 	vim.notify("Hybris: scanning " .. hybris_home .. extra_label .. " …", vim.log.levels.INFO)
 
-	local platform_jars = collect_platform_jars(hybris_home, extra)
+	local active_extensions = collect_active_extension_names(hybris_home)
+	local platform_jars = collect_platform_jars(hybris_home, extra, active_extensions)
 	local eclipse_jars = collect_eclipse_classpath_jars(hybris_home, extra)
-	local source_paths = collect_source_paths(hybris_home, extra)
+	local source_paths = collect_source_paths(hybris_home, extra, active_extensions)
 
 	local all_jars = {}
 	vim.list_extend(all_jars, platform_jars)
