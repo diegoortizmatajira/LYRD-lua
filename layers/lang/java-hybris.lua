@@ -21,6 +21,9 @@ local L = {
 	required_null_ls_sources = {},
 	required_filetype_definitions = {},
 	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
+	LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
+	-- @type table<string, any>?
+	current_hybris_config = {},
 	-- Glob patterns relative to $HYBRIS_HOME/bin/ for non-standard extension
 	-- directories. Each entry is expanded into lib/ and bin/ JAR scans and a
 	-- .classpath scan (when Eclipse project files exist).
@@ -68,11 +71,7 @@ end
 ---@return string[]
 local function find_extension_roots(base_dir)
 	local roots = {}
-	local ext_infos = vim.split(
-		vim.fn.glob(base_dir .. "/**/extensioninfo.xml"),
-		"\n",
-		{ trimempty = true }
-	)
+	local ext_infos = vim.split(vim.fn.glob(base_dir .. "/**/extensioninfo.xml"), "\n", { trimempty = true })
 	for _, ext_info in ipairs(ext_infos) do
 		table.insert(roots, vim.fn.fnamemodify(ext_info, ":h"))
 	end
@@ -243,11 +242,7 @@ local function load_hybris_solution()
 	local unique_sources = deduplicate_paths(source_paths)
 
 	vim.notify(
-		string.format(
-			"Hybris: found %d JARs and %d source directories.",
-			#unique_jars,
-			#unique_sources
-		),
+		string.format("Hybris: found %d JARs and %d source directories.", #unique_jars, #unique_sources),
 		vim.log.levels.INFO
 	)
 
@@ -262,6 +257,12 @@ local function load_hybris_solution()
 				},
 			},
 		},
+	}
+
+	L.current_hybris_config = {
+		hybris_home = hybris_home,
+		jars = unique_jars,
+		source_paths = unique_sources,
 	}
 
 	-- Persist for future jdtls starts (picked up on next vim.lsp.start()).
@@ -294,14 +295,56 @@ local function load_hybris_solution()
 	end
 end
 
+local function show_hybris_config()
+	local config = L.current_hybris_config
+	if vim.tbl_isempty(config) then
+		vim.notify("Hybris: no config loaded yet. Run LYRDJavaHybrisLoadSolution first.", vim.log.levels.WARN)
+		return
+	end
+
+	local jars = config.jars or {}
+	local sources = config.source_paths or {}
+	local lines = {
+		"HYBRIS_HOME: " .. (config.hybris_home or "(unknown)"),
+		"",
+		string.format("Source paths (%d):", #sources),
+	}
+	for _, path in ipairs(sources) do
+		table.insert(lines, "  " .. path)
+	end
+	table.insert(lines, "")
+	table.insert(lines, string.format("JARs (%d):", #jars))
+	for _, jar in ipairs(jars) do
+		table.insert(lines, "  " .. jar)
+	end
+
+	local buf_name = "Hybris Config"
+	local existing = vim.fn.bufnr(buf_name)
+	if existing ~= -1 then
+		vim.api.nvim_buf_delete(existing, { force = true })
+	end
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_buf_set_name(buf, buf_name)
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+	vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+	vim.api.nvim_set_option_value("buftype", "nofile", { buf = buf })
+	vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
+	vim.keymap.set("n", "q", "<cmd>bwipeout<cr>", { buffer = buf, silent = true })
+
+	vim.cmd("split")
+	vim.api.nvim_win_set_buf(vim.api.nvim_get_current_win(), buf)
+end
+
 -- ─── Layer lifecycle ──────────────────────────────────────────────────────────
 
 function L.settings()
 	commands.register({
 		LYRDJavaHybrisLoadSolution = L.LYRDJavaHybrisLoadSolution,
+		LYRDJavaHybrisCurrentConfig = L.LYRDJavaHybrisCurrentConfig,
 	})
 	commands.implement("*", {
 		{ L.LYRDJavaHybrisLoadSolution, load_hybris_solution },
+		{ L.LYRDJavaHybrisCurrentConfig, show_hybris_config },
 	})
 end
 
@@ -309,6 +352,7 @@ function L.keybindings()
 	local mappings = require("LYRD.layers.mappings")
 	mappings.keys({
 		{ "n", "<Space>cH", L.LYRDJavaHybrisLoadSolution },
+		{ "n", "<Space>ch", L.LYRDJavaHybrisCurrentConfig },
 	})
 end
 
