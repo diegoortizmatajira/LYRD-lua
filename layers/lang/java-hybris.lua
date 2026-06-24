@@ -275,7 +275,7 @@ local function load_hybris_solution()
 	local clients = vim.lsp.get_clients({ name = "jdtls" })
 	if #clients > 0 then
 		for _, client in pairs(clients) do
-			client.notify("workspace/didChangeConfiguration", java_settings)
+			client:notify("workspace/didChangeConfiguration", java_settings)
 		end
 		vim.notify(
 			string.format(
