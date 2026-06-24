@@ -21,6 +21,16 @@ local L = {
 	required_null_ls_sources = {},
 	required_filetype_definitions = {},
 	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
+	-- Glob patterns relative to $HYBRIS_HOME/bin/ for non-standard extension
+	-- directories. Each entry is expanded into lib/ and bin/ JAR scans and a
+	-- .classpath scan (when Eclipse project files exist).
+	-- Examples:
+	--   { "ext-company" }          -- single known folder
+	--   { "ext-*" }               -- all folders matching ext-*
+	--   { "ext-company", "addons" } -- multiple explicit folders
+	custom_ext_patterns = {
+		"ext-*", -- default: all ext-* folders
+	},
 }
 
 -- ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -52,10 +62,10 @@ local function find_hybris_home()
 end
 
 ---@param hybris_home string
+---@param extra_patterns string[]
 ---@return string[]
-local function collect_platform_jars(hybris_home)
+local function collect_platform_jars(hybris_home, extra_patterns)
 	local jars = {}
-	-- Patterns use a single glob level (*) for reliability; add new entries for extra Hybris layouts
 	local patterns = {
 		hybris_home .. "/bin/platform/lib/*.jar",
 		hybris_home .. "/bin/platform/bootstrap/bin/*.jar",
@@ -64,6 +74,10 @@ local function collect_platform_jars(hybris_home)
 		hybris_home .. "/bin/modules/*/lib/*.jar",
 		hybris_home .. "/bin/modules/*/bin/*.jar",
 	}
+	for _, p in ipairs(extra_patterns) do
+		table.insert(patterns, hybris_home .. "/bin/" .. p .. "/*/lib/*.jar")
+		table.insert(patterns, hybris_home .. "/bin/" .. p .. "/*/bin/*.jar")
+	end
 	for _, pattern in ipairs(patterns) do
 		local found = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
 		vim.list_extend(jars, found)
@@ -72,23 +86,31 @@ local function collect_platform_jars(hybris_home)
 end
 
 ---@param hybris_home string
+---@param extra_patterns string[]
 ---@return string[]
-local function collect_eclipse_classpath_jars(hybris_home)
+local function collect_eclipse_classpath_jars(hybris_home, extra_patterns)
 	local jars = {}
-	local classpath_files =
-		vim.split(vim.fn.glob(hybris_home .. "/bin/custom/**/.classpath"), "\n", { trimempty = true })
-	for _, cp_file in ipairs(classpath_files) do
-		local lines = vim.fn.readfile(cp_file)
-		for _, line in ipairs(lines) do
-			if line:find('kind="lib"') then
-				local path = line:match('path="([^"]+)"')
-				if path then
-					if not path:match("^/") then
-						path = vim.fn.fnamemodify(cp_file, ":h") .. "/" .. path
-					end
-					path = vim.fn.fnamemodify(path, ":p")
-					if vim.fn.filereadable(path) == 1 then
-						table.insert(jars, path)
+	local roots = { hybris_home .. "/bin/custom" }
+	for _, p in ipairs(extra_patterns) do
+		-- glob expands wildcards (e.g. ext-*) into concrete directories
+		local dirs = vim.split(vim.fn.glob(hybris_home .. "/bin/" .. p), "\n", { trimempty = true })
+		vim.list_extend(roots, dirs)
+	end
+	for _, root in ipairs(roots) do
+		local classpath_files = vim.split(vim.fn.glob(root .. "/**/.classpath"), "\n", { trimempty = true })
+		for _, cp_file in ipairs(classpath_files) do
+			local lines = vim.fn.readfile(cp_file)
+			for _, line in ipairs(lines) do
+				if line:find('kind="lib"') then
+					local path = line:match('path="([^"]+)"')
+					if path then
+						if not path:match("^/") then
+							path = vim.fn.fnamemodify(cp_file, ":h") .. "/" .. path
+						end
+						path = vim.fn.fnamemodify(path, ":p")
+						if vim.fn.filereadable(path) == 1 then
+							table.insert(jars, path)
+						end
 					end
 				end
 			end
@@ -131,17 +153,15 @@ local function load_hybris_solution()
 		return
 	end
 
-	vim.notify("Hybris: scanning " .. hybris_home .. " …", vim.log.levels.INFO)
+	local extra = L.custom_ext_patterns
+	local extra_label = #extra > 0 and (" + custom: " .. table.concat(extra, ", ")) or ""
+	vim.notify("Hybris: scanning " .. hybris_home .. extra_label .. " …", vim.log.levels.INFO)
 
-	local platform_jars = collect_platform_jars(hybris_home)
-	local eclipse_jars = collect_eclipse_classpath_jars(hybris_home)
+	local platform_jars = collect_platform_jars(hybris_home, extra)
+	local eclipse_jars = collect_eclipse_classpath_jars(hybris_home, extra)
 
 	vim.notify(
-		string.format(
-			"Hybris: found %d platform JARs and %d Eclipse classpath JARs.",
-			#platform_jars,
-			#eclipse_jars
-		),
+		string.format("Hybris: found %d platform JARs and %d Eclipse classpath JARs.", #platform_jars, #eclipse_jars),
 		vim.log.levels.INFO
 	)
 
