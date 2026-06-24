@@ -61,11 +61,30 @@ local function find_hybris_home()
 	return nil
 end
 
+-- Locates all Hybris extension root directories inside base_dir by finding
+-- extensioninfo.xml files at any nesting depth (handles group folders like
+-- bin/ext-company/group/extname/ where the extension is 3 levels deep).
+---@param base_dir string
+---@return string[]
+local function find_extension_roots(base_dir)
+	local roots = {}
+	local ext_infos = vim.split(
+		vim.fn.glob(base_dir .. "/**/extensioninfo.xml"),
+		"\n",
+		{ trimempty = true }
+	)
+	for _, ext_info in ipairs(ext_infos) do
+		table.insert(roots, vim.fn.fnamemodify(ext_info, ":h"))
+	end
+	return roots
+end
+
 ---@param hybris_home string
 ---@param extra_patterns string[]
 ---@return string[]
 local function collect_platform_jars(hybris_home, extra_patterns)
 	local jars = {}
+	-- Platform and modules have flat layout — direct globs work.
 	local patterns = {
 		hybris_home .. "/bin/platform/lib/*.jar",
 		hybris_home .. "/bin/platform/bootstrap/bin/*.jar",
@@ -74,13 +93,24 @@ local function collect_platform_jars(hybris_home, extra_patterns)
 		hybris_home .. "/bin/modules/*/lib/*.jar",
 		hybris_home .. "/bin/modules/*/bin/*.jar",
 	}
-	for _, p in ipairs(extra_patterns) do
-		table.insert(patterns, hybris_home .. "/bin/" .. p .. "/*/lib/*.jar")
-		table.insert(patterns, hybris_home .. "/bin/" .. p .. "/*/bin/*.jar")
-	end
 	for _, pattern in ipairs(patterns) do
 		local found = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
 		vim.list_extend(jars, found)
+	end
+	-- ext-* custom folders may nest extensions arbitrarily deep; use
+	-- extensioninfo.xml to locate each extension root and collect its lib/ JARs.
+	for _, p in ipairs(extra_patterns) do
+		local top_dirs = vim.split(vim.fn.glob(hybris_home .. "/bin/" .. p), "\n", { trimempty = true })
+		for _, top_dir in ipairs(top_dirs) do
+			if vim.fn.isdirectory(top_dir) == 1 then
+				for _, ext_root in ipairs(find_extension_roots(top_dir)) do
+					local lib_jars = vim.split(vim.fn.glob(ext_root .. "/lib/*.jar"), "\n", { trimempty = true })
+					local bin_jars = vim.split(vim.fn.glob(ext_root .. "/bin/*.jar"), "\n", { trimempty = true })
+					vim.list_extend(jars, lib_jars)
+					vim.list_extend(jars, bin_jars)
+				end
+			end
+		end
 	end
 	return jars
 end
@@ -134,24 +164,26 @@ local function deduplicate_paths(paths)
 	return result
 end
 
--- Collects src/ and gensrc/ directories for platform and custom extensions so
--- JDTLS can resolve cross-extension type references from source (not just JARs).
+-- Collects src/, gensrc/, and web/src/ directories for JDTLS sourcePaths so it
+-- can resolve cross-extension type references from source.
+-- Platform extensions have a flat layout (bin/platform/ext/<name>/src/).
+-- ext-* custom folders may nest extensions arbitrarily deep; extensioninfo.xml
+-- marks each actual extension root regardless of depth.
 ---@param hybris_home string
 ---@param extra_patterns string[]
 ---@return string[]
 local function collect_source_paths(hybris_home, extra_patterns)
 	local paths = {}
-	local glob_patterns = {
+	local source_subdirs = { "src", "gensrc", "web/src" }
+
+	-- Platform and standard custom/ are always flat — direct glob is sufficient.
+	local flat_patterns = {
 		hybris_home .. "/bin/platform/ext/*/src",
 		hybris_home .. "/bin/platform/ext/*/gensrc",
 		hybris_home .. "/bin/custom/*/src",
 		hybris_home .. "/bin/custom/*/gensrc",
 	}
-	for _, p in ipairs(extra_patterns) do
-		table.insert(glob_patterns, hybris_home .. "/bin/" .. p .. "/*/src")
-		table.insert(glob_patterns, hybris_home .. "/bin/" .. p .. "/*/gensrc")
-	end
-	for _, pattern in ipairs(glob_patterns) do
+	for _, pattern in ipairs(flat_patterns) do
 		local found = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
 		for _, dir in ipairs(found) do
 			if vim.fn.isdirectory(dir) == 1 then
@@ -159,6 +191,24 @@ local function collect_source_paths(hybris_home, extra_patterns)
 			end
 		end
 	end
+
+	-- ext-* custom folders: use extensioninfo.xml to find extension roots at any depth.
+	for _, p in ipairs(extra_patterns) do
+		local top_dirs = vim.split(vim.fn.glob(hybris_home .. "/bin/" .. p), "\n", { trimempty = true })
+		for _, top_dir in ipairs(top_dirs) do
+			if vim.fn.isdirectory(top_dir) == 1 then
+				for _, ext_root in ipairs(find_extension_roots(top_dir)) do
+					for _, subdir in ipairs(source_subdirs) do
+						local candidate = ext_root .. "/" .. subdir
+						if vim.fn.isdirectory(candidate) == 1 then
+							table.insert(paths, candidate)
+						end
+					end
+				end
+			end
+		end
+	end
+
 	return paths
 end
 
