@@ -215,8 +215,6 @@ end
 -- ─── Command implementation ───────────────────────────────────────────────────
 
 local function load_hybris_solution()
-	-- A manual refresh should re-arm the auto-apply for the next jdtls restart.
-	_applied_clients = {}
 	local raw_env = os.getenv("HYBRIS_HOME") or "(not set)"
 	local hybris_home = find_hybris_home()
 
@@ -274,7 +272,7 @@ local function load_hybris_solution()
 	-- workspace/didChangeConfiguration notification — no restart required.
 	local clients = vim.lsp.get_clients({ name = "jdtls" })
 	if #clients > 0 then
-		for _, client in pairs(clients) do
+		for _, client in ipairs(clients) do
 			client:notify("workspace/didChangeConfiguration", java_settings)
 		end
 		vim.notify(
