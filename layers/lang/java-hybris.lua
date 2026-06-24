@@ -3,6 +3,10 @@ local icons = require("LYRD.layers.icons")
 local Command = commands.Command
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
+-- Tracks which jdtls client IDs have already received the Hybris classpath in
+-- this session so that opening multiple Java files doesn't trigger N loads.
+local _applied_clients = {}
+
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Java - Hybris (SAP Commerce) support",
@@ -111,6 +115,8 @@ end
 -- ─── Command implementation ───────────────────────────────────────────────────
 
 local function load_hybris_solution()
+	-- A manual refresh should re-arm the auto-apply for the next jdtls restart.
+	_applied_clients = {}
 	local raw_env = os.getenv("HYBRIS_HOME") or "(not set)"
 	local hybris_home = find_hybris_home()
 
@@ -198,17 +204,21 @@ function L.keybindings()
 end
 
 function L.complete()
-	vim.api.nvim_create_autocmd("FileType", {
-		pattern = "java",
-		group = vim.api.nvim_create_augroup("LYRDHybrisDetection", { clear = true }),
-		once = true,
-		callback = function()
-			if find_hybris_home() then
-				vim.notify(
-					"Hybris project detected (HYBRIS_HOME is set). Run LYRDJavaHybrisLoadSolution to load Hybris solution.",
-					vim.log.levels.INFO
-				)
+	-- Auto-push the Hybris classpath each time jdtls attaches to a buffer.
+	-- vim.schedule defers until after the LSP handshake so the server is ready
+	-- to process workspace/didChangeConfiguration.
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = vim.api.nvim_create_augroup("LYRDHybrisLspAttach", { clear = true }),
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			if not client or client.name ~= "jdtls" then
+				return
 			end
+			if _applied_clients[args.data.client_id] or not find_hybris_home() then
+				return
+			end
+			_applied_clients[args.data.client_id] = true
+			vim.schedule(load_hybris_solution)
 		end,
 	})
 end
