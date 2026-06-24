@@ -91,14 +91,6 @@ local function deduplicate_jars(jars)
 	return result
 end
 
--- Mirrors the workspace path formula in runtime/lsp/jdtls.lua so we can wipe
--- the cache and force JDTLS to re-index with the new classpath.
-local function get_jdtls_workspace_path()
-	local project_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h")
-	local project_hash = string.gsub(project_path, "[/\\:+-]", "_")
-	return vim.fs.joinpath(vim.fn.stdpath("cache"), "jdtls", "workspaces", project_hash)
-end
-
 -- ─── Command implementation ───────────────────────────────────────────────────
 
 local function load_hybris_solution()
@@ -135,7 +127,7 @@ local function load_hybris_solution()
 	vim.list_extend(all_jars, eclipse_jars)
 	local unique_jars = deduplicate_jars(all_jars)
 
-	vim.lsp.config("jdtls", {
+	local java_settings = {
 		settings = {
 			java = {
 				project = {
@@ -143,29 +135,31 @@ local function load_hybris_solution()
 				},
 			},
 		},
-	})
+	}
 
-	-- Wipe the JDTLS workspace cache so the server re-indexes from scratch with
-	-- the new classpath rather than reusing a stale workspace.
-	local workspace_path = get_jdtls_workspace_path()
-	if vim.fn.isdirectory(workspace_path) == 1 then
-		vim.fn.delete(workspace_path, "rf")
-		vim.notify("Hybris: cleared JDTLS workspace cache at " .. workspace_path, vim.log.levels.INFO)
-	end
+	-- Persist for future jdtls starts (picked up on next vim.lsp.start()).
+	vim.lsp.config("jdtls", java_settings)
 
-	local client_count = 0
-	for _, client in pairs(vim.lsp.get_clients({ name = "jdtls" })) do
-		vim.lsp.stop_client(client.id)
-		client_count = client_count + 1
-	end
-
-	local msg = string.format("Hybris: %d JARs registered with JDTLS.", #unique_jars)
-	if client_count > 0 then
-		msg = msg .. " Server stopped — re-open any Java file to reconnect and re-index."
+	-- Push the update directly to any running jdtls client via the LSP
+	-- workspace/didChangeConfiguration notification — no restart required.
+	local clients = vim.lsp.get_clients({ name = "jdtls" })
+	if #clients > 0 then
+		for _, client in pairs(clients) do
+			client.notify("workspace/didChangeConfiguration", java_settings)
+		end
+		vim.notify(
+			string.format("Hybris: %d JARs sent to JDTLS. Indexing in background.", #unique_jars),
+			vim.log.levels.INFO
+		)
 	else
-		msg = msg .. " Open a Java file to start JDTLS with the Hybris classpath."
+		vim.notify(
+			string.format(
+				"Hybris: %d JARs registered. Open a Java file to start JDTLS with the Hybris classpath.",
+				#unique_jars
+			),
+			vim.log.levels.INFO
+		)
 	end
-	vim.notify(msg, vim.log.levels.INFO)
 end
 
 -- ─── Layer lifecycle ──────────────────────────────────────────────────────────
