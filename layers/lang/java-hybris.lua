@@ -21,11 +21,28 @@ local L = {
 
 -- ─── Helpers ─────────────────────────────────────────────────────────────────
 
+-- Returns the hybris installation root (the directory that contains bin/platform/).
+-- HYBRIS_HOME may point to the project root (which has a hybris/ subfolder) or
+-- directly to the hybris/ directory — both conventions are handled.
 ---@return string?
 local function find_hybris_home()
-	local hybris_home = os.getenv("HYBRIS_HOME")
-	if hybris_home and hybris_home ~= "" and vim.fn.isdirectory(hybris_home) == 1 then
-		return hybris_home
+	local raw = os.getenv("HYBRIS_HOME")
+	if not raw or raw == "" then
+		return nil
+	end
+	-- Convention 1: HYBRIS_HOME = <project>/hybris/  (bin/platform directly inside)
+	if vim.fn.isdirectory(raw .. "/bin/platform") == 1 then
+		return raw
+	end
+	-- Convention 2: HYBRIS_HOME = <project root>  (hybris/ is a subdirectory)
+	local with_sub = raw .. "/hybris"
+	if vim.fn.isdirectory(with_sub .. "/bin/platform") == 1 then
+		return with_sub
+	end
+	-- HYBRIS_HOME is set but doesn't match either convention; return raw so the
+	-- caller can show a meaningful error with the resolved path.
+	if vim.fn.isdirectory(raw) == 1 then
+		return raw
 	end
 	return nil
 end
