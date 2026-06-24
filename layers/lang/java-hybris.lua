@@ -7,6 +7,10 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 -- this session so that opening multiple Java files doesn't trigger N loads.
 local _applied_clients = {}
 
+--- Environment variable names for locating Hybris and Ant installations.
+local HYBRIS_HOME_ENV = "HYBRIS_HOME"
+local ANT_HOME_ENV = "ANT_HOME"
+
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Java - Hybris (SAP Commerce) support",
@@ -20,8 +24,10 @@ local L = {
 	required_test_adapters = {},
 	required_null_ls_sources = {},
 	required_filetype_definitions = {},
+	-- Commands specific to this layer; registered in L.settings().
 	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
 	LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
+	-- Current Hybris configuration after the last load (or empty if none loaded yet).
 	-- @type table<string, any>?
 	current_hybris_config = {},
 	-- Glob patterns relative to $HYBRIS_HOME/bin/ for non-standard extension
@@ -34,6 +40,7 @@ local L = {
 	custom_ext_patterns = {
 		"ext-*", -- default: all ext-* folders
 	},
+	hybris_icon = "󰰳 ",
 }
 
 -- ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -43,7 +50,7 @@ local L = {
 -- directly to the hybris/ directory — both conventions are handled.
 ---@return string?
 local function find_hybris_home()
-	local raw = os.getenv("HYBRIS_HOME")
+	local raw = os.getenv(HYBRIS_HOME_ENV)
 	if not raw or raw == "" then
 		return nil
 	end
@@ -213,7 +220,7 @@ end
 -- ─── Command implementation ───────────────────────────────────────────────────
 
 local function load_hybris_solution()
-	local raw_env = os.getenv("HYBRIS_HOME") or "(not set)"
+	local raw_env = os.getenv(HYBRIS_HOME_ENV) or "(not set)"
 	local hybris_home = find_hybris_home()
 
 	if not hybris_home then
@@ -350,9 +357,12 @@ end
 
 function L.keybindings()
 	local mappings = require("LYRD.layers.mappings")
-	mappings.keys({
-		{ "n", "<Space>cH", L.LYRDJavaHybrisLoadSolution },
-		{ "n", "<Space>ch", L.LYRDJavaHybrisCurrentConfig },
+	local menu_header = mappings.menu_header
+	mappings.create_menu("<Space>c", {
+		menu_header("h", "Hybris (SAP e-commerce)", {
+			{ "l", L.LYRDJavaHybrisLoadSolution },
+			{ "c", L.LYRDJavaHybrisCurrentConfig },
+		}, L.hybris_icon),
 	})
 end
 
@@ -382,10 +392,10 @@ function L.healthcheck()
 		vim.health.ok("HYBRIS_HOME is set: " .. hybris_home)
 	else
 		vim.health.warn(
-			"HYBRIS_HOME is not set or invalid (current: " .. (os.getenv("HYBRIS_HOME") or "not set") .. ")"
+			"HYBRIS_HOME is not set or invalid (current: " .. (os.getenv(HYBRIS_HOME_ENV) or "not set") .. ")"
 		)
 	end
-	local ant_home = os.getenv("ANT_HOME")
+	local ant_home = os.getenv(ANT_HOME_ENV)
 	if ant_home and ant_home ~= "" and vim.fn.isdirectory(ant_home) == 1 then
 		vim.health.ok("ANT_HOME is set: " .. ant_home)
 	else
