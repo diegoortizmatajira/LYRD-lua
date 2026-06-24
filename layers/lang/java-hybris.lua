@@ -119,19 +119,47 @@ local function collect_eclipse_classpath_jars(hybris_home, extra_patterns)
 	return jars
 end
 
----@param jars string[]
+---@param paths string[]
 ---@return string[]
-local function deduplicate_jars(jars)
+local function deduplicate_paths(paths)
 	local seen = {}
 	local result = {}
-	for _, jar in ipairs(jars) do
-		local norm = vim.fn.fnamemodify(jar, ":p")
+	for _, p in ipairs(paths) do
+		local norm = vim.fn.fnamemodify(p, ":p")
 		if not seen[norm] then
 			seen[norm] = true
 			table.insert(result, norm)
 		end
 	end
 	return result
+end
+
+-- Collects src/ and gensrc/ directories for platform and custom extensions so
+-- JDTLS can resolve cross-extension type references from source (not just JARs).
+---@param hybris_home string
+---@param extra_patterns string[]
+---@return string[]
+local function collect_source_paths(hybris_home, extra_patterns)
+	local paths = {}
+	local glob_patterns = {
+		hybris_home .. "/bin/platform/ext/*/src",
+		hybris_home .. "/bin/platform/ext/*/gensrc",
+		hybris_home .. "/bin/custom/*/src",
+		hybris_home .. "/bin/custom/*/gensrc",
+	}
+	for _, p in ipairs(extra_patterns) do
+		table.insert(glob_patterns, hybris_home .. "/bin/" .. p .. "/*/src")
+		table.insert(glob_patterns, hybris_home .. "/bin/" .. p .. "/*/gensrc")
+	end
+	for _, pattern in ipairs(glob_patterns) do
+		local found = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
+		for _, dir in ipairs(found) do
+			if vim.fn.isdirectory(dir) == 1 then
+				table.insert(paths, dir)
+			end
+		end
+	end
+	return paths
 end
 
 -- ─── Command implementation ───────────────────────────────────────────────────
@@ -159,22 +187,31 @@ local function load_hybris_solution()
 
 	local platform_jars = collect_platform_jars(hybris_home, extra)
 	local eclipse_jars = collect_eclipse_classpath_jars(hybris_home, extra)
-
-	vim.notify(
-		string.format("Hybris: found %d platform JARs and %d Eclipse classpath JARs.", #platform_jars, #eclipse_jars),
-		vim.log.levels.INFO
-	)
+	local source_paths = collect_source_paths(hybris_home, extra)
 
 	local all_jars = {}
 	vim.list_extend(all_jars, platform_jars)
 	vim.list_extend(all_jars, eclipse_jars)
-	local unique_jars = deduplicate_jars(all_jars)
+	local unique_jars = deduplicate_paths(all_jars)
+	local unique_sources = deduplicate_paths(source_paths)
+
+	vim.notify(
+		string.format(
+			"Hybris: found %d JARs and %d source directories.",
+			#unique_jars,
+			#unique_sources
+		),
+		vim.log.levels.INFO
+	)
 
 	local java_settings = {
 		settings = {
 			java = {
 				project = {
 					referencedLibraries = unique_jars,
+					-- Source directories of platform and custom extensions so JDTLS
+					-- can resolve cross-extension type references from source code.
+					sourcePaths = unique_sources,
 				},
 			},
 		},
@@ -191,14 +228,19 @@ local function load_hybris_solution()
 			client.notify("workspace/didChangeConfiguration", java_settings)
 		end
 		vim.notify(
-			string.format("Hybris: %d JARs sent to JDTLS. Indexing in background.", #unique_jars),
+			string.format(
+				"Hybris: %d JARs + %d source paths sent to JDTLS. Indexing in background.",
+				#unique_jars,
+				#unique_sources
+			),
 			vim.log.levels.INFO
 		)
 	else
 		vim.notify(
 			string.format(
-				"Hybris: %d JARs registered. Open a Java file to start JDTLS with the Hybris classpath.",
-				#unique_jars
+				"Hybris: %d JARs + %d source paths registered. Open a Java file to start JDTLS.",
+				#unique_jars,
+				#unique_sources
 			),
 			vim.log.levels.INFO
 		)
