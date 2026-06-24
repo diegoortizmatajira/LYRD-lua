@@ -97,17 +97,16 @@ local function collect_platform_jars(hybris_home, extra_patterns)
 		local found = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
 		vim.list_extend(jars, found)
 	end
-	-- ext-* custom folders may nest extensions arbitrarily deep; use
-	-- extensioninfo.xml to locate each extension root and collect its lib/ JARs.
+	-- ext-* custom folders: only collect lib/ (third-party deps). Their own
+	-- compiled bin/*.jar is excluded because source is provided via sourcePaths —
+	-- supplying both causes JDTLS to resolve from binary instead of source.
 	for _, p in ipairs(extra_patterns) do
 		local top_dirs = vim.split(vim.fn.glob(hybris_home .. "/bin/" .. p), "\n", { trimempty = true })
 		for _, top_dir in ipairs(top_dirs) do
 			if vim.fn.isdirectory(top_dir) == 1 then
 				for _, ext_root in ipairs(find_extension_roots(top_dir)) do
 					local lib_jars = vim.split(vim.fn.glob(ext_root .. "/lib/*.jar"), "\n", { trimempty = true })
-					local bin_jars = vim.split(vim.fn.glob(ext_root .. "/bin/*.jar"), "\n", { trimempty = true })
 					vim.list_extend(jars, lib_jars)
-					vim.list_extend(jars, bin_jars)
 				end
 			end
 		end
