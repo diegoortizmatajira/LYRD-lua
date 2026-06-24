@@ -396,9 +396,19 @@ function L.keybindings()
 end
 
 function L.complete()
-	-- Auto-push the Hybris classpath each time jdtls attaches to a buffer.
-	-- vim.schedule defers until after the LSP handshake so the server is ready
-	-- to process workspace/didChangeConfiguration.
+	-- Run the initial scan immediately so vim.lsp.config("jdtls", ...) is
+	-- populated before jdtls ever starts. This prevents JDTLS from setting up
+	-- its invisible project without sourcePaths, which causes the
+	-- "declared package does not match expected package ''" error.
+	vim.schedule(function()
+		if find_hybris_home() then
+			load_hybris_solution()
+		end
+	end)
+
+	-- When jdtls attaches (first open or after LspRestart), push the already-
+	-- computed config directly to that client. No rescan needed — vim.lsp.config
+	-- already has the settings; this notification makes them live immediately.
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = vim.api.nvim_create_augroup("LYRDHybrisLspAttach", { clear = true }),
 		callback = function(args)
@@ -406,11 +416,26 @@ function L.complete()
 			if not client or client.name ~= "jdtls" then
 				return
 			end
-			if _applied_clients[args.data.client_id] or not find_hybris_home() then
+			if _applied_clients[args.data.client_id] then
 				return
 			end
 			_applied_clients[args.data.client_id] = true
-			vim.schedule(load_hybris_solution)
+			local config = L.current_hybris_config
+			if vim.tbl_isempty(config) then
+				return
+			end
+			vim.schedule(function()
+				client:notify("workspace/didChangeConfiguration", {
+					settings = {
+						java = {
+							project = {
+								referencedLibraries = config.jars,
+								sourcePaths = config.source_paths,
+							},
+						},
+					},
+				})
+			end)
 		end,
 	})
 end
