@@ -427,19 +427,9 @@ function L.keybindings()
 end
 
 function L.complete()
-	-- Run the initial scan immediately so vim.lsp.config("jdtls", ...) is
-	-- populated before jdtls ever starts. This prevents JDTLS from setting up
-	-- its invisible project without sourcePaths, which causes the
-	-- "declared package does not match expected package ''" error.
-	vim.schedule(function()
-		if find_hybris_home() then
-			load_hybris_solution()
-		end
-	end)
-
-	-- When jdtls attaches (first open or after LspRestart), push the already-
-	-- computed config directly to that client. No rescan needed — vim.lsp.config
-	-- already has the settings; this notification makes them live immediately.
+	-- When jdtls attaches after a manual load has already been performed,
+	-- push the pre-computed config to the new client (e.g. after LspRestart)
+	-- without requiring the user to run the command again.
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = vim.api.nvim_create_augroup("LYRDHybrisLspAttach", { clear = true }),
 		callback = function(args)
