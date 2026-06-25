@@ -276,6 +276,29 @@ local function collect_source_paths(hybris_home, extra_patterns, active_extensio
 	return paths
 end
 
+-- Builds the java.import.exclusions list that prevents JDTLS from treating
+-- individual Hybris extensions as standalone Eclipse projects.  Without these,
+-- JDTLS finds .classpath/.project files in each extension root and enters
+-- Eclipse-project mode for those files, which resolves cross-extension types
+-- from compiled JARs only — completely ignoring our sourcePaths configuration.
+-- With the exclusions, extension directories skip Eclipse/Maven/Gradle project
+-- detection and fall back to invisible-project mode, where sourcePaths applies
+-- globally and source changes are visible without a rebuild.
+---@param hybris_home string
+---@param extra_patterns string[]
+---@return string[]
+local function build_import_exclusions(hybris_home, extra_patterns)
+	local exclusions = {
+		hybris_home .. "/bin/platform/ext/**",
+		hybris_home .. "/bin/modules/**",
+		hybris_home .. "/bin/custom/**",
+	}
+	for _, p in ipairs(extra_patterns) do
+		table.insert(exclusions, hybris_home .. "/bin/" .. p .. "/**")
+	end
+	return exclusions
+end
+
 -- ─── Command implementation ───────────────────────────────────────────────────
 
 local function load_hybris_solution()
@@ -301,6 +324,7 @@ local function load_hybris_solution()
 	local platform_jars = collect_platform_jars(hybris_home, extra, active_extensions)
 	local eclipse_jars = collect_eclipse_classpath_jars(hybris_home, extra)
 	local source_paths = collect_source_paths(hybris_home, extra, active_extensions)
+	local import_exclusions = build_import_exclusions(hybris_home, extra)
 
 	local all_jars = {}
 	vim.list_extend(all_jars, platform_jars)
@@ -318,9 +342,15 @@ local function load_hybris_solution()
 			java = {
 				project = {
 					referencedLibraries = unique_jars,
-					-- Source directories of platform and custom extensions so JDTLS
-					-- can resolve cross-extension type references from source code.
 					sourcePaths = unique_sources,
+				},
+				-- Prevent JDTLS from treating each extension as a standalone Eclipse
+				-- project (via .classpath/.project files).  In Eclipse-project mode,
+				-- cross-extension types are resolved from compiled JARs only and
+				-- sourcePaths is ignored.  With these exclusions, extensions fall into
+				-- invisible-project mode where sourcePaths applies globally.
+				import = {
+					exclusions = import_exclusions,
 				},
 			},
 		},
@@ -330,6 +360,7 @@ local function load_hybris_solution()
 		hybris_home = hybris_home,
 		jars = unique_jars,
 		source_paths = unique_sources,
+		import_exclusions = import_exclusions,
 	}
 
 	-- Persist for future jdtls starts (picked up on next vim.lsp.start()).
@@ -344,16 +375,18 @@ local function load_hybris_solution()
 		end
 		vim.notify(
 			string.format(
-				"Hybris: %d JARs + %d source paths sent to JDTLS. Indexing in background.",
+				"Hybris: %d JARs + %d source paths sent to JDTLS.\n"
+					.. "Run :LspRestart jdtls once so import exclusions take effect (needed for cross-extension source resolution).",
 				#unique_jars,
 				#unique_sources
 			),
-			vim.log.levels.INFO
+			vim.log.levels.WARN
 		)
 	else
 		vim.notify(
 			string.format(
-				"Hybris: %d JARs + %d source paths registered. Open a Java file to start JDTLS.",
+				"Hybris: %d JARs + %d source paths registered.\n"
+					.. "Open a Java file to start JDTLS with full Hybris configuration.",
 				#unique_jars,
 				#unique_sources
 			),
@@ -371,6 +404,7 @@ local function show_hybris_config()
 
 	local jars = config.jars or {}
 	local sources = config.source_paths or {}
+	local exclusions = config.import_exclusions or {}
 	local lines = {
 		"HYBRIS_HOME: " .. (config.hybris_home or "(unknown)"),
 		"",
@@ -378,6 +412,11 @@ local function show_hybris_config()
 	}
 	for _, path in ipairs(sources) do
 		table.insert(lines, "  " .. path)
+	end
+	table.insert(lines, "")
+	table.insert(lines, string.format("Import exclusions (%d):", #exclusions))
+	for _, ex in ipairs(exclusions) do
+		table.insert(lines, "  " .. ex)
 	end
 	table.insert(lines, "")
 	table.insert(lines, string.format("JARs (%d):", #jars))
