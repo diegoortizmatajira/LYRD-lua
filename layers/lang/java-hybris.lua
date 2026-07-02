@@ -223,19 +223,31 @@ local function collect_source_paths(hybris_home, extra_patterns, active_extensio
 	local paths = {}
 	local source_subdirs = { "src", "gensrc", "web/src" }
 
-	-- Platform and standard custom/ are always flat — direct glob is sufficient.
-	-- Platform extensions are auto-loaded and not filtered by localextensions.xml.
-	local flat_patterns = {
-		hybris_home .. "/bin/platform/ext/*/src",
-		hybris_home .. "/bin/platform/ext/*/gensrc",
-		hybris_home .. "/bin/custom/*/src",
-		hybris_home .. "/bin/custom/*/gensrc",
-	}
-	for _, pattern in ipairs(flat_patterns) do
-		local found = vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
-		for _, dir in ipairs(found) do
-			if vim.fn.isdirectory(dir) == 1 then
-				table.insert(paths, dir)
+	-- Platform extensions (auto-loaded, not filtered by localextensions.xml).
+	local platform_dir = hybris_home .. "/bin/platform/ext"
+	if vim.fn.isdirectory(platform_dir) == 1 then
+		for _, ext_root in ipairs(find_extension_roots(platform_dir)) do
+			for _, subdir in ipairs(source_subdirs) do
+				local candidate = ext_root .. "/" .. subdir
+				if vim.fn.isdirectory(candidate) == 1 then
+					table.insert(paths, candidate)
+				end
+			end
+		end
+	end
+
+	-- Custom extensions (filtered by active extensions).
+	local custom_dir = hybris_home .. "/bin/custom"
+	if vim.fn.isdirectory(custom_dir) == 1 then
+		for _, ext_root in ipairs(find_extension_roots(custom_dir)) do
+			local ext_name = vim.fn.fnamemodify(ext_root, ":t")
+			if active_extensions == nil or active_extensions[ext_name] then
+				for _, subdir in ipairs(source_subdirs) do
+					local candidate = ext_root .. "/" .. subdir
+					if vim.fn.isdirectory(candidate) == 1 then
+						table.insert(paths, candidate)
+					end
+				end
 			end
 		end
 	end
@@ -488,6 +500,9 @@ function L.complete()
 				client:notify("workspace/didChangeConfiguration", {
 					settings = {
 						java = {
+							import = {
+								exclusions = config.import_exclusions,
+							},
 							project = {
 								referencedLibraries = config.jars,
 								sourcePaths = config.source_paths,
