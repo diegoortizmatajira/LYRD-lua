@@ -464,6 +464,9 @@ function L.settings()
 		{ L.LYRDJavaHybrisLoadSolution, load_hybris_solution },
 		{ L.LYRDJavaHybrisCurrentConfig, show_hybris_config },
 	})
+	-- Register custom overseer task providers
+	local overseer = require("overseer")
+	overseer.register_template(require("LYRD.shared.overseer.hybris_tasks"))
 end
 
 function L.keybindings()
