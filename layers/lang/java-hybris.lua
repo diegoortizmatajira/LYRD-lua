@@ -519,6 +519,8 @@ function L.complete()
 end
 
 function L.healthcheck()
+	local health = require("LYRD.health")
+	health.check_executable("ant")
 	local hybris_home = find_hybris_home()
 	if hybris_home then
 		vim.health.ok("HYBRIS_HOME is set: " .. hybris_home)
