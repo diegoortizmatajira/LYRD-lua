@@ -67,6 +67,19 @@ local function task_template(name, command, cwd)
 	}
 end
 
+---@param platform_dir string
+---@return string?, string?
+local function resolve_ant_command(platform_dir)
+	local local_ant = platform_dir .. "/" .. ant_script
+	if vim.fn.filereadable(local_ant) == 1 then
+		return local_ant
+	end
+	if vim.fn.executable("ant") == 1 then
+		return "ant"
+	end
+	return nil, string.format('Ant command not found. Expected "%s" or global "ant" in PATH', local_ant)
+end
+
 ---@type overseer.TemplateFileProvider
 return {
 	name = "Hybris (SAP Commerce) tasks",
@@ -89,7 +102,14 @@ return {
 		end
 		local platform_dir = hybris_home .. "/bin/platform"
 		local server = platform_dir .. "/" .. server_script
-		local ant = platform_dir .. "/" .. ant_script
+		local ant, ant_error = resolve_ant_command(platform_dir)
+		if not ant then
+			vim.schedule(function()
+				vim.notify(ant_error, vim.log.levels.ERROR)
+			end)
+			cb({})
+			return
+		end
 
 		cb({
 			task_template("Hybris: Start server", { server, "start" }, platform_dir),
