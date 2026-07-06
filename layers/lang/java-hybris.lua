@@ -31,6 +31,7 @@ local L = {
 	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
 	LYRDJavaHybrisConfigureSolution = Command:new("Hybris: Configure solution (Java)", nil, icons.other.wrench),
 	LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
+	LYRDJavaHybrisOpenConfigFile = Command:new("Hybris: Open solution config file", nil, icons.file.default),
 	-- Full solution config (per-extension jars/sources + independent jars) from
 	-- the last Import/Reload/Configure-save, or empty if none applied yet.
 	-- @type table<string, any>?
@@ -213,6 +214,19 @@ local function configure_solution()
 	require("LYRD.shared.ui.hybris_solution").show(config, { on_save = make_save_handler(root) })
 end
 
+local function open_config_file()
+	local root = project_root()
+	local path = store.cache_path(root)
+	if vim.fn.filereadable(path) ~= 1 then
+		vim.notify(
+			"Hybris: no cached solution for this project. Run :LYRDJavaHybrisImportSolution first.",
+			vim.log.levels.WARN
+		)
+		return
+	end
+	vim.cmd.edit(vim.fn.fnameescape(path))
+end
+
 local function show_current_config()
 	local config = L.current_hybris_config
 	if vim.tbl_isempty(config) then
@@ -265,12 +279,14 @@ function L.settings()
 		LYRDJavaHybrisReloadSolution = L.LYRDJavaHybrisLoadSolution,
 		LYRDJavaHybrisConfigureSolution = L.LYRDJavaHybrisConfigureSolution,
 		LYRDJavaHybrisCurrentConfig = L.LYRDJavaHybrisCurrentConfig,
+		LYRDJavaHybrisOpenConfigFile = L.LYRDJavaHybrisOpenConfigFile,
 	})
 	commands.implement("*", {
 		{ L.LYRDJavaHybrisImportSolution, import_solution },
 		{ L.LYRDJavaHybrisLoadSolution, reload_solution },
 		{ L.LYRDJavaHybrisConfigureSolution, configure_solution },
 		{ L.LYRDJavaHybrisCurrentConfig, show_current_config },
+		{ L.LYRDJavaHybrisOpenConfigFile, open_config_file },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
@@ -286,6 +302,7 @@ function L.keybindings()
 			{ "l", L.LYRDJavaHybrisLoadSolution },
 			{ "s", L.LYRDJavaHybrisConfigureSolution },
 			{ "c", L.LYRDJavaHybrisCurrentConfig },
+			{ "o", L.LYRDJavaHybrisOpenConfigFile },
 		}, L.hybris_icon),
 	})
 end
