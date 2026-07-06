@@ -14,6 +14,19 @@ local function ext_label(ext)
 	return string.format("%d jars, %d src", #ext.lib_jars + #ext.bin_jars + #ext.classpath_jars, #ext.source_paths)
 end
 
+-- Strips the hybris_home prefix (and any leading slash) from an absolute
+-- path so extension/jar rows show a short, project-relative path instead of
+-- the full filesystem path.
+---@param hybris_home string?
+---@param path string
+---@return string
+local function relative_path(hybris_home, path)
+	if hybris_home and path:sub(1, #hybris_home) == hybris_home then
+		return (path:sub(#hybris_home + 1):gsub("^/", ""))
+	end
+	return path
+end
+
 ---@param extensions table<string, table>
 ---@param ext_type string
 ---@return table[]
@@ -64,7 +77,8 @@ end
 ---@param line_map table[]
 ---@param title string
 ---@param list table[]
-local function append_extension_section(lines, line_map, title, list)
+---@param hybris_home string?
+local function append_extension_section(lines, line_map, title, list, hybris_home)
 	if #list == 0 then
 		return
 	end
@@ -75,7 +89,7 @@ local function append_extension_section(lines, line_map, title, list)
 		push(
 			lines,
 			line_map,
-			string.format("  %s %s  (%s)", marker, ext.name, ext_label(ext)),
+			string.format("  %s %s (%s)  (%s)", marker, ext.name, relative_path(hybris_home, ext.path), ext_label(ext)),
 			{ kind = "extension", key = ext.name }
 		)
 	end
@@ -85,7 +99,8 @@ end
 ---@param line_map table[]
 ---@param title string
 ---@param list table[]
-local function append_grouped_extension_section(lines, line_map, title, list)
+---@param hybris_home string?
+local function append_grouped_extension_section(lines, line_map, title, list, hybris_home)
 	if #list == 0 then
 		return
 	end
@@ -101,7 +116,13 @@ local function append_grouped_extension_section(lines, line_map, title, list)
 			push(
 				lines,
 				line_map,
-				string.format("    %s %s  (%s)", marker, ext.name, ext_label(ext)),
+				string.format(
+					"    %s %s (%s)  (%s)",
+					marker,
+					ext.name,
+					relative_path(hybris_home, ext.path),
+					ext_label(ext)
+				),
 				{ kind = "extension", key = ext.name }
 			)
 		end
@@ -121,11 +142,12 @@ local function append_jar_section(lines, line_map, title, jars, hybris_home)
 	push(lines, line_map, title, nil)
 	for idx, jar in ipairs(jars) do
 		local marker = jar.enabled and icons.ui.checkbox_checked or icons.ui.checkbox_unchecked
-		local display = jar.path
-		if hybris_home and display:sub(1, #hybris_home) == hybris_home then
-			display = "..." .. display:sub(#hybris_home + 1)
-		end
-		push(lines, line_map, string.format("  %s %s", marker, display), { kind = "jar", key = idx })
+		push(
+			lines,
+			line_map,
+			string.format("  %s %s", marker, relative_path(hybris_home, jar.path)),
+			{ kind = "jar", key = idx }
+		)
 	end
 end
 
@@ -142,16 +164,36 @@ local function render(config)
 	push(lines, line_map, " <Space>/<Enter> toggle  |  <S>/:w save  |  <q>/Esc cancel", nil)
 
 	local extensions = config.extensions or {}
-	append_extension_section(lines, line_map, "Platform Extensions", extensions_of_type(extensions, "platform"))
-	append_extension_section(lines, line_map, "Custom Extensions", extensions_of_type(extensions, "custom"))
-	append_grouped_extension_section(lines, line_map, "Module Extensions", extensions_of_type(extensions, "module"))
+	local hybris_home = config.hybris_home
+	append_extension_section(
+		lines,
+		line_map,
+		"Platform Extensions",
+		extensions_of_type(extensions, "platform"),
+		hybris_home
+	)
+	append_extension_section(
+		lines,
+		line_map,
+		"Custom Extensions",
+		extensions_of_type(extensions, "custom"),
+		hybris_home
+	)
+	append_grouped_extension_section(
+		lines,
+		line_map,
+		"Module Extensions",
+		extensions_of_type(extensions, "module"),
+		hybris_home
+	)
 	append_grouped_extension_section(
 		lines,
 		line_map,
 		"Extra-Pattern Extensions",
-		extensions_of_type(extensions, "extra-pattern")
+		extensions_of_type(extensions, "extra-pattern"),
+		hybris_home
 	)
-	append_jar_section(lines, line_map, "Independent JARs", config.independent_jars or {}, config.hybris_home)
+	append_jar_section(lines, line_map, "Independent JARs", config.independent_jars or {}, hybris_home)
 
 	return lines, line_map
 end

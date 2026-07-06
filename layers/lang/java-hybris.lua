@@ -27,8 +27,8 @@ local L = {
 	required_null_ls_sources = {},
 	required_filetype_definitions = {},
 	-- Commands specific to this layer; registered in L.settings().
-	LYRDJavaHybrisImportSolution = Command:new("Hybris: Import solution (Java)", nil, icons.folder.open),
-	LYRDJavaHybrisReloadSolution = Command:new("Hybris: Reload cached solution (Java)", nil, icons.action.repeat_once),
+	LYRDJavaHybrisImportSolution = Command:new("Hybris: Import solution (Java)", nil, icons.action.import),
+	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
 	LYRDJavaHybrisConfigureSolution = Command:new("Hybris: Configure solution (Java)", nil, icons.other.wrench),
 	LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
 	-- Full solution config (per-extension jars/sources + independent jars) from
@@ -262,13 +262,13 @@ end
 function L.settings()
 	commands.register({
 		LYRDJavaHybrisImportSolution = L.LYRDJavaHybrisImportSolution,
-		LYRDJavaHybrisReloadSolution = L.LYRDJavaHybrisReloadSolution,
+		LYRDJavaHybrisReloadSolution = L.LYRDJavaHybrisLoadSolution,
 		LYRDJavaHybrisConfigureSolution = L.LYRDJavaHybrisConfigureSolution,
 		LYRDJavaHybrisCurrentConfig = L.LYRDJavaHybrisCurrentConfig,
 	})
 	commands.implement("*", {
 		{ L.LYRDJavaHybrisImportSolution, import_solution },
-		{ L.LYRDJavaHybrisReloadSolution, reload_solution },
+		{ L.LYRDJavaHybrisLoadSolution, reload_solution },
 		{ L.LYRDJavaHybrisConfigureSolution, configure_solution },
 		{ L.LYRDJavaHybrisCurrentConfig, show_current_config },
 	})
@@ -283,7 +283,7 @@ function L.keybindings()
 	mappings.create_menu("<Space>c", {
 		menu_header("h", "Hybris (SAP e-commerce)", {
 			{ "i", L.LYRDJavaHybrisImportSolution },
-			{ "r", L.LYRDJavaHybrisReloadSolution },
+			{ "l", L.LYRDJavaHybrisLoadSolution },
 			{ "s", L.LYRDJavaHybrisConfigureSolution },
 			{ "c", L.LYRDJavaHybrisCurrentConfig },
 		}, L.hybris_icon),
