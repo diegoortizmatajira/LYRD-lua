@@ -1,0 +1,300 @@
+-- Scans a Hybris installation on disk and produces a per-extension description
+-- of jars/source paths, plus any jars not attributable to a single extension
+-- ("independent" jars). Pure filesystem reads only -- no persistence, no LSP.
+
+local HYBRIS_HOME_ENV = "HYBRIS_HOME"
+local SOURCE_SUBDIRS = { "src", "gensrc", "web/src" }
+
+---@class LYRD.hybris.ExtensionRecord
+---@field name string
+---@field path string
+---@field type "platform"|"custom"|"module"|"extra-pattern"
+---@field group string?
+---@field enabled boolean
+---@field has_source boolean
+---@field lib_jars string[]
+---@field bin_jars string[]
+---@field classpath_jars string[]
+---@field source_paths string[]
+
+---@class LYRD.hybris.IndependentJar
+---@field path string
+---@field enabled boolean
+
+---@class LYRD.hybris.ScanResult
+---@field extensions table<string, LYRD.hybris.ExtensionRecord>
+---@field independent_jars LYRD.hybris.IndependentJar[]
+---@field import_exclusions string[]
+
+local M = {}
+
+---@param pattern string
+---@return string[]
+local function glob_list(pattern)
+	return vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
+end
+
+-- Returns the hybris installation root (the directory that contains bin/platform/).
+-- HYBRIS_HOME may point to the project root (which has a hybris/ subfolder) or
+-- directly to the hybris/ directory -- both conventions are handled.
+---@return string?
+function M.find_hybris_home()
+	local raw = os.getenv(HYBRIS_HOME_ENV)
+	if not raw or raw == "" then
+		return nil
+	end
+	-- Convention 1: HYBRIS_HOME = <project>/hybris/  (bin/platform directly inside)
+	if vim.fn.isdirectory(raw .. "/bin/platform") == 1 then
+		return raw
+	end
+	-- Convention 2: HYBRIS_HOME = <project root>  (hybris/ is a subdirectory)
+	local with_sub = raw .. "/hybris"
+	if vim.fn.isdirectory(with_sub .. "/bin/platform") == 1 then
+		return with_sub
+	end
+	-- HYBRIS_HOME is set but doesn't match either convention; return raw so the
+	-- caller can show a meaningful error with the resolved path.
+	if vim.fn.isdirectory(raw) == 1 then
+		return raw
+	end
+	return nil
+end
+
+-- Locates all Hybris extension root directories inside base_dir by finding
+-- extensioninfo.xml files at any nesting depth (handles group folders like
+-- bin/ext-company/group/extname/ where the extension is 3 levels deep).
+---@param base_dir string
+---@return string[]
+local function find_extension_roots(base_dir)
+	local roots = {}
+	for _, ext_info in ipairs(glob_list(base_dir .. "/**/extensioninfo.xml")) do
+		table.insert(roots, vim.fn.fnamemodify(ext_info, ":h"))
+	end
+	return roots
+end
+
+-- Reads localextensions.xml to determine which extensions are active in this
+-- project. Returns a set of extension names (name -> true), or nil when the
+-- file is absent (callers treat nil as "include all").
+---@param hybris_home string
+---@return table<string, boolean>?
+function M.collect_active_extension_names(hybris_home)
+	local path = hybris_home .. "/config/localextensions.xml"
+	if vim.fn.filereadable(path) ~= 1 then
+		return nil
+	end
+	local active = {}
+	for _, line in ipairs(vim.fn.readfile(path)) do
+		local name = line:match('<extension%s+name="([^"]+)"')
+		if name then
+			active[name] = true
+		end
+	end
+	return active
+end
+
+---@param paths string[]
+---@return string[]
+function M.deduplicate_paths(paths)
+	local seen = {}
+	local result = {}
+	for _, p in ipairs(paths) do
+		local norm = vim.fn.fnamemodify(p, ":p")
+		if not seen[norm] then
+			seen[norm] = true
+			table.insert(result, norm)
+		end
+	end
+	return result
+end
+
+---@param ext_root string
+---@return boolean
+local function has_source_dirs(ext_root)
+	return vim.fn.isdirectory(ext_root .. "/src") == 1 or vim.fn.isdirectory(ext_root .. "/gensrc") == 1
+end
+
+---@param ext_root string
+---@return string[]
+local function collect_source_paths(ext_root)
+	local paths = {}
+	for _, subdir in ipairs(SOURCE_SUBDIRS) do
+		local candidate = ext_root .. "/" .. subdir
+		if vim.fn.isdirectory(candidate) == 1 then
+			table.insert(paths, candidate)
+		end
+	end
+	return paths
+end
+
+-- Scans an extension's own .classpath file(s) for Eclipse "kind=lib" entries
+-- (third-party jars referenced outside the standard lib/ convention).
+---@param ext_root string
+---@return string[]
+local function collect_classpath_jars(ext_root)
+	local jars = {}
+	for _, cp_file in ipairs(glob_list(ext_root .. "/**/.classpath")) do
+		for _, line in ipairs(vim.fn.readfile(cp_file)) do
+			if line:find('kind="lib"') then
+				local path = line:match('path="([^"]+)"')
+				if path then
+					if not path:match("^/") then
+						path = vim.fn.fnamemodify(cp_file, ":h") .. "/" .. path
+					end
+					path = vim.fn.fnamemodify(path, ":p")
+					if vim.fn.filereadable(path) == 1 then
+						table.insert(jars, path)
+					end
+				end
+			end
+		end
+	end
+	return jars
+end
+
+---@param ext_root string
+---@param ext_type "platform"|"custom"|"module"|"extra-pattern"
+---@param group string?
+---@param active_extensions table<string, boolean>?
+---@return LYRD.hybris.ExtensionRecord
+local function scan_extension(ext_root, ext_type, group, active_extensions)
+	local name = vim.fn.fnamemodify(ext_root, ":t")
+	local enabled = ext_type == "platform" or active_extensions == nil or active_extensions[name] == true
+	return {
+		name = name,
+		path = ext_root,
+		type = ext_type,
+		group = group,
+		enabled = enabled,
+		has_source = has_source_dirs(ext_root),
+		lib_jars = M.deduplicate_paths(glob_list(ext_root .. "/lib/*.jar")),
+		bin_jars = M.deduplicate_paths(glob_list(ext_root .. "/bin/*.jar")),
+		classpath_jars = M.deduplicate_paths(collect_classpath_jars(ext_root)),
+		source_paths = collect_source_paths(ext_root),
+	}
+end
+
+-- Builds the java.import.exclusions list that prevents JDTLS from treating
+-- individual Hybris extensions as standalone Eclipse projects. Without these,
+-- JDTLS finds .classpath/.project files in each extension root and enters
+-- Eclipse-project mode for those files, which resolves cross-extension types
+-- from compiled JARs only -- completely ignoring our sourcePaths configuration.
+-- With the exclusions, extension directories skip Eclipse/Maven/Gradle project
+-- detection and fall back to invisible-project mode, where sourcePaths applies
+-- globally and source changes are visible without a rebuild.
+---@param hybris_home string
+---@param extra_patterns string[]
+---@return string[]
+local function build_import_exclusions(hybris_home, extra_patterns)
+	local exclusions = {
+		hybris_home .. "/bin/platform/ext/**",
+		hybris_home .. "/bin/modules/**",
+		hybris_home .. "/bin/custom/**",
+	}
+	for _, p in ipairs(extra_patterns) do
+		table.insert(exclusions, hybris_home .. "/bin/" .. p .. "/**")
+	end
+	return exclusions
+end
+
+---@param jar_path string
+---@param known_roots table<string, boolean>
+---@return boolean
+local function jar_belongs_to_known_root(jar_path, known_roots)
+	local abs = vim.fn.fnamemodify(jar_path, ":p")
+	for root in pairs(known_roots) do
+		if abs:sub(1, #root) == root then
+			return true
+		end
+	end
+	return false
+end
+
+-- Jars not owned by any single extension folder: platform-core jars, jars sitting
+-- directly at a module-group/extra-pattern root (not inside an extension
+-- subfolder), and a safety net for platform ext jars that don't map to any
+-- extension root found via extensioninfo.xml (e.g. a malformed extension dir).
+---@param hybris_home string
+---@param known_roots table<string, boolean>
+---@param module_dirs string[]
+---@param extra_top_dirs string[]
+---@return LYRD.hybris.IndependentJar[]
+local function collect_independent_jars(hybris_home, known_roots, module_dirs, extra_top_dirs)
+	local jars = {}
+	vim.list_extend(jars, glob_list(hybris_home .. "/bin/platform/lib/*.jar"))
+	vim.list_extend(jars, glob_list(hybris_home .. "/bin/platform/bootstrap/bin/*.jar"))
+
+	local legacy = {}
+	vim.list_extend(legacy, glob_list(hybris_home .. "/bin/platform/ext/*/lib/*.jar"))
+	vim.list_extend(legacy, glob_list(hybris_home .. "/bin/platform/ext/*/bin/*.jar"))
+	for _, jar in ipairs(legacy) do
+		if not jar_belongs_to_known_root(jar, known_roots) then
+			table.insert(jars, jar)
+		end
+	end
+
+	for _, dir in ipairs(module_dirs) do
+		vim.list_extend(jars, glob_list(dir .. "/*.jar"))
+	end
+	for _, dir in ipairs(extra_top_dirs) do
+		vim.list_extend(jars, glob_list(dir .. "/*.jar"))
+	end
+
+	local result = {}
+	for _, path in ipairs(M.deduplicate_paths(jars)) do
+		table.insert(result, { path = path, enabled = true })
+	end
+	return result
+end
+
+-- Scans the full Hybris installation and returns a per-extension breakdown of
+-- jars/source paths, independent jars, and JDTLS import exclusions.
+---@param hybris_home string
+---@param extra_patterns string[]
+---@return LYRD.hybris.ScanResult
+function M.scan(hybris_home, extra_patterns)
+	extra_patterns = extra_patterns or {}
+	local active_extensions = M.collect_active_extension_names(hybris_home)
+	local extensions = {}
+	local known_roots = {}
+
+	---@param base_dir string
+	---@param ext_type "platform"|"custom"|"module"|"extra-pattern"
+	---@param group string?
+	local function add_extensions(base_dir, ext_type, group)
+		for _, ext_root in ipairs(find_extension_roots(base_dir)) do
+			known_roots[vim.fn.fnamemodify(ext_root, ":p")] = true
+			local record = scan_extension(ext_root, ext_type, group, active_extensions)
+			extensions[record.name] = record
+		end
+	end
+
+	add_extensions(hybris_home .. "/bin/platform/ext", "platform", nil)
+	add_extensions(hybris_home .. "/bin/custom", "custom", nil)
+
+	local module_dirs = {}
+	for _, group_dir in ipairs(glob_list(hybris_home .. "/bin/modules/*")) do
+		if vim.fn.isdirectory(group_dir) == 1 then
+			table.insert(module_dirs, group_dir)
+			add_extensions(group_dir, "module", vim.fn.fnamemodify(group_dir, ":t"))
+		end
+	end
+
+	local extra_top_dirs = {}
+	for _, pattern in ipairs(extra_patterns) do
+		for _, top_dir in ipairs(glob_list(hybris_home .. "/bin/" .. pattern)) do
+			if vim.fn.isdirectory(top_dir) == 1 then
+				table.insert(extra_top_dirs, top_dir)
+				add_extensions(top_dir, "extra-pattern", pattern)
+			end
+		end
+	end
+
+	return {
+		extensions = extensions,
+		independent_jars = collect_independent_jars(hybris_home, known_roots, module_dirs, extra_top_dirs),
+		import_exclusions = build_import_exclusions(hybris_home, extra_patterns),
+	}
+end
+
+return M
