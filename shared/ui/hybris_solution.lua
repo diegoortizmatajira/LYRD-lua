@@ -161,7 +161,7 @@ local function render(config)
 	push(lines, line_map, string.rep("─", 50), nil)
 	push(lines, line_map, "HYBRIS_HOME: " .. (config.hybris_home or "(unknown)"), nil)
 	push(lines, line_map, "", nil)
-	push(lines, line_map, " <Space>/<Enter> toggle  |  <S>/:w save  |  <q>/Esc cancel", nil)
+	push(lines, line_map, " <Space>/<Enter> toggle  |  <C-s>/:w save  |  <q>/Esc cancel", nil)
 
 	local extensions = config.extensions or {}
 	local hybris_home = config.hybris_home
@@ -291,7 +291,7 @@ function UI.show(config, opts)
 	local map_opts = { buffer = buf, nowait = true, silent = true }
 	vim.keymap.set("n", "<CR>", toggle_current, map_opts)
 	vim.keymap.set("n", "<Space>", toggle_current, map_opts)
-	vim.keymap.set("n", "S", save, map_opts)
+	vim.keymap.set("n", "<C-s>", save, map_opts)
 	vim.keymap.set("n", "q", close_win, map_opts)
 	vim.keymap.set("n", "<Esc>", close_win, map_opts)
 end
