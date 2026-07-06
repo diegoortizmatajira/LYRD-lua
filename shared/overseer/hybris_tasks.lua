@@ -95,7 +95,7 @@ return {
 			task_template("Hybris: Start server", { server, "start" }, platform_dir),
 			task_template("Hybris: Stop server", { server, "stop" }, platform_dir),
 			task_template("Hybris: Debug server", { server, "debug" }, platform_dir),
-			task_template("Hybris: Build", { ant, "all" }, platform_dir),
+			task_template("Hybris: All", { ant, "all" }, platform_dir),
 			task_template("Hybris: Build", { ant, "build" }, platform_dir),
 			task_template("Hybris: Clean", { ant, "clean" }, platform_dir),
 			task_template("Hybris: Clean all", { ant, "clean", "all" }, platform_dir),
