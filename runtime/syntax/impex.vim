@@ -1,6 +1,6 @@
 " SAP Commerce / Hybris ImpEx syntax highlighting.
-" Filetype is registered via vim.filetype.add({extension={impex='impex'}}) in
-" lua/hybris/init.lua. ImpEx is line-oriented: header lines start with an operation
+" Filetype is registered via required_filetype_definitions in
+" layers/lang/java-hybris.lua. ImpEx is line-oriented: header lines start with an operation
 " keyword (INSERT/UPDATE/INSERT_UPDATE/REMOVE) followed by an ItemType and
 " ';'-separated columns with optional [modifier=...] and (sub.qualifier) syntax;
 " data lines are ';'-separated values; '#' starts a comment; '$' defines/uses macros.

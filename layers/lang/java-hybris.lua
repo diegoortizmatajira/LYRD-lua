@@ -6,6 +6,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 local resolver = require("LYRD.shared.hybris.resolver")
 local scanner = require("LYRD.shared.hybris.scanner")
 local store = require("LYRD.shared.hybris.store")
+local types = require("LYRD.shared.hybris.types")
 
 -- Tracks which jdtls client IDs have already received the Hybris classpath in
 -- this session so that opening multiple Java files doesn't trigger N loads.
@@ -26,7 +27,9 @@ local L = {
 	required_formatter_per_filetype = {},
 	required_test_adapters = {},
 	required_null_ls_sources = {},
-	required_filetype_definitions = {},
+	required_filetype_definitions = {
+		extension = { impex = "impex" },
+	},
 	-- Commands specific to this layer; registered in L.settings().
 	LYRDJavaHybrisImportSolution = Command:new("Hybris: Import solution (Java)", nil, icons.action.import),
 	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
@@ -35,6 +38,9 @@ local L = {
 	LYRDJavaHybrisOpenConfigFile = Command:new("Hybris: Open solution config file", nil, icons.file.default),
 	-- ICON NEEDED: pick a debug/attach icon for this one (e.g. a "plug"/"bug" glyph).
 	LYRDJavaHybrisAttachDebugger = Command:new("Hybris: Attach debugger (remote JVM)", nil, nil),
+	-- ICON NEEDED for the next two (Type System: find/reindex).
+	LYRDJavaHybrisFindType = Command:new("Hybris: Find ItemType", nil, nil),
+	LYRDJavaHybrisReindexTypes = Command:new("Hybris: Reindex types (items.xml)", nil, nil),
 	-- Full solution config (per-extension jars/sources + independent jars) from
 	-- the last Import/Reload/Configure-save, or empty if none applied yet.
 	-- @type table<string, any>?
@@ -256,6 +262,127 @@ local function attach_debugger()
 	dap_hybris.attach_hybris()
 end
 
+-- ─── Type System (items.xml/ImpEx completion + navigation) ─────────────────
+
+---@param file string?
+---@param line integer?
+local function jump_to_declaration(file, line)
+	if not file then
+		return
+	end
+	vim.cmd.edit(vim.fn.fnameescape(file))
+	pcall(vim.api.nvim_win_set_cursor, 0, { line or 1, 0 })
+	vim.cmd("normal! zz")
+end
+
+-- Go-to-definition for the ItemType/EnumType under the cursor. Bound
+-- buffer-locally on items.xml/impex buffers (see L.complete()).
+local function goto_type_definition()
+	local word = vim.fn.expand("<cword>")
+	if word == "" then
+		return
+	end
+	local decls = types.find(word)
+	if #decls == 0 then
+		vim.notify('Hybris: no type/enum named "' .. word .. '"', vim.log.levels.INFO)
+		return
+	end
+	jump_to_declaration(decls[1].file, decls[1].line)
+	if #decls > 1 then
+		vim.notify(
+			string.format('Hybris: "%s" declared/extended in %d files (jumped to first)', word, #decls),
+			vim.log.levels.INFO
+		)
+	end
+end
+
+local function find_type()
+	local hybris_home = scanner.find_hybris_home()
+	if not hybris_home then
+		vim.notify("Hybris: HYBRIS_HOME is not set or points to an invalid directory.", vim.log.levels.ERROR)
+		return
+	end
+	types.ensure(hybris_home, project_root(), function()
+		local ok_telescope = pcall(require, "telescope")
+		if not ok_telescope then
+			vim.notify("Hybris: telescope.nvim not available", vim.log.levels.WARN)
+			return
+		end
+		local actions = require("telescope.actions")
+		local action_state = require("telescope.actions.state")
+		local conf = require("telescope.config").values
+		local entry_display = require("telescope.pickers.entry_display")
+		local finders = require("telescope.finders")
+		local pickers = require("telescope.pickers")
+
+		local items = types.all_types()
+		local code_width = 0
+		for _, item in ipairs(items) do
+			code_width = math.max(code_width, vim.fn.strdisplaywidth(item.code))
+		end
+		code_width = code_width + 2
+
+		local displayer = entry_display.create({
+			separator = " ",
+			items = {
+				{ width = code_width },
+				{ remaining = true },
+			},
+		})
+
+		pickers
+			.new({}, {
+				prompt_title = "Hybris ItemTypes",
+				finder = finders.new_table({
+					results = items,
+					entry_maker = function(item)
+						return {
+							value = item,
+							ordinal = item.code,
+							display = function(entry)
+								return displayer({
+									entry.value.code,
+									entry.value.extends and ("extends " .. entry.value.extends) or "",
+								})
+							end,
+						}
+					end,
+				}),
+				sorter = conf.generic_sorter({}),
+				attach_mappings = function(prompt_bufnr)
+					actions.select_default:replace(function()
+						local selection = action_state.get_selected_entry()
+						actions.close(prompt_bufnr)
+						if selection and selection.value then
+							jump_to_declaration(selection.value.file, selection.value.line)
+						end
+					end)
+					return true
+				end,
+			})
+			:find()
+	end)
+end
+
+local function reindex_types()
+	local hybris_home = scanner.find_hybris_home()
+	if not hybris_home then
+		vim.notify("Hybris: HYBRIS_HOME is not set or points to an invalid directory.", vim.log.levels.ERROR)
+		return
+	end
+	types.ensure(hybris_home, project_root(), function(stats)
+		vim.notify(
+			string.format(
+				"Hybris: type system rebuilt (%d files, %d types, %d enums).",
+				stats.files,
+				stats.types,
+				stats.enums
+			),
+			vim.log.levels.INFO
+		)
+	end, true)
+end
+
 local function show_current_config()
 	local config = L.current_hybris_config
 	if vim.tbl_isempty(config) then
@@ -310,6 +437,8 @@ function L.settings()
 		LYRDJavaHybrisCurrentConfig = L.LYRDJavaHybrisCurrentConfig,
 		LYRDJavaHybrisOpenConfigFile = L.LYRDJavaHybrisOpenConfigFile,
 		LYRDJavaHybrisAttachDebugger = L.LYRDJavaHybrisAttachDebugger,
+		LYRDJavaHybrisFindType = L.LYRDJavaHybrisFindType,
+		LYRDJavaHybrisReindexTypes = L.LYRDJavaHybrisReindexTypes,
 	})
 	commands.implement("*", {
 		{ L.LYRDJavaHybrisImportSolution, import_solution },
@@ -318,6 +447,8 @@ function L.settings()
 		{ L.LYRDJavaHybrisCurrentConfig, show_current_config },
 		{ L.LYRDJavaHybrisOpenConfigFile, open_config_file },
 		{ L.LYRDJavaHybrisAttachDebugger, attach_debugger },
+		{ L.LYRDJavaHybrisFindType, find_type },
+		{ L.LYRDJavaHybrisReindexTypes, reindex_types },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
@@ -328,6 +459,19 @@ function L.settings()
 	-- generic Debug menu in layers/debug.lua + layers/lyrd-keyboard.lua) offers
 	-- them with no session active.
 	dap_hybris.setup()
+
+	-- Registers the Type System completion source (items.xml/impex), scoped to
+	-- those filetypes only. nvim-cmp is loaded on-demand here the same way
+	-- dap/jdtls already are above -- require() triggers Lazy's load hook.
+	local ok_cmp, cmp = pcall(require, "cmp")
+	if ok_cmp then
+		pcall(cmp.register_source, "hybris_types", require("LYRD.shared.hybris.cmp_source").new())
+		local function hybris_sources()
+			return cmp.config.sources({ { name = "hybris_types" } }, { { name = "buffer" }, { name = "path" } })
+		end
+		cmp.setup.filetype("impex", { sources = hybris_sources() })
+		cmp.setup.filetype("xml", { sources = hybris_sources() })
+	end
 end
 
 function L.keybindings()
@@ -341,6 +485,8 @@ function L.keybindings()
 			{ "c", L.LYRDJavaHybrisCurrentConfig },
 			{ "o", L.LYRDJavaHybrisOpenConfigFile },
 			{ "d", L.LYRDJavaHybrisAttachDebugger },
+			{ "t", L.LYRDJavaHybrisFindType },
+			{ "T", L.LYRDJavaHybrisReindexTypes },
 		}, L.hybris_icon),
 	})
 end
@@ -436,6 +582,59 @@ function L.complete()
 				start_warm(jdtls_config)
 			end
 			vim.defer_fn(maybe_warm_start, 500)
+		end,
+	})
+
+	-- Warm the Type System index at startup too, same gate/pattern as the
+	-- jdtls warm-start above but its own augroup: cheap (in-memory -> disk
+	-- cache -> chunked async build), and unrelated to jdtls's own lifecycle.
+	vim.api.nvim_create_autocmd("VimEnter", {
+		group = vim.api.nvim_create_augroup("LYRDHybrisTypesWarmStart", { clear = true }),
+		once = true,
+		callback = function()
+			local hybris_home = scanner.find_hybris_home()
+			if not hybris_home then
+				return
+			end
+			types.ensure(hybris_home, project_root())
+		end,
+	})
+
+	-- items.xml/impex buffers: make sure the index is available (usually a
+	-- no-op, already warmed) and bind go-to-definition for the type/enum
+	-- under the cursor.
+	vim.api.nvim_create_autocmd("FileType", {
+		group = vim.api.nvim_create_augroup("LYRDHybrisTypesFileType", { clear = true }),
+		pattern = { "xml", "impex" },
+		callback = function(args)
+			local is_items_xml = vim.api.nvim_buf_get_name(args.buf):match("items%.xml$") ~= nil
+			if vim.bo[args.buf].filetype ~= "impex" and not is_items_xml then
+				return
+			end
+			local hybris_home = scanner.find_hybris_home()
+			if hybris_home then
+				types.ensure(hybris_home, project_root())
+			end
+			-- LETTER NEEDS CONFIRMATION: propose <leader>jt ("jump to type"),
+			-- adjust if it collides with something you already use.
+			vim.keymap.set(
+				"n",
+				"<leader>jt",
+				goto_type_definition,
+				{ buffer = args.buf, desc = "Hybris: go to type/enum definition" }
+			)
+		end,
+	})
+
+	-- Keep completion fresh in-session: reindex after saving any *items.xml.
+	vim.api.nvim_create_autocmd("BufWritePost", {
+		group = vim.api.nvim_create_augroup("LYRDHybrisTypesReindexOnSave", { clear = true }),
+		pattern = { "*items.xml" },
+		callback = function()
+			local hybris_home = scanner.find_hybris_home()
+			if hybris_home then
+				types.ensure(hybris_home, project_root(), nil, true)
+			end
 		end,
 	})
 end
