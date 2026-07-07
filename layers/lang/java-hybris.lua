@@ -1,6 +1,7 @@
 local commands = require("LYRD.layers.commands")
 local icons = require("LYRD.layers.icons")
 local Command = commands.Command
+local dap_hybris = require("LYRD.shared.dap.java-hybris")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 local resolver = require("LYRD.shared.hybris.resolver")
 local scanner = require("LYRD.shared.hybris.scanner")
@@ -32,6 +33,8 @@ local L = {
 	LYRDJavaHybrisConfigureSolution = Command:new("Hybris: Configure solution (Java)", nil, icons.other.wrench),
 	LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
 	LYRDJavaHybrisOpenConfigFile = Command:new("Hybris: Open solution config file", nil, icons.file.default),
+	-- ICON NEEDED: pick a debug/attach icon for this one (e.g. a "plug"/"bug" glyph).
+	LYRDJavaHybrisAttachDebugger = Command:new("Hybris: Attach debugger (remote JVM)", nil, nil),
 	-- Full solution config (per-extension jars/sources + independent jars) from
 	-- the last Import/Reload/Configure-save, or empty if none applied yet.
 	-- @type table<string, any>?
@@ -227,6 +230,10 @@ local function open_config_file()
 	vim.cmd.edit(vim.fn.fnameescape(path))
 end
 
+local function attach_debugger()
+	dap_hybris.attach_hybris()
+end
+
 local function show_current_config()
 	local config = L.current_hybris_config
 	if vim.tbl_isempty(config) then
@@ -280,6 +287,7 @@ function L.settings()
 		LYRDJavaHybrisConfigureSolution = L.LYRDJavaHybrisConfigureSolution,
 		LYRDJavaHybrisCurrentConfig = L.LYRDJavaHybrisCurrentConfig,
 		LYRDJavaHybrisOpenConfigFile = L.LYRDJavaHybrisOpenConfigFile,
+		LYRDJavaHybrisAttachDebugger = L.LYRDJavaHybrisAttachDebugger,
 	})
 	commands.implement("*", {
 		{ L.LYRDJavaHybrisImportSolution, import_solution },
@@ -287,10 +295,17 @@ function L.settings()
 		{ L.LYRDJavaHybrisConfigureSolution, configure_solution },
 		{ L.LYRDJavaHybrisCurrentConfig, show_current_config },
 		{ L.LYRDJavaHybrisOpenConfigFile, open_config_file },
+		{ L.LYRDJavaHybrisAttachDebugger, attach_debugger },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
 	overseer.register_template(require("LYRD.shared.overseer.hybris_tasks"))
+
+	-- Registers dap.adapters.java (via nvim-jdtls) and the Hybris/Spring
+	-- remote-attach configs, so :DapContinue's picker (already wired to the
+	-- generic Debug menu in layers/debug.lua + layers/lyrd-keyboard.lua) offers
+	-- them with no session active.
+	dap_hybris.setup()
 end
 
 function L.keybindings()
@@ -303,6 +318,7 @@ function L.keybindings()
 			{ "s", L.LYRDJavaHybrisConfigureSolution },
 			{ "c", L.LYRDJavaHybrisCurrentConfig },
 			{ "o", L.LYRDJavaHybrisOpenConfigFile },
+			{ "d", L.LYRDJavaHybrisAttachDebugger },
 		}, L.hybris_icon),
 	})
 end
