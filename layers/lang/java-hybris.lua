@@ -346,6 +346,71 @@ function L.complete()
 			end)
 		end,
 	})
+
+	-- Warm-start jdtls in the background at startup when this project looks like
+	-- a Hybris checkout, so the JVM boots and starts indexing while the user is
+	-- still browsing/reading -- the first Java file opened then reuses this
+	-- already-warming client (vim.lsp dedupes by {name, root_dir}) instead of a
+	-- cold start. No-op when HYBRIS_HOME isn't set/valid for this project.
+	vim.api.nvim_create_autocmd("VimEnter", {
+		group = vim.api.nvim_create_augroup("LYRDHybrisWarmStart", { clear = true }),
+		once = true,
+		callback = function()
+			if not scanner.find_hybris_home() then
+				return
+			end
+
+			local function start_warm(jdtls_config)
+				vim.lsp.start(jdtls_config, { attach = false })
+			end
+
+			local function has_java_buffer()
+				for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+					local ft = vim.bo[buf].filetype
+					if ft == "java" or ft == "jproperties" then
+						return true
+					end
+				end
+				return false
+			end
+
+			local ok, jdtls_config = pcall(function()
+				return vim.lsp.config.jdtls
+			end)
+			if not ok or not jdtls_config then
+				return
+			end
+
+			if not has_java_buffer() then
+				-- Nothing else can race us into starting jdtls (its FileType
+				-- autostart only fires for a java/jproperties buffer) -- go now,
+				-- no need to wait.
+				start_warm(jdtls_config)
+				return
+			end
+
+			-- A java/jproperties buffer already exists (e.g. passed on the
+			-- command line), so jdtls's own FileType autostart is likely already
+			-- in flight -- it can take over a second to actually attach on a
+			-- cold start (Mason path resolution, etc.), so starting
+			-- unconditionally here raced it in testing and spawned a second JVM.
+			-- Poll a few times (5 x 500ms); if a client shows up at any point,
+			-- skip -- there's nothing left to warm.
+			local attempts = 0
+			local function maybe_warm_start()
+				attempts = attempts + 1
+				if #vim.lsp.get_clients({ name = "jdtls" }) > 0 then
+					return
+				end
+				if attempts < 5 then
+					vim.defer_fn(maybe_warm_start, 500)
+					return
+				end
+				start_warm(jdtls_config)
+			end
+			vim.defer_fn(maybe_warm_start, 500)
+		end,
+	})
 end
 
 function L.healthcheck()
