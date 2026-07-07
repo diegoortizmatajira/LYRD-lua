@@ -36,7 +36,12 @@ end
 
 -- Returns the hybris installation root (the directory that contains bin/platform/).
 -- HYBRIS_HOME may point to the project root (which has a hybris/ subfolder) or
--- directly to the hybris/ directory -- both conventions are handled.
+-- directly to the hybris/ directory -- both conventions are handled. The result
+-- is symlink-resolved: Hybris multi-repo setups commonly symlink the whole
+-- platform checkout (or bin/custom specifically) into place, and every path
+-- built from hybris_home downstream (extension roots, jar globs, import
+-- exclusions) must be based on the real path JDTLS will actually see for
+-- opened/navigated files, or exclusions/sourcePaths silently fail to match.
 ---@return string?
 function M.find_hybris_home()
 	local raw = os.getenv(HYBRIS_HOME_ENV)
@@ -45,37 +50,142 @@ function M.find_hybris_home()
 	end
 	-- Convention 1: HYBRIS_HOME = <project>/hybris/  (bin/platform directly inside)
 	if vim.fn.isdirectory(raw .. "/bin/platform") == 1 then
-		return raw
+		return vim.fn.resolve(raw)
 	end
 	-- Convention 2: HYBRIS_HOME = <project root>  (hybris/ is a subdirectory)
 	local with_sub = raw .. "/hybris"
 	if vim.fn.isdirectory(with_sub .. "/bin/platform") == 1 then
-		return with_sub
+		return vim.fn.resolve(with_sub)
 	end
 	-- HYBRIS_HOME is set but doesn't match either convention; return raw so the
 	-- caller can show a meaningful error with the resolved path.
 	if vim.fn.isdirectory(raw) == 1 then
-		return raw
+		return vim.fn.resolve(raw)
 	end
 	return nil
 end
 
+-- Directories that never hold a Hybris extension root but are expensive to
+-- walk into (build output, vendored JS deps, VCS metadata).
+local SKIP_DIRS = {
+	["node_modules"] = true,
+	["bower_components"] = true,
+	[".git"] = true,
+	[".svn"] = true,
+	["dist"] = true,
+	["build"] = true,
+	["classes"] = true,
+	["testclasses"] = true,
+}
+
+-- Pure-Lua recursive fallback (used when `fd` is unavailable). Collects every
+-- extensioninfo.xml under `dir`. Prunes once an extension root is found --
+-- Hybris extensions are siblings, never nested inside one another -- so it
+-- never wastes time walking into an extension's own src/bin/web output
+-- looking for extensions that can't be there. Follows symlinks via fs_stat,
+-- with a depth cap and a visited-set as loop guards.
+---@param dir string
+---@param acc string[]?
+---@param depth integer?
+---@param seen table<string, boolean>?
+---@return string[]
+local function scan_extensioninfo(dir, acc, depth, seen)
+	acc = acc or {}
+	depth = depth or 0
+	seen = seen or {}
+	if depth > 40 then
+		return acc
+	end
+
+	local uv = vim.uv or vim.loop
+	local real = uv.fs_realpath(dir)
+	if real then
+		if seen[real] then
+			return acc
+		end
+		seen[real] = true
+	end
+
+	local handle = uv.fs_scandir(dir)
+	if not handle then
+		return acc
+	end
+
+	local subdirs = {}
+	local found_here = false
+	while true do
+		local name, typ = uv.fs_scandir_next(handle)
+		if not name then
+			break
+		end
+		local full = dir .. "/" .. name
+		if name == "extensioninfo.xml" then
+			table.insert(acc, full)
+			found_here = true
+		elseif not SKIP_DIRS[name] then
+			if typ == nil or typ == "link" then
+				local st = uv.fs_stat(full)
+				typ = st and st.type or nil
+			end
+			if typ == "directory" then
+				table.insert(subdirs, full)
+			end
+		end
+	end
+
+	if not found_here then
+		for _, sub in ipairs(subdirs) do
+			scan_extensioninfo(sub, acc, depth + 1, seen)
+		end
+	end
+	return acc
+end
+
+-- Locates every extensioninfo.xml under base_dir. Prefers `fd` (fast,
+-- parallel, symlink-aware via -L) and falls back to the pruning pure-Lua scan
+-- above when `fd` isn't installed or the search returns nothing.
+---@param base_dir string
+---@return string[]
+local function find_extensioninfo_files(base_dir)
+	if vim.fn.executable("fd") == 1 then
+		local results = vim.fn.systemlist({
+			"fd",
+			"-L",
+			"-t",
+			"f",
+			"-a",
+			"--",
+			"^extensioninfo\\.xml$",
+			base_dir,
+		})
+		if vim.v.shell_error == 0 and #results > 0 then
+			return results
+		end
+	end
+	return scan_extensioninfo(base_dir)
+end
+
 -- Locates all Hybris extension root directories inside base_dir by finding
 -- extensioninfo.xml files at any nesting depth (handles group folders like
--- bin/ext-company/group/extname/ where the extension is 3 levels deep).
+-- bin/ext-company/group/extname/ where the extension is 3 levels deep). Each
+-- root is symlink-resolved for the same reason find_hybris_home() resolves
+-- its result: everything derived from it (jar globs, source dirs) must match
+-- the real path JDTLS sees for the corresponding buffers.
 ---@param base_dir string
 ---@return string[]
 local function find_extension_roots(base_dir)
 	local roots = {}
-	for _, ext_info in ipairs(glob_list(base_dir .. "/**/extensioninfo.xml")) do
-		table.insert(roots, vim.fn.fnamemodify(ext_info, ":h"))
+	for _, ext_info in ipairs(find_extensioninfo_files(base_dir)) do
+		table.insert(roots, vim.fn.resolve(vim.fn.fnamemodify(ext_info, ":h")))
 	end
 	return roots
 end
 
 -- Reads localextensions.xml to determine which extensions are active in this
 -- project. Returns a set of extension names (name -> true), or nil when the
--- file is absent (callers treat nil as "include all").
+-- file is absent (callers treat nil as "include all"). XML comments are
+-- stripped first so a commented-out `<extension name="foo"/>` (a common way
+-- to temporarily disable one) is correctly excluded rather than read as active.
 ---@param hybris_home string
 ---@return table<string, boolean>?
 function M.collect_active_extension_names(hybris_home)
@@ -83,23 +193,25 @@ function M.collect_active_extension_names(hybris_home)
 	if vim.fn.filereadable(path) ~= 1 then
 		return nil
 	end
+	local content = table.concat(vim.fn.readfile(path), "\n")
+	content = content:gsub("<!%-%-(.-)%-%->", "")
 	local active = {}
-	for _, line in ipairs(vim.fn.readfile(path)) do
-		local name = line:match('<extension%s+name="([^"]+)"')
-		if name then
-			active[name] = true
-		end
+	for name in content:gmatch('<extension%s+name="([^"]+)"') do
+		active[name] = true
 	end
 	return active
 end
 
+-- Deduplicates paths after resolving both to an absolute form AND through any
+-- symlinks, so two routes to the same physical file (e.g. via a symlinked
+-- bin/custom vs. its real target) collapse to one entry.
 ---@param paths string[]
 ---@return string[]
 function M.deduplicate_paths(paths)
 	local seen = {}
 	local result = {}
 	for _, p in ipairs(paths) do
-		local norm = vim.fn.fnamemodify(p, ":p")
+		local norm = vim.fn.resolve(vim.fn.fnamemodify(p, ":p"))
 		if not seen[norm] then
 			seen[norm] = true
 			table.insert(result, norm)

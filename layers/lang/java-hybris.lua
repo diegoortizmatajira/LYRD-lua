@@ -75,9 +75,11 @@ end
 
 -- Resolves `config` into JDTLS settings, persists it for future jdtls starts,
 -- and pushes a live update to any already-running jdtls client. Shared by
--- Import, Reload, and Configure-save.
+-- Import, Reload, Configure-save, and the silent startup preload.
 ---@param config table
-local function apply_config(config)
+---@param opts { silent: boolean }?
+local function apply_config(config, opts)
+	local silent = opts and opts.silent
 	local resolved = resolver.resolve(config)
 	local settings = resolver.to_jdtls_settings(resolved)
 	local restart_needed = exclusions_changed(resolved)
@@ -93,27 +95,29 @@ local function apply_config(config)
 		for _, client in ipairs(clients) do
 			client:notify("workspace/didChangeConfiguration", settings)
 		end
-		if restart_needed then
-			vim.notify(
-				string.format(
-					"Hybris: %d JARs + %d source paths sent to JDTLS.\n"
-						.. "Run :LspRestart jdtls once so import exclusions take effect (needed for cross-extension source resolution).",
-					#resolved.referencedLibraries,
-					#resolved.sourcePaths
-				),
-				vim.log.levels.WARN
-			)
-		else
-			vim.notify(
-				string.format(
-					"Hybris: %d JARs + %d source paths applied.",
-					#resolved.referencedLibraries,
-					#resolved.sourcePaths
-				),
-				vim.log.levels.INFO
-			)
+		if not silent then
+			if restart_needed then
+				vim.notify(
+					string.format(
+						"Hybris: %d JARs + %d source paths sent to JDTLS.\n"
+							.. "Run :LspRestart jdtls once so import exclusions take effect (needed for cross-extension source resolution).",
+						#resolved.referencedLibraries,
+						#resolved.sourcePaths
+					),
+					vim.log.levels.WARN
+				)
+			else
+				vim.notify(
+					string.format(
+						"Hybris: %d JARs + %d source paths applied.",
+						#resolved.referencedLibraries,
+						#resolved.sourcePaths
+					),
+					vim.log.levels.INFO
+				)
+			end
 		end
-	else
+	elseif not silent then
 		vim.notify(
 			string.format(
 				"Hybris: %d JARs + %d source paths registered.\n"
@@ -126,6 +130,24 @@ local function apply_config(config)
 	end
 
 	L.current_resolved_settings = settings
+end
+
+-- Silently loads the cached solution config (if any) and merges it into
+-- vim.lsp.config("jdtls", ...) BEFORE jdtls's first start this session --
+-- called from L.complete()'s VimEnter handler, ahead of both the native
+-- FileType autostart and our own warm-start. Without this, the first jdtls
+-- boot has no Hybris settings at all and has to reconcile a completely
+-- different sourcePaths/exclusions set later (whenever Reload/Import/a
+-- Configure-save runs), which is the more fragile "hot update an
+-- already-initialized project" path -- exactly the case warm-starting jdtls
+-- early was meant to avoid.
+local function preload_cached_config()
+	local config = store.load(project_root())
+	if not config then
+		return
+	end
+	L.current_hybris_config = config
+	apply_config(config, { silent = true })
 end
 
 ---@param root string
@@ -359,6 +381,11 @@ function L.complete()
 			if not scanner.find_hybris_home() then
 				return
 			end
+
+			-- Best-effort: run before anything (native autostart or our own
+			-- warm-start below) actually reads vim.lsp.config.jdtls to spawn, so
+			-- the very first boot already has the cached sourcePaths/exclusions.
+			preload_cached_config()
 
 			local function start_warm(jdtls_config)
 				vim.lsp.start(jdtls_config, { attach = false })
