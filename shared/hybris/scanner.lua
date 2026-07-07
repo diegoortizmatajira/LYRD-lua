@@ -298,13 +298,26 @@ end
 ---@param extra_patterns string[]
 ---@return string[]
 local function build_import_exclusions(hybris_home, extra_patterns)
-	local exclusions = {
-		hybris_home .. "/bin/platform/ext/**",
-		hybris_home .. "/bin/modules/**",
-		hybris_home .. "/bin/custom/**",
-	}
+	-- Every documented default for java.import.exclusions (vscode-java's own
+	-- **/node_modules/**, **/.metadata/**, etc.) is a relative, **/-prefixed
+	-- pattern -- never an absolute filesystem path. hybris_home is frequently a
+	-- SUBDIRECTORY of the actual jdtls root_dir (e.g. root_dir is the git root,
+	-- hybris_home is <root_dir>/hybris), so if JDT relativizes paths against
+	-- root_dir before matching, an absolute-anchored pattern never matches
+	-- anything -- every extension then keeps its own .classpath/.project and
+	-- gets treated as a separate Eclipse project, exactly the "not on the
+	-- classpath, only syntax errors reported" failure this setting exists to
+	-- prevent. Emit BOTH forms so it works regardless of which one JDT's
+	-- matcher actually expects.
+	local targets = { "bin/platform/ext", "bin/modules", "bin/custom" }
 	for _, p in ipairs(extra_patterns) do
-		table.insert(exclusions, hybris_home .. "/bin/" .. p .. "/**")
+		table.insert(targets, "bin/" .. p)
+	end
+
+	local exclusions = {}
+	for _, target in ipairs(targets) do
+		table.insert(exclusions, hybris_home .. "/" .. target .. "/**")
+		table.insert(exclusions, "**/" .. target .. "/**")
 	end
 	return exclusions
 end
