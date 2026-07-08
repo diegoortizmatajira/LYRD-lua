@@ -74,6 +74,48 @@ local function compute_max_concurrent_builds()
 	return math.max(1, math.min(cores - 1, 8))
 end
 
+-- jdtls (and bundled extensions like java-debug-adapter/spring-boot-tools)
+-- need a modern JVM to LAUNCH the server process itself -- separate from the
+-- "runtimes" registered for the PROJECT's own source/target level. Trusting a
+-- bare "java" from $PATH is inconsistent across platforms (macOS especially:
+-- system stub vs Homebrew vs SDKMAN can all disagree) and can silently
+-- resolve to something too old, which surfaces as OSGi bundle-activation
+-- failures at a completely different layer (e.g. "Unresolved requirement:
+-- osgi.ee ... version=21" cascading into org.eclipse.jdt.core failing to
+-- fully initialize before another bundle depends on it -- a confusing,
+-- hard-to-diagnose failure mode). Prefers JAVA_HOME, then the highest
+-- sufficiently-modern runtime java-generator.lua already discovers, and
+-- only falls back to a bare "java" if nothing better is found.
+local MIN_LAUNCHER_JAVA_VERSION = 21
+
+---@return string
+local function resolve_launcher_java()
+	local java_home = os.getenv("JAVA_HOME")
+	if java_home and java_home ~= "" then
+		local candidate = join(java_home, "bin", "java")
+		if vim.fn.executable(candidate) == 1 then
+			return candidate
+		end
+	end
+
+	local best_path, best_version
+	for _, runtime in ipairs(generator.get_runtimes()) do
+		local version = tonumber(runtime.name:match("JavaSE%-(%d+)"))
+		if version and version >= MIN_LAUNCHER_JAVA_VERSION and (not best_version or version > best_version) then
+			best_version = version
+			best_path = runtime.path
+		end
+	end
+	if best_path then
+		local candidate = join(best_path, "bin", "java")
+		if vim.fn.executable(candidate) == 1 then
+			return candidate
+		end
+	end
+
+	return "java"
+end
+
 -- Kills an ORPHANED jdtls from a prior session that still holds this
 -- workspace's `-data` lock (.metadata/.lock), before we start ours -- a live
 -- orphan holding the lock would otherwise deadlock the new server. Orphans
@@ -166,7 +208,7 @@ reap_stale_jdtls(paths.workspace_path)
 
 return {
 	cmd = {
-		"java",
+		resolve_launcher_java(),
 		"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 		"-Dosgi.bundles.defaultStartLevel=4",
 		"-Declipse.product=org.eclipse.jdt.ls.core.product",
