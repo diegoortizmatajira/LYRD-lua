@@ -3,7 +3,7 @@
 -- ("independent" jars). Pure filesystem reads only -- no persistence, no LSP.
 
 local HYBRIS_HOME_ENV = "HYBRIS_HOME"
-local SOURCE_SUBDIRS = { "src", "gensrc", "web/src" }
+local SOURCE_SUBDIRS = { "src", "gensrc", "web/src", "web/commonwebsrc", "web/testsrc", "backoffice/src", "hmc/src" }
 
 ---@class LYRD.hybris.ExtensionRecord
 ---@field name string
