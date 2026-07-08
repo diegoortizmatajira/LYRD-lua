@@ -87,7 +87,7 @@ end
 local function apply_config(config, opts)
 	local silent = opts and opts.silent
 	local resolved = resolver.resolve(config)
-	local settings = resolver.to_jdtls_settings(resolved)
+	local settings = resolver.to_jdtls_settings(resolved, project_root())
 	local restart_needed = exclusions_changed(resolved)
 
 	-- Persist for future jdtls starts (picked up on next vim.lsp.start()).

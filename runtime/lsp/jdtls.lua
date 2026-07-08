@@ -38,7 +38,10 @@ local plug_jar_map = {
 		},
 	},
 	["java-debug-adapter"] = { dir = "server", patterns = { "*.jar" } },
-	["spring-boot-tools"] = { dir = "jars", patterns = { "*.jar" } },
+	-- Disabled: spring-boot-tools bundles fail OSGi loading (commons-lsp-extensions.jar,
+	-- xml-ls-extension.jar have broken/incompatible manifests). jdtls crashes on init.
+	-- java-debug-adapter is sufficient; can re-enable if spring-boot-tools versions improve.
+	-- ["spring-boot-tools"] = { dir = "jars", patterns = { "*.jar" } },
 }
 
 local function get_workspace_path()
@@ -227,9 +230,9 @@ return {
 		"--add-opens",
 		"java.base/java.lang=ALL-UNNAMED",
 		"-javaagent:" .. paths.java_agent,
-		"-clean",
 		"-jar",
 		paths.launcher_jar,
+		"-clean",
 		"-configuration",
 		paths.jdtls_config,
 		"-data",

@@ -48,14 +48,31 @@ function M.resolve(config)
 end
 
 ---@param resolved LYRD.hybris.Resolved
+---@param workspace_root string? Workspace root for making sourcePaths relative. If omitted, paths are used as-is.
 ---@return table
-function M.to_jdtls_settings(resolved)
+function M.to_jdtls_settings(resolved, workspace_root)
+	local source_paths = resolved.sourcePaths
+
+	-- JDTLS's invisible project importer requires sourcePaths to be relative to
+	-- the workspace root. Convert absolute paths to relative.
+	if workspace_root and workspace_root ~= "" then
+		source_paths = {}
+		for _, abs_path in ipairs(resolved.sourcePaths) do
+			local rel_path = abs_path
+			-- Make relative to workspace_root by removing the prefix
+			if abs_path:sub(1, #workspace_root) == workspace_root then
+				rel_path = abs_path:sub(#workspace_root + 2)  -- +2 to skip the leading /
+			end
+			table.insert(source_paths, rel_path)
+		end
+	end
+
 	return {
 		settings = {
 			java = {
 				project = {
 					referencedLibraries = resolved.referencedLibraries,
-					sourcePaths = resolved.sourcePaths,
+					sourcePaths = source_paths,
 				},
 				-- Prevent JDTLS from treating each extension as a standalone Eclipse
 				-- project (via .classpath/.project files). In Eclipse-project mode,
