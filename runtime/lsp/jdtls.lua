@@ -227,6 +227,7 @@ return {
 		"--add-opens",
 		"java.base/java.lang=ALL-UNNAMED",
 		"-javaagent:" .. paths.java_agent,
+		"-clean",
 		"-jar",
 		paths.launcher_jar,
 		"-configuration",
