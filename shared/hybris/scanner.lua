@@ -65,6 +65,50 @@ function M.find_hybris_home()
 	return nil
 end
 
+-- Nearest ancestor directory that IS a Hybris extension root (i.e. directly
+-- contains extensioninfo.xml), walking up from start_path. Used to scope a
+-- per-extension tool (e.g. an XML language server instance) so it stays
+-- small and resolves that extension's own generated schemas. Returns the
+-- extension directory (symlink-resolved) or nil.
+---@param start_path string?
+---@return string?
+function M.find_extension_root(start_path)
+	if not start_path or start_path == "" then
+		return nil
+	end
+	local found = vim.fs.find("extensioninfo.xml", { path = start_path, upward = true, type = "file" })
+	if found[1] then
+		return vim.fn.resolve(vim.fs.dirname(found[1]))
+	end
+	return nil
+end
+
+-- Locates a generated schema file named `basename` (e.g. "items.xsd",
+-- "beans.xsd", "extensioninfo.xsd") anywhere under `root`. Prefers `fd`
+-- (fast, parallel, symlink-aware) and falls back to vim.fs.find. Used to
+-- associate Hybris schemas with their XML so a schema-aware XML language
+-- server can complete elements/attributes/enums. The generated grammar is
+-- identical across extensions, so one representative file per type is
+-- enough to drive completion for every matching XML. Returns an absolute
+-- path or nil.
+---@param root string?
+---@param basename string?
+---@return string?
+function M.find_schema(root, basename)
+	if not root or root == "" or not basename or basename == "" then
+		return nil
+	end
+	if vim.fn.executable("fd") == 1 then
+		local pattern = "^" .. basename:gsub("%.", "\\.") .. "$"
+		local results = vim.fn.systemlist({ "fd", "-L", "-t", "f", "-a", "--", pattern, root })
+		if vim.v.shell_error == 0 and #results > 0 then
+			return results[1]
+		end
+	end
+	local hits = vim.fs.find(basename, { path = root, type = "file", limit = 1 })
+	return hits[1]
+end
+
 -- Directories that never hold a Hybris extension root but are expensive to
 -- walk into (build output, vendored JS deps, VCS metadata).
 local SKIP_DIRS = {
