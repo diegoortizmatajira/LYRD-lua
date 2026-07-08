@@ -392,6 +392,7 @@ local function collect_independent_jars(hybris_home, known_roots, module_dirs, e
 	local jars = {}
 	vim.list_extend(jars, glob_list(hybris_home .. "/bin/platform/lib/*.jar"))
 	vim.list_extend(jars, glob_list(hybris_home .. "/bin/platform/bootstrap/bin/*.jar"))
+	vim.list_extend(jars, glob_list(hybris_home .. "/bin/platform/tomcat/lib/*.jar"))
 
 	local legacy = {}
 	vim.list_extend(legacy, glob_list(hybris_home .. "/bin/platform/ext/*/lib/*.jar"))
