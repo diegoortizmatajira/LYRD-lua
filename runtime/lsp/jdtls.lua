@@ -150,8 +150,6 @@ elseif vim.fn.has("win32") == 1 then
 	platform_config = join(jdtls_install, "config_win")
 end
 local lombok_install = lsp.get_pkg_path("lombok-nightly")
-local shared_index = join(vim.fn.stdpath("cache"), "jdtls", "shared-index")
-vim.fn.mkdir(shared_index, "p")
 local paths = {
 	data_dir = join(vim.fn.stdpath("cache"), "nvim-jdtls"),
 	java_agent = join(lombok_install, "lombok.jar"),
@@ -180,8 +178,6 @@ return {
 		"-Xmx" .. compute_heap_gb() .. "G",
 		"-XX:+UseG1GC",
 		"-XX:+UseStringDeduplication",
-		"-Dsun.zip.disableMemoryMapping=true",
-		"-Djdt.core.sharedIndexLocation=" .. shared_index,
 		"-Dlog.level=ERROR",
 		"--add-modules=ALL-SYSTEM",
 		"--add-opens",
