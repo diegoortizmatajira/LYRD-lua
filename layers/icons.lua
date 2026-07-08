@@ -116,6 +116,7 @@ local L = {
 		exit = "󰩈 ",
 		format = "󰉢 ",
 		install = "󰃘 ",
+		import="󰶮 ",
 		kill = "󰚌 ",
 		kill_target = "󱓇 ",
 		move = "󰆾 ",

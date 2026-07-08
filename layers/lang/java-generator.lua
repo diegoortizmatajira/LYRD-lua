@@ -79,11 +79,42 @@ local function normalize_path(path)
 	return vim.fn.fnamemodify(path, ":p")
 end
 
+-- Returns `base_name` unchanged the first time it's requested; every
+-- subsequent (colliding) request gets a "(source)" suffix so runtimes never
+-- share a name (jdtls's configuration.runtimes keys off name). Falls back to
+-- a numbered suffix in the rare case even the source-suffixed name collides
+-- (e.g. two candidates from the same source resolve to the same version).
+---@param base_name string
+---@param source string
+---@param used_names table<string, boolean>
+---@return string
+local function unique_name(base_name, source, used_names)
+	if not used_names[base_name] then
+		used_names[base_name] = true
+		return base_name
+	end
+	local suffixed = string.format("%s (%s)", base_name, source)
+	if not used_names[suffixed] then
+		used_names[suffixed] = true
+		return suffixed
+	end
+	local n = 2
+	local candidate = string.format("%s (%s %d)", base_name, source, n)
+	while used_names[candidate] do
+		n = n + 1
+		candidate = string.format("%s (%s %d)", base_name, source, n)
+	end
+	used_names[candidate] = true
+	return candidate
+end
+
 ---@param runtimes JavaRuntime[]
 ---@param seen table<string, boolean>
+---@param used_names table<string, boolean>
 ---@param path string
 ---@param is_default boolean?
-local function add_runtime(runtimes, seen, path, is_default)
+---@param source string
+local function add_runtime(runtimes, seen, used_names, path, is_default, source)
 	if not is_valid_java_home(path) then
 		return
 	end
@@ -93,7 +124,7 @@ local function add_runtime(runtimes, seen, path, is_default)
 	end
 	seen[normalized_path] = true
 	local runtime = {
-		name = runtime_name_from_path(normalized_path),
+		name = unique_name(runtime_name_from_path(normalized_path), source, used_names),
 		path = normalized_path,
 	}
 	if is_default then
@@ -105,8 +136,10 @@ end
 ---@param root string
 ---@param runtimes JavaRuntime[]
 ---@param seen table<string, boolean>
+---@param used_names table<string, boolean>
+---@param source string
 ---@param opts table?
-local function add_runtime_children(root, runtimes, seen, opts)
+local function add_runtime_children(root, runtimes, seen, used_names, source, opts)
 	opts = opts or {}
 	if vim.fn.isdirectory(root) ~= 1 then
 		return
@@ -121,7 +154,7 @@ local function add_runtime_children(root, runtimes, seen, opts)
 		if opts.transform then
 			java_home = opts.transform(candidate)
 		end
-		add_runtime(runtimes, seen, java_home, false)
+		add_runtime(runtimes, seen, used_names, java_home, false, source)
 		::continue::
 	end
 end
@@ -167,16 +200,17 @@ function L.get_runtimes()
 	end
 	local result = {}
 	local seen = {}
+	local used_names = {}
 	--- Obtain the runtime from environment variables
 	local java_home = os.getenv("JAVA_HOME")
 	if java_home then
-		add_runtime(result, seen, java_home, true)
+		add_runtime(result, seen, used_names, java_home, true, "JAVA_HOME")
 	end
 
 	for _, env_name in ipairs(L.runtime_env_vars) do
 		local env_path = os.getenv(env_name)
 		if env_path then
-			add_runtime(result, seen, env_path, false)
+			add_runtime(result, seen, used_names, env_path, false, env_name)
 		end
 	end
 
@@ -187,19 +221,19 @@ function L.get_runtimes()
 		local jabba_root = resolve_dir_from_env("JABBA_HOME", home .. "/.jabba")
 		local jenv_root = resolve_dir_from_env("JENV_ROOT", home .. "/.jenv")
 
-		add_runtime_children(sdkman_root .. "/candidates/java", result, seen, {
+		add_runtime_children(sdkman_root .. "/candidates/java", result, seen, used_names, "sdkman", {
 			filter = function(candidate)
 				return vim.fn.fnamemodify(candidate, ":t") ~= "current"
 			end,
 		})
-		add_runtime_children(asdf_root .. "/installs/java", result, seen)
-		add_runtime_children(jabba_root .. "/jdk", result, seen)
-		add_runtime_children(jenv_root .. "/versions", result, seen)
+		add_runtime_children(asdf_root .. "/installs/java", result, seen, used_names, "asdf")
+		add_runtime_children(jabba_root .. "/jdk", result, seen, used_names, "jabba")
+		add_runtime_children(jenv_root .. "/versions", result, seen, used_names, "jenv")
 	end
 
-	add_runtime_children("/usr/lib/jvm", result, seen)
-	add_runtime_children("/usr/java", result, seen)
-	add_runtime_children("/Library/Java/JavaVirtualMachines", result, seen, {
+	add_runtime_children("/usr/lib/jvm", result, seen, used_names, "system")
+	add_runtime_children("/usr/java", result, seen, used_names, "system")
+	add_runtime_children("/Library/Java/JavaVirtualMachines", result, seen, used_names, "macos", {
 		transform = function(candidate)
 			return candidate .. "/Contents/Home"
 		end,
