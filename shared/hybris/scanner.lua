@@ -329,9 +329,56 @@ local function has_source_dirs(ext_root)
 	return vim.fn.isdirectory(ext_root .. "/src") == 1 or vim.fn.isdirectory(ext_root .. "/gensrc") == 1
 end
 
+-- Parses .classpath file to extract source directories (kind="src" entries).
+-- .classpath is the authoritative source for what an extension considers source paths,
+-- written by Hybris/Eclipse itself. Returns absolute paths, resolving relative ones
+-- against the .classpath file's directory.
+---@param classpath_file string
+---@return string[]
+local function extract_source_paths_from_classpath(classpath_file)
+	local paths = {}
+	if vim.fn.filereadable(classpath_file) ~= 1 then
+		return paths
+	end
+
+	local content = table.concat(vim.fn.readfile(classpath_file), "\n")
+	local classpath_dir = vim.fn.fnamemodify(classpath_file, ":h")
+
+	-- Parse <classpathentry kind="src" path="..."/> entries
+	for entry in content:gmatch('<classpathentry[^>]*kind="src"[^>]*>') do
+		local src_path = entry:match('path="([^"]+)"')
+		if src_path then
+			-- Absolute path (starts with /) - external source
+			if src_path:match("^/") then
+				if vim.fn.isdirectory(src_path) == 1 then
+					table.insert(paths, src_path)
+				end
+			else
+				-- Relative path - resolve against classpath directory
+				local abs_path = vim.fn.fnamemodify(classpath_dir .. "/" .. src_path, ":p")
+				if vim.fn.isdirectory(abs_path) == 1 then
+					table.insert(paths, abs_path)
+				end
+			end
+		end
+	end
+
+	return paths
+end
+
 ---@param ext_root string
 ---@return string[]
 local function collect_source_paths(ext_root)
+	-- First, try to parse .classpath file if it exists
+	local classpath_file = ext_root .. "/.classpath"
+	if vim.fn.filereadable(classpath_file) == 1 then
+		local paths = extract_source_paths_from_classpath(classpath_file)
+		if #paths > 0 then
+			return paths
+		end
+	end
+
+	-- Fallback: use SOURCE_SUBDIRS heuristic if no .classpath or it had no src entries
 	local paths = {}
 	for _, subdir in ipairs(SOURCE_SUBDIRS) do
 		local candidate = ext_root .. "/" .. subdir
