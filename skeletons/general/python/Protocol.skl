@@ -1,0 +1,18 @@
+return function (buf)
+  local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = text.to_pascal_case(basename:match("(.+)%..+$"))
+
+  return { 
+      type_name = basename,
+      _cursor = { 5, 8 }
+    }
+end
+---
+from typing import Protocol
+
+class ${type_name}(Protocol):
+    def execute(self) -> None:
+        ...
+

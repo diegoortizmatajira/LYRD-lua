@@ -1,0 +1,20 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		type_name = text.to_pascal_case(file_stem),
+		header_file = file_stem .. ".hpp",
+		_cursor = { 6, 2 }
+	}
+end
+---
+#include "${header_file}"
+
+int Compute${type_name}(int lhs, int rhs)
+{
+	return lhs + rhs;
+}
+

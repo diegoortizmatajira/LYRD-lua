@@ -1,0 +1,23 @@
+return function (buf)
+  local generator = require("LYRD.layers.lang.go-generator")
+  local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  local file_stem = basename:match("(.+)%..+$")
+  file_stem = file_stem:gsub("_handler$", "")
+
+  return { 
+      handler_name = text.to_pascal_case(file_stem),
+      package = generator.get_package(name),
+      _cursor = { 8, 2 }
+    }
+end
+---
+package ${package}
+
+import "net/http"
+
+func ${handler_name}Handler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+

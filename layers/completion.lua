@@ -1,6 +1,6 @@
-local setup = require("LYRD.shared.setup")
-local lsp = require("LYRD.layers.lsp")
 local icons = require("LYRD.layers.icons")
+local lsp = require("LYRD.layers.lsp")
+local setup = require("LYRD.shared.setup")
 
 ---@class LYRD.layer.Completion: LYRD.shared.setup.Module
 local L = { name = "Code Completion" }
@@ -230,7 +230,7 @@ function L.plugins()
 						expandable_indicator = true,
 						fields = { "abbr", "kind", "menu" },
 						format = function(entry, vim_item)
-								local icon = kind_icons[vim_item.kind] or ""
+							local icon = kind_icons[vim_item.kind] or ""
 							vim_item.kind = string.format("%s %s", icon, vim_item.kind)
 							vim_item.menu = menu_texts[entry.source.name]
 							return vim_item
@@ -251,6 +251,7 @@ function L.plugins()
 						{ name = "easy-dotnet" },
 						{ name = "cmp-dbee" },
 						{ name = "mdlink" },
+						{ name = "ecolog" },
 					}, {
 						{ name = "buffer" },
 						{ name = "path" },
@@ -291,12 +292,11 @@ function L.plugins()
 				})
 			end,
 			dependencies = {
-				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-buffer",
-				"saadparwaiz1/cmp_luasnip",
 				"hrsh7th/cmp-path",
-				"hrsh7th/cmp-nvim-lsp-signature-help",
 				"hrsh7th/cmp-cmdline",
+				"saadparwaiz1/cmp_luasnip",
+				"hrsh7th/cmp-nvim-lsp-signature-help",
 			},
 		},
 		{
@@ -309,12 +309,7 @@ function L.plugins()
 				end)
 			end,
 		},
-		{ "hrsh7th/cmp-buffer" },
-		{ "hrsh7th/cmp-path" },
-		{ "hrsh7th/cmp-cmdline" },
 		{ "andersevenrud/cmp-tmux" },
-		{ "saadparwaiz1/cmp_luasnip" },
-		{ "hrsh7th/cmp-nvim-lsp-signature-help" },
 		{ "mattn/emmet-vim" },
 		{ "lukas-reineke/cmp-under-comparator" },
 	})

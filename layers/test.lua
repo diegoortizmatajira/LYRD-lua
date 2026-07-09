@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Test: LYRD.shared.setup.Module

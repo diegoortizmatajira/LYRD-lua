@@ -1,0 +1,16 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		type_name = text.to_pascal_case(file_stem),
+		_cursor = { 2, 5 }
+	}
+end
+---
+enum ${type_name} {
+	UNKNOWN
+}
+

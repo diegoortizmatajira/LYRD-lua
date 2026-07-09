@@ -1,0 +1,24 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.java-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  local entity_name = basename:gsub("Repository$", "")
+
+  return {
+      type_name = basename,
+      package = generator.get_package(name),
+      entity_name = entity_name,
+      _cursor = { 8, 5 }
+    }
+end
+---
+package ${package};
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ${type_name} extends JpaRepository<${entity_name}, Long>
+{
+
+}
+

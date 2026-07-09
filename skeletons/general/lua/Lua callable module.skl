@@ -1,0 +1,21 @@
+return function ()
+	return {
+		_cursor = { 7, 2 }
+	}
+end
+---
+local M = {}
+
+---@param ... any
+---@return any
+function M.run(...)
+	return ...
+end
+
+return setmetatable(M, {
+	---@param ... any
+	---@return any
+	__call = function(_, ...)
+		return M.run(...)
+	end,
+})

@@ -123,9 +123,8 @@ describe("java-generator.get_package", function()
 			return orig_fnamemodify(path, modifier)
 		end
 
-		local result = generator.get_package(
-			"/project/src/main/java/com/example/internal/domain/model/entity/User.java"
-		)
+		local result =
+			generator.get_package("/project/src/main/java/com/example/internal/domain/model/entity/User.java")
 
 		assert.are.equal("com.example.internal.domain.model.entity", result)
 	end)
@@ -156,5 +155,107 @@ describe("java-generator.get_package", function()
 		local result = generator.get_package("/project/src/test/java/com/example/service/MyServiceTest.java")
 
 		assert.are.equal("com.example.service", result)
+	end)
+end)
+
+describe("java-generator.get_runtimes", function()
+	local scratch
+	local ENV_KEYS = {
+		"JAVA_HOME",
+		"JDK_HOME",
+		"JRE_HOME",
+		"JAVA8_HOME",
+		"JAVA11_HOME",
+		"JAVA17_HOME",
+		"JAVA21_HOME",
+		"SDKMAN_DIR",
+		"ASDF_DATA_DIR",
+		"JABBA_HOME",
+		"JENV_ROOT",
+	}
+	local original_env = {}
+
+	-- Builds a fake JDK home (bin/java executable + a release file reporting
+	-- JAVA_VERSION), so is_valid_java_home/java_version_from_release work
+	-- against a real filesystem rather than mocking every vim.fn.* call.
+	local function fake_jdk(path, version)
+		vim.fn.mkdir(path .. "/bin", "p")
+		local java_bin = path .. "/bin/java"
+		vim.fn.writefile({ "#!/bin/sh", "exit 0" }, java_bin)
+		vim.fn.system({ "chmod", "+x", java_bin })
+		vim.fn.writefile({ 'JAVA_VERSION="' .. version .. '"' }, path .. "/release")
+	end
+
+	before_each(function()
+		for _, key in ipairs(ENV_KEYS) do
+			original_env[key] = vim.env[key]
+		end
+		scratch = vim.fn.tempname()
+		vim.fn.mkdir(scratch, "p")
+		-- get_runtimes() memoizes; force a fresh scan per test.
+		generator.runtimes = nil
+		-- Point the "installer" roots somewhere empty so only our fake JDKs
+		-- (plus whatever hardcoded system paths genuinely exist) are found.
+		vim.env.SDKMAN_DIR = scratch .. "/no-sdkman"
+		vim.env.ASDF_DATA_DIR = scratch .. "/no-asdf"
+		vim.env.JABBA_HOME = scratch .. "/no-jabba"
+		vim.env.JENV_ROOT = scratch .. "/no-jenv"
+		for _, key in ipairs({ "JDK_HOME", "JRE_HOME", "JAVA8_HOME", "JAVA11_HOME", "JAVA17_HOME" }) do
+			vim.env[key] = nil
+		end
+	end)
+
+	after_each(function()
+		for _, key in ipairs(ENV_KEYS) do
+			vim.env[key] = original_env[key]
+		end
+		vim.fn.delete(scratch, "rf")
+		generator.runtimes = nil
+	end)
+
+	local function find_by_name(runtimes, name)
+		for _, r in ipairs(runtimes) do
+			if r.name == name then
+				return r
+			end
+		end
+		return nil
+	end
+
+	it("keeps the first runtime's plain name and suffixes a later collision with its source", function()
+		local jdk_a = scratch .. "/jdk-a"
+		local jdk_b = scratch .. "/jdk-b"
+		fake_jdk(jdk_a, "21.0.1")
+		fake_jdk(jdk_b, "21.0.5")
+		vim.env.JAVA_HOME = jdk_a
+		vim.env.JAVA21_HOME = jdk_b
+
+		local runtimes = generator.get_runtimes()
+
+		local first = find_by_name(runtimes, "JavaSE-21")
+		assert.is_not_nil(first)
+		assert.are.equal(vim.fn.fnamemodify(jdk_a, ":p"), first.path)
+		assert.is_true(first.default)
+
+		local second = find_by_name(runtimes, "JavaSE-21 (JAVA21_HOME)")
+		assert.is_not_nil(second)
+		assert.are.equal(vim.fn.fnamemodify(jdk_b, ":p"), second.path)
+	end)
+
+	it("never produces two runtimes with the same name", function()
+		local jdk_a = scratch .. "/jdk-a"
+		local jdk_b = scratch .. "/jdk-b"
+		fake_jdk(jdk_a, "21.0.1")
+		fake_jdk(jdk_b, "21.0.5")
+		vim.env.JAVA_HOME = jdk_a
+		vim.env.JAVA21_HOME = jdk_b
+
+		local runtimes = generator.get_runtimes()
+
+		local seen_names = {}
+		for _, r in ipairs(runtimes) do
+			assert.is_falsy(seen_names[r.name])
+			seen_names[r.name] = true
+		end
 	end)
 end)

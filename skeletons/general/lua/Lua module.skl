@@ -1,0 +1,14 @@
+return function ()
+	return {
+		_cursor = { 5, 2 }
+	}
+end
+---
+local M = {}
+
+---@param opts? table
+function M.setup(opts)
+	opts = opts or {}
+end
+
+return M

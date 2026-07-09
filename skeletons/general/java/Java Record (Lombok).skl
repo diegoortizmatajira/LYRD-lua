@@ -7,7 +7,7 @@ return function (buf)
   return { 
       type_name = basename,
       package = generator.get_package(name),
-      _cursor = { 8, 5 }
+      _cursor = { 7, 5 }
     }
 end
 ---

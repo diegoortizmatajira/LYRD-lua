@@ -1,0 +1,301 @@
+
+=== DIRECTORY TREE (max depth 3, source files only) ===
+.claude
+.claude/settings.local.json
+.editorconfig
+.github
+.github/copilot-instructions.md
+.gitignore
+.markdownlint.jsonc
+CLAUDE.md
+README.md
+configs
+configs/clang-format
+docs
+docs/codebase
+docs/codebase/.codebase-scan.txt
+docs/commands.md
+docs/configuration.md
+docs/features.md
+docs/images
+docs/images/ai-panel.png
+docs/images/database-panel.png
+docs/images/debug-panels.png
+docs/images/file-explorer.png
+docs/images/file-tree-panel.png
+docs/images/git-chart.png
+docs/images/git-status-panel.png
+docs/images/lazy-git.png
+docs/images/local-settings-dialog.png
+docs/images/outline-panel.png
+docs/images/overseer-panel.png
+docs/images/replace-in-files-panel.png
+docs/images/tests-panel.png
+docs/installation.md
+docs/keyboard-workflow.md
+docs/language-support.md
+docs/overview.md
+docs/panels.md
+docs/troubleshooting.md
+health.lua
+init.lua
+layers
+layers/ai-dev.lua
+layers/buffers.lua
+layers/clipboard.lua
+layers/commands.lua
+layers/completion.lua
+layers/debug.lua
+layers/dev.lua
+layers/docker.lua
+layers/environment.lua
+layers/extras.lua
+layers/file_templates.lua
+layers/filetree.lua
+layers/foldings.lua
+layers/general.lua
+layers/git.lua
+layers/grammar.lua
+layers/icons.lua
+layers/kubernetes.lua
+layers/lang
+layers/lang/bash.lua
+layers/lang/ci_cd.lua
+layers/lang/cmake.lua
+layers/lang/cpp.lua
+layers/lang/csv.lua
+layers/lang/data-formats.lua
+layers/lang/dotnet-generator.lua
+layers/lang/dotnet.lua
+layers/lang/go-generator.lua
+layers/lang/go.lua
+layers/lang/groovy.lua
+layers/lang/grpc.lua
+layers/lang/java-generator.lua
+layers/lang/java.lua
+layers/lang/kotlin.lua
+layers/lang/latex.lua
+layers/lang/lua.lua
+layers/lang/markdown.lua
+layers/lang/nginx.lua
+layers/lang/nix.lua
+layers/lang/pascal.lua
+layers/lang/php.lua
+layers/lang/python.lua
+layers/lang/ruby.lua
+layers/lang/rust.lua
+layers/lang/sql.lua
+layers/lang/web-frontend.lua
+layers/lang/web-standard.lua
+layers/lsp.lua
+layers/lyrd-commands.lua
+layers/lyrd-keyboard.lua
+layers/lyrd-ui.lua
+layers/mappings.lua
+layers/media.lua
+layers/motions.lua
+layers/neovide.lua
+layers/repl.lua
+layers/rest.lua
+layers/snippets.lua
+layers/static-website.lua
+layers/tasks.lua
+layers/telescope.lua
+layers/test.lua
+layers/text.lua
+layers/themes.lua
+layers/tmux.lua
+layers/treesitter.lua
+layers/vscode.lua
+root-init.lua
+runtime
+runtime/ftdetect
+runtime/ftdetect/.placeholder
+runtime/ftdetect/antlr.vim
+runtime/ftplugin
+runtime/ftplugin/.placeholder
+runtime/lsp
+runtime/lsp/basedpyright.lua
+runtime/lsp/denols.lua
+runtime/lsp/easy_dotnet.lua
+runtime/lsp/emmet_language_server.lua
+runtime/lsp/gopls.lua
+runtime/lsp/groovyls.lua
+runtime/lsp/harper_ls.lua
+runtime/lsp/helm_ls.lua
+runtime/lsp/jdtls.lua
+runtime/lsp/jsonls.lua
+runtime/lsp/laravel_ls.lua
+runtime/lsp/lua_ls.lua
+runtime/lsp/marksman.lua
+runtime/lsp/pascal_ls.lua
+runtime/lsp/pyright.lua
+runtime/lsp/ruff.lua
+runtime/lsp/rust-analyzer.lua
+runtime/lsp/taplo.lua
+runtime/lsp/texlab.lua
+runtime/lsp/vtsls.lua
+runtime/lsp/yamlls.lua
+runtime/queries
+runtime/queries/c_sharp
+runtime/queries/c_sharp/injections.scm
+runtime/queries/regex
+runtime/queries/regex/highlights.scm
+runtime/syntax
+runtime/syntax/.placeholder
+runtime/syntax/antlr3.vim
+runtime/syntax/antlr4.vim
+selene.toml
+shared
+shared/conform
+shared/conform/alejandra.lua
+shared/conform/clang-format.lua
+shared/conform/csharpier.lua
+shared/conform/dotenv-linter.lua
+shared/conform/palantir-java-format.lua
+shared/conform/pasfmt.lua
+shared/conform/php_cs_fixer.lua
+shared/dap
+shared/dap/codelldb.lua
+shared/dap/netcoredbg.lua
+shared/declarative_layer.lua
+shared/mason-registry
+shared/mason-registry/init.lua
+shared/mason-registry/palantir-java-format.lua
+shared/mason-registry/pascal-language-server.lua
+shared/mason-registry/pasfmt.lua
+shared/overseer
+shared/overseer/cake.lua
+shared/overseer/gradle.lua
+shared/overseer/hugo.lua
+shared/overseer/maven.lua
+shared/overseer/python_tasks.lua
+shared/resources
+shared/resources/goku.lua
+shared/resources/title.lua
+shared/run_code.lua
+shared/setup.lua
+shared/type_definition.lua
+shared/ui
+shared/ui/local_config.lua
+shared/utils
+shared/utils/frecency.lua
+shared/utils/init.lua
+shared/utils/signs.lua
+skeletons
+skeletons/general
+skeletons/general/c
+skeletons/general/c/C Enum Header.skl
+skeletons/general/c/C Function Header.skl
+skeletons/general/c/C Function Source.skl
+skeletons/general/c/C Header Module.skl
+skeletons/general/c/C Main.skl
+skeletons/general/c/C Source Module.skl
+skeletons/general/c/C Struct Header.skl
+skeletons/general/c/C Test (assert).skl
+skeletons/general/cpp
+skeletons/general/cpp/C++ Class Header.skl
+skeletons/general/cpp/C++ Class Source.skl
+skeletons/general/cpp/C++ Enum Class.skl
+skeletons/general/cpp/C++ Function Header.skl
+skeletons/general/cpp/C++ Function Source.skl
+skeletons/general/cpp/C++ GoogleTest.skl
+
+=== STACK DETECTION (manifest files) ===
+No recognized manifest files found in project root.
+
+=== ENTRY POINTS ===
+No common entry points found. Check 'main' or 'scripts.start' in manifest files above.
+
+=== LINTING AND FORMATTING CONFIG ===
+Found: .editorconfig
+
+=== ENVIRONMENT VARIABLE TEMPLATES ===
+No .env.example or .env.template found. Identify required environment variables by searching the code and config for environment variable reads.
+
+=== TODO / FIXME / HACK (production code only, test dirs excluded) ===
+layers/dev.lua:8: -- Adds support for commenting code with TODOs, FIXMEs, etc.
+layers/dev.lua:8: -- Adds support for commenting code with TODOs, FIXMEs, etc.
+layers/completion.lua:69: -- TODO(kylo252): upstream this
+layers/lang/python.lua:44: enabled = false, -- TODO: Enable when the actions are implemented as Code actions
+
+=== GIT RECENT COMMITS (last 20) ===
+b527d48 chore: Update palantir-java-format version to 2.94.0
+281146a fix: Correct markdown formatters configuration
+9480c20 feat: Add diff-aware formatting for changed git sections
+a9fc152 feat: Add support for formatting selection in buffer
+24aa63e chore: Update Palantir Java Formatter version in mason registry
+2fdde92 fix: Adjust autocmd to always refresh colorization in buffer
+f0b4ec4 feat: Ensure color settings persist on buffer re-entry in MiniStarter
+b620179 docs: Update type hints and test annotations in telescope and local_config
+981c18c feat: Update Lua LSP configuration for improved workspace support
+9d2a6d4 docs: Update comments in filetree and lang/sql layers
+4e3732d feat: Add CSV decoration toggle to settings in csv layer
+45e0cac feat: Add Enter key binding to menu exit options
+7bc05df feat: Add new "uv sync --extra dev" task in Python tasks
+6d29dec feat: Add customizable Docker Compose command arguments
+056b7b7 docs: Break long @return description in load function
+4567992 docs: Fix Treesitter and frecency.lua docstring formatting
+8e57d43 feat: Add Pascal and Proto snippet files support
+a6251fb refactor: Extract base URL for palantir-java-format downloads
+0dd001e refactor: Update `map_menu` and key binding functions for dynamic icons
+f4aa487 chore: Rename vue.skl to Component.skl in skeletons directory
+
+=== HIGH-CHURN FILES (last 90 days, top 20) ===
+  28 layers/lyrd-keyboard.lua
+  25 layers/lyrd-commands.lua
+  17 layers/ai-dev.lua
+  15 layers/dev.lua
+  14 README.md
+  14 layers/kubernetes.lua
+  13 layers/lang/sql.lua
+  12 layers/docker.lua
+  11 layers/telescope.lua
+  10 layers/lsp.lua
+  10 layers/treesitter.lua
+   9 layers/lyrd-ui.lua
+   9 layers/git.lua
+   8 init.lua
+   8 layers/lang/web-standard.lua
+   8 layers/icons.lua
+   7 layers/lang/java.lua
+   7 shared/run_code.lua
+   7 layers/buffers.lua
+   7 layers/debug.lua
+
+=== MONOREPO SIGNALS ===
+No monorepo signals detected.
+
+=== CODE METRICS ===
+Total files scanned: 333
+Total lines of code: 15866
+
+Files by language:
+  Other: 211
+  Lua: 122
+
+Top 10 largest files:
+docs/images/git-chart.png: 428.1KB
+docs/images/replace-in-files-panel.png: 400.0KB
+docs/images/lazy-git.png: 389.5KB
+docs/images/file-explorer.png: 188.6KB
+docs/images/debug-panels.png: 165.1KB
+docs/images/local-settings-dialog.png: 135.2KB
+docs/images/git-status-panel.png: 78.7KB
+docs/images/database-panel.png: 73.1KB
+docs/images/ai-panel.png: 66.1KB
+docs/images/file-tree-panel.png: 53.9KB
+
+=== CI/CD PIPELINES ===
+No CI/CD pipelines detected.
+
+=== CONTAINERS & ORCHESTRATION ===
+No containerization configs detected.
+
+=== SECURITY & COMPLIANCE ===
+No security configs detected.
+
+=== PERFORMANCE & TESTING ===
+No performance testing configs detected.
+
+=== SCAN COMPLETE ===

@@ -1,0 +1,30 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.java-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return {
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 14, 9 }
+    }
+end
+---
+package ${package};
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class ${type_name}
+{
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex)
+    {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+}
+

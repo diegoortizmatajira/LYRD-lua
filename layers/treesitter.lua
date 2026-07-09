@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local utils = require("LYRD.shared.utils")
 
@@ -34,7 +34,7 @@ function L.plugins()
 			branch = "main",
 			dependencies = {
 				"nvim-treesitter/nvim-treesitter",
-			},
+			}
 		},
 		{
 			"ThePrimeagen/refactoring.nvim",
@@ -69,8 +69,10 @@ end
 ---
 --- @param query_string string The Treesitter query string to be parsed.
 --- @param lang string The language of the current buffer.
---- @param filter_func? fun(match: TSNode[], captures: string[]):boolean A function to filter matches. Receives the match and captures as arguments.
---- @param map_func? fun(match: TSNode[], captures: string[]):any A function to transform the captured node. Receives the match and captures as arguments.
+--- @param filter_func? fun(match: TSNode[], captures: string[]):boolean A
+--- function to filter matches. Receives the match and captures as arguments.
+--- @param map_func? fun(match: TSNode[], captures: string[]):any A function to
+--- transform the captured node. Receives the match and captures as arguments.
 --- @param max_results number|nil The maximum number of results to return.
 ---
 --- @return table A list of captured nodes that match the query, filtered and transformed as specified.
@@ -113,8 +115,10 @@ end
 --- @param query_string string The treesitter query string
 --- @param lang string The language of the current buffer
 --- @param node_capture_name string The name of the capture that contains the node to check
---- @param text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
---- @param filter_func? fun(match: TSNode[], captures: string[]):boolean A function to filter matches. Receives the match and captures as arguments.
+--- @param text_capture_name string|nil The name of the capture that contains
+--- the text to return (if different from node_capture_name)
+--- @param filter_func? fun(match: TSNode[], captures: string[]):boolean A
+--- function to filter matches. Receives the match and captures as arguments.
 --- @param max_results number|nil The maximum number of results to return.
 --- @return string[] A list of texts of the captures that match the query
 function L.get_match_texts(query_string, lang, node_capture_name, text_capture_name, filter_func, max_results)
@@ -137,7 +141,8 @@ end
 --- @param query_string string The treesitter query string
 --- @param lang string The language of the current buffer
 --- @param node_capture_name string The name of the capture that contains the node to check
---- @param text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
+--- @param text_capture_name string|nil The name of the capture that contains
+--- the text to return (if different from node_capture_name)
 --- @return string The text of the capture at the cursor position, or an empty string if not found
 function L.get_match_text_at_cursor(query_string, lang, node_capture_name, text_capture_name)
 	local node_at_cursor = vim.treesitter.get_node()
@@ -163,12 +168,16 @@ function L.get_match_text_at_cursor(query_string, lang, node_capture_name, text_
 	return matches and matches[1] or ""
 end
 
---- Gets the texts of one or more captures at the cursor position, searching recursively up the syntax tree if necessary.
+--- Gets the texts of one or more captures at the cursor position, searching
+--- recursively up the syntax tree if necessary.
 --- @param query_string string The treesitter query string
 --- @param lang string The language of the current buffer
---- @param node_capture_name string The name of the capture that contains the node to check
---- @param text_capture_name string|nil The name of the capture that contains the text to return (if different from node_capture_name)
---- @return string[] The list of texts of the captures at the cursor position, or an empty string if not found
+--- @param node_capture_name string The name of the capture that contains the
+--- node to check
+--- @param text_capture_name string|nil The name of the capture that contains
+--- the text to return (if different from node_capture_name)
+--- @return string[] The list of texts of the captures at the cursor position,
+--- or an empty string if not found
 function L.get_match_texts_at_cursor_recursive(query_string, lang, node_capture_name, text_capture_name)
 	--- Example: SELECT Name FROM (SELECT Name FROM Employees) AS Subquery
 	--- If cursor is on the inner Name, we want to return both the inner and outer

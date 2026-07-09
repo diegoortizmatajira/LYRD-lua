@@ -51,7 +51,7 @@ local L = {
 		"js-debug-adapter",
 		"eslint-lsp",
 		"vtsls",
-		"deno"
+		"deno",
 	},
 	required_treesitter_parsers = {
 		"javascript",
@@ -67,17 +67,18 @@ local L = {
 		"vue_ls",
 		"angularls",
 		"svelte",
+		"eslint",
 	},
 	required_formatter_per_filetype = {
 		{
-			target_filetype = "vue",
-			use_lsp = true,
-			lsp_name = "vue_ls",
-		},
-		{
-			target_filetype = "ts",
-			use_lsp = true,
-			lsp_name = "vtsls",
+			target_filetype = {
+				"angular",
+				"jsx",
+				"javascript",
+				"typescript",
+				"vue",
+			},
+			format_settings = { "prettier" },
 		},
 		{
 			target_filetype = "svelte",

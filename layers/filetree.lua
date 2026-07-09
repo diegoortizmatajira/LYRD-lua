@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
 
@@ -151,6 +151,7 @@ function L.plugins()
 						"^obj$",
 					},
 					exclude = {
+						".editorconfig",
 						".gitignore",
 						".env",
 						".dockerignore",
@@ -195,7 +196,9 @@ function L.plugins()
 				-- Default: {}
 				keybindings = {
 					-- Override the open mode (i.e. vertical/horizontal split, new tab)
-					-- Tip: you can add an extra `<CR>` to the end of these to immediately open the selected file(s) (assuming the TFM uses `enter` to finalise selection)
+					-- Tip: you can add an extra `<CR>` to the end of these to
+					-- immediately open the selected file(s) (assuming the TFM
+					-- uses `enter` to finalise selection)
 					["<C-v>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.vsplit)<CR>",
 					["<C-h>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.split)<CR>",
 					["<C-t>"] = "<C-\\><C-O>:lua require('tfm').set_next_open_mode(require('tfm').OPEN_MODE.tabedit)<CR>",

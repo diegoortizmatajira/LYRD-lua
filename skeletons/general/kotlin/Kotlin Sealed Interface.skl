@@ -1,0 +1,19 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		type_name = text.to_pascal_case(file_stem),
+		implementation_name = text.to_pascal_case(file_stem) .. "Impl",
+		_cursor = { 4, 5 }
+	}
+end
+---
+sealed interface ${type_name}
+
+data class ${implementation_name}(
+    val value: String
+) : ${type_name}
+

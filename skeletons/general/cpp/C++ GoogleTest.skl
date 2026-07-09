@@ -1,0 +1,23 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+	file_stem = file_stem:gsub("_test$", "")
+
+	return {
+		test_name = text.to_pascal_case(file_stem),
+		_cursor = { 9, 2 }
+	}
+end
+---
+#include <gtest/gtest.h>
+
+TEST(${test_name}Test, ShouldWork)
+{
+	const int expected = 1;
+	const int actual = 1;
+
+	EXPECT_EQ(expected, actual);
+}
+

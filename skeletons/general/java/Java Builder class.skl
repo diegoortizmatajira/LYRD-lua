@@ -1,0 +1,33 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.java-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  local product_type = basename:gsub("Builder$", "")
+
+  return {
+      type_name = basename,
+      product_type = product_type,
+      package = generator.get_package(name),
+      _cursor = { 8, 13 }
+    }
+end
+---
+package ${package};
+
+public class ${type_name}
+{
+    private String value;
+
+    public ${type_name} value(String value)
+    {
+        this.value = value;
+        return this;
+    }
+
+    public ${product_type} build()
+    {
+        return new ${product_type}(value);
+    }
+}
+

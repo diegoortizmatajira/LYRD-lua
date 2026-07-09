@@ -1,7 +1,5 @@
-local lsp = require("LYRD.layers.lsp")
-local generator = require("LYRD.layers.lang.go-generator")
-
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local generator = require("LYRD.layers.lang.go-generator")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
@@ -55,6 +53,7 @@ local L = {
 	},
 	required_enabled_lsp_servers = {
 		"gopls",
+		"golangci_lint_ls",
 	},
 	required_formatter_per_filetype = {
 		{

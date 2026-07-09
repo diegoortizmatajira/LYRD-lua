@@ -1,5 +1,5 @@
-local lsp = require("LYRD.layers.lsp")
 local commands = require("LYRD.layers.commands")
+local lsp = require("LYRD.layers.lsp")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Grammar: LYRD.shared.setup.Module

@@ -1,0 +1,66 @@
+--- @class LYRD.shared.setup.LocalConfig
+--- @field skip_layers? string[] List of layers to skip loading
+---
+--- @class LYRD.shared.setup.Settings: LYRD.shared.setup.LocalConfig
+--- @field layers string[] contains the list of layers provided in init script
+--- @field loaded_layers? LYRD.shared.setup.Module[] contains the list of names of the loaded layers
+--- @field plugins? LazySpec[] contains the list of plugins loaded
+--- @field commands? table<string, table<string, string|function>> contains the list of implemented commands
+
+--- @class LYRD.shared.setup.Module
+--- @field name string Name of the layer
+--- @field unskippable? nil|boolean If true, the layer cannot be skipped
+--- @field condition? nil|boolean Condition to check if the layer should be loaded
+--- @field vscode_compatible? nil|boolean If true, the layer is compatible with vscode
+--- @field plugins? nil|fun() Function to load the plugins for the layer
+--- @field preparation? nil|fun() Function to prepare the layer, called before settings
+--- @field settings? nil|fun() Function to set the settings for the layer, called after preparation
+--- @field keybindings? nil|fun() Function to set the keybindings for the layer, called after settings
+--- @field complete? nil|fun() Function to complete the layer, called after keybindings
+--- @field healthcheck? nil|fun() Function to check the health of the layer
+--- @field run_once_per_filetype? nil|table<string|string[], fun()> Allows to define actions to run once per filetype
+
+--- @class LYRD.shared.setup.DeclarativeFormat
+--- @field target_filetype string|string[] List of filetypes for which to apply the formatting configuration.
+--- @field use_lsp nil|boolean Whether to use the LSP formatting capabilities
+--- for the specified filetypes. If false, the specified formatter(s) will be
+--- used instead.
+--- @field format_settings nil|table List of formatters to be applied for the specified filetypes.
+--- @field lsp_name nil|string The name of the LSP server to use for formatting, if use_lsp is true.
+---
+--- @class LYRD.shared.setup.DeclarativeLSPConfig
+--- @field [1] string The name of the LSP server for which to apply the configuration.
+--- @field config function|table The configuration to apply for the specified
+--- LSP server.
+
+--- @class LYRD.shared.setup.DeclarativeLayer: LYRD.shared.setup.Module Allows
+--- to create a layer module with a declarative style, by just specifying the
+--- required plugins, mason packages, treesitter parsers and enabled LSP
+--- servers. The methods of the module will be implemented with default
+--- implementations that take care of these requirements.
+--- @field required_plugins nil|LazySpec[]
+--- @field required_mason_packages nil|string[]  List of mason packages
+--- required by this module.
+--- @field required_treesitter_parsers nil|string[]  List of treesitter parsers
+--- required by this module.
+--- @field required_enabled_lsp_servers nil|(string|LYRD.shared.setup.DeclarativeLSPConfig)[]  List of LSP
+--- servers that must be enabled for this module to load.
+--- @field required_executables nil|string[]  List of executables that must be
+--- available in the system for this module to load.
+--- @field required_formatters nil|table<string,function|table> List of
+--- formatters to be registered for this module, with the filetype as key and
+--- the formatter configuration as value. The formatter configuration can be
+--- either a function that returns the configuration or a table with the
+--- configuration directly.
+--- @field required_formatter_per_filetype nil|LYRD.shared.setup.DeclarativeFormat[]  List of formatting
+--- configurations to apply for this module.
+--- @field required_test_adapters  nil|(string|any|function)[] List of test
+--- adapters to be registered for this module. It can be a module name to
+--- require, a function that returns the adapter configuration or the adapter
+--- configuration directly.
+--- @field required_null_ls_sources nil|(string|any|function)[] List of null-ls
+--- sources to be registered for this module. It can be a list of module names
+--- to require.
+--- @field required_filetype_definitions nil|vim.filetype.add.filetypes List of
+--- filetype definitions to be registered for this module, with the filetype as
+--- key and a list of glob patterns as value.

@@ -39,6 +39,12 @@ local L = {
 	required_enabled_lsp_servers = {
 		"bacon_ls",
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = "rust",
+			format_settings = { "rustfmt" },
+		},
+	},
 	required_test_adapters = {
 		"rustaceanvim.neotest",
 	},

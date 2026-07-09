@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 ---@class LYRD.layer.Extras: LYRD.shared.setup.Module
@@ -65,9 +65,30 @@ function L.plugins()
 	})
 end
 
+function L.UpdateNvim()
+	vim.notify("Updating Neovim...", vim.log.levels.INFO, {
+		title = "LYRD",
+		timeout = 5000,
+	})
+	local utils = require("LYRD.shared.utils")
+	local tasks = require("LYRD.layers.tasks")
+	--- get the current working directory as the folder where the current file is located
+	local cwd = utils.get_lyrd_path("")
+
+	tasks.run_task({
+		name = "LYRD Update",
+		cmd = "git",
+		args = { "pull" },
+		cwd = cwd,
+		open_in_split = true,
+		focus = true,
+	})
+end
+
 function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDHardModeToggle, ":Hardtime toggle" },
+		{ cmd.LYRDUpdateDistro, L.UpdateNvim },
 		{
 			cmd.LYRDGitBrowseOnWeb,
 			function()

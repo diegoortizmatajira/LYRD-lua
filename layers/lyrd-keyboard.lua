@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local mappings = require("LYRD.layers.mappings")
+local setup = require("LYRD.shared.setup")
 local menu_header = mappings.menu_header
 local submode_header = mappings.submode_header
 local cmd = require("LYRD.layers.lyrd-commands").cmd
@@ -145,6 +145,7 @@ function L.keybindings()
 		{ "n", "s", "<nop>" },
 		{ "v", "<C-r><C-f>", cmd.LYRDCodeRefactor },
 		{ "n", "<M-S-f>", cmd.LYRDBufferFormat },
+		{ "n", "ZX", cmd.LYRDWindowForceCloseAll },
 	})
 
 	mappings.create_menu("g", {
@@ -263,7 +264,8 @@ function L.keybindings()
 		{ "<Enter>", cmd.LYRDWindowZoom },
 		{ "<Space>", cmd.LYRDClearSearchHighlights },
 		{ "c", cmd.LYRDBufferClose },
-		{ "f", cmd.LYRDBufferFormat },
+		{ "f", cmd.LYRDBufferFormat, { "x" } },
+		{ "F", cmd.LYRDBufferFormatChangesOnly },
 		{ "g", cmd.LYRDGrammarToggle },
 		{ "j", cmd.LYRDSmartCoder },
 		{ "k", cmd.LYRDToggleBufferDecorations },
@@ -288,7 +290,8 @@ function L.keybindings()
 			{ "p", cmd.LYRDBufferPrev },
 			{ "d", cmd.LYRDBufferClose },
 			{ "D", cmd.LYRDBufferForceClose },
-			{ "f", cmd.LYRDBufferFormat },
+			{ "f", cmd.LYRDBufferFormat, { "x" } },
+			{ "F", cmd.LYRDBufferFormatChangesOnly },
 			{ "x", cmd.LYRDBufferCloseAll },
 			{ "X", cmd.LYRDBufferForceCloseAll },
 			{ "h", cmd.LYRDBufferSplitH },
@@ -431,6 +434,12 @@ function L.keybindings()
 				{ "n", cmd.LYRDGitWorkTreeCreate },
 				{ "e", cmd.LYRDGitWorkTreeCreateExistingBranch },
 			}),
+			menu_header("t", "Patches", {
+				{ "c", cmd.LYRDGitPatchCreate },
+				{ "u", cmd.LYRDGitPatchCreateUnpushed },
+				{ "a", cmd.LYRDGitPatchApply },
+				{ "A", cmd.LYRDGitPatchApplyAll },
+			}),
 			{ "m", cmd.LYRDGitMergeConflicts },
 			{ "g", cmd.LYRDGitUI },
 			{ "G", cmd.LYRDGitViewGraph },
@@ -457,12 +466,13 @@ function L.keybindings()
 			{ "v", cmd.LYRDTestSummary },
 		}, icons.code.test),
 		menu_header("p", "Preferences", {
-			{ "t", cmd.LYRDToolManager },
-			{ "p", cmd.LYRDPluginManager },
-			{ "i", cmd.LYRDPluginsInstall },
-			{ "u", cmd.LYRDPluginsUpdate },
 			{ "c", cmd.LYRDPluginsClean },
+			{ "d", cmd.LYRDUpdateDistro },
+			{ "i", cmd.LYRDPluginsInstall },
 			{ "l", cmd.LYRDEditLocalConfig },
+			{ "p", cmd.LYRDPluginManager },
+			{ "t", cmd.LYRDToolManager },
+			{ "u", cmd.LYRDPluginsUpdate },
 		}, icons.other.briefcase),
 		menu_header("q", "Quit", {
 			{ ".", cmd.LYRDWindowClose },

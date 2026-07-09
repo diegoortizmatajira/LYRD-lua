@@ -85,6 +85,18 @@ local L = {
 			extra_filetypes = { "htmldjango" },
 		}),
 	},
+	required_formatter_per_filetype = {
+		{
+			target_filetype = {
+				"html",
+				"htmldjango",
+				"less",
+				"css",
+				"scss",
+			},
+			format_settings = { "prettier" },
+		},
+	},
 }
 
 return declarative_layer.apply(L)

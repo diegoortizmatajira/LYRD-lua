@@ -53,6 +53,7 @@ return {
 		if vim.fn.executable("uv") == 1 then
 			local tasks = {
 				"uv sync",
+				"uv sync --extra dev",
 				"uv build",
 				"uv publish",
 				"uv run pytest",

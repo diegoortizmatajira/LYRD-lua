@@ -4,7 +4,8 @@ local UI = {}
 
 --- Extracts the short display name from a full layer module path.
 --- @param layer_module string Full module path (e.g., "LYRD.layers.lang.python")
---- @return string Short name for display
+--- @return string short_name Short name for display
+--- @return integer count
 local function display_name(layer_module)
 	return layer_module:gsub("^LYRD%.layers%.", "")
 end

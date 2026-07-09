@@ -1,0 +1,28 @@
+return function ()
+	return {
+		_cursor = { 8, 2 }
+	}
+end
+---
+local M = {}
+
+---@generic T
+---@class LuaResult<T>
+---@field ok boolean
+---@field value T|nil
+---@field error string|nil
+
+---@generic T
+---@param value T
+---@return LuaResult<T>
+function M.ok(value)
+	return { ok = true, value = value, error = nil }
+end
+
+---@param message string
+---@return LuaResult<nil>
+function M.err(message)
+	return { ok = false, value = nil, error = message }
+end
+
+return M

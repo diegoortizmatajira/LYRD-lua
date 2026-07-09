@@ -42,6 +42,7 @@ local L = {
 		LYRDBufferForceClose = Command:new("Buffer: Force close", ":bd!", icons.action.kill),
 		LYRDBufferForceCloseAll = Command:new("Buffer: Force close all", ":bufdo bd!", icons.action.kill_target),
 		LYRDBufferFormat = Command:new("Format document", nil, icons.action.format, true),
+		LYRDBufferFormatChangesOnly = Command:new("Format changed sections", nil, icons.action.format, true),
 		LYRDBufferJumpToLast = Command:new("Buffer: Jump to last", ":b#", icons.arrow.up_left),
 		LYRDBufferNew = Command:new("Buffer: New", ":enew", icons.file.new),
 		LYRDBufferNext = Command:new("Buffer: Next", ":bn", icons.chevron.double_right, false, true),
@@ -141,6 +142,10 @@ local L = {
 		LYRDGithubReleaseCreate = Command:new("GitHub: Create release", nil, icons.git.release.open),
 		LYRDGitWorkTreeList = Command:new("Git: List Worktrees", nil, icons.git.worktree),
 		LYRDGitViewGraph = Command:new("Git: View Repository Graph", nil, icons.git.branch),
+		LYRDGitPatchCreate = Command:new("Git Patch: Create from last N commits", nil, icons.git.diff),
+		LYRDGitPatchCreateUnpushed = Command:new("Git Patch: Create from unpushed commits", nil, icons.git.diff),
+		LYRDGitPatchApply = Command:new("Git Patch: Apply single patch file", nil, icons.action.import),
+		LYRDGitPatchApplyAll = Command:new("Git Patch: Apply all patches in a directory", nil, icons.action.import),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPFindCodeActions = Command:new("View Code Actions", nil, icons.action.code_action),
 		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
@@ -276,6 +281,7 @@ local L = {
 		LYRDDiffOff = Command:new("Diff: Turn comparisson off", ":diffoff", icons.action.compare),
 		LYRDBindScroll = Command:new("Diff: Bind scroll on buffers", ":set scrollbind", icons.action.compare),
 		LYRDCommandPalette = Command:new("Command Palette", commandPalette, icons.other.palette),
+		LYRDUpdateDistro = Command:new("Update LYRD Distro", nil, icons.action.update),
 	},
 }
 

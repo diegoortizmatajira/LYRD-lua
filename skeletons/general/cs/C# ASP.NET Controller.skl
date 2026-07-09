@@ -1,0 +1,31 @@
+return function (buf)
+    local generator = require("LYRD.layers.lang.dotnet-generator")
+    local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+  local route_name = basename:gsub("Controller$", "")
+
+  return {
+      type_name = basename,
+      route_name = text.to_dash_case(route_name),
+      namespace = generator.get_namespace(name),
+      _cursor = { 14, 9 }
+    }
+end
+---
+using Microsoft.AspNetCore.Mvc;
+
+namespace ${namespace};
+
+[ApiController]
+[Route("api/${route_name}")]
+public class ${type_name} : ControllerBase
+{
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok("ok");
+    }
+}
+

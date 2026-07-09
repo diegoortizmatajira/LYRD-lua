@@ -4,6 +4,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 local L = {
 	name = "CMake Language",
 	required_mason_packages = {
+		"cmakelint",
 		"cmake-language-server",
 	},
 	required_treesitter_parsers = {
@@ -13,6 +14,24 @@ local L = {
 	required_enabled_lsp_servers = {
 		"cmake",
 	},
+	required_executables = {
+		"cmake",
+		"ctest",
+	},
+	required_filetype_definitions = {
+		filename = {
+			["CMakeLists.txt"] = "cmake",
+		},
+		extension = {
+			["cmake"] = "cmake",
+		},
+		pattern = {
+			[".*/CMakeLists%.txt%.in"] = "cmake",
+		},
+	},
+	required_null_ls_sources = {
+		"null-ls.builtins.diagnostics.cmake_lint",
+	},
 }
 
 function L.settings()
@@ -21,11 +40,6 @@ function L.settings()
 		group = vimrc_make_cmake_group,
 		pattern = { "make" },
 		command = [[setlocal noexpandtab]],
-	})
-	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-		group = vimrc_make_cmake_group,
-		pattern = { "CMakeLists.txt" },
-		command = [[setlocal filetype=cmake]],
 	})
 end
 

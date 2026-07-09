@@ -1,3 +1,9 @@
+---@diagnostic disable: duplicate-set-field
+--- For testing purposes, we need to mock vim.fn.globpath and
+--- vim.fn.fnamemodify to simulate different filesystem scenarios. This will
+--- cause "duplicate-set-field" diagnostics, which we can safely ignore in this
+--- test file.
+
 local generator = require("LYRD.layers.lang.dotnet-generator")
 
 -- Mock storage for vim.notify calls

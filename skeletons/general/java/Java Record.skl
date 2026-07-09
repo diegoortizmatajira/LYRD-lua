@@ -13,7 +13,7 @@ end
 ---
 package ${package};
 
-public record ${type_name}
+public record ${type_name}()
 {
     
 }

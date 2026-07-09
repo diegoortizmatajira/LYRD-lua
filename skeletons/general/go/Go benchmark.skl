@@ -1,0 +1,22 @@
+return function (buf)
+  local generator = require("LYRD.layers.lang.go-generator")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  basename = basename:match("(.+)%..+$")
+
+  return { 
+      type_name = basename,
+      package = generator.get_package(name),
+      _cursor = { 8, 3 }
+    }
+end
+---
+package ${package}
+
+import "testing"
+
+func Benchmark${type_name}(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+	}
+}
+

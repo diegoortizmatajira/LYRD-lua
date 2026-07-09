@@ -1,8 +1,8 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local utils = require("LYRD.shared.utils")
 local frecency_utils = require("LYRD.shared.utils.frecency")
+local utils = require("LYRD.shared.utils")
 
 ---@class LYRD.layer.Telescope: LYRD.shared.setup.Module
 local L = {
@@ -130,7 +130,7 @@ local function telescopeCommandPalette()
 	--- Utilizes a cache for previously loaded commands to enhance performance.
 	--- Loads frecency data from a configured file and sorts commands accordingly.
 	--- Sorts commands either by their name or label.
-	--- @param invalidate_cache boolean Whether to invalidate the cached commands and reload them
+	--- @param invalidate_cache boolean? Whether to invalidate the cached commands and reload them
 	--- @return CommandListItem[] The list of commands sorted and ready for display in the command palette.
 	local function get_command_list(invalidate_cache)
 		if L.command_palette.cached_commands and not invalidate_cache then

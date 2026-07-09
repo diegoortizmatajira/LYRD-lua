@@ -110,6 +110,7 @@ local L = {
 			-- dir = "/home/diegoortizmatajira/Development/contrib/db-cli-adapter.nvim",
 			--- @class DbCliAdapter.Config
 			opts = {
+				---@diagnostic disable-next-line: missing-fields
 				output = {
 					csv = {
 						after_query_callback = function(bufnr)

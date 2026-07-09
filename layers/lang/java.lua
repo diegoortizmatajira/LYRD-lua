@@ -1,5 +1,5 @@
-local lsp = require("LYRD.layers.lsp")
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local lsp = require("LYRD.layers.lsp")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
@@ -7,6 +7,9 @@ local L = {
 	required_plugins = {
 		{
 			"mfussenegger/nvim-jdtls",
+			dependencies = {
+				"mfussenegger/nvim-dap",
+			},
 			opts = nil,
 		},
 		{
@@ -64,7 +67,7 @@ local L = {
 		"java-test",
 		"java-debug-adapter",
 		"spring-boot-tools",
-		"openjdk-17",
+		"gradle-language-server",
 	},
 	required_treesitter_parsers = {
 		"java",
@@ -73,6 +76,7 @@ local L = {
 	},
 	required_enabled_lsp_servers = {
 		"jdtls",
+		"gradle_ls",
 	},
 	required_executables = {
 		"java",
@@ -116,6 +120,7 @@ function L.settings()
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
 		{ cmd.LYRDCodeTooling, start_tooling },
+		{ cmd.LYRDCodeSelectEnvironment, ":JdtSetRuntime" },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")

@@ -1,0 +1,24 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	basename = basename:match("(.+)%..+$")
+
+	return {
+		enum_name = text.to_capital_snake_case(basename),
+		_cursor = { 4, 3 }
+	}
+end
+---
+---@class ${enum_name}Values
+---@field PENDING string
+---@field DONE string
+local M = {}
+
+---@type ${enum_name}Values
+M.${enum_name} = {
+	PENDING = "pending",
+	DONE = "done",
+}
+
+return M

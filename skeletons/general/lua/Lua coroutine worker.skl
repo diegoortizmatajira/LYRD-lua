@@ -1,0 +1,24 @@
+return function ()
+	return {
+		_cursor = { 10, 4 }
+	}
+end
+---
+local M = {}
+
+---@generic T
+---@param step_fn fun(value: T): T
+---@return thread
+function M.new_worker(step_fn)
+	return coroutine.create(function(...)
+		---@type T
+		local value = ...
+		while true do
+			value = step_fn(value)
+			---@type T
+			value = coroutine.yield(value)
+		end
+	end)
+end
+
+return M

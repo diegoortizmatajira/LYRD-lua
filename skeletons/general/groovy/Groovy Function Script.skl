@@ -1,0 +1,18 @@
+return function (buf)
+	local text = require("LYRD.layers.text")
+	local name = vim.api.nvim_buf_get_name(buf)
+	local basename = vim.fs.basename(name)
+	local file_stem = basename:match("(.+)%..+$")
+
+	return {
+		function_name = text.to_camel_case(file_stem),
+		_cursor = { 6, 2 }
+	}
+end
+---
+def ${function_name}(int lhs, int rhs) {
+	lhs + rhs
+}
+
+println ${function_name}(1, 2)
+

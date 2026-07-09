@@ -2,6 +2,7 @@ local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local icons = require("LYRD.layers.icons")
+local git_patch = require("LYRD.shared.utils.git-patch")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
@@ -44,6 +45,24 @@ local function run_git_ignore(command)
 		return
 	end
 	return result.stdout
+end
+
+--- Runs a git command in the current repository and opens the output in a new split.
+--- @args string[] The full command to run, e.g. { "pull" }
+--- @name string? The name of the task to display in the UI
+local function run_git_command(args, name)
+	return function()
+		local utils = require("LYRD.shared.utils")
+		local tasks = require("LYRD.layers.tasks")
+
+		tasks.run_task({
+			name = name or "Git Command",
+			cmd = "git",
+			args = args,
+			open_in_split = true,
+			focus = true,
+		})
+	end
 end
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
@@ -348,6 +367,90 @@ function L.act_on_branch(action)
 	end)
 end
 
+--- Prompts for a commit count and an output directory, then exports the last
+--- N commits as patch files via `git format-patch`.
+function L.git_patch_create()
+	return function()
+		vim.ui.input({ prompt = "Number of commits to export: ", default = "1" }, function(count)
+			if not count then
+				return
+			end
+			local n = tonumber(count)
+			if not n then
+				vim.notify("Invalid number of commits: " .. count, vim.log.levels.ERROR)
+				return
+			end
+			vim.ui.input(
+				{ prompt = "Output directory: ", default = vim.fn.getcwd() .. "/patches", completion = "dir" },
+				function(output_dir)
+					if not output_dir or output_dir == "" then
+						return
+					end
+					local output = git_patch.produce_patches(n, output_dir)
+					if output then
+						vim.notify(output, vim.log.levels.INFO)
+					end
+				end
+			)
+		end)
+	end
+end
+
+--- Prompts for an output directory and an optional base ref, then exports
+--- commits not yet on that ref (default: the current branch's upstream) as patch files.
+function L.git_patch_create_unpushed()
+	return function()
+		vim.ui.input(
+			{ prompt = "Output directory: ", default = vim.fn.getcwd() .. "/patches", completion = "dir" },
+			function(output_dir)
+				if not output_dir or output_dir == "" then
+					return
+				end
+				vim.ui.input({ prompt = "Base ref (blank = current branch's upstream): " }, function(base_ref)
+					if base_ref == nil then
+						return
+					end
+					local output =
+						git_patch.produce_patches_for_unpushed_commits(output_dir, base_ref ~= "" and base_ref or nil)
+					if output then
+						vim.notify(output, vim.log.levels.INFO)
+					end
+				end)
+			end
+		)
+	end
+end
+
+--- Prompts for a patch file, then applies it to the working tree via `git apply`.
+function L.git_patch_apply()
+	return function()
+		vim.ui.input({ prompt = "Patch file to apply: ", completion = "file" }, function(patch_file)
+			if not patch_file or patch_file == "" then
+				return
+			end
+			local output = git_patch.apply_patch(patch_file)
+			if output then
+				vim.notify(output, vim.log.levels.INFO)
+			end
+		end)
+	end
+end
+
+--- Prompts for a directory of patch files, then applies them all as commits via `git am`.
+function L.git_patch_apply_all()
+	return function()
+		vim.ui.input({ prompt = "Directory containing patches: ", completion = "dir" }, function(patch_dir)
+			if not patch_dir or patch_dir == "" then
+				return
+			end
+			local output = git_patch.apply_patches(patch_dir)
+			if output then
+				vim.notify(output, vim.log.levels.INFO)
+			end
+		end)
+	end
+end
+
 function L.create_github_release()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.toggle_external_app_terminal("gh release create")
@@ -361,10 +464,10 @@ function L.settings()
 		{ cmd.LYRDGitUI, ":LazyGit" },
 		{ cmd.LYRDGitStatus, ":Neogit" },
 		{ cmd.LYRDGitCommit, require("neogit").action("commit", "commit", {}) },
-		{ cmd.LYRDGitPush, require("neogit").action("push", "to_pushremote") },
-		{ cmd.LYRDGitPull, require("neogit").action("pull", "from_pushremote") },
+		{ cmd.LYRDGitPush, run_git_command({ "push" }, "Git Push") },
+		{ cmd.LYRDGitPull, run_git_command({ "pull" }, "Git Pull") },
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
-		{ cmd.LYRDGitStageAll, ":!git add ." },
+		{ cmd.LYRDGitStageAll, run_git_command({ "add", "." }, "Stage All Changes") },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitViewLog, ":DiffviewFileHistory" },
 		{
@@ -396,6 +499,10 @@ function L.settings()
 		{ cmd.LYRDGitWorkTreeCreate, ":GitWorktreeCreate" },
 		{ cmd.LYRDGitWorkTreeCreateExistingBranch, ":GitWorktreeCreateExisting" },
 		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
+		{ cmd.LYRDGitPatchCreate, L.git_patch_create() },
+		{ cmd.LYRDGitPatchCreateUnpushed, L.git_patch_create_unpushed() },
+		{ cmd.LYRDGitPatchApply, L.git_patch_apply() },
+		{ cmd.LYRDGitPatchApplyAll, L.git_patch_apply_all() },
 		{ cmd.LYRDGitViewBlame, ":BlameToggle" },
 		{ cmd.LYRDGitMergeConflicts, ":DiffviewOpen" },
 		{ cmd.LYRDGithubIssueList, ":Octo issue list" },

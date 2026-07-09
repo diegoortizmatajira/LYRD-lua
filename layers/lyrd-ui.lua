@@ -1,10 +1,10 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
-local utils = require("LYRD.shared.utils")
 local goku = require("LYRD.shared.resources.goku")
+local icons = require("LYRD.layers.icons")
 local title = require("LYRD.shared.resources.title")
+local utils = require("LYRD.shared.utils")
 
 ---@class LYRD.layer.LYRDUI: LYRD.shared.setup.Module
 --- @field decoration_togglers table<string, CommandImplementation[]> List of togglers for UI decorations per filetype
@@ -311,11 +311,31 @@ function L.plugins()
 					pattern = "MiniStarterOpened",
 					--stylua: ignore
 					callback = function()
+						local buf = vim.api.nvim_get_current_buf()
 						vim.api.nvim_buf_del_keymap(0, "n", "<C-p>")
 						vim.api.nvim_buf_del_keymap(0, "n", "<C-n>")
-						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", { noremap = true, silent = true })
-						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", { noremap = true, silent = true })
-						goku.colorize(vim.api.nvim_get_current_buf())
+						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", {
+							noremap = true, silent = true })
+						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", {
+							noremap = true, silent = true })
+						goku.colorize(buf)
+						local refresh_goku = function()
+							if not vim.api.nvim_buf_is_valid(buf) then
+								return
+							end
+							if vim.api.nvim_get_current_buf() ~= buf then
+								return
+							end
+							vim.schedule(function()
+								if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_get_current_buf() == buf then
+									goku.colorize(buf)
+								end
+							end)
+						end
+						vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "FocusGained" }, {
+							group = lyrd_ui_group,
+							callback = refresh_goku,
+						})
 					end,
 				})
 			end,
@@ -392,7 +412,7 @@ function L.settings()
 		{ cmd.LYRDScratchNew, ":ScratchNew" },
 		{ cmd.LYRDScratchOpen, ":ScratchSearch" },
 		{ cmd.LYRDScratchDelete, ":ScratchDelete" },
-		{ cmd.LYRDScratchSearch, ":ScratchSearch" }, --Should search inside scratch files, but `ScratchSearch` but currently just lists them, so using the same command for now
+		{ cmd.LYRDScratchSearch, ":ScratchSearch" },
 		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },
 		{ cmd.LYRDTerminalList, ":TermSelect" },

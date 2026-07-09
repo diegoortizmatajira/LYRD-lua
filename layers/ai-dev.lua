@@ -1,5 +1,5 @@
-local setup = require("LYRD.shared.setup")
 local commands = require("LYRD.layers.commands")
+local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 local keyboard = require("LYRD.layers.lyrd-keyboard")
 
@@ -31,12 +31,15 @@ Format:
 Where <type> is one of: feat, fix, refactor, docs, style, test, chore, perf.
 
 Rules:
-- The summary line must describe the SPECIFIC change, not a category. Bad: "Update code". Good: "Add retry logic to S3 upload handler".
-- Each bullet must name the concrete thing that changed (file, function, config key, behavior) and why.
-- If the diff adds something, say what was added. If it removes something, say what was removed. If it changes behavior, describe the old vs new behavior.
-- Do NOT use filler like "improve maintainability" or "enhance functionality" — be specific about what improved and how.
-- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
-	]],
+	- The summary line must describe the SPECIFIC change, not a category. Bad:
+	"Update code". Good: "Add retry logic to S3 upload handler".
+	- Each bullet must name the concrete thing that changed (file, function, config key, behavior) and why.
+	- If the diff adds something, say what was added. If it removes something, say
+	what was removed. If it changes behavior, describe the old vs new behavior.
+	- Do NOT use filler like "improve maintainability" or "enhance
+	functionality" — be specific about what improved and how.
+	- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
+]],
 }
 
 local function avante_dependencies()
@@ -70,6 +73,7 @@ local documentable_node_types = {
 	"method_declaration",
 	"class_definition",
 	"class_declaration",
+	"record_declaration",
 	"class_specifier",
 	"struct_item",
 	"enum_item",
@@ -264,7 +268,9 @@ function L.plugins()
 		{
 			"yetone/avante.nvim",
 			lazy = false,
-			version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+			-- Set this to "*" to always pull the latest release version,
+			-- or set it to false to update to the latest code changes.
+			version = false,
 			opts = {
 				provider = L.avante_provider,
 				auto_suggestions_provider = L.avante_provider,
@@ -273,12 +279,10 @@ function L.plugins()
 					edit = false,
 				},
 				behaviour = {
-					auto_apply_diff_after_generation = true,
-					auto_add_current_file = true, -- Whether to automatically add the current file when opening a new chat. Default to true.
+					-- Whether to automatically add the current file when opening a new chat. Default to true.
+					auto_set_keymaps = false,
+					auto_add_current_file = true,
 					auto_approve_tool_permissions = false, -- Default: auto-approve all tools (no prompts)
-					-- Examples:
-					-- auto_approve_tool_permissions = false,                -- Show permission prompts for all tools
-					-- auto_approve_tool_permissions = {"bash", "str_replace"}, -- Auto-approve specific tools only
 				},
 			},
 			-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`

@@ -1,0 +1,23 @@
+return function (buf)
+  local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  local file_stem = basename:match("(.+)%..+$")
+  file_stem = file_stem:gsub("^test_", "")
+
+  return { 
+      test_name = text.to_snake_case(file_stem),
+      _cursor = { 6, 4 }
+    }
+end
+---
+import pytest
+
+def test_${test_name}():
+    # arrange
+
+    # act
+
+    # assert
+    assert True
+

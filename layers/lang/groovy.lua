@@ -31,7 +31,9 @@ local L = {
 	},
 	required_test_adapters = {},
 	required_null_ls_sources = {
-		"null-ls.builtins.diagnostics.npm_groovy_lint",
+		declarative_layer.source_with_opts("null-ls.builtins.diagnostics.npm_groovy_lint", {
+			filetypes = { "groovy", "Jenkinsfile" },
+		}),
 	},
 	required_filetype_definitions = {},
 }

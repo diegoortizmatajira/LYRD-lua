@@ -1,0 +1,24 @@
+return function (buf)
+  local text = require("LYRD.layers.text")
+  local name = vim.api.nvim_buf_get_name(buf)
+  local basename = vim.fs.basename(name)
+  local file_stem = basename:match("(.+)%..+$")
+  file_stem = file_stem:gsub("_repository$", "")
+
+  return { 
+      type_name = text.to_pascal_case(file_stem),
+      _cursor = { 9, 8 }
+    }
+end
+---
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+class ${type_name}Repository:
+    def __init__(self, session: Session) -> None:
+        self._session = session
+
+    def get_by_id(self, model, entity_id):
+        statement = select(model).where(model.id == entity_id)
+        return self._session.scalar(statement)
+

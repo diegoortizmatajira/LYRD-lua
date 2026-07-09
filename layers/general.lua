@@ -33,7 +33,7 @@ function L.preparation()
 	vim.opt.copyindent = true -- Copy the previous indentation on autoindenting.
 	vim.opt.cursorline = true -- Highlight the text line of the cursor.
 	vim.opt.diffopt:append({ "algorithm:histogram", "linematch:60" }) -- Enable linematch diff algorithm
-	vim.opt.expandtab = true -- Enable the use of space in tab.
+	-- vim.opt.expandtab = true -- Enable the use of space in tab.
 	vim.opt.fileformats = "unix,dos,mac"
 	vim.opt.fillchars = { eob = " " } -- Disable `~` on nonexistent lines.
 	vim.opt.foldcolumn = "1" -- Show foldcolumn in nvim 0.9+.
@@ -108,7 +108,13 @@ function L.preparation()
 	vim.cmd([[ set autoread ]])
 
 	-- Clean up v:oldfiles to remove non-file entries (terminals, special buffers, etc.)
-	local dominated_patterns = { "^term://", "^ministarter://", "^diffview://", "Neotest Summary$", "Neotest Output Panel$" }
+	local dominated_patterns = {
+		"^term://",
+		"^ministarter://",
+		"^diffview://",
+		"Neotest Summary$",
+		"Neotest Output Panel$",
+	}
 	local cleaned = {}
 	for _, f in ipairs(vim.v.oldfiles) do
 		local dominated = false
