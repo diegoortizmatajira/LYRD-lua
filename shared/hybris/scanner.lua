@@ -246,6 +246,65 @@ function M.collect_active_extension_names(hybris_home)
 	return active
 end
 
+-- Parses extensioninfo.xml to extract required extension names.
+---@param ext_root string
+---@return string[]
+local function get_extension_dependencies(ext_root)
+	local path = ext_root .. "/extensioninfo.xml"
+	if vim.fn.filereadable(path) ~= 1 then
+		return {}
+	end
+	local content = table.concat(vim.fn.readfile(path), "\n")
+	local deps = {}
+	for name in content:gmatch('<requires%-extension%s+name="([^"]+)"') do
+		table.insert(deps, name)
+	end
+	return deps
+end
+
+-- Resolves transitive dependencies of enabled extensions.
+-- Returns expanded set of active extensions including all dependencies.
+---@param extensions table<string, LYRD.hybris.ExtensionRecord>
+---@param active table<string, boolean>
+---@return table<string, boolean>
+local function resolve_dependencies(extensions, active)
+	local result = {}
+	for name, _ in pairs(active) do
+		result[name] = true
+	end
+
+	local resolved = {}
+	local function enable_deps(ext_name, visiting)
+		if resolved[ext_name] then
+			return
+		end
+		if visiting[ext_name] then
+			return  -- Cycle detected
+		end
+
+		resolved[ext_name] = true
+		visiting[ext_name] = true
+
+		local ext = extensions[ext_name]
+		if ext then
+			for _, dep_name in ipairs(get_extension_dependencies(ext.path)) do
+				if not result[dep_name] then
+					result[dep_name] = true
+					enable_deps(dep_name, visiting)
+				end
+			end
+		end
+
+		visiting[ext_name] = nil
+	end
+
+	for ext_name, _ in pairs(result) do
+		enable_deps(ext_name, {})
+	end
+
+	return result
+end
+
 -- Deduplicates paths after resolving both to an absolute form AND through any
 -- symlinks, so two routes to the same physical file (e.g. via a symlinked
 -- bin/custom vs. its real target) collapse to one entry.
@@ -456,6 +515,16 @@ function M.scan(hybris_home, extra_patterns)
 			if vim.fn.isdirectory(top_dir) == 1 then
 				table.insert(extra_top_dirs, top_dir)
 				add_extensions(top_dir, "extra-pattern", pattern)
+			end
+		end
+	end
+
+	-- Resolve dependencies: auto-enable required extensions
+	if active_extensions then
+		active_extensions = resolve_dependencies(extensions, active_extensions)
+		for name, ext in pairs(extensions) do
+			if ext.type ~= "platform" and active_extensions[name] then
+				ext.enabled = true
 			end
 		end
 	end
