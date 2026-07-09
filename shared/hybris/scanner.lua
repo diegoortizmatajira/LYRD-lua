@@ -383,7 +383,26 @@ local function collect_source_paths(ext_root)
 	for _, subdir in ipairs(SOURCE_SUBDIRS) do
 		local candidate = ext_root .. "/" .. subdir
 		if vim.fn.isdirectory(candidate) == 1 then
-			table.insert(paths, candidate)
+			-- For commonwebsrc: it's a container of package root subdirectories (e.g.,
+			-- costcocommonweb/, acceleratorstorefrontcommons/). Add each subdirectory
+			-- as a source root instead of commonwebsrc itself.
+			if subdir:find("commonwebsrc") then
+				local found_subdirs = false
+				for _, item in ipairs(vim.fn.readdir(candidate)) do
+					local item_path = candidate .. "/" .. item
+					if vim.fn.isdirectory(item_path) == 1 then
+						table.insert(paths, item_path)
+						found_subdirs = true
+					end
+				end
+				-- Fallback: if no subdirectories, add commonwebsrc itself
+				if not found_subdirs then
+					table.insert(paths, candidate)
+				end
+			else
+				-- For normal source directories, add directly
+				table.insert(paths, candidate)
+			end
 		end
 	end
 	return paths
