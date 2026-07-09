@@ -34,6 +34,9 @@
 - Visual Git tools for status, commit, branch, diff, and conflict resolution.
 - Gutter and blame annotations.
 - Worktree and GitHub workflow support.
+- Patch export/import: create `.patch` files from recent or unpushed commits,
+  and apply a single patch file or a whole directory of patches, with
+  interactive prompts for commit count, output directory, and target ref/file.
 
 ## Testing and debugging
 

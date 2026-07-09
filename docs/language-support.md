@@ -29,6 +29,8 @@ formatting, testing, debugging, and task workflows.
 - JUnit/TestNG test workflows
 - Spring Boot tooling support
 - Runtime selection via `LYRDCodeSelectEnvironment` (`:JdtSetRuntime`)
+- Hybris (SAP Commerce) project support — see
+  [Hybris support](#hybris-sap-commerce-support) below
 
 ### .NET (C#, F#, VB.NET)
 
@@ -108,6 +110,29 @@ formatting, testing, debugging, and task workflows.
 - Database-aware query execution
 - Connection-aware dialect selection
 - In-editor result browsing
+
+## Hybris (SAP Commerce) support
+
+- Automatic extension scanning: detects the Hybris installation
+  (`HYBRIS_HOME`), reads `localextensions.xml` for active extensions,
+  resolves transitive `requires-extension` dependencies, and indexes each
+  extension's source paths (from `.classpath`, with heuristic fallbacks for
+  `src`, `gensrc`, `web/commonwebsrc`, `backoffice/src`, `hmc/src`, etc.) and
+  jars (extension `lib`/`bin`, platform `lib`, `bootstrap/bin`, `tomcat/lib`).
+- Scan results are cached per project and reused on startup; a full rescan or
+  cache reload is available via `LYRDJavaHybrisImportSolution`,
+  `LYRDJavaHybrisReloadSolution`, and `LYRDJavaHybrisConfigureSolution`.
+- Wires the scanned classpath and source paths into JDT.LS
+  (`java.project.referencedLibraries`, `sourcePaths`, `java.import.exclusions`)
+  so Hybris extensions are treated as one workspace instead of per-extension
+  Eclipse projects.
+- Hybris Type System support: indexes `*-items.xml` type, attribute, enum,
+  and relation declarations to provide completion and go-to-definition in
+  `items.xml`/ImpEx files, plus a type picker via `LYRDJavaHybrisFindType`.
+- Lemminx XML validation and schema association for `items.xml`, `beans.xml`,
+  `extensioninfo.xml`, and Spring config files scoped to each extension.
+- Activates automatically for Java projects once a Hybris installation is
+  detected; no manual enablement required.
 
 ## How to install language tools
 
