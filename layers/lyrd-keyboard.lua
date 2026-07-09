@@ -434,6 +434,12 @@ function L.keybindings()
 				{ "n", cmd.LYRDGitWorkTreeCreate },
 				{ "e", cmd.LYRDGitWorkTreeCreateExistingBranch },
 			}),
+			menu_header("t", "Patches", {
+				{ "c", cmd.LYRDGitPatchCreate },
+				{ "u", cmd.LYRDGitPatchCreateUnpushed },
+				{ "a", cmd.LYRDGitPatchApply },
+				{ "A", cmd.LYRDGitPatchApplyAll },
+			}),
 			{ "m", cmd.LYRDGitMergeConflicts },
 			{ "g", cmd.LYRDGitUI },
 			{ "G", cmd.LYRDGitViewGraph },
