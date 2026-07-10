@@ -381,7 +381,6 @@ function L.keybindings()
 			{ "H", cmd.LYRDSearchHighlights },
 			{ "M", cmd.LYRDSearchMacros },
 			{ "R", cmd.LYRDReplace },
-			{ "S", cmd.LYRDLSPFindWorkspaceSymbols },
 			{ "S", cmd.LYRDSearchCurrentString },
 			{ "T", cmd.LYRDTerminalList },
 			{ "b", cmd.LYRDBookmarkSearch },
@@ -399,6 +398,7 @@ function L.keybindings()
 			{ "r", cmd.LYRDReplaceInFiles },
 			{ "s", cmd.LYRDLSPFindDocumentSymbols },
 			{ "t", cmd.LYRDSearchColorSchemes },
+			{ "y", cmd.LYRDLSPFindWorkspaceSymbols },
 		}, icons.search.default),
 		menu_header("g", "Git", {
 			menu_header("f", "Gitflow", {
