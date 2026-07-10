@@ -363,6 +363,10 @@ function L.keybindings()
 			{ ";", cmd.LYRDDebugToggleUI },
 			{ "/", cmd.LYRDDebugToggleRepl },
 		}, icons.debug.breakpoint),
+		menu_header("m", "Markdown", {
+			{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },
+			{ "l", cmd.LYRDMarkdownTableMoveColumnRight },
+		}, icons.action.copy),
 		menu_header("s", "Search", {
 			{ ",", cmd.LYRDSearchCommands },
 			{ ".", cmd.LYRDSearchFiles },
