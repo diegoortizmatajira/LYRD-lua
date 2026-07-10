@@ -188,6 +188,7 @@ local L = {
 		LYRDSearchBufferLines = Command:new("Search: Lines", nil, icons.search.lines),
 		LYRDSearchBufferTags = Command:new("Search: Tags", nil, icons.search.tags),
 		LYRDSearchBuffers = Command:new("Search: buffers", nil, icons.search.buffers),
+		LYRDSearchBreakpoints = Command:new("Search: Breakpoints", nil, icons.debug.breakpoint),
 		LYRDSearchColorSchemes = Command:new("Search: Color Schemes", nil, icons.search.default),
 		LYRDSearchCommandHistory = Command:new("Search: Recent comands", nil, icons.search.history),
 		LYRDSearchCommands = Command:new("Search: Commands", nil, icons.search.commands),

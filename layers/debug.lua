@@ -191,6 +191,12 @@ function L.settings()
 			end,
 		},
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
+		{
+			cmd.LYRDSearchBreakpoints,
+			function()
+				require("telescope").extensions.dap.list_breakpoints()
+			end,
+		},
 	})
 end
 
