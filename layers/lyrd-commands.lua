@@ -148,6 +148,18 @@ local L = {
 		LYRDGitPatchApplyAll = Command:new("Git Patch: Apply all patches in a directory", nil, icons.action.import),
 		LYRDMarkdownTableMoveColumnLeft = Command:new("Markdown: Move table column left", nil, icons.arrow.left),
 		LYRDMarkdownTableMoveColumnRight = Command:new("Markdown: Move table column right", nil, icons.arrow.right),
+		LYRDMarkdownTableInsertColumnLeft = Command:new(
+			"Markdown: Insert table column left",
+			nil,
+			icons.arrow.expand_left
+		),
+		LYRDMarkdownTableInsertColumnRight = Command:new(
+			"Markdown: Insert table column right",
+			nil,
+			icons.arrow.expand_right
+		),
+		LYRDMarkdownTableInsertRowAbove = Command:new("Markdown: Insert table row above", nil, icons.arrow.expand_up),
+		LYRDMarkdownTableInsertRowBelow = Command:new("Markdown: Insert table row below", nil, icons.arrow.expand_down),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPFindCodeActions = Command:new("View Code Actions", nil, icons.action.code_action),
 		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),

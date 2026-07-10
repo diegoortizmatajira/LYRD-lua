@@ -143,6 +143,30 @@ function L.settings()
 				markdown_table.move_column(1)
 			end,
 		},
+		{
+			cmd.LYRDMarkdownTableInsertColumnLeft,
+			function()
+				markdown_table.insert_column(-1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertColumnRight,
+			function()
+				markdown_table.insert_column(1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertRowAbove,
+			function()
+				markdown_table.insert_row(-1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertRowBelow,
+			function()
+				markdown_table.insert_row(1)
+			end,
+		},
 	})
 end
 
