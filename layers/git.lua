@@ -1,8 +1,8 @@
 local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
 local git_patch = require("LYRD.shared.utils.git-patch")
+local icons = require("LYRD.layers.icons")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
@@ -439,15 +439,18 @@ end
 --- Prompts for a directory of patch files, then applies them all as commits via `git am`.
 function L.git_patch_apply_all()
 	return function()
-		vim.ui.input({ prompt = "Directory containing patches: ", completion = "dir" }, function(patch_dir)
-			if not patch_dir or patch_dir == "" then
-				return
+		vim.ui.input(
+			{ prompt = "Directory containing patches: ", completion = "dir", default = vim.fn.getcwd() .. "/patches" },
+			function(patch_dir)
+				if not patch_dir or patch_dir == "" then
+					return
+				end
+				local output = git_patch.apply_patches(patch_dir)
+				if output then
+					vim.notify(output, vim.log.levels.INFO)
+				end
 			end
-			local output = git_patch.apply_patches(patch_dir)
-			if output then
-				vim.notify(output, vim.log.levels.INFO)
-			end
-		end)
+		)
 	end
 end
 
