@@ -524,7 +524,8 @@ function L.complete()
 		group = vim.api.nvim_create_augroup("LYRDHybrisWarmStart", { clear = true }),
 		once = true,
 		callback = function()
-			if not scanner.find_hybris_home() then
+			local hybris_home = scanner.find_hybris_home()
+			if not hybris_home or not scanner.project_is_hybris(hybris_home, project_root()) then
 				return
 			end
 
@@ -593,7 +594,7 @@ function L.complete()
 		once = true,
 		callback = function()
 			local hybris_home = scanner.find_hybris_home()
-			if not hybris_home then
+			if not hybris_home or not scanner.project_is_hybris(hybris_home, project_root()) then
 				return
 			end
 			types.ensure(hybris_home, project_root())
@@ -612,7 +613,7 @@ function L.complete()
 				return
 			end
 			local hybris_home = scanner.find_hybris_home()
-			if hybris_home then
+			if hybris_home and scanner.project_is_hybris(hybris_home, project_root()) then
 				types.ensure(hybris_home, project_root())
 			end
 			-- LETTER NEEDS CONFIRMATION: propose <leader>jt ("jump to type"),
@@ -632,7 +633,7 @@ function L.complete()
 		pattern = { "*items.xml" },
 		callback = function()
 			local hybris_home = scanner.find_hybris_home()
-			if hybris_home then
+			if hybris_home and scanner.project_is_hybris(hybris_home, project_root()) then
 				types.ensure(hybris_home, project_root(), nil, true)
 			end
 		end,

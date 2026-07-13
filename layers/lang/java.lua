@@ -1,5 +1,6 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
 local lsp = require("LYRD.layers.lsp")
+local join = require("LYRD.shared.utils").join_paths
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
@@ -113,6 +114,38 @@ local function start_tooling()
 	end
 end
 
+-- Mirrors runtime/lsp/jdtls.lua's get_workspace_path() so this can locate (and
+-- force-remove) the cache without requiring that module, which would start a
+-- new jdtls client as a side effect of `require`-ing it.
+local function jdtls_workspace_path()
+	local project_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h")
+	local project_path_hash = string.gsub(project_path, "[/\\:+-]", "_")
+	return join(vim.fn.stdpath("cache"), "jdtls", "workspaces", project_path_hash)
+end
+
+local function clean_jdtls_cache()
+	local workspace_path = jdtls_workspace_path()
+	if vim.fn.isdirectory(workspace_path) == 0 then
+		vim.notify("No jdtls cache found for this project:\n" .. workspace_path, vim.log.levels.WARN)
+		return
+	end
+
+	local choice = vim.fn.confirm("Delete jdtls cache for this project?\n" .. workspace_path, "&Yes\n&No", 2)
+	if choice ~= 1 then
+		return
+	end
+
+	if vim.fn.delete(workspace_path, "rf") ~= 0 then
+		vim.notify("Failed to delete jdtls cache:\n" .. workspace_path, vim.log.levels.ERROR)
+		return
+	end
+
+	vim.notify(
+		"Deleted jdtls cache:\n" .. workspace_path .. "\nRestart Neovim (or :LspRestart) to reinitialize jdtls.",
+		vim.log.levels.INFO
+	)
+end
+
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
@@ -121,6 +154,7 @@ function L.settings()
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
 		{ cmd.LYRDCodeTooling, start_tooling },
 		{ cmd.LYRDCodeSelectEnvironment, ":JdtSetRuntime" },
+		{ cmd.LYRDLSPClearCache, clean_jdtls_cache },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")

@@ -161,6 +161,7 @@ local L = {
 		LYRDMarkdownTableInsertRowAbove = Command:new("Markdown: Insert table row above", nil, icons.arrow.expand_up),
 		LYRDMarkdownTableInsertRowBelow = Command:new("Markdown: Insert table row below", nil, icons.arrow.expand_down),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
+		LYRDLSPClearCache = Command:new("Clear language server cache for current project", nil, icons.action.clean),
 		LYRDLSPFindCodeActions = Command:new("View Code Actions", nil, icons.action.code_action),
 		LYRDLSPFindDeclaration = Command:new("Go to Declaration", nil, icons.code.navigate),
 		LYRDLSPFindDefinitions = Command:new("Go to Definition", nil, icons.code.navigate),

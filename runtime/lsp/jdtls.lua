@@ -87,9 +87,22 @@ end
 -- osgi.ee ... version=21" cascading into org.eclipse.jdt.core failing to
 -- fully initialize before another bundle depends on it -- a confusing,
 -- hard-to-diagnose failure mode). Prefers JAVA_HOME, then the highest
--- sufficiently-modern runtime java-generator.lua already discovers, and
--- only falls back to a bare "java" if nothing better is found.
+-- runtime java-generator.lua discovers within [MIN,MAX], and only falls back
+-- to a bare "java" if nothing in range is found.
+--
+-- MAX exists because "newest is safest" is also false: jdtls 1.43.0's bundled
+-- OSGi stack (Apache Aries SpiFly's ASM) cannot parse class files from
+-- bleeding-edge JDKs. Launching on JDK 26 throws "IllegalArgumentException:
+-- Unsupported class file major version 70" while SpiFly weaves
+-- org.eclipse.m2e.core's classes, which fails m2e's activation; jdt.ls.core
+-- then fails too (it needs m2e for StandardPreferenceManager's Maven prefs),
+-- and the whole server process exits. Distro package managers happily default
+-- to the latest JDK (e.g. Arch's `java` -> java-26-openjdk), so the
+-- java-generator.lua /usr/lib/jvm scan finds it before ever falling back to a
+-- safe bare "java". Bump MAX once jdtls ships an OSGi stack that supports the
+-- newer JDK, or set $JAVA_HOME to force a specific one regardless of this cap.
 local MIN_LAUNCHER_JAVA_VERSION = 21
+local MAX_LAUNCHER_JAVA_VERSION = 21
 
 ---@return string
 local function resolve_launcher_java()
@@ -104,7 +117,12 @@ local function resolve_launcher_java()
 	local best_path, best_version
 	for _, runtime in ipairs(generator.get_runtimes()) do
 		local version = tonumber(runtime.name:match("JavaSE%-(%d+)"))
-		if version and version >= MIN_LAUNCHER_JAVA_VERSION and (not best_version or version > best_version) then
+		if
+			version
+			and version >= MIN_LAUNCHER_JAVA_VERSION
+			and version <= MAX_LAUNCHER_JAVA_VERSION
+			and (not best_version or version > best_version)
+		then
 			best_version = version
 			best_path = runtime.path
 		end
@@ -116,6 +134,18 @@ local function resolve_launcher_java()
 		end
 	end
 
+	vim.notify(
+		string.format(
+			"jdtls: no Java runtime found in the supported range [%d,%d] "
+				.. "to launch the language server (checked $JAVA_HOME and the "
+				.. "runtimes discovered by java-generator.lua). Falling back to "
+				.. "bare 'java' on $PATH, which may be the wrong version. "
+				.. "Install a matching JDK and/or set $JAVA_HOME.",
+			MIN_LAUNCHER_JAVA_VERSION,
+			MAX_LAUNCHER_JAVA_VERSION
+		),
+		vim.log.levels.WARN
+	)
 	return "java"
 end
 

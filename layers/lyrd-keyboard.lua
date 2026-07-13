@@ -340,6 +340,7 @@ function L.keybindings()
 			{ "b", cmd.LYRDCodeBuildAll },
 			{ "c", cmd.LYRDCodeTooling },
 			{ "C", cmd.LYRDCodeGlobalCheck },
+			{ "d", cmd.LYRDLSPClearCache },
 			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },
 			{ "i", cmd.LYRDCodeFixImports },
