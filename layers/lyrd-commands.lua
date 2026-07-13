@@ -253,6 +253,7 @@ local L = {
 		LYRDScratchDelete = Command:new("Scratch: Delete", nil, icons.action.delete),
 		LYRDScratchOpen = Command:new("Scratch: Search file", nil, icons.search.files),
 		LYRDScratchSearch = Command:new("Scratch: Search text", nil, icons.search.lines),
+		LYRDScratchMigrate = Command:new("Scratch: Migrate scope", nil, icons.action.replace_in_files),
 		LYRDReplace = Command:new("Search and replace in current file", nil, icons.action.replace_text),
 		LYRDReplaceInFiles = Command:new("Search and replace in files", nil, icons.action.replace_in_files),
 		LYRDWindowZoom = Command:new("Toggles zoom in the selected window", nil, icons.other.expand),

@@ -413,6 +413,7 @@ function L.settings()
 		{ cmd.LYRDScratchOpen, ":ScratchSearch" },
 		{ cmd.LYRDScratchDelete, ":ScratchDelete" },
 		{ cmd.LYRDScratchSearch, ":ScratchSearch" },
+		{ cmd.LYRDScratchMigrate, ":ScratchMigrate" },
 		{ cmd.LYRDViewFocusMode, ":Twilight" },
 		{ cmd.LYRDTerminal, ":ToggleTerm" },
 		{ cmd.LYRDTerminalList, ":TermSelect" },

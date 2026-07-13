@@ -217,6 +217,7 @@ function L.keybindings()
 			{ "n", cmd.LYRDScratchNew },
 			{ "s", cmd.LYRDScratchOpen },
 			{ "d", cmd.LYRDScratchDelete },
+			{ "m", cmd.LYRDScratchMigrate },
 		}, icons.file.scratch),
 		{ "r", cmd.LYRDBufferReload },
 		menu_header("R", "Refactors", {
