@@ -194,7 +194,8 @@ function L.settings()
 		{
 			cmd.LYRDSearchBreakpoints,
 			function()
-				require("telescope").extensions.dap.list_breakpoints()
+				-- require("telescope").extensions.dap.list_breakpoints()
+				require("breakpoints").picker()
 			end,
 		},
 	})
