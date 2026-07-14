@@ -55,9 +55,9 @@ container/Kubernetes support, and keyboard-first discovery workflows.
 ### Supported language ecosystems (high level)
 
 Python, JavaScript/TypeScript, Java (including Hybris/SAP Commerce project
-support), .NET (C#/F#/VB.NET), Go, Rust, C/C++, Kotlin, Bash, Ruby, PHP, Nix,
-Groovy, Pascal, LaTeX, SQL, plus common formats like JSON/YAML/TOML/XML,
-Markdown, CMake, Protocol Buffers, and CSV/TSV.
+support), .NET (C#/F#/VB.NET), Go, Rust, C/C++, Dart/Flutter, Kotlin, Bash,
+Ruby, PHP, Nix, Groovy, Pascal, LaTeX, SQL, plus common formats like
+JSON/YAML/TOML/XML, Markdown, CMake, Protocol Buffers, and CSV/TSV.
 
 For full details, see [docs/language-support.md](docs/language-support.md).
 

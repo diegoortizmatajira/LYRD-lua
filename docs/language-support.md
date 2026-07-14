@@ -57,6 +57,12 @@ formatting, testing, debugging, and task workflows.
 - CTest support
 - clang-format integration
 
+### Dart and Flutter
+
+- flutter-tools.nvim, including its own `dartls` LSP integration
+- `dart-debug-adapter` debugging support for Dart and Flutter apps
+- Tree-sitter parser integration
+
 ## Additional languages and formats
 
 - Kotlin, Bash, Ruby, PHP, Nix, Groovy, Pascal, LaTeX, SQL

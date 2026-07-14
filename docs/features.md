@@ -28,6 +28,8 @@
 - Fuzzy file finder and live grep.
 - Symbol navigation and code outline.
 - TODO/FIXME discovery and reusable macro search.
+- Scratch files: create, open, search, and delete workspace-scoped scratch
+  notes, plus migrating scratches from one workspace scope to another.
 
 ## Git workflow
 
@@ -35,8 +37,9 @@
 - Gutter and blame annotations.
 - Worktree and GitHub workflow support.
 - Patch export/import: create `.patch` files from recent or unpushed commits,
-  and apply a single patch file or a whole directory of patches, with
-  interactive prompts for commit count, output directory, and target ref/file.
+  or from currently staged/unstaged changes, and apply a single patch file or
+  a whole directory of patches, with interactive prompts for commit count,
+  output file/directory, and target ref/file.
 
 ## Testing and debugging
 
