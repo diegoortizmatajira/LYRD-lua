@@ -43,6 +43,7 @@ setup.load({
 		"LYRD.layers.lang.java",
 		"LYRD.layers.lang.java-hybris",
 		"LYRD.layers.lang.cpp",
+		"LYRD.layers.lang.dart",
 		"LYRD.layers.lang.kotlin",
 		"LYRD.layers.lang.groovy",
 		"LYRD.layers.lang.latex",
