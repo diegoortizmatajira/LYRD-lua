@@ -1,8 +1,8 @@
 local config = {
 	adapter = {
 		type = "executable",
-		command = vim.fn.exepath("dart-debug-adapter"),
-		args = { "flutter" },
+		command = vim.fn.exepath("flutter"),
+		args = { "debug-adapter" },
 	},
 
 	default_configuration = {
@@ -11,8 +11,6 @@ local config = {
 			type = "dart",
 			request = "launch",
 			name = "Launch flutter",
-			dartSdkPath = "home/flutter/bin/cache/dart-sdk/",
-			flutterSdkPath = "home/flutter",
 			program = "${workspaceFolder}/lib/main.dart",
 			cwd = "${workspaceFolder}",
 		},

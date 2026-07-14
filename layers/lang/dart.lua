@@ -18,9 +18,6 @@ local L = {
 			},
 		},
 	},
-	required_mason_packages = {
-		"dart-debug-adapter",
-	},
 	required_treesitter_parsers = {
 		"dart",
 	},
