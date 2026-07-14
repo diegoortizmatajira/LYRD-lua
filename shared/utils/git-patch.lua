@@ -17,6 +17,47 @@ local function get_upstream_ref()
 	return vim.trim(output)
 end
 
+--- Runs `git diff` with `diff_args` and writes the result to `output_file`.
+---
+--- Creates the parent directory of `output_file` if it doesn't exist yet, for
+--- the same reason as `produce_patches`.
+---@param diff_args string[] Extra arguments passed to `git diff` (e.g. {"--cached"}).
+---@param output_file string Path to write the `.patch` file to.
+---@param label string Description of the change set, used in notify messages.
+---@return string? output_file Path to the created patch file, or nil on failure or if there was nothing to diff.
+local function produce_diff_patch(diff_args, output_file, label)
+	local cmd = { "git", "diff" }
+	vim.list_extend(cmd, diff_args)
+
+	local diff = vim.fn.system(cmd)
+	if vim.v.shell_error ~= 0 then
+		vim.notify("git-patch: failed to diff " .. label .. ":\n" .. diff, vim.log.levels.ERROR)
+		return nil
+	end
+	if vim.trim(diff) == "" then
+		vim.notify("git-patch: no " .. label .. " to produce a patch from", vim.log.levels.WARN)
+		return nil
+	end
+
+	vim.fn.mkdir(vim.fn.fnamemodify(output_file, ":h"), "p")
+	vim.fn.writefile(vim.split(diff, "\n"), output_file)
+	return output_file
+end
+
+--- Exports currently staged changes (index vs HEAD) as a single patch file.
+---@param output_file string Path to write the `.patch` file to.
+---@return string? output_file Path to the created patch file, or nil on failure or if nothing is staged.
+function M.produce_patch_from_staged_changes(output_file)
+	return produce_diff_patch({ "--cached" }, output_file, "staged changes")
+end
+
+--- Exports all unstaged changes in the working tree (working tree vs index) as a single patch file.
+---@param output_file string Path to write the `.patch` file to.
+---@return string? output_file Path to the created patch file, or nil on failure or if nothing is unstaged.
+function M.produce_patch_from_unstaged_changes(output_file)
+	return produce_diff_patch({}, output_file, "unstaged changes")
+end
+
 --- Exports the last `last_n_commits` commits as patch files.
 ---
 --- Creates `output_dir` if it doesn't exist yet, since `git format-patch -o`

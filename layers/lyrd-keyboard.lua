@@ -448,6 +448,8 @@ function L.keybindings()
 			menu_header("t", "Patches", {
 				{ "c", cmd.LYRDGitPatchCreate },
 				{ "u", cmd.LYRDGitPatchCreateUnpushed },
+				{ "s", cmd.LYRDGitPatchCreateStaged },
+				{ "w", cmd.LYRDGitPatchCreateUnstaged },
 				{ "a", cmd.LYRDGitPatchApply },
 				{ "A", cmd.LYRDGitPatchApplyAll },
 			}),
