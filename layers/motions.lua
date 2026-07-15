@@ -27,22 +27,22 @@ function L.plugins()
 			keys = {
 				-- Mapped commands need to be defined as Ex commands to be able repeatable
 				{
-					"<M-e>",
+					"<S-e>",
 					"<cmd>lua require('spider').motion('e')<CR>",
 					mode = { "n", "o", "x" },
 				},
 				{
-					"<M-w>",
+					"<S-w>",
 					"<cmd>lua require('spider').motion('w')<CR>",
 					mode = { "n", "o", "x" },
 				},
 				{
-					"<M-b>",
+					"<S-b>",
 					"<cmd>lua require('spider').motion('b')<CR>",
 					mode = { "n", "o", "x" },
 				},
 				{
-					"<M-g><M-e>",
+					"<S-g><S-e>",
 					"<cmd>lua require('spider').motion('ge')<CR>",
 					mode = { "n", "o", "x" },
 				},
@@ -53,7 +53,8 @@ function L.plugins()
 			branch = "main",
 			dependencies = { "nvim-web-devicons" },
 			opts = {
-				mappings_enabled = false, -- If the value is false, only valid for global keymaps: toggle、add、delete_on_virt、show_desc
+				-- If the value is false, only valid for global keymaps: toggle、add、delete_on_virt、show_desc
+				mappings_enabled = false,
 				sign_icon = icons.other.bookmark, -- if it is not empty, show icon in signColumn.
 			},
 			config = function(_, opts)
