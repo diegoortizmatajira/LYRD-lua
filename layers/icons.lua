@@ -116,7 +116,7 @@ local L = {
 		exit = "󰩈 ",
 		format = "󰉢 ",
 		install = "󰃘 ",
-		import="󰶮 ",
+		import = "󰶮 ",
 		kill = "󰚌 ",
 		kill_target = "󱓇 ",
 		move = "󰆾 ",
@@ -317,6 +317,7 @@ local L = {
 		scratch = "󱞁 ",
 		swap = "󰾵 ",
 		symlink = " ",
+		markdown = " ",
 	},
 	chevron = {
 		right = " ",

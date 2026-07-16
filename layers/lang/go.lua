@@ -1,5 +1,5 @@
 local declarative_layer = require("LYRD.shared.declarative_layer")
-local generator = require("LYRD.layers.lang.go-generator")
+local generator = require("LYRD.shared.go-common")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {

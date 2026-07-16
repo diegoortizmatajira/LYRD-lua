@@ -144,12 +144,20 @@ function L.plugins()
 					git_clean = false,
 					no_buffer = false,
 					no_bookmark = false,
-					custom = {
-						"^\\.git$",
-						"^node_modules$",
-						"^bin$",
-						"^obj$",
-					},
+					custom = function(absolute_path)
+						-- Allow hybris/bin to be displayed
+						if absolute_path:match("hybris/bin$") then
+							return false
+						end
+						local basename = absolute_path:match("([^/]+)$")
+						local hidden_names = { ".git", "node_modules", "obj", "bin" }
+						for _, name in ipairs(hidden_names) do
+							if basename == name then
+								return true
+							end
+						end
+						return false
+					end,
 					exclude = {
 						".editorconfig",
 						".gitignore",

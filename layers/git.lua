@@ -1,8 +1,8 @@
 local commands = require("LYRD.layers.commands")
 local c = commands.command_shortcut
 local cmd = require("LYRD.layers.lyrd-commands").cmd
-local icons = require("LYRD.layers.icons")
 local git_patch = require("LYRD.shared.utils.git-patch")
+local icons = require("LYRD.layers.icons")
 
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
@@ -421,6 +421,42 @@ function L.git_patch_create_unpushed()
 	end
 end
 
+--- Prompts for an output file, then exports currently staged changes as a patch file.
+function L.git_patch_create_staged()
+	return function()
+		vim.ui.input(
+			{ prompt = "Output file: ", default = vim.fn.getcwd() .. "/staged.patch", completion = "file" },
+			function(output_file)
+				if not output_file or output_file == "" then
+					return
+				end
+				local output = git_patch.produce_patch_from_staged_changes(output_file)
+				if output then
+					vim.notify("Patch written to " .. output, vim.log.levels.INFO)
+				end
+			end
+		)
+	end
+end
+
+--- Prompts for an output file, then exports all unstaged changes as a patch file.
+function L.git_patch_create_unstaged()
+	return function()
+		vim.ui.input(
+			{ prompt = "Output file: ", default = vim.fn.getcwd() .. "/unstaged.patch", completion = "file" },
+			function(output_file)
+				if not output_file or output_file == "" then
+					return
+				end
+				local output = git_patch.produce_patch_from_unstaged_changes(output_file)
+				if output then
+					vim.notify("Patch written to " .. output, vim.log.levels.INFO)
+				end
+			end
+		)
+	end
+end
+
 --- Prompts for a patch file, then applies it to the working tree via `git apply`.
 function L.git_patch_apply()
 	return function()
@@ -439,15 +475,18 @@ end
 --- Prompts for a directory of patch files, then applies them all as commits via `git am`.
 function L.git_patch_apply_all()
 	return function()
-		vim.ui.input({ prompt = "Directory containing patches: ", completion = "dir" }, function(patch_dir)
-			if not patch_dir or patch_dir == "" then
-				return
+		vim.ui.input(
+			{ prompt = "Directory containing patches: ", completion = "dir", default = vim.fn.getcwd() .. "/patches" },
+			function(patch_dir)
+				if not patch_dir or patch_dir == "" then
+					return
+				end
+				local output = git_patch.apply_patches(patch_dir)
+				if output then
+					vim.notify(output, vim.log.levels.INFO)
+				end
 			end
-			local output = git_patch.apply_patches(patch_dir)
-			if output then
-				vim.notify(output, vim.log.levels.INFO)
-			end
-		end)
+		)
 	end
 end
 
@@ -501,6 +540,8 @@ function L.settings()
 		{ cmd.LYRDGitViewGraph, L.git_view_graph() },
 		{ cmd.LYRDGitPatchCreate, L.git_patch_create() },
 		{ cmd.LYRDGitPatchCreateUnpushed, L.git_patch_create_unpushed() },
+		{ cmd.LYRDGitPatchCreateStaged, L.git_patch_create_staged() },
+		{ cmd.LYRDGitPatchCreateUnstaged, L.git_patch_create_unstaged() },
 		{ cmd.LYRDGitPatchApply, L.git_patch_apply() },
 		{ cmd.LYRDGitPatchApplyAll, L.git_patch_apply_all() },
 		{ cmd.LYRDGitViewBlame, ":BlameToggle" },

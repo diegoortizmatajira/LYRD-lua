@@ -127,9 +127,46 @@ function L.settings()
 
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
+	local markdown_table = require("LYRD.shared.utils.markdown_table")
 
 	commands.implement("markdown", {
 		{ cmd.LYRDDevServerStart, L.preview_markdown },
+		{
+			cmd.LYRDMarkdownTableMoveColumnLeft,
+			function()
+				markdown_table.move_column(-1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableMoveColumnRight,
+			function()
+				markdown_table.move_column(1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertColumnLeft,
+			function()
+				markdown_table.insert_column(-1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertColumnRight,
+			function()
+				markdown_table.insert_column(1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertRowAbove,
+			function()
+				markdown_table.insert_row(-1)
+			end,
+		},
+		{
+			cmd.LYRDMarkdownTableInsertRowBelow,
+			function()
+				markdown_table.insert_row(1)
+			end,
+		},
 	})
 end
 

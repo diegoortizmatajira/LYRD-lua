@@ -35,7 +35,20 @@ local L = {
 		"lua_ls",
 	},
 	required_null_ls_sources = {
-		"null-ls.builtins.diagnostics.selene",
+		function()
+			-- selene's on_output crashes on `vim.split(nil, ...)` when a clean
+			-- lint run produces empty stdout (none-ls normalizes "" to nil).
+			local selene = require("null-ls.builtins.diagnostics.selene")
+			local original_on_output = selene._opts.on_output
+			return selene.with({
+				on_output = function(params, done)
+					if not params.output or params.output == "" then
+						return done({})
+					end
+					return original_on_output(params, done)
+				end,
+			})
+		end,
 	},
 	required_formatter_per_filetype = {
 		{

@@ -42,6 +42,10 @@ end
 -- built from hybris_home downstream (extension roots, jar globs, import
 -- exclusions) must be based on the real path JDTLS will actually see for
 -- opened/navigated files, or exclusions/sourcePaths silently fail to match.
+-- Returns nil (rather than some best-effort guess) when neither convention
+-- matches -- callers must not treat "HYBRIS_HOME points at *a* directory" as
+-- proof that it's actually a Hybris install, or every Java project opened
+-- with a stale/global HYBRIS_HOME env var gets treated as Hybris.
 ---@return string?
 function M.find_hybris_home()
 	local raw = os.getenv(HYBRIS_HOME_ENV)
@@ -57,12 +61,33 @@ function M.find_hybris_home()
 	if vim.fn.isdirectory(with_sub .. "/bin/platform") == 1 then
 		return vim.fn.resolve(with_sub)
 	end
-	-- HYBRIS_HOME is set but doesn't match either convention; return raw so the
-	-- caller can show a meaningful error with the resolved path.
-	if vim.fn.isdirectory(raw) == 1 then
-		return vim.fn.resolve(raw)
-	end
 	return nil
+end
+
+-- Guards against a HYBRIS_HOME left set in the shell (e.g. from a previous,
+-- unrelated Hybris checkout) being treated as proof that whatever project is
+-- currently open is Hybris. True when hybris_home actually corresponds to
+-- project_root (as itself or its hybris/ subdirectory) or project_root
+-- carries its own Hybris markers (localextensions.xml).
+---@param hybris_home string?
+---@param project_root string
+---@return boolean
+function M.project_is_hybris(hybris_home, project_root)
+	if not hybris_home then
+		return false
+	end
+	local root = vim.fn.resolve(vim.fn.fnamemodify(project_root, ":p:h"))
+	local home = vim.fn.resolve(hybris_home)
+	if home == root or home == (root .. "/hybris") then
+		return true
+	end
+	if
+		vim.fn.filereadable(root .. "/hybris/config/localextensions.xml") == 1
+		or vim.fn.filereadable(root .. "/config/localextensions.xml") == 1
+	then
+		return true
+	end
+	return false
 end
 
 -- Nearest ancestor directory that IS a Hybris extension root (i.e. directly
@@ -279,7 +304,7 @@ local function resolve_dependencies(extensions, active)
 			return
 		end
 		if visiting[ext_name] then
-			return  -- Cycle detected
+			return -- Cycle detected
 		end
 
 		resolved[ext_name] = true

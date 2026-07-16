@@ -104,6 +104,13 @@ function L.plugins()
 			},
 		},
 		{
+			"diegoortizmatajira/breakpoints.nvim",
+			-- dir="/home/diegoortizmatajira/Development/contrib/breakpoints.nvim",
+			dependencies = { "mfussenegger/nvim-dap" },
+			-- event = "VeryLazy",
+			opts = {},
+		},
+		{
 			"nvim-telescope/telescope-dap.nvim",
 			config = function()
 				local telescope = require("telescope")
@@ -184,6 +191,13 @@ function L.settings()
 			end,
 		},
 		{ cmd.LYRDDebugToggleRepl, ":DapToggleRepl" },
+		{
+			cmd.LYRDSearchBreakpoints,
+			function()
+				-- require("telescope").extensions.dap.list_breakpoints()
+				require("breakpoints").picker()
+			end,
+		},
 	})
 end
 

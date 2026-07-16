@@ -102,6 +102,12 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDGitFlowReleasePublish`             | Release publish (pull req.)             | `<Space>gfrp`                                                    | `*`                         |
 | `LYRDGitFlowReleaseStart`               | Release start                           | `<Space>gfrs`                                                    | `*`                         |
 | `LYRDGitMergeConflicts`                 | View Merge Conflicts                    | `<Space>gm`                                                      | `*`                         |
+| `LYRDGitPatchApply`                     | Git Patch: Apply single patch file      | `<Space>gta`                                                     | `*`                         |
+| `LYRDGitPatchApplyAll`                  | Git Patch: Apply all patches in a directory | `<Space>gtA`                                                 | `*`                         |
+| `LYRDGitPatchCreate`                    | Git Patch: Create from last N commits   | `<Space>gtc`                                                     | `*`                         |
+| `LYRDGitPatchCreateStaged`              | Git Patch: Create from staged changes   | `<Space>gts`                                                     | `*`                         |
+| `LYRDGitPatchCreateUnpushed`            | Git Patch: Create from unpushed commits | `<Space>gtu`                                                     | `*`                         |
+| `LYRDGitPatchCreateUnstaged`            | Git Patch: Create from unstaged changes | `<Space>gtw`                                                     | `*`                         |
 | `LYRDGitPull`                           | Pull                                    | `<Space>gp`                                                      | `*`                         |
 | `LYRDGitPush`                           | Push                                    | `<Space>gP`                                                      | `*`                         |
 | `LYRDGitStageAll`                       | Stage all                               | `<Space>ga`                                                      | `*`                         |
@@ -183,6 +189,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDReplaceInFiles`                    | Search and replace in files             | `<Space>sr`                                                      | `*`                         |
 | `LYRDResumeLastSearch`                  | Resume last search                      | `<C-f>`                                                          | `*`                         |
 | `LYRDScratchDelete`                     | Delete an scratch file                  | `<Leader>sd`                                                     | `*`                         |
+| `LYRDScratchMigrate`                    | Scratch: Migrate scope                  | `<Leader>sm`                                                     | `*`                         |
 | `LYRDScratchNew`                        | Create a new scratch                    | `<Leader>sn`                                                     | `*`                         |
 | `LYRDScratchOpen`                       | Select scratch file to open             | `<Leader>ss`                                                     | `*`                         |
 | `LYRDScratchSearch`                     | Search inside scratches                 | `<Leader>sf`                                                     | `*`                         |
