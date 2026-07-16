@@ -67,6 +67,50 @@ local function task_template(name, command, cwd)
 	}
 end
 
+-- Like task_template, but pipes the command's output through a filter so only
+-- matching lines reach the task's output buffer (e.g. the server's verbose
+-- debug-mode logging would otherwise peg Neovim's terminal redraw for hours).
+---@param filter string pattern passed to grep/findstr
+local function filtered_task_template(name, command, cwd, filter)
+	---@type overseer.TemplateDefinition
+	return {
+		name = name,
+		priority = 60,
+		params = {
+			---@type overseer.ListParam
+			args = { optional = true, type = "list", delimiter = " " },
+		},
+		builder = function(params)
+			local parts = vim.deepcopy(command)
+			if params.args and #params.args > 0 then
+				vim.list_extend(parts, params.args)
+			end
+			---@type overseer.TaskDefinition
+			local task
+			if is_windows then
+				local quoted = vim.tbl_map(function(p)
+					return string.format('"%s"', p)
+				end, parts)
+				task = {
+					cmd = { "cmd.exe", "/c", table.concat(quoted, " ") .. ' | findstr /C:"' .. filter .. '"' },
+					cwd = cwd,
+				}
+			else
+				local quoted = vim.tbl_map(vim.fn.shellescape, parts)
+				task = {
+					cmd = {
+						"sh",
+						"-c",
+						table.concat(quoted, " ") .. " | grep --line-buffered " .. vim.fn.shellescape(filter),
+					},
+					cwd = cwd,
+				}
+			end
+			return task
+		end,
+	}
+end
+
 ---@param platform_dir string
 ---@return string?, string?
 local function resolve_ant_command(platform_dir)
@@ -114,7 +158,7 @@ return {
 		cb({
 			task_template("Hybris: Start server", { server, "start" }, platform_dir),
 			task_template("Hybris: Stop server", { server, "stop" }, platform_dir),
-			task_template("Hybris: Debug server", { server, "debug" }, platform_dir),
+			filtered_task_template("Hybris: Debug server", { server, "debug" }, platform_dir, "Server startup"),
 			task_template("Hybris: All", { ant, "all" }, platform_dir),
 			task_template("Hybris: Build", { ant, "build" }, platform_dir),
 			task_template("Hybris: Clean", { ant, "clean" }, platform_dir),
