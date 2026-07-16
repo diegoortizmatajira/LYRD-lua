@@ -31,17 +31,19 @@ local L = {
 		extension = { impex = "impex" },
 	},
 	-- Commands specific to this layer; registered in L.settings().
-	LYRDJavaHybrisImportSolution = Command:new("Hybris: Import solution (Java)", nil, icons.action.import),
-	LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
-	LYRDJavaHybrisConfigureSolution = Command:new("Hybris: Configure solution (Java)", nil, icons.other.wrench),
-	LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
-	LYRDJavaHybrisOpenConfigFile = Command:new("Hybris: Open solution config file", nil, icons.file.default),
-	LYRDJavaHybrisViewTodayLog = Command:new("Hybris: View today's server log", nil, icons.other.report),
-	-- ICON NEEDED: pick a debug/attach icon for this one (e.g. a "plug"/"bug" glyph).
-	LYRDJavaHybrisAttachDebugger = Command:new("Hybris: Attach debugger (remote JVM)", nil, nil),
-	-- ICON NEEDED for the next two (Type System: find/reindex).
-	LYRDJavaHybrisFindType = Command:new("Hybris: Find ItemType", nil, nil),
-	LYRDJavaHybrisReindexTypes = Command:new("Hybris: Reindex types (items.xml)", nil, nil),
+	commands = {
+		LYRDJavaHybrisImportSolution = Command:new("Hybris: Import solution (Java)", nil, icons.action.import),
+		LYRDJavaHybrisLoadSolution = Command:new("Hybris: Load solution (Java)", nil, icons.folder.open),
+		LYRDJavaHybrisConfigureSolution = Command:new("Hybris: Configure solution (Java)", nil, icons.other.wrench),
+		LYRDJavaHybrisCurrentConfig = Command:new("Hybris: Show current config", nil, icons.other.environment),
+		LYRDJavaHybrisOpenConfigFile = Command:new("Hybris: Open solution config file", nil, icons.file.default),
+		LYRDJavaHybrisViewTodayLog = Command:new("Hybris: View today's server log", nil, icons.other.report),
+		-- ICON NEEDED: pick a debug/attach icon for this one (e.g. a "plug"/"bug" glyph).
+		LYRDJavaHybrisAttachDebugger = Command:new("Hybris: Attach debugger (remote JVM)", nil, nil),
+		-- ICON NEEDED for the next two (Type System: find/reindex).
+		LYRDJavaHybrisFindType = Command:new("Hybris: Find ItemType", nil, nil),
+		LYRDJavaHybrisReindexTypes = Command:new("Hybris: Reindex types (items.xml)", nil, nil),
+	},
 	-- Full solution config (per-extension jars/sources + independent jars) from
 	-- the last Import/Reload/Configure-save, or empty if none applied yet.
 	-- @type table<string, any>?
@@ -278,9 +280,11 @@ local function view_today_log()
 
 	vim.cmd.edit(vim.fn.fnameescape(path))
 	local buf = vim.api.nvim_get_current_buf()
-	vim.bo[buf].autoread = true
-	-- The server keeps appending to this file; :checktime on idle/focus reloads
-	-- it without the continuous-redraw cost of a live `tail -f` terminal.
+	-- 'autoread' is already on globally (layers/general.lua); this autocmd is
+	-- what actually triggers the recheck -- Neovim doesn't poll on its own, so
+	-- without it the buffer would never notice the server appending to the file.
+	-- :checktime on idle/focus reloads without the continuous-redraw cost of a
+	-- live `tail -f` terminal.
 	vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", "FocusGained" }, {
 		group = vim.api.nvim_create_augroup("LYRDHybrisLogAutoRead", { clear = false }),
 		buffer = buf,
@@ -457,27 +461,17 @@ end
 -- ─── Layer lifecycle ──────────────────────────────────────────────────────────
 
 function L.settings()
-	commands.register({
-		LYRDJavaHybrisImportSolution = L.LYRDJavaHybrisImportSolution,
-		LYRDJavaHybrisReloadSolution = L.LYRDJavaHybrisLoadSolution,
-		LYRDJavaHybrisConfigureSolution = L.LYRDJavaHybrisConfigureSolution,
-		LYRDJavaHybrisCurrentConfig = L.LYRDJavaHybrisCurrentConfig,
-		LYRDJavaHybrisOpenConfigFile = L.LYRDJavaHybrisOpenConfigFile,
-		LYRDJavaHybrisViewTodayLog = L.LYRDJavaHybrisViewTodayLog,
-		LYRDJavaHybrisAttachDebugger = L.LYRDJavaHybrisAttachDebugger,
-		LYRDJavaHybrisFindType = L.LYRDJavaHybrisFindType,
-		LYRDJavaHybrisReindexTypes = L.LYRDJavaHybrisReindexTypes,
-	})
+	commands.register(L.commands)
 	commands.implement("*", {
-		{ L.LYRDJavaHybrisImportSolution, import_solution },
-		{ L.LYRDJavaHybrisLoadSolution, reload_solution },
-		{ L.LYRDJavaHybrisConfigureSolution, configure_solution },
-		{ L.LYRDJavaHybrisCurrentConfig, show_current_config },
-		{ L.LYRDJavaHybrisOpenConfigFile, open_config_file },
-		{ L.LYRDJavaHybrisViewTodayLog, view_today_log },
-		{ L.LYRDJavaHybrisAttachDebugger, attach_debugger },
-		{ L.LYRDJavaHybrisFindType, find_type },
-		{ L.LYRDJavaHybrisReindexTypes, reindex_types },
+		{ L.commands.LYRDJavaHybrisImportSolution, import_solution },
+		{ L.commands.LYRDJavaHybrisLoadSolution, reload_solution },
+		{ L.commands.LYRDJavaHybrisConfigureSolution, configure_solution },
+		{ L.commands.LYRDJavaHybrisCurrentConfig, show_current_config },
+		{ L.commands.LYRDJavaHybrisOpenConfigFile, open_config_file },
+		{ L.commands.LYRDJavaHybrisViewTodayLog, view_today_log },
+		{ L.commands.LYRDJavaHybrisAttachDebugger, attach_debugger },
+		{ L.commands.LYRDJavaHybrisFindType, find_type },
+		{ L.commands.LYRDJavaHybrisReindexTypes, reindex_types },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
@@ -508,15 +502,15 @@ function L.keybindings()
 	local menu_header = mappings.menu_header
 	mappings.create_menu("<Space>c", {
 		menu_header("h", "Hybris (SAP e-commerce)", {
-			{ "i", L.LYRDJavaHybrisImportSolution },
-			{ "l", L.LYRDJavaHybrisLoadSolution },
-			{ "s", L.LYRDJavaHybrisConfigureSolution },
-			{ "c", L.LYRDJavaHybrisCurrentConfig },
-			{ "o", L.LYRDJavaHybrisOpenConfigFile },
-			{ "L", L.LYRDJavaHybrisViewTodayLog },
-			{ "d", L.LYRDJavaHybrisAttachDebugger },
-			{ "t", L.LYRDJavaHybrisFindType },
-			{ "T", L.LYRDJavaHybrisReindexTypes },
+			{ "i", L.commands.LYRDJavaHybrisImportSolution },
+			{ "l", L.commands.LYRDJavaHybrisLoadSolution },
+			{ "s", L.commands.LYRDJavaHybrisConfigureSolution },
+			{ "c", L.commands.LYRDJavaHybrisCurrentConfig },
+			{ "o", L.commands.LYRDJavaHybrisOpenConfigFile },
+			{ "L", L.commands.LYRDJavaHybrisViewTodayLog },
+			{ "d", L.commands.LYRDJavaHybrisAttachDebugger },
+			{ "t", L.commands.LYRDJavaHybrisFindType },
+			{ "T", L.commands.LYRDJavaHybrisReindexTypes },
 		}, L.hybris_icon),
 	})
 end
