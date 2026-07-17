@@ -40,3 +40,4 @@ luac.out
 *.hex
 CLAUDE.md
 .github/copilot-instructions.md
+graphify-out
