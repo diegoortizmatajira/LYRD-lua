@@ -121,6 +121,37 @@ function L.preview_markdown()
 	})
 end
 
+--- Finds the fenced code block or inline code span at the cursor and returns
+--- its text with the fence/backtick delimiters stripped.
+local function get_code_at_cursor()
+	local node = vim.treesitter.get_node()
+	while node do
+		local node_type = node:type()
+		if node_type == "fenced_code_block" then
+			for child in node:iter_children() do
+				if child:type() == "code_fence_content" then
+					return vim.treesitter.get_node_text(child, 0)
+				end
+			end
+			return vim.treesitter.get_node_text(node, 0)
+		elseif node_type == "code_span" then
+			return (vim.treesitter.get_node_text(node, 0):gsub("^`+", ""):gsub("`+$", ""))
+		end
+		node = node:parent()
+	end
+	return nil
+end
+
+function L.copy_code_block()
+	local text = get_code_at_cursor()
+	if not text then
+		vim.notify("No code block or inline code found at cursor", vim.log.levels.WARN)
+		return
+	end
+	vim.fn.setreg("+", text)
+	vim.notify("Copied code to the clipboard!")
+end
+
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
@@ -131,6 +162,7 @@ function L.settings()
 
 	commands.implement("markdown", {
 		{ cmd.LYRDDevServerStart, L.preview_markdown },
+		{ cmd.LYRDCopyCodeBlock, L.copy_code_block },
 		{
 			cmd.LYRDMarkdownTableMoveColumnLeft,
 			function()

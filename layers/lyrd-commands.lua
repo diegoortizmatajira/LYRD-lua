@@ -293,6 +293,7 @@ local L = {
 		LYRDCopyAbsoluteFilePath = Command:new("Copy absolute file path", nil, icons.file.symlink),
 		LYRDCopyFileName = Command:new("Copy file name", nil, icons.file.symlink),
 		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
+		LYRDCopyCodeBlock = Command:new("Copy code block/inline code", nil, icons.action.copy),
 		LYRDPasteFromHistory = Command:new("Paste from history", nil, icons.action.paste),
 		LYRDInsertLineAbove = Command:new("Insert line above", ":call append(line('.')-1, '')", icons.arrow.up),
 		LYRDInsertLineBelow = Command:new("Insert line below", ":call append(line('.'), '')", icons.arrow.down),

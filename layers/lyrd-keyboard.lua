@@ -158,6 +158,7 @@ function L.keybindings()
 		{ "t", cmd.LYRDLSPFindTypeDefinition },
 		menu_header("y", "Yank", {
 			{ "a", cmd.LYRDCopyAbsoluteFilePath },
+			{ "c", cmd.LYRDCopyCodeBlock },
 			{ "f", cmd.LYRDCopyFileName },
 			{ "r", cmd.LYRDCopyRelativeFilePath },
 			{ "w", cmd.LYRDCopyWorkingDirectory },
