@@ -42,7 +42,7 @@ function L.plugins()
 					mode = { "n", "o", "x" },
 				},
 				{
-					"<S-g><S-e>",
+					"g<S-e>",
 					"<cmd>lua require('spider').motion('ge')<CR>",
 					mode = { "n", "o", "x" },
 				},
