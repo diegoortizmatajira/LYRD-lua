@@ -18,6 +18,7 @@ setup.load({
 		"LYRD.layers.dev",
 		"LYRD.layers.environment",
 		"LYRD.layers.text",
+		"LYRD.layers.encoding",
 		"LYRD.layers.test",
 		"LYRD.layers.git",
 		"LYRD.layers.lsp",

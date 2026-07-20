@@ -113,6 +113,7 @@ local L = {
 		copy = " ",
 		cut = " ",
 		delete = "󰗨 ",
+		edit = "󰏫 ",
 		exit = "󰩈 ",
 		format = "󰉢 ",
 		install = "󰃘 ",

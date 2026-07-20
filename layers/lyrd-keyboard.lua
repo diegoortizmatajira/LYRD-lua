@@ -366,6 +366,10 @@ function L.keybindings()
 			{ ";", cmd.LYRDDebugToggleUI },
 			{ "/", cmd.LYRDDebugToggleRepl },
 		}, icons.debug.breakpoint),
+		menu_header("e", "Edit", {
+			{ "d", cmd.LYRDCodeDecode, { "x" } },
+			{ "e", cmd.LYRDCodeEncode, { "x" } },
+		}, icons.action.edit),
 		menu_header("m", "Markdown", {
 			{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },
 			{ "l", cmd.LYRDMarkdownTableMoveColumnRight },
