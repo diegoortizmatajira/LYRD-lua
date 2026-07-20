@@ -101,6 +101,8 @@ function L.keybindings()
 	-- press a register key of their choice after pressing <leader> + q.
 	vim.keymap.set("n", "<leader>q", "q", { desc = "Start/stop recording macro", noremap = true })
 
+	mappings.map_surrounded_object("`")
+
 	mappings.keys({
 		-- Manual brackaeted mappings for buffers to override mini.bracketed defaults
 		{ "n", "[b", cmd.LYRDBufferPrev },

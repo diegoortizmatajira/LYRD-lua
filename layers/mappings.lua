@@ -312,4 +312,34 @@ function L.submode_header(key, title, items, icon, accept_foreign_keys)
 	}
 end
 
+--- Creates mappings to select the text between two surrounding characters
+--- It creates the following mappings:
+--- - `i<initial_surround>`: Selects the text inside the surrounding characters
+--- - `a<initial_surround>`: Selects the text including the surrounding characters
+--- @param initial_surround string the initial surrounding character
+--- @param final_surround string? the final surrounding character
+function L.map_surrounded_object(initial_surround, final_surround)
+	final_surround = final_surround or initial_surround
+	vim.keymap.set(
+		"o",
+		"i" .. initial_surround,
+		":<C-u>silent! normal! f" .. initial_surround .. "vi" .. final_surround .. "<CR>"
+	)
+	vim.keymap.set(
+		"x",
+		"i" .. initial_surround,
+		":<C-u>silent! normal! f" .. initial_surround .. "vi" .. final_surround .. "<CR>"
+	)
+	vim.keymap.set(
+		"o",
+		"a" .. initial_surround,
+		":<C-u>silent! normal! f" .. initial_surround .. "va" .. final_surround .. "<CR>"
+	)
+	vim.keymap.set(
+		"x",
+		"a" .. initial_surround,
+		":<C-u>silent! normal! f" .. initial_surround .. "va" .. final_surround .. "<CR>"
+	)
+end
+
 return L
