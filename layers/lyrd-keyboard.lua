@@ -373,6 +373,13 @@ function L.keybindings()
 			{ "d", cmd.LYRDCodeDecode, { "x" } },
 			{ "e", cmd.LYRDCodeEncode, { "x" } },
 			{ "t", cmd.LYRDClipboardTrim },
+			menu_header("p", "Copy Path", {
+				{ "a", cmd.LYRDCopyAbsoluteFilePath },
+				{ "c", cmd.LYRDCopyCodeBlock },
+				{ "f", cmd.LYRDCopyFileName },
+				{ "r", cmd.LYRDCopyRelativeFilePath },
+				{ "w", cmd.LYRDCopyWorkingDirectory },
+			}, icons.action.copy),
 		}, icons.action.edit),
 		menu_header("m", "Markdown", {
 			{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },
