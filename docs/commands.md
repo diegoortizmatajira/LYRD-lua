@@ -44,11 +44,15 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDBufferSplitV`                      | Vertical split                          | `<Leader><Leader>v`<br>`<Space>bv`                               | `*`                         |
 | `LYRDBufferToggleWrap`                  | Toggle line wrap                        | `<M-z>`<br>`<Space>vw`                                           | `default`                   |
 | `LYRDClearSearchHighlights`             | Clear search highlights                 | `<Leader><Space>`                                                | `default`                   |
+| `LYRDClipboardTrim`                     | Clipboard: Trim content                 | `<Space>ect`                                                     | `*`                         |
+| `LYRDClipboardUnquote`                  | Clipboard: Unquote content              | `<Space>ecu`                                                     | `*`                         |
 | `LYRDCodeAlternateFile`                 | Toggle alternate file                   | `<Space>ct`                                                      | `go`                        |
 | `LYRDCodeBuild`                         | Build                                   | `<C-M-b>`<br>`<Space>cB`                                         | `go`                        |
 | `LYRDCodeBuildAll`                      | Build all                               | `<C-B>`<br>`<Space>cb`                                           | `java`                      |
 | `LYRDCodeCreateSnippet`                 | Create snippet                          | `<Space>csc`                                                     | `*`                         |
+| `LYRDCodeDecode`                        | Code: Decode selection                  | `<Space>ed`                                                      | `*`                         |
 | `LYRDCodeEditSnippet`                   | Edit snippet                            | `<Space>cse`                                                     | `*`                         |
+| `LYRDCodeEncode`                        | Code: Encode selection                  | `<Space>ee`                                                      | `*`                         |
 | `LYRDCodeFillStructure`                 | Fill structure                          | `<Space>cf`                                                      | `go`                        |
 | `LYRDCodeFixImports`                    | Fix imports                             | `<Space>ci`                                                      | `go`<br>`python`            |
 | `LYRDCodeGenerate`                      | Run Generator Tool                      | `<Space>cgx`                                                     | `go`                        |
@@ -68,10 +72,11 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDCodeSelectEnvironment`             | Select environment                      | `<Space>ce`                                                      | `http`<br>`java`<br>`python`<br>`sql` |
 | `LYRDCodeTooling`                       | Tooling                                 | `<Space>cc`                                                      | `python`                    |
 | `LYRDContainersUI`                      | Running containers UI                   | `<Space><SPACE>c`                                                | `*`                         |
-| `LYRDCopyAbsoluteFilePath`              | Copy absolute file path                 | `gya`                                                            | `*`                         |
-| `LYRDCopyFileName`                      | Copy file name                          | `gyf`                                                            | `*`                         |
-| `LYRDCopyRelativeFilePath`              | Copy relative file path                 | `gyr`                                                            | `*`                         |
-| `LYRDCopyWorkingDirectory`              | Copy working directory                  | `gyw`                                                            | `*`                         |
+| `LYRDCopyCodeBlock`                     | Copy code block/inline code             | `gyc`<br>`<Space>eb`                                             | `markdown`                  |
+| `LYRDCopyAbsoluteFilePath`              | Copy absolute file path                 | `gya`<br>`<Space>epa`                                            | `*`                         |
+| `LYRDCopyFileName`                      | Copy file name                          | `gyf`<br>`<Space>epf`                                            | `*`                         |
+| `LYRDCopyRelativeFilePath`              | Copy relative file path                 | `gyr`<br>`<Space>epr`                                            | `*`                         |
+| `LYRDCopyWorkingDirectory`              | Copy working directory                  | `gyw`<br>`<Space>epw`                                            | `*`                         |
 | `LYRDDatabaseOutput`                    | Database Output                         | `<Leader><Leader>b`                                              | `*`                         |
 | `LYRDDatabaseUI`                        | Database UI                             | `<Leader><Leader>s`<br>`<Space><SPACE>d`                         | `*`                         |
 | `LYRDDebugBreakpoint`                   | Toggle breakpoint                       | `<F9>`<br>`<Leader>Gb`<br>`<Space>db`                            | `*`                         |
@@ -135,6 +140,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDInsertImage`                       | Insert image                            | `<Leader>ii`                                                     | `default`                   |
 | `LYRDInsertLineAbove`                   | Insert line above                       | `gO`                                                             | `default`                   |
 | `LYRDInsertLineBelow`                   | Insert line below                       | `go`                                                             | `default`                   |
+| `LYRDJavaHybrisViewTodayLog`            | Hybris: View today's server log         | `<Space>chL`                                                     | `*`                         |
 | `LYRDKubernetesUI`                      | Kubernetes UI                           | `<Space><SPACE>k`                                                | `*`                         |
 | `LYRDLSPFindCodeActions`                | Actions                                 | `<C-.>`<br>`<M-Enter>`<br>`<Space>ca`                            | `*`                         |
 | `LYRDLSPFindDeclaration`                | Go to Declaration                       | `gD`                                                             | `*`                         |
@@ -359,6 +365,7 @@ The commands are organized into several categories:
 - `gr` - Find References
 - `gt` - Go to Type Definition
 - `gya` - Copy absolute file path
+- `gyc` - Copy code block/inline code
 - `gyf` - Copy file name
 - `gyr` - Copy relative file path
 - `gyw` - Copy working directory
@@ -369,8 +376,10 @@ Use `<Space>` followed by category letters:
 
 - `b` - Buffer operations
 - `c` - Code operations
+- `e` - Edit operations (encoding, clipboard cleanup, copy-path shortcuts)
 - `d` - Debug operations
 - `g` - Git operations
+- `m` - Markdown table operations
 - `p` - Preferences/Plugins
 - `q` - Quit operations
 - `r` - Run/Task operations

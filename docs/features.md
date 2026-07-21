@@ -8,6 +8,7 @@
 - Project-aware indentation behavior.
 - Minimal visual noise with practical defaults.
 - System clipboard integration.
+- Clipboard cleanup helpers (trim/unquote), plus fast path/code-copy commands.
 
 ## Interface and feedback
 
@@ -73,6 +74,7 @@
 
 ## Extra workflows
 
+- Text encoding/decoding helpers for selected content (URL, Base64, UU, JWT decode).
 - REPL/notebook workflows (Python-focused).
 - REST API request execution from `.http`/`.rest`.
 - Database browsing/query execution.

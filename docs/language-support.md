@@ -127,7 +127,9 @@ formatting, testing, debugging, and task workflows.
   jars (extension `lib`/`bin`, platform `lib`, `bootstrap/bin`, `tomcat/lib`).
 - Scan results are cached per project and reused on startup; a full rescan or
   cache reload is available via `LYRDJavaHybrisImportSolution`,
-  `LYRDJavaHybrisReloadSolution`, and `LYRDJavaHybrisConfigureSolution`.
+  `LYRDJavaHybrisLoadSolution`, and `LYRDJavaHybrisConfigureSolution`.
+- Includes a quick log-inspection command for current-day server output via
+  `LYRDJavaHybrisViewTodayLog`.
 - Wires the scanned classpath and source paths into JDT.LS
   (`java.project.referencedLibraries`, `sourcePaths`, `java.import.exclusions`)
   so Hybris extensions are treated as one workspace instead of per-extension
