@@ -372,11 +372,13 @@ function L.keybindings()
 		menu_header("e", "Edit", {
 			{ "d", cmd.LYRDCodeDecode, { "x" } },
 			{ "e", cmd.LYRDCodeEncode, { "x" } },
-			{ "t", cmd.LYRDClipboardTrim },
-			{ "u", cmd.LYRDClipboardUnquote },
+			{ "b", cmd.LYRDCopyCodeBlock },
+			menu_header("c", "Clipboard content cleaning", {
+				{ "t", cmd.LYRDClipboardTrim },
+				{ "u", cmd.LYRDClipboardUnquote },
+			}, icons.action.clean),
 			menu_header("p", "Copy Path", {
 				{ "a", cmd.LYRDCopyAbsoluteFilePath },
-				{ "c", cmd.LYRDCopyCodeBlock },
 				{ "f", cmd.LYRDCopyFileName },
 				{ "r", cmd.LYRDCopyRelativeFilePath },
 				{ "w", cmd.LYRDCopyWorkingDirectory },
