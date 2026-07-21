@@ -102,6 +102,7 @@ function L.keybindings()
 	vim.keymap.set("n", "<leader>q", "q", { desc = "Start/stop recording macro", noremap = true })
 
 	mappings.map_surrounded_object("`")
+	mappings.map_surrounded_object("|")
 
 	mappings.keys({
 		-- Manual brackaeted mappings for buffers to override mini.bracketed defaults
@@ -371,6 +372,7 @@ function L.keybindings()
 		menu_header("e", "Edit", {
 			{ "d", cmd.LYRDCodeDecode, { "x" } },
 			{ "e", cmd.LYRDCodeEncode, { "x" } },
+			{ "t", cmd.LYRDClipboardTrim },
 		}, icons.action.edit),
 		menu_header("m", "Markdown", {
 			{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },

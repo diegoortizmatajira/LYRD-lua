@@ -297,6 +297,7 @@ local L = {
 		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
 		LYRDCopyCodeBlock = Command:new("Copy code block/inline code", nil, icons.action.copy),
 		LYRDPasteFromHistory = Command:new("Paste from history", nil, icons.action.paste),
+		LYRDClipboardTrim = Command:new("Clipboard: Trim content", nil, icons.action.clean),
 		LYRDInsertLineAbove = Command:new("Insert line above", ":call append(line('.')-1, '')", icons.arrow.up),
 		LYRDInsertLineBelow = Command:new("Insert line below", ":call append(line('.'), '')", icons.arrow.down),
 		LYRDDiffThis = Command:new("Diff: Add to comparisson", ":diffthis", icons.action.compare),

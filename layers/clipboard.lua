@@ -34,6 +34,13 @@ local function copy_working_directory()
 	vim.notify('Copied "' .. path .. '" to the clipboard!')
 end
 
+--- Trims leading/trailing whitespace from the clipboard content and writes it back.
+local function trim_clipboard()
+	local content = vim.fn.getreg("+")
+	vim.fn.setreg("+", vim.trim(content))
+	vim.notify("Trimmed clipboard content!")
+end
+
 function L.keybindings()
 	vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 	vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
@@ -54,6 +61,7 @@ function L.settings()
 		{ cmd.LYRDCopyAbsoluteFilePath, copy_path("%:p") },
 		{ cmd.LYRDCopyWorkingDirectory, copy_working_directory },
 		{ cmd.LYRDPasteFromHistory, ":YankyRingHistory" },
+		{ cmd.LYRDClipboardTrim, trim_clipboard },
 	})
 end
 
