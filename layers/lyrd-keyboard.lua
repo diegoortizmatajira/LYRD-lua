@@ -373,6 +373,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDCodeDecode, { "x" } },
 			{ "e", cmd.LYRDCodeEncode, { "x" } },
 			{ "t", cmd.LYRDClipboardTrim },
+			{ "u", cmd.LYRDClipboardUnquote },
 			menu_header("p", "Copy Path", {
 				{ "a", cmd.LYRDCopyAbsoluteFilePath },
 				{ "c", cmd.LYRDCopyCodeBlock },
