@@ -559,7 +559,14 @@ function L.complete()
 			preload_cached_config()
 
 			local function start_warm(jdtls_config)
-				vim.lsp.start(jdtls_config, { attach = false })
+				-- Resolve the async root_dir callback before passing to vim.lsp.start()
+				-- (which does NOT handle Neovim 0.11's async root_dir form like autostart does).
+				-- For warm-start (no specific buffer yet), resolve to getcwd().
+				local config = vim.deepcopy(jdtls_config)
+				if type(config.root_dir) == "function" then
+					config.root_dir = vim.fn.getcwd()
+				end
+				vim.lsp.start(config, { attach = false })
 			end
 
 			local function has_java_buffer()
