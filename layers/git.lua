@@ -245,6 +245,7 @@ local L = {
 		},
 	},
 	required_treesitter_parsers = {
+		"diff",
 		"git_config",
 		"git_rebase",
 		"gitattributes",
