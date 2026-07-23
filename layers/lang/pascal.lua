@@ -25,7 +25,6 @@ local L = {
 			format_settings = { "pasfmt", lsp_format = "prefer" },
 		},
 	},
-	required_test_adapters = {},
 }
 
 return declarative_layer.apply(L)
