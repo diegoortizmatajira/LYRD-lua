@@ -36,6 +36,7 @@ setup.load({
 		"LYRD.layers.repl",
 		"LYRD.layers.ai-dev",
 		"LYRD.layers.lang.bash",
+		"LYRD.layers.lang.clojure",
 		"LYRD.layers.lang.cmake",
 		"LYRD.layers.lang.csv",
 		"LYRD.layers.lang.grpc",
