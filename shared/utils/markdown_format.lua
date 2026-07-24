@@ -47,6 +47,44 @@ local function peel_layer(text)
 	return nil, text
 end
 
+--- Expands a same-line [start_col, end_col] range outward while the text
+--- immediately surrounding it matches a recognized marker pair. This lets a
+--- selection made with e.g. `viw` on the word inside "**word**" -- which only
+--- covers "word", not the markers -- still be recognized as already
+--- formatted so the toggle strips the markers instead of adding a new pair
+--- around just the word.
+---@param bufnr integer
+---@param row integer 0-based
+---@param start_col integer 0-based, inclusive
+---@param end_col integer 0-based, inclusive
+---@return integer start_col, integer end_col
+local function expand_to_markers(bufnr, row, start_col, end_col)
+	local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+	while true do
+		local expanded = false
+		for _, marker in ipairs(MARKERS) do
+			local start_marker, end_marker = marker[1], marker[2]
+			local before_start = start_col - #start_marker
+			local after_end = end_col + 1 + #end_marker
+			if
+				before_start >= 0
+				and after_end <= #line
+				and line:sub(before_start + 1, start_col) == start_marker
+				and line:sub(end_col + 2, after_end) == end_marker
+			then
+				start_col = before_start
+				end_col = after_end - 1
+				expanded = true
+				break
+			end
+		end
+		if not expanded then
+			break
+		end
+	end
+	return start_col, end_col
+end
+
 --- Returns the range to operate on: the current visual selection, or, if
 --- there isn't one, the whole current line (mirroring how "V" linewise
 --- selection is reported by `get_visual_range`).
@@ -73,12 +111,18 @@ end
 --- If the target marker is already present as one of the (possibly nested)
 --- layers wrapping the text -- e.g. toggling bold on "_**text**_" -- only
 --- that layer is removed and the others are kept in place, rather than
---- stacking a new marker pair around the whole thing.
+--- stacking a new marker pair around the whole thing. This also applies when
+--- the selection only covers the inner word (e.g. `viw` inside "**word**"):
+--- the range is expanded outward to the surrounding markers first.
 ---@param start_marker string
 ---@param end_marker string
 local function toggle_wrap(start_marker, end_marker)
 	local bufnr = vim.api.nvim_get_current_buf()
 	local start_row, start_col, end_row, end_col = get_target_range(bufnr)
+
+	if start_row == end_row then
+		start_col, end_col = expand_to_markers(bufnr, start_row, start_col, end_col)
+	end
 
 	local text =
 		table.concat(vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col + 1, {}), "\n")

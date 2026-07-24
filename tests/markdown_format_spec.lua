@@ -117,6 +117,44 @@ describe("markdown_format.toggle_bold", function()
 		assert.truthy(line:find("**", 1, true))
 		assert.is_falsy(line:find("****", 1, true))
 	end)
+
+	it("expands a word-only selection out to surrounding ** markers instead of double-wrapping", function()
+		-- "**word**": selecting just "word" (as `viw` would, without the markers)
+		bufnr = make_buffer({ "**word**" })
+
+		with_selection("v", { 1, 2 }, { 1, 5 }, markdown_format.toggle_bold)
+
+		assert.are.same({ "word" }, get_lines(bufnr))
+	end)
+
+	it("expands through a nested layer to find the target marker around a word-only selection", function()
+		-- "_**word**_": selecting just "word" should still find and strip the
+		-- bold layer, expanding outward through the italic layer to get there.
+		bufnr = make_buffer({ "_**word**_" })
+
+		with_selection("v", { 1, 3 }, { 1, 6 }, markdown_format.toggle_bold)
+
+		assert.are.same({ "_word_" }, get_lines(bufnr))
+	end)
+
+	it("does not expand when the word has no surrounding markers", function()
+		bufnr = make_buffer({ "hello world" })
+
+		with_selection("v", { 1, 6 }, { 1, 10 }, markdown_format.toggle_bold)
+
+		assert.are.same({ "hello **world**" }, get_lines(bufnr))
+	end)
+
+	it("expands correctly using a real 'viw' selection", function()
+		bufnr = make_buffer({ "**word**" })
+		vim.cmd("normal! \27")
+		vim.api.nvim_win_set_cursor(0, { 1, 3 })
+		vim.cmd("normal! viw")
+
+		markdown_format.toggle_bold()
+
+		assert.are.same({ "word" }, get_lines(bufnr))
+	end)
 end)
 
 describe("markdown_format.toggle_italic", function()
