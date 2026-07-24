@@ -181,8 +181,8 @@ local L = {
 			true
 		),
 		LYRDMarkdownToggleSubscript = Command:new("Markdown: Toggle subscript", nil, icons.styles.subscript, true),
-		LYRDMarkdownToggleInlineCode = Command:new("Markdown: Toggle inline code", nil, icons.other.code, true),
-		LYRDMarkdownToggleCodeBlock = Command:new("Markdown: Toggle code block", nil, icons.other.code, true),
+		LYRDMarkdownToggleInlineCode = Command:new("Markdown: Toggle inline code", nil, icons.styles.code, true),
+		LYRDMarkdownToggleCodeBlock = Command:new("Markdown: Toggle code block", nil, icons.styles.code, true),
 		LYRDMarkdownToggleQuoteBlock = Command:new("Markdown: Toggle quote block", nil, icons.styles.quote, true),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPClearCache = Command:new("Clear language server cache for current project", nil, icons.action.clean),
