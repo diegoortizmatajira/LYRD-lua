@@ -391,6 +391,18 @@ function L.keybindings()
 			{ "L", cmd.LYRDMarkdownTableInsertColumnRight },
 			{ "k", cmd.LYRDMarkdownTableInsertRowAbove },
 			{ "j", cmd.LYRDMarkdownTableInsertRowBelow },
+			menu_header("f", "Format", {
+				{ "b", cmd.LYRDMarkdownToggleBold, { "x" } },
+				{ "i", cmd.LYRDMarkdownToggleItalic, { "x" } },
+				{ "u", cmd.LYRDMarkdownToggleUnderline, { "x" } },
+				{ "s", cmd.LYRDMarkdownToggleStrikethrough, { "x" } },
+				{ "h", cmd.LYRDMarkdownToggleHighlight, { "x" } },
+				{ "^", cmd.LYRDMarkdownToggleSuperscript, { "x" } },
+				{ "_", cmd.LYRDMarkdownToggleSubscript, { "x" } },
+				{ "c", cmd.LYRDMarkdownToggleInlineCode, { "x" } },
+				{ "C", cmd.LYRDMarkdownToggleCodeBlock, { "x" } },
+				{ "q", cmd.LYRDMarkdownToggleQuoteBlock, { "x" } },
+			}, icons.styles.bold),
 		}, icons.file.markdown),
 		menu_header("s", "Search", {
 			{ ",", cmd.LYRDSearchCommands },

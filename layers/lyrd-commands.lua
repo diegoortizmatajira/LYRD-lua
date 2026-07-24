@@ -164,6 +164,26 @@ local L = {
 		),
 		LYRDMarkdownTableInsertRowAbove = Command:new("Markdown: Insert table row above", nil, icons.arrow.expand_up),
 		LYRDMarkdownTableInsertRowBelow = Command:new("Markdown: Insert table row below", nil, icons.arrow.expand_down),
+		LYRDMarkdownToggleBold = Command:new("Markdown: Toggle bold", nil, icons.styles.bold, true),
+		LYRDMarkdownToggleItalic = Command:new("Markdown: Toggle italic", nil, icons.styles.italic, true),
+		LYRDMarkdownToggleUnderline = Command:new("Markdown: Toggle underline", nil, icons.styles.underline, true),
+		LYRDMarkdownToggleStrikethrough = Command:new(
+			"Markdown: Toggle strikethrough",
+			nil,
+			icons.styles.strikethrough,
+			true
+		),
+		LYRDMarkdownToggleHighlight = Command:new("Markdown: Toggle highlight", nil, icons.other.highlighter, true),
+		LYRDMarkdownToggleSuperscript = Command:new(
+			"Markdown: Toggle superscript",
+			nil,
+			icons.styles.superscript,
+			true
+		),
+		LYRDMarkdownToggleSubscript = Command:new("Markdown: Toggle subscript", nil, icons.styles.subscript, true),
+		LYRDMarkdownToggleInlineCode = Command:new("Markdown: Toggle inline code", nil, icons.other.code, true),
+		LYRDMarkdownToggleCodeBlock = Command:new("Markdown: Toggle code block", nil, icons.other.code, true),
+		LYRDMarkdownToggleQuoteBlock = Command:new("Markdown: Toggle quote block", nil, icons.styles.quote, true),
 		LYRDLSPToggleLens = Command:new("Toggle Code Lens", nil, icons.action.toggle_on),
 		LYRDLSPClearCache = Command:new("Clear language server cache for current project", nil, icons.action.clean),
 		LYRDLSPFindCodeActions = Command:new("View Code Actions", nil, icons.action.code_action),

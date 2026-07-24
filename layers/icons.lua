@@ -74,6 +74,10 @@ local L = {
 		italic = "󰉷",
 		bold = "󰉤",
 		underline = "󰊇",
+		quote = " ",
+		strikethrough = "",
+		superscript = "",
+		subscript = "",
 	},
 	apps = {
 		git = "󰊢 ",

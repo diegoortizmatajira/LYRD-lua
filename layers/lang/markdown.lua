@@ -159,10 +159,21 @@ function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	local markdown_table = require("LYRD.shared.utils.markdown_table")
+	local markdown_format = require("LYRD.shared.utils.markdown_format")
 
 	commands.implement("markdown", {
 		{ cmd.LYRDDevServerStart, L.preview_markdown },
 		{ cmd.LYRDCopyCodeBlock, L.copy_code_block },
+		{ cmd.LYRDMarkdownToggleBold, markdown_format.toggle_bold },
+		{ cmd.LYRDMarkdownToggleItalic, markdown_format.toggle_italic },
+		{ cmd.LYRDMarkdownToggleUnderline, markdown_format.toggle_underline },
+		{ cmd.LYRDMarkdownToggleStrikethrough, markdown_format.toggle_strikethrough },
+		{ cmd.LYRDMarkdownToggleHighlight, markdown_format.toggle_highlight },
+		{ cmd.LYRDMarkdownToggleSuperscript, markdown_format.toggle_superscript },
+		{ cmd.LYRDMarkdownToggleSubscript, markdown_format.toggle_subscript },
+		{ cmd.LYRDMarkdownToggleInlineCode, markdown_format.toggle_inline_code },
+		{ cmd.LYRDMarkdownToggleCodeBlock, markdown_format.toggle_code_block },
+		{ cmd.LYRDMarkdownToggleQuoteBlock, markdown_format.toggle_quote_block },
 		{
 			cmd.LYRDMarkdownTableMoveColumnLeft,
 			function()
