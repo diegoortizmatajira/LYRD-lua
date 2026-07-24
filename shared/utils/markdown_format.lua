@@ -14,6 +14,39 @@ local function exit_visual_mode()
 	vim.cmd("normal! \27")
 end
 
+--- Recognized inline markers, checked outermost-first when peeling nested
+--- layers. This lets formats be combined (e.g. "_**text**_") and toggled
+--- independently, instead of a toggle always stacking a new marker pair
+--- around whatever is already there.
+local MARKERS = {
+	{ "**", "**" },
+	{ "~~", "~~" },
+	{ "==", "==" },
+	{ "<u>", "</u>" },
+	{ "<sup>", "</sup>" },
+	{ "<sub>", "</sub>" },
+	{ "`", "`" },
+	{ "_", "_" },
+}
+
+--- Peels the outermost recognized marker layer off `text`, if any.
+---@param text string
+---@return {[1]: string, [2]: string}? marker start/stop pair peeled off, nil if none matched
+---@return string inner text with the layer removed (or `text` unchanged if none matched)
+local function peel_layer(text)
+	for _, marker in ipairs(MARKERS) do
+		local start_marker, end_marker = marker[1], marker[2]
+		if
+			#text >= #start_marker + #end_marker
+			and text:sub(1, #start_marker) == start_marker
+			and text:sub(-#end_marker) == end_marker
+		then
+			return marker, text:sub(#start_marker + 1, #text - #end_marker)
+		end
+	end
+	return nil, text
+end
+
 --- Returns the range to operate on: the current visual selection, or, if
 --- there isn't one, the whole current line (mirroring how "V" linewise
 --- selection is reported by `get_visual_range`).
@@ -36,6 +69,11 @@ end
 --- can't have whitespace right next to them -- e.g. a line ending in trailing
 --- spaces would otherwise get its closing marker placed after them, where it
 --- doesn't count as emphasis.
+---
+--- If the target marker is already present as one of the (possibly nested)
+--- layers wrapping the text -- e.g. toggling bold on "_**text**_" -- only
+--- that layer is removed and the others are kept in place, rather than
+--- stacking a new marker pair around the whole thing.
 ---@param start_marker string
 ---@param end_marker string
 local function toggle_wrap(start_marker, end_marker)
@@ -49,8 +87,36 @@ local function toggle_wrap(start_marker, end_marker)
 	local trailing_ws = text:match("[ \t]*$")
 	local core = text:sub(#leading_ws + 1, #text - #trailing_ws)
 
-	local stripped = core:match("^" .. vim.pesc(start_marker) .. "(.-)" .. vim.pesc(end_marker) .. "$")
-	local new_core = stripped or (start_marker .. core .. end_marker)
+	local layers = {}
+	local remaining = core
+	while true do
+		local marker, inner = peel_layer(remaining)
+		if not marker then
+			break
+		end
+		table.insert(layers, marker)
+		remaining = inner
+	end
+
+	local target_index
+	for i, marker in ipairs(layers) do
+		if marker[1] == start_marker and marker[2] == end_marker then
+			target_index = i
+			break
+		end
+	end
+
+	local new_core
+	if target_index then
+		table.remove(layers, target_index)
+		new_core = remaining
+		for i = #layers, 1, -1 do
+			new_core = layers[i][1] .. new_core .. layers[i][2]
+		end
+	else
+		new_core = start_marker .. core .. end_marker
+	end
+
 	local result = leading_ws .. new_core .. trailing_ws
 
 	vim.api.nvim_buf_set_text(
