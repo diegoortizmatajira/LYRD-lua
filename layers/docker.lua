@@ -61,6 +61,11 @@ local L = {
 ))]],
 	docker_compose_service_sign = SignItem:new("DockerComposeService", icons.cloud.service, "Type"),
 	docker_compose_filetype = "yaml.docker-compose",
+	ts_compose_image_query = [[
+(block_mapping_pair
+	key: ((flow_node) @image-key (#eq? @image-key "image"))
+	value: (flow_node) @image-value)
+]],
 
 	---@type LYRD.DockerCommandSpecList
 	docker_service_commands = {
@@ -110,6 +115,126 @@ end
 function L.toggle_lazydocker()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.toggle_external_app_terminal("lazydocker")
+end
+
+--- Finds the "image:" value node at the given row in a docker-compose file.
+--- @param row number 0-indexed row to search for the image value
+--- @return {text: string, start_row: number, start_col: number, end_row: number, end_col: number}|nil
+local function docker_compose_image_at_row(row)
+	local matches = ts.get_matches(L.ts_compose_image_query, "yaml", function(match, captures)
+		local key_index = utils.index_of(captures, "image-key")
+		if not key_index then
+			return false
+		end
+		local key_row = vim.treesitter.get_node_range(match[key_index][1])
+		return key_row == row
+	end, function(match, captures)
+		local value_index = utils.index_of(captures, "image-value")
+		if not value_index then
+			return nil
+		end
+		local value_node = match[value_index][1]
+		local start_row, start_col, end_row, end_col = vim.treesitter.get_node_range(value_node)
+		return {
+			text = vim.treesitter.get_node_text(value_node, vim.api.nvim_get_current_buf()),
+			start_row = start_row,
+			start_col = start_col,
+			end_row = end_row,
+			end_col = end_col,
+		}
+	end, 1)
+	return matches[1]
+end
+
+--- Strips a single pair of surrounding quotes (single or double) from a string.
+--- @param text string
+--- @return string
+local function strip_quotes(text)
+	return (text:gsub("^[\"']", ""):gsub("[\"']$", ""))
+end
+
+--- Lists local Docker image references (repository:tag) via the Docker CLI.
+--- @return string[]
+local function docker_local_images()
+	local result = vim.system({ "docker", "images", "--format", "{{.Repository}}:{{.Tag}}" }, { text = true }):wait()
+	if result.code ~= 0 then
+		vim.notify("Docker: failed to list local images.\n" .. (result.stderr or ""), vim.log.levels.ERROR)
+		return {}
+	end
+	local images = {}
+	for line in vim.gsplit(result.stdout or "", "\n", { trimempty = true }) do
+		if line ~= "<none>:<none>" then
+			table.insert(images, line)
+		end
+	end
+	return images
+end
+
+--- Opens a Telescope picker listing local Docker images, prefiltered with
+--- the current image value, and invokes `on_select` with the chosen image.
+--- @param current_value string initial filter text
+--- @param on_select fun(image: string)
+local function docker_compose_pick_image(current_value, on_select)
+	local ok_telescope = pcall(require, "telescope")
+	if not ok_telescope then
+		vim.notify("Docker: telescope.nvim not available", vim.log.levels.WARN)
+		return
+	end
+	local images = docker_local_images()
+	if #images == 0 then
+		vim.notify("Docker: no local images found", vim.log.levels.WARN)
+		return
+	end
+	local actions = require("telescope.actions")
+	local action_state = require("telescope.actions.state")
+	local conf = require("telescope.config").values
+	local finders = require("telescope.finders")
+	local pickers = require("telescope.pickers")
+
+	pickers
+		.new({}, {
+			prompt_title = "Select Docker Image",
+			default_text = strip_quotes(current_value),
+			finder = finders.new_table({ results = images }),
+			sorter = conf.generic_sorter({}),
+			attach_mappings = function(prompt_bufnr)
+				actions.select_default:replace(function()
+					local selection = action_state.get_selected_entry()
+					actions.close(prompt_bufnr)
+					if selection and selection.value then
+						on_select(selection.value)
+					end
+				end)
+				return true
+			end,
+		})
+		:find()
+end
+
+--- Null-ls CODE_ACTION generator that offers to pick a local Docker image
+--- for the "image:" property under the cursor in a docker-compose file.
+local function docker_compose_image_code_action(params)
+	local image = docker_compose_image_at_row(params.range.row - 1)
+	if not image then
+		return {}
+	end
+	return {
+		{
+			title = "Select local Docker image...",
+			action = function()
+				docker_compose_pick_image(image.text, function(selected)
+					vim.api.nvim_buf_set_text(
+						params.bufnr,
+						image.start_row,
+						image.start_col,
+						image.end_row,
+						image.end_col,
+						{ selected }
+					)
+				end)
+			end,
+		},
+	}
 end
 
 local function docker_compose_command_preview(command, service, pre_service_args, post_service_args)
@@ -289,6 +414,7 @@ function L.preparation()
 			require("null-ls.builtins.diagnostics.hadolint"),
 		})
 	end
+	lsp.register_code_actions({ L.docker_compose_filetype }, docker_compose_image_code_action)
 end
 
 function L.settings()
