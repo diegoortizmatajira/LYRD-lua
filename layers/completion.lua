@@ -41,6 +41,7 @@ local menu_texts = {
 	cmp_tabnine = "[Tabnine]",
 	codeium = "[Codeium]",
 	copilot = "[Copilot]",
+	docker_images = "[Docker]",
 	["easy-dotnet"] = "[.NET]",
 	emoji = "[Emoji]",
 	lazydev = "[LazyDev]",

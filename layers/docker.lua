@@ -153,23 +153,6 @@ local function strip_quotes(text)
 	return (text:gsub("^[\"']", ""):gsub("[\"']$", ""))
 end
 
---- Lists local Docker image references (repository:tag) via the Docker CLI.
---- @return string[]
-local function docker_local_images()
-	local result = vim.system({ "docker", "images", "--format", "{{.Repository}}:{{.Tag}}" }, { text = true }):wait()
-	if result.code ~= 0 then
-		vim.notify("Docker: failed to list local images.\n" .. (result.stderr or ""), vim.log.levels.ERROR)
-		return {}
-	end
-	local images = {}
-	for line in vim.gsplit(result.stdout or "", "\n", { trimempty = true }) do
-		if line ~= "<none>:<none>" then
-			table.insert(images, line)
-		end
-	end
-	return images
-end
-
 --- Opens a Telescope picker listing local Docker images, prefiltered with
 --- the current image value, and invokes `on_select` with the chosen image.
 --- @param current_value string initial filter text
@@ -180,7 +163,7 @@ local function docker_compose_pick_image(current_value, on_select)
 		vim.notify("Docker: telescope.nvim not available", vim.log.levels.WARN)
 		return
 	end
-	local images = docker_local_images()
+	local images = require("LYRD.shared.docker.images").list()
 	if #images == 0 then
 		vim.notify("Docker: no local images found", vim.log.levels.WARN)
 		return
@@ -429,6 +412,26 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
 	})
+
+	-- Registers the local Docker image completion source, scoped to
+	-- docker-compose files, alongside the existing YAML LSP completions.
+	local ok_cmp, cmp = pcall(require, "cmp")
+	if ok_cmp then
+		pcall(
+			cmp.register_source,
+			"docker_images",
+			require("LYRD.shared.docker.cmp_source").new(L.docker_compose_filetype)
+		)
+		cmp.setup.filetype(L.docker_compose_filetype, {
+			sources = cmp.config.sources({
+				{ name = "docker_images" },
+				{ name = "nvim_lsp" },
+			}, {
+				{ name = "buffer" },
+				{ name = "path" },
+			}),
+		})
+	end
 end
 
 return declarative_layer.apply(L)
