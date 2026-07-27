@@ -1,9 +1,19 @@
+local hybris_environment = require("LYRD.shared.hybris.environment")
+
 --- Environment variable used to locate the Hybris installation.
 local HYBRIS_HOME_ENV = "HYBRIS_HOME"
 
 local is_windows = vim.fn.has("win32") == 1
 local server_script = is_windows and "hybrisserver.bat" or "hybrisserver.sh"
 local ant_script = is_windows and "ant.bat" or "ant"
+
+-- Env overrides applied to every Hybris task so ant/the server always run on
+-- the required Java version (shared/hybris/environment.lua) regardless of the
+-- ambient JAVA_HOME (e.g. set to 21 for jdtls).
+---@return table<string, string>
+local function hybris_env()
+	return hybris_environment.env_overrides()
+end
 
 -- Returns the hybris installation root (the directory that contains bin/platform/).
 -- HYBRIS_HOME may point to the project root (which has a hybris/ subfolder) or
@@ -58,7 +68,7 @@ local function task_template(name, command, cwd)
 		},
 		builder = function(params)
 			---@type overseer.TaskDefinition
-			local task = { cmd = vim.deepcopy(command), cwd = cwd }
+			local task = { cmd = vim.deepcopy(command), cwd = cwd, env = hybris_env() }
 			if params.args and #params.args > 0 then
 				task.args = params.args
 			end
@@ -94,6 +104,7 @@ local function filtered_task_template(name, command, cwd, filter)
 				task = {
 					cmd = { "cmd.exe", "/c", table.concat(quoted, " ") .. ' | findstr /C:"' .. filter .. '"' },
 					cwd = cwd,
+					env = hybris_env(),
 				}
 			else
 				local quoted = vim.tbl_map(vim.fn.shellescape, parts)
@@ -104,6 +115,7 @@ local function filtered_task_template(name, command, cwd, filter)
 						table.concat(quoted, " ") .. " | grep --line-buffered " .. vim.fn.shellescape(filter),
 					},
 					cwd = cwd,
+					env = hybris_env(),
 				}
 			end
 			return task
