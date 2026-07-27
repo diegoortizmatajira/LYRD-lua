@@ -18,22 +18,35 @@ local L = {
 			target_filetype = "sh",
 			format_settings = { "shfmt" },
 		},
+		{
+			target_filetype = "fish",
+			format_settings = { "fish_indent" },
+		},
 	},
 	required_treesitter_parsers = {
 		"bash",
 		"fish",
 		"zsh",
 	},
+	required_executables = {
+		"fish",
+	},
 }
 
-local function script_run_task(script_path)
+--- Maps a shell filetype to the interpreter used to run scripts of that type.
+local shell_interpreter_per_filetype = {
+	sh = "bash",
+	fish = "fish",
+}
+
+local function script_run_task(script_path, interpreter)
 	local tasks = require("LYRD.layers.tasks")
 	--- get the current working directory as the folder where the current file is located
 	local cwd = vim.fn.expand("%:p:h")
 
 	tasks.run_task({
 		name = "Script: " .. vim.fn.fnamemodify(script_path, ":t"),
-		cmd = "bash",
+		cmd = interpreter,
 		args = { "-c", script_path },
 		cwd = cwd,
 		open_in_split = true,
@@ -43,7 +56,8 @@ end
 
 function L.run_current_script()
 	local filetype = vim.bo.filetype
-	if filetype ~= "sh" then
+	local interpreter = shell_interpreter_per_filetype[filetype]
+	if not interpreter then
 		vim.notify("Current buffer is not a shell script.", vim.log.levels.ERROR)
 		return
 	end
@@ -53,14 +67,14 @@ function L.run_current_script()
 		vim.notify("Current buffer has no file path. Please save the script first.", vim.log.levels.ERROR)
 		return
 	end
-	script_run_task(file_path)
+	script_run_task(file_path, interpreter)
 end
 
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	-- Command implementations
-	commands.implement("sh", {
+	commands.implement({ "sh", "fish" }, {
 		{ cmd.LYRDCodeRun, L.run_current_script },
 	})
 end
