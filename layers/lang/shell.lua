@@ -2,20 +2,27 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Bash Scripting",
+	name = "Shell Scripting (sh, bash, zsh, fish)",
 	required_mason_packages = {
 		"bashls",
+		"fish-lsp",
 		"shfmt",
 		"shellcheck", -- ShellCheck is used by bashls for diagnostics, so we include it as a required Mason package.
 	},
 	required_enabled_lsp_servers = {
 		"bashls",
+		"fish_lsp",
 	},
 	required_formatter_per_filetype = {
 		{
 			target_filetype = "sh",
 			format_settings = { "shfmt" },
 		},
+	},
+	required_treesitter_parsers = {
+		"bash",
+		"fish",
+		"zsh",
 	},
 }
 
