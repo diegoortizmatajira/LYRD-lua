@@ -1,9 +1,62 @@
+local java_common = require("LYRD.shared.java-common")
+
 --- Environment variable used to locate the Hybris installation.
 local HYBRIS_HOME_ENV = "HYBRIS_HOME"
 
 local is_windows = vim.fn.has("win32") == 1
 local server_script = is_windows and "hybrisserver.bat" or "hybrisserver.sh"
 local ant_script = is_windows and "ant.bat" or "ant"
+
+-- Hybris' own build/runtime tooling (ant, hybrisserver.sh) requires Java 17,
+-- independent of whatever JAVA_HOME happens to be exported for other tools in
+-- this session -- e.g. jdtls is pinned to Java 21 to launch its own OSGi
+-- server process (see runtime/lsp/jdtls.lua's resolve_launcher_java), and that
+-- ambient JAVA_HOME would otherwise leak into these tasks and break the
+-- Hybris build/server. Search java-common.lua's discovered runtimes (which
+-- already picks up $JAVA17_HOME, sdkman, asdf, jenv, system JVM dirs, etc.)
+-- for a matching JDK instead of trusting the ambient environment.
+local HYBRIS_JAVA_VERSION = 17
+local warned_missing_hybris_java = false
+
+---@return string?
+local function resolve_hybris_java_home()
+	for _, runtime in ipairs(java_common.get_runtimes()) do
+		if tonumber(runtime.name:match("JavaSE%-(%d+)")) == HYBRIS_JAVA_VERSION then
+			return runtime.path
+		end
+	end
+	if not warned_missing_hybris_java then
+		warned_missing_hybris_java = true
+		vim.schedule(function()
+			vim.notify(
+				string.format(
+					"Hybris: no Java %d runtime found (checked $JAVA%d_HOME and sdkman/asdf/jenv/system JVM dirs). "
+						.. "Falling back to the ambient JAVA_HOME/PATH, which may be the wrong version for "
+						.. "Hybris' ant build/server.",
+					HYBRIS_JAVA_VERSION,
+					HYBRIS_JAVA_VERSION
+				),
+				vim.log.levels.WARN
+			)
+		end)
+	end
+	return nil
+end
+
+-- Env overrides applied to every Hybris task so ant/the server always run on
+-- Java 17 regardless of the ambient JAVA_HOME (e.g. set to 21 for jdtls).
+---@return table<string, string>
+local function hybris_env()
+	local java_home = resolve_hybris_java_home()
+	if not java_home then
+		return {}
+	end
+	local sep = is_windows and ";" or ":"
+	return {
+		JAVA_HOME = java_home,
+		PATH = java_home .. "/bin" .. sep .. (os.getenv("PATH") or ""),
+	}
+end
 
 -- Returns the hybris installation root (the directory that contains bin/platform/).
 -- HYBRIS_HOME may point to the project root (which has a hybris/ subfolder) or
@@ -58,7 +111,7 @@ local function task_template(name, command, cwd)
 		},
 		builder = function(params)
 			---@type overseer.TaskDefinition
-			local task = { cmd = vim.deepcopy(command), cwd = cwd }
+			local task = { cmd = vim.deepcopy(command), cwd = cwd, env = hybris_env() }
 			if params.args and #params.args > 0 then
 				task.args = params.args
 			end
@@ -94,6 +147,7 @@ local function filtered_task_template(name, command, cwd, filter)
 				task = {
 					cmd = { "cmd.exe", "/c", table.concat(quoted, " ") .. ' | findstr /C:"' .. filter .. '"' },
 					cwd = cwd,
+					env = hybris_env(),
 				}
 			else
 				local quoted = vim.tbl_map(vim.fn.shellescape, parts)
@@ -104,6 +158,7 @@ local function filtered_task_template(name, command, cwd, filter)
 						table.concat(quoted, " ") .. " | grep --line-buffered " .. vim.fn.shellescape(filter),
 					},
 					cwd = cwd,
+					env = hybris_env(),
 				}
 			end
 			return task

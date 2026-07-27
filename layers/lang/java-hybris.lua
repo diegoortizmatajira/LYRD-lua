@@ -3,6 +3,7 @@ local icons = require("LYRD.layers.icons")
 local Command = commands.Command
 local dap_hybris = require("LYRD.shared.dap.java-hybris")
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local java_common = require("LYRD.shared.java-common")
 local resolver = require("LYRD.shared.hybris.resolver")
 local scanner = require("LYRD.shared.hybris.scanner")
 local store = require("LYRD.shared.hybris.store")
@@ -687,6 +688,25 @@ function L.healthcheck()
 		vim.health.ok("ANT_HOME is set: " .. ant_home)
 	else
 		vim.health.warn("ANT_HOME is not set; Hybris ant builds may fail")
+	end
+
+	-- Hybris' ant build/server tasks (shared/overseer/hybris_tasks.lua) always
+	-- pin JAVA_HOME to a discovered Java 17 runtime, independent of whatever
+	-- JAVA_HOME is ambient in this session (e.g. Java 21 for jdtls debugging).
+	local has_java17 = false
+	for _, runtime in ipairs(java_common.get_runtimes()) do
+		if tonumber(runtime.name:match("JavaSE%-(%d+)")) == 17 then
+			has_java17 = true
+			break
+		end
+	end
+	if has_java17 then
+		vim.health.ok("Java 17 runtime found for Hybris ant build/server tasks")
+	else
+		vim.health.warn(
+			"No Java 17 runtime found; Hybris ant build/server tasks need one "
+				.. "(set $JAVA17_HOME or install via sdkman/asdf/jenv)"
+		)
 	end
 end
 
