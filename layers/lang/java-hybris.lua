@@ -3,7 +3,7 @@ local icons = require("LYRD.layers.icons")
 local Command = commands.Command
 local dap_hybris = require("LYRD.shared.dap.java-hybris")
 local declarative_layer = require("LYRD.shared.declarative_layer")
-local java_common = require("LYRD.shared.java-common")
+local hybris_environment = require("LYRD.shared.hybris.environment")
 local resolver = require("LYRD.shared.hybris.resolver")
 local scanner = require("LYRD.shared.hybris.scanner")
 local store = require("LYRD.shared.hybris.store")
@@ -691,21 +691,21 @@ function L.healthcheck()
 	end
 
 	-- Hybris' ant build/server tasks (shared/overseer/hybris_tasks.lua) always
-	-- pin JAVA_HOME to a discovered Java 17 runtime, independent of whatever
-	-- JAVA_HOME is ambient in this session (e.g. Java 21 for jdtls debugging).
-	local has_java17 = false
-	for _, runtime in ipairs(java_common.get_runtimes()) do
-		if tonumber(runtime.name:match("JavaSE%-(%d+)")) == 17 then
-			has_java17 = true
-			break
-		end
-	end
-	if has_java17 then
-		vim.health.ok("Java 17 runtime found for Hybris ant build/server tasks")
+	-- pin JAVA_HOME to a discovered Java runtime matching
+	-- shared/hybris/environment.lua's REQUIRED_JAVA_VERSION, independent of
+	-- whatever JAVA_HOME is ambient in this session (e.g. Java 21 for jdtls
+	-- debugging).
+	local required_version = hybris_environment.REQUIRED_JAVA_VERSION
+	if hybris_environment.available() then
+		vim.health.ok(string.format("Java %d runtime found for Hybris ant build/server tasks", required_version))
 	else
 		vim.health.warn(
-			"No Java 17 runtime found; Hybris ant build/server tasks need one "
-				.. "(set $JAVA17_HOME or install via sdkman/asdf/jenv)"
+			string.format(
+				"No Java %d runtime found; Hybris ant build/server tasks need one "
+					.. "(set $JAVA%d_HOME or install via sdkman/asdf/jenv)",
+				required_version,
+				required_version
+			)
 		)
 	end
 end
