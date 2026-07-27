@@ -69,6 +69,8 @@
 ## Cloud, containers, and pipelines
 
 - Docker/Compose workflows from the editor.
+- Compose `image:` property: code action and completion to pick a local
+  Docker image, filtered by the current value.
 - Kubernetes manifests and Helm support.
 - CI/CD YAML language server support for GitHub/GitLab/Azure.
 
