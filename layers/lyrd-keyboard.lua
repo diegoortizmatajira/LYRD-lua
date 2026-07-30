@@ -296,6 +296,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDBufferClose },
 			{ "D", cmd.LYRDBufferForceClose },
 			{ "f", cmd.LYRDBufferFormat, { "x" } },
+			{ "t", cmd.LYRDBufferFormatWith },
 			{ "F", cmd.LYRDBufferFormatChangesOnly },
 			{ "x", cmd.LYRDBufferCloseAll },
 			{ "X", cmd.LYRDBufferForceCloseAll },

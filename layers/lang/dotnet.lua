@@ -154,7 +154,9 @@ local L = {
 	required_formatter_per_filetype = {
 		{
 			target_filetype = "cs",
-			format_settings = { "csharpier", lsp_format = "prefer" },
+			use_lsp = true,
+			lsp_name = "easy_dotnet",
+			format_settings = { "csharpier" },
 		},
 	},
 	required_test_adapters = {

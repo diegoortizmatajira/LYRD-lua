@@ -43,6 +43,7 @@ local L = {
 		LYRDBufferForceCloseAll = Command:new("Buffer: Force close all", ":bufdo bd!", icons.action.kill_target),
 		LYRDBufferFormat = Command:new("Format document", nil, icons.action.format, true),
 		LYRDBufferFormatChangesOnly = Command:new("Format changed sections", nil, icons.action.format, true),
+		LYRDBufferFormatWith = Command:new("Format document with...", nil, icons.action.format, true),
 		LYRDBufferJumpToLast = Command:new("Buffer: Jump to last", ":b#", icons.arrow.up_left),
 		LYRDBufferNew = Command:new("Buffer: New", ":enew", icons.file.new),
 		LYRDBufferNext = Command:new("Buffer: Next", ":bn", icons.chevron.double_right, false, true),
