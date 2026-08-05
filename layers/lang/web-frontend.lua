@@ -43,6 +43,24 @@ local L = {
 				},
 			},
 		},
+		{
+			"yelog/i18n.nvim",
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				-- optional pickers:
+				-- 'ibhagwan/fzf-lua',
+				-- 'nvim-telescope/telescope.nvim',
+			},
+			config = function()
+				require("i18n").setup({
+					locales = { "en", "es" },
+					sources = {
+						"src/locales/{locales}.json",
+						"src/messages/{locales}.json",
+					},
+				})
+			end,
+		},
 	},
 	required_mason_packages = {
 		"vue-language-server",
