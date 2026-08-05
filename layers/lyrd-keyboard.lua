@@ -222,6 +222,9 @@ function L.keybindings()
 			{ "s", cmd.LYRDScratchOpen },
 			{ "d", cmd.LYRDScratchDelete },
 			{ "m", cmd.LYRDScratchMigrate },
+			{ "c", cmd.LYRDScratchClipboard },
+			{ "y", cmd.LYRDScratchYankToClipboard, { "x" } },
+			{ "p", cmd.LYRDScratchPasteFromClipboard },
 		}, icons.file.scratch),
 		{ "r", cmd.LYRDBufferReload },
 		menu_header("R", "Refactors", {

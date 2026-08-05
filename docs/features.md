@@ -31,6 +31,8 @@
 - TODO/FIXME discovery and reusable macro search.
 - Scratch files: create, open, search, and delete workspace-scoped scratch
   notes, plus migrating scratches from one workspace scope to another.
+- Clipboard scratch file: open a persistent global scratch note, yank a
+  visual selection into it, and paste its contents back into a buffer.
 
 ## Git workflow
 

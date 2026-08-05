@@ -194,11 +194,14 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDReplace`                           | Search and replace in current file      | `<Space>sR`                                                      | `*`                         |
 | `LYRDReplaceInFiles`                    | Search and replace in files             | `<Space>sr`                                                      | `*`                         |
 | `LYRDResumeLastSearch`                  | Resume last search                      | `<C-f>`                                                          | `*`                         |
+| `LYRDScratchClipboard`                  | Scratch: Open clipboard                 | `<Leader>sc`                                                     | `*`                         |
 | `LYRDScratchDelete`                     | Delete an scratch file                  | `<Leader>sd`                                                     | `*`                         |
 | `LYRDScratchMigrate`                    | Scratch: Migrate scope                  | `<Leader>sm`                                                     | `*`                         |
 | `LYRDScratchNew`                        | Create a new scratch                    | `<Leader>sn`                                                     | `*`                         |
 | `LYRDScratchOpen`                       | Select scratch file to open             | `<Leader>ss`                                                     | `*`                         |
+| `LYRDScratchPasteFromClipboard`         | Scratch: Paste from clipboard           | `<Leader>sp`                                                     | `*`                         |
 | `LYRDScratchSearch`                     | Search inside scratches                 | `<Leader>sf`                                                     | `*`                         |
+| `LYRDScratchYankToClipboard`            | Scratch: Yank selection to clipboard    | `<Leader>sy`                                                     | `*`                         |
 | `LYRDSearchAllFiles`                    | Find all files                          | `<C-S-p>`<br>`<M-C-p>`                                           | `*`                         |
 | `LYRDSearchBufferLines`                 | Lines                                   | `<Space>sl`                                                      | `*`                         |
 | `LYRDSearchBufferTags`                  | Tags                                    | `<Space>sG`                                                      | `*`                         |
