@@ -241,6 +241,13 @@ local function docker_compose_command_preview(command, service, pre_service_args
 	return "docker compose " .. command .. extra
 end
 
+--- Normalizes a `LYRD.DockerCommandSpecList` (a mix of plain command-name
+--- strings and `[name] = LYRD.DockerComposeCommandSpec` entries) into a flat
+--- list of definitions. The map key (or the string itself) is always used
+--- as the display name; the actual command run is the entry's `command`
+--- field when present, falling back to that same key/string otherwise.
+--- @param command_definitions LYRD.DockerCommandSpecList
+--- @return {display: string, command: string, pre_service_args: string[]?, post_service_args: string[]?}[]
 local function normalize_command_definitions(command_definitions)
 	--- @type {display: string, command: string, pre_service_args: string[]?, post_service_args: string[]?}[]
 	local definitions = {}
