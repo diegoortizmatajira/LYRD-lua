@@ -86,6 +86,10 @@ local L = {
 			command = "up",
 		},
 		"logs",
+		["logs (follow)"] = {
+			pre_service_args = { "-f" },
+			command = "logs",
+		},
 		["exec"] = {
 			pre_service_args = { "-it" },
 			post_service_args = { "sh" },
