@@ -11,6 +11,7 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 --- @class LYRD.DockerComposeCommandSpec
 --- @field pre_service_args? string[]
 --- @field post_service_args? string[]
+--- @field command? string
 
 --- @class LYRD.DockerCommandSpecList
 --- @field [number] string
@@ -78,6 +79,11 @@ local L = {
 		"stop",
 		["up"] = {
 			pre_service_args = { "-d" },
+		},
+		["up (force recreate)"] = {
+			pre_service_args = { "-d" },
+			post_service_args = { "--force-recreate" },
+			command = "up",
 		},
 		"logs",
 		["exec"] = {
@@ -236,15 +242,16 @@ local function docker_compose_command_preview(command, service, pre_service_args
 end
 
 local function normalize_command_definitions(command_definitions)
-	--- @type {command: string, pre_service_args: string[]?, post_service_args: string[]?}[]
+	--- @type {display: string, command: string, pre_service_args: string[]?, post_service_args: string[]?}[]
 	local definitions = {}
 	for _, command in ipairs(command_definitions) do
 		if type(command) == "string" then
-			table.insert(definitions, { command = command })
+			table.insert(definitions, { display = command, command = command })
 		elseif type(command) == "table" then
 			local command_name = command.command or command.name
 			if command_name then
 				table.insert(definitions, {
+					display = command_name,
 					command = command_name,
 					pre_service_args = command.pre_service_args,
 					post_service_args = command.post_service_args,
@@ -263,12 +270,13 @@ local function normalize_command_definitions(command_definitions)
 		local value = command_definitions[key]
 		if type(value) == "table" then
 			table.insert(definitions, {
-				command = key,
+				display = key,
+				command = value.command or key,
 				pre_service_args = value.pre_service_args,
 				post_service_args = value.post_service_args,
 			})
 		else
-			table.insert(definitions, { command = key })
+			table.insert(definitions, { display = key, command = key })
 		end
 	end
 	return definitions
@@ -345,7 +353,7 @@ function L.docker_compose_run_at_cursor()
 				local service_result = vim.tbl_map(function(definition)
 					local command = definition.command
 					return {
-						name = string.format("%s service: compose %s", service, string.upper(command)),
+						name = string.format("%s service: compose %s", service, string.upper(definition.display)),
 						preview = docker_compose_command_preview(
 							command,
 							service,
@@ -369,7 +377,7 @@ function L.docker_compose_run_at_cursor()
 			local compose_file_result = vim.tbl_map(function(definition)
 				local command = definition.command
 				return {
-					name = string.format("Docker compose file: compose %s", string.upper(command)),
+					name = string.format("Docker compose file: compose %s", string.upper(definition.display)),
 					preview = docker_compose_command_preview(
 						command,
 						nil,
