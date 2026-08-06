@@ -99,6 +99,11 @@ local L = {
 		["up"] = {
 			pre_service_args = { "-d" },
 		},
+		["up (force recreate)"] = {
+			pre_service_args = { "-d" },
+			post_service_args = { "--force-recreate" },
+			command = "up",
+		},
 	},
 }
 
