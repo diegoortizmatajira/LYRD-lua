@@ -474,6 +474,7 @@ function L.keybindings()
 				menu_header("r", "Release", {
 					{ "c", cmd.LYRDGithubReleaseCreate },
 				}, icons.git.tag),
+				{"d", cmd.LYRDGithubDashboard}
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },

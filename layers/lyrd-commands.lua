@@ -143,6 +143,7 @@ local L = {
 			icons.folder.new
 		),
 		LYRDGithubReleaseCreate = Command:new("GitHub: Create release", nil, icons.git.release.open),
+		LYRDGithubDashboard = Command:new("GitHub: Dashboard", nil, icons.git.github),
 		LYRDGitWorkTreeList = Command:new("Git: List Worktrees", nil, icons.git.worktree),
 		LYRDGitViewGraph = Command:new("Git: View Repository Graph", nil, icons.git.branch),
 		LYRDGitPatchCreate = Command:new("Git Patch: Create from last N commits", nil, icons.git.diff),

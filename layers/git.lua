@@ -256,6 +256,7 @@ local L = {
 		"git",
 		"lazygit",
 		"tig",
+		"gh",
 	},
 }
 
@@ -496,6 +497,11 @@ function L.create_github_release()
 	ui.toggle_external_app_terminal("gh release create")
 end
 
+function L.toggle_github_dashboard()
+	local ui = require("LYRD.layers.lyrd-ui")
+	ui.toggle_external_app_terminal("gh dash")
+end
+
 function L.settings()
 	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
@@ -557,6 +563,7 @@ function L.settings()
 		{ cmd.LYRDGithubPullRequestClose, ":Octo pr close" },
 		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
 		{ cmd.LYRDGithubReleaseCreate, L.create_github_release },
+		{ cmd.LYRDGithubDashboard, L.toggle_github_dashboard },
 	})
 end
 
