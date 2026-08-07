@@ -27,6 +27,7 @@ end
 --- @field focus boolean?
 --- @field auto_close boolean?
 --- @field diagnostics_parser table?
+--- @field max_lines number?
 
 --- Runs a task in a terminal
 --- @param opts TaskRequest
@@ -65,6 +66,7 @@ function L.run_task(opts)
 		name = opts.name,
 		strategy = "terminal",
 		components = components,
+		max_lines = opts.max_lines or 5000,
 	})
 	if opts.auto_close then
 		task:subscribe("on_complete", function()
@@ -81,6 +83,9 @@ function L.plugins()
 			"stevearc/overseer.nvim",
 			version = "1",
 			opts = {
+				task_defaults = {
+					max_lines = 5000,
+				},
 				templates = {
 					"builtin",
 				},
