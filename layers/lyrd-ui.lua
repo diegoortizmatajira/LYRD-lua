@@ -442,7 +442,13 @@ end
 --- is requested while a terminal is open, the current terminal is closed and the
 --- new one is opened in its place.
 --- @param external_cmd string The shell command to run in the terminal.
-function L.toggle_external_app_terminal(external_cmd)
+--- @param opts { keep_open_on_exit: boolean? }? When keep_open_on_exit is true, the terminal
+--- window stays open after the process exits (instead of auto-closing) and a notification is
+--- shown reporting success/failure. Use this for one-shot commands that may silently hang
+--- waiting for input (e.g. a command that can invoke $EDITOR) so the outcome isn't missed.
+--- Leave it unset for long-running interactive TUIs (e.g. tig) that the user quits themselves.
+function L.toggle_external_app_terminal(external_cmd, opts)
+	opts = opts or {}
 	local Terminal = require("toggleterm.terminal").Terminal
 	if ext_app_term and ext_app_term:is_open() then
 		local current_cmd = ext_app_term.cmd
@@ -456,10 +462,21 @@ function L.toggle_external_app_terminal(external_cmd)
 		cmd = external_cmd,
 		direction = "float",
 		float_opts = { border = "double" },
+		close_on_exit = not opts.keep_open_on_exit,
 		on_open = function(term)
 			vim.cmd("startinsert!")
 			vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
 		end,
+		on_exit = opts.keep_open_on_exit and function(term, _, exit_code)
+			vim.schedule(function()
+				vim.cmd("stopinsert")
+				if exit_code == 0 then
+					vim.notify(string.format("'%s' finished.", term.cmd), vim.log.levels.INFO)
+				else
+					vim.notify(string.format("'%s' exited with code %d.", term.cmd, exit_code), vim.log.levels.ERROR)
+				end
+			end)
+		end or nil,
 		on_close = function()
 			ext_app_term = nil
 		end,
