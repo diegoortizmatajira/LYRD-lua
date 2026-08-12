@@ -474,7 +474,7 @@ function L.keybindings()
 				menu_header("r", "Release", {
 					{ "c", cmd.LYRDGithubReleaseCreate },
 				}, icons.git.tag),
-				{"d", cmd.LYRDGithubDashboard}
+				{ "d", cmd.LYRDGithubDashboard },
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
@@ -537,6 +537,8 @@ function L.keybindings()
 			{ "t", cmd.LYRDTasksToggle },
 			{ "T", cmd.LYRDTasksConfigure },
 			{ "L", cmd.LYRDTasksConfigureLaunch },
+			{ "b", cmd.LYRDDatabaseBackup },
+			{ "B", cmd.LYRDDatabaseRestore },
 		}, icons.code.run),
 		menu_header("<SPACE>", "Tools/Services", {
 			{ "d", cmd.LYRDDatabaseUI },
