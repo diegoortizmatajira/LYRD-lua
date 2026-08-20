@@ -311,7 +311,7 @@ function L.keybindings()
 			{ "/", cmd.LYRDSearchBuffers },
 			{ "s", cmd.LYRDBufferSave },
 			{ "S", cmd.LYRDBufferSaveAll },
-		}, icons.file.default),
+		}, icons.file.default, { "x" }),
 		menu_header("c", "Code", {
 			menu_header("g", "Code Generation", {
 				{ "x", cmd.LYRDCodeGenerate },
@@ -387,7 +387,7 @@ function L.keybindings()
 				{ "r", cmd.LYRDCopyRelativeFilePath },
 				{ "w", cmd.LYRDCopyWorkingDirectory },
 			}, icons.action.copy),
-		}, icons.action.edit),
+		}, icons.action.edit, { "x" }),
 		menu_header("m", "Markdown", {
 			{ "b", cmd.LYRDMarkdownToggleBold, { "x" } },
 			{ "i", cmd.LYRDMarkdownToggleItalic, { "x" } },
@@ -407,7 +407,7 @@ function L.keybindings()
 				{ "k", cmd.LYRDMarkdownTableInsertRowAbove },
 				{ "j", cmd.LYRDMarkdownTableInsertRowBelow },
 			}, icons.other.table),
-		}, icons.file.markdown),
+		}, icons.file.markdown, { "x" }),
 		menu_header("s", "Search", {
 			{ ",", cmd.LYRDSearchCommands },
 			{ ".", cmd.LYRDSearchFiles },
