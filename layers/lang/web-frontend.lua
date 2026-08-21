@@ -24,6 +24,9 @@ local L = {
 			"nvim-neotest/neotest-jest",
 		},
 		{
+			"josewal/neotest-cypress",
+		},
+		{
 			"nvim-svelte/nvim-svelte-snippets",
 		},
 		{
@@ -107,6 +110,7 @@ local L = {
 	required_test_adapters = {
 		"neotest-vitest",
 		"neotest-jest",
+		"neotest-cypress",
 	},
 	focus_terminal_on_run = true,
 	ts_root_markers = {
