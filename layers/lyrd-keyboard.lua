@@ -225,7 +225,7 @@ function L.keybindings()
 			{ "c", cmd.LYRDScratchClipboard },
 			{ "y", cmd.LYRDScratchYankToClipboard, { "x" } },
 			{ "p", cmd.LYRDScratchPasteFromClipboard },
-		}, icons.file.scratch),
+		}, icons.file.scratch, { "x" }),
 		{ "r", cmd.LYRDBufferReload },
 		menu_header("R", "Refactors", {
 			{ "f", cmd.LYRDCodeRefactor },
