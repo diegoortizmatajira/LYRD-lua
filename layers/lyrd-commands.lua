@@ -64,6 +64,11 @@ local L = {
 		LYRDCodeFillStructure = Command:new("Code: Fill structure", nil, icons.code.outline),
 		LYRDCodeFixImports = Command:new("Code: Fix imports", nil, icons.code.fix),
 		LYRDCodeGenerate = Command:new("Code: Run Generator Tool", nil, icons.code.generate),
+		LYRDCodeGenerateHttpFromOpenApi = Command:new(
+			"Code: Generate HTTP files from OpenAPI spec",
+			nil,
+			icons.code.generate
+		),
 		LYRDCodeGlobalCheck = Command:new("Code: Global check", nil, icons.code.check),
 		LYRDCodeImplementInterface = Command:new("Code: Implement interface", nil, icons.code.interface),
 		LYRDCodeInsertSnippet = Command:new("Code Snippet: Insert at cursor", nil, icons.code.snippet),

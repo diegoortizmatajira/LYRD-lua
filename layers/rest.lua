@@ -74,6 +74,33 @@ function L.get_closest_environment_file()
 	return utils.join_paths(vim.fn.getcwd(), env_file)
 end
 
+--- Prompts for an OpenAPI spec (file path or URL) and a target directory, then runs
+--- httpgenerator to generate the corresponding .http files.
+function L.generate_from_openapi()
+	vim.ui.input({ prompt = "OpenAPI spec file or URL: ", completion = "file" }, function(spec)
+		if not spec or spec == "" then
+			return
+		end
+		vim.ui.input(
+			{ prompt = "Target directory: ", completion = "dir", default = vim.fn.getcwd() },
+			function(target_dir)
+				if not target_dir or target_dir == "" then
+					return
+				end
+				local tasks = require("LYRD.layers.tasks")
+				tasks.run_task({
+					name = "HTTP Generator",
+					cmd = "httpgenerator",
+					args = { spec, "-o", target_dir },
+					cwd = vim.fn.getcwd(),
+					open_in_split = true,
+					focus = true,
+				})
+			end
+		)
+	end)
+end
+
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
@@ -129,6 +156,12 @@ function L.settings()
 			function()
 				require("kulala").close()
 			end,
+		},
+	})
+	commands.implement("*", {
+		{
+			cmd.LYRDCodeGenerateHttpFromOpenApi,
+			L.generate_from_openapi,
 		},
 	})
 end

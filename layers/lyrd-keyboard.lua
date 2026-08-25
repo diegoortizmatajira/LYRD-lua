@@ -318,6 +318,7 @@ function L.keybindings()
 				{ "g", cmd.LYRDCodeProduceGetter },
 				{ "s", cmd.LYRDCodeProduceSetter },
 				{ "m", cmd.LYRDCodeProduceMapping },
+				{ "h", cmd.LYRDCodeGenerateHttpFromOpenApi },
 			}, icons.code.generate),
 			menu_header("n", "Notebook", {
 				menu_header("r", "Run", {
