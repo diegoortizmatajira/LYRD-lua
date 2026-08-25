@@ -12,6 +12,7 @@ local L = {
 	},
 	required_mason_packages = {
 		"kulala-fmt",
+		"httpgenerator",
 	},
 	required_treesitter_parsers = {
 		"http",
