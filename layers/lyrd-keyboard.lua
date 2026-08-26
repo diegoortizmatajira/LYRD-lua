@@ -165,6 +165,7 @@ function L.keybindings()
 			{ "f", cmd.LYRDCopyFileName },
 			{ "r", cmd.LYRDCopyRelativeFilePath },
 			{ "w", cmd.LYRDCopyWorkingDirectory },
+			{ "t", cmd.LYRDCopyOnlyText, { "x" } },
 		}, icons.action.copy),
 	})
 
@@ -400,6 +401,7 @@ function L.keybindings()
 			{ "c", cmd.LYRDMarkdownToggleInlineCode, { "x" } },
 			{ "C", cmd.LYRDMarkdownToggleCodeBlock, { "x" } },
 			{ "q", cmd.LYRDMarkdownToggleQuoteBlock, { "x" } },
+			{ "y", cmd.LYRDCopyOnlyText, { "x" } },
 			menu_header("t", "Table", {
 				{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },
 				{ "l", cmd.LYRDMarkdownTableMoveColumnRight },

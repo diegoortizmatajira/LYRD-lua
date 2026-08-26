@@ -328,6 +328,7 @@ local L = {
 		LYRDCopyFileName = Command:new("Copy file name", nil, icons.file.symlink),
 		LYRDCopyWorkingDirectory = Command:new("Copy working directory", nil, icons.folder.symlink),
 		LYRDCopyCodeBlock = Command:new("Copy code block/inline code", nil, icons.action.copy),
+		LYRDCopyOnlyText = Command:new("Copy as plain text (strip Markdown)", nil, icons.action.copy, true),
 		LYRDPasteFromHistory = Command:new("Paste from history", nil, icons.action.paste),
 		LYRDClipboardTrim = Command:new("Clipboard: Trim content", nil, icons.action.clean),
 		LYRDClipboardUnquote = Command:new("Clipboard: Unquote content", nil, icons.action.replace_text),

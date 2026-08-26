@@ -152,6 +152,23 @@ function L.copy_code_block()
 	vim.notify("Copied code to the clipboard!")
 end
 
+--- Copies the current visual selection -- or the whole buffer if there's no
+--- selection -- to the clipboard with Markdown syntax stripped down to plain
+--- text.
+function L.copy_plain_text()
+	local utils = require("LYRD.shared.utils")
+	local markdown_strip = require("LYRD.shared.utils.markdown_strip")
+
+	local bufnr = vim.api.nvim_get_current_buf()
+	local text = utils.get_visual_selection(bufnr)
+	if text == "" then
+		text = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+	end
+
+	vim.fn.setreg("+", markdown_strip.strip(text))
+	vim.notify("Copied plain text to the clipboard!")
+end
+
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
@@ -164,6 +181,7 @@ function L.settings()
 	commands.implement("markdown", {
 		{ cmd.LYRDDevServerStart, L.preview_markdown },
 		{ cmd.LYRDCopyCodeBlock, L.copy_code_block },
+		{ cmd.LYRDCopyOnlyText, L.copy_plain_text },
 		{ cmd.LYRDMarkdownToggleBold, markdown_format.toggle_bold },
 		{ cmd.LYRDMarkdownToggleItalic, markdown_format.toggle_italic },
 		{ cmd.LYRDMarkdownToggleUnderline, markdown_format.toggle_underline },
