@@ -571,6 +571,13 @@ function L.keybindings()
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),
+		menu_header("w", "Website", {
+			{ "n", cmd.LYRDSiteNewPage },
+			{ "a", cmd.LYRDSiteNewArticle },
+			{ "b", cmd.LYRDSiteBuild },
+			{ "s", cmd.LYRDSiteServe },
+			{ "l", cmd.LYRDSiteListDrafts },
+		}, icons.apps.browser),
 	})
 end
 
