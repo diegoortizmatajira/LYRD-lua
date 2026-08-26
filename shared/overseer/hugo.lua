@@ -1,10 +1,6 @@
----@param opts overseer.SearchParams
----@return nil|string
-local function get_file(filename, opts)
-	return vim.fs.find(filename, { upward = true, type = "file", path = opts.dir })[1]
-end
+local hugo_site = require("LYRD.shared.site-providers.hugo")
 
-local function task_template(name, command, check_for)
+local function task_template(name, command)
 	---@type overseer.TemplateDefinition
 	return {
 		name = name,
@@ -18,10 +14,7 @@ local function task_template(name, command, check_for)
 				if vim.fn.executable(command[1]) == 0 then
 					return false, string.format('Command "%s" not found', command[1])
 				end
-				if check_for then
-					return get_file(check_for, opts) ~= nil
-				end
-				return true
+				return hugo_site.find_config_file(opts.dir) ~= nil
 			end,
 		},
 		builder = function(params)
@@ -44,7 +37,7 @@ return {
 	end,
 	generator = function(_, cb)
 		cb({
-			task_template("Hugo (draft server)", { "hugo", "server", "--buildDrafts" }, "hugo.toml"),
+			task_template("Hugo (draft server)", { "hugo", "server", "--buildDrafts" }),
 		})
 	end,
 }
