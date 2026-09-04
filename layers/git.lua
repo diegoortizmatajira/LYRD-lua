@@ -486,6 +486,98 @@ function L.git_patch_apply_all()
 	end
 end
 
+--- Returns the repository's default branch name via `gh repo view`, or nil on failure.
+--- @return string|nil
+local function github_default_branch()
+	local result = vim.fn.system("gh repo view --json defaultBranchRef -q .defaultBranchRef.name")
+	if vim.v.shell_error ~= 0 then
+		return nil
+	end
+	return vim.trim(result)
+end
+
+--- Returns the subject line of the current branch's most recent commit.
+--- @return string
+local function last_commit_subject()
+	local subject = vim.trim(vim.fn.system("git log -1 --format=%s"))
+	if vim.v.shell_error ~= 0 then
+		return ""
+	end
+	return subject
+end
+
+--- Creates a GitHub pull request via `gh pr create`, selecting the head branch
+--- automatically and picking the base branch, draft status and title through
+--- Telescope/UI prompts instead of typing branch names by hand.
+function L.github_pull_request_create()
+	return function()
+		local head = current_branch()
+		if not head then
+			vim.notify("Not currently on a git branch.", vim.log.levels.ERROR)
+			return
+		end
+
+		local branches_raw = vim.fn.system("git branch --format='%(refname:short)' --all")
+		if vim.v.shell_error ~= 0 then
+			vim.notify("Failed to get git branches: " .. branches_raw, vim.log.levels.ERROR)
+			return
+		end
+
+		local default_branch = github_default_branch()
+		local seen = { [head] = true }
+		local branch_list = {}
+		for _, name in ipairs(vim.split(branches_raw, "\n")) do
+			name = vim.trim(name):gsub("^origin/", "")
+			if name ~= "" and name ~= "HEAD" and not seen[name] then
+				seen[name] = true
+				table.insert(branch_list, name)
+			end
+		end
+		table.sort(branch_list, function(a, b)
+			if a == default_branch or b == default_branch then
+				return a == default_branch
+			end
+			return a < b
+		end)
+
+		if #branch_list == 0 then
+			vim.notify("No base branch candidates found.", vim.log.levels.ERROR)
+			return
+		end
+
+		vim.ui.select(branch_list, {
+			prompt = string.format("Select base branch for PR (head: %s):", head),
+		}, function(base)
+			if not base then
+				vim.notify("No base branch selected. Aborting pull request creation.", vim.log.levels.INFO)
+				return
+			end
+			vim.ui.select({ "Ready for review", "Draft" }, {
+				prompt = "Pull request status:",
+			}, function(status)
+				if not status then
+					return
+				end
+				vim.ui.input({ prompt = "Pull request title: ", default = last_commit_subject() }, function(title)
+					if not title or title == "" then
+						vim.notify("No title provided. Aborting pull request creation.", vim.log.levels.INFO)
+						return
+					end
+					local command = string.format(
+						"gh pr create --base %s --head %s --title %s%s",
+						vim.fn.shellescape(base),
+						vim.fn.shellescape(head),
+						vim.fn.shellescape(title),
+						status == "Draft" and " --draft" or ""
+					)
+					local ui = require("LYRD.layers.lyrd-ui")
+					ui.toggle_external_app_terminal(command, { keep_open_on_exit = true })
+				end)
+			end)
+		end)
+	end
+end
+
 function L.create_github_release()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.toggle_external_app_terminal("gh release create")
@@ -553,7 +645,7 @@ function L.settings()
 		{ cmd.LYRDGithubIssueReopen, ":Octo issue reopen" },
 		{ cmd.LYRDGithubIssueDevelop, ":Octo issue develop" },
 		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
-		{ cmd.LYRDGithubPullRequestCreate, ":Octo pr create" },
+		{ cmd.LYRDGithubPullRequestCreate, L.github_pull_request_create() },
 		{ cmd.LYRDGithubPullRequestClose, ":Octo pr close" },
 		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
 		{ cmd.LYRDGithubReleaseCreate, L.create_github_release },
