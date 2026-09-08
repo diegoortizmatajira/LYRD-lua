@@ -353,7 +353,7 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, generate_documentation },
-		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
+		{ cmd.LYRDAIAssistant, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
 		{ cmd.LYRDAICliPrompt, ":Sidekick cli prompt" },
