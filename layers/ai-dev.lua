@@ -23,7 +23,7 @@ local L = {
 Generate a concise git commit message from the diff below.
 
 Format:
-<type>: <issue reference> <summary in imperative mood, max 72 chars>
+<type>: <optional issue reference> <summary in imperative mood, max 72 chars>
 
 - <what changed and why>
 - <what changed and why>
@@ -40,9 +40,9 @@ Rules:
 	functionality" — be specific about what improved and how.
 	- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
 	- Check for missing issue/ticket references in the commit message. If none are found, check the
-	 current branch name for a ticket code  and propose adding it to the commit
-	 message. If no code is found, use a generic placeholder '<ISSUE>' and
-	 remind the user in a comment line. Following are some common formats for
+	 current branch name for a ticket code and propose it by adding it to the commit
+	 message. If no code is found at all, include a comment line at the end requesting the
+	 user to provide an "ISSUE NUMBER". Following are some common formats for
 	 issue/ticket references:
 		- GitHub-style: `<issue-number>-<description>` (e.g. `123-fix-login-bug`)
   		- JIRA-style: `<PROJECT-PREFIX>-<sequence-number>` (e.g. `ABC-456`)
