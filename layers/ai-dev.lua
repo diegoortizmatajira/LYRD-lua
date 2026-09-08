@@ -39,6 +39,12 @@ Rules:
 	- Do NOT use filler like "improve maintainability" or "enhance
 	functionality" — be specific about what improved and how.
 	- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
+	- Check for missing issue/ticket references in the commit message. If none are found, check the
+	 current branch name for a ticket code  and propose adding it to the commit
+	 message. If no code is found, ask the user whether there's an issue/ticket
+	 to reference before committing.
+		- GitHub-style: `<issue-number>-<description>` (e.g. `123-fix-login-bug`)
+  		- JIRA-style: `<PROJECT-PREFIX>-<sequence-number>` (e.g. `ABC-456`)
 ]],
 }
 
