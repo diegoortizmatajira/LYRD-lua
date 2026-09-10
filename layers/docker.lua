@@ -235,7 +235,7 @@ local function docker_compose_image_code_action(params)
 	}
 end
 
-local function docker_compose_command_preview(command, service, pre_service_args, post_service_args)
+local function docker_compose_command_preview(command, service, pre_service_args, post_service_args, compose_filename)
 	local args = {}
 	if pre_service_args and #pre_service_args > 0 then
 		vim.list_extend(args, pre_service_args)
@@ -247,7 +247,8 @@ local function docker_compose_command_preview(command, service, pre_service_args
 		vim.list_extend(args, post_service_args)
 	end
 	local extra = #args > 0 and (" " .. table.concat(args, " ")) or ""
-	return "docker compose " .. command .. extra
+	local file_flag = compose_filename and (" -f " .. compose_filename) or ""
+	return "docker compose" .. file_flag .. " " .. command .. extra
 end
 
 --- Normalizes a `LYRD.DockerCommandSpecList` (a mix of plain command-name
@@ -301,22 +302,26 @@ end
 --- Runs a Docker Compose task with the specified command and optional service.
 ---
 --- This function constructs and executes a Docker Compose task based on the
---- provided command and service. The task is run in the current working
---- directory and opens in a split terminal.
+--- provided command and service. The task is run in the given `cwd` and
+--- opens in a split terminal.
 ---
 --- @param command? string: The Docker Compose command to execute (e.g., "up", "down"). Defaults to "up".
 --- @param service? string: The name of the service to target with the command. Optional.
 --- @param pre_service_args? string[]: Args placed before the service name (e.g., "-it" for exec).
 --- @param post_service_args? string[]: Args placed after the service name (e.g., "sh").
+--- @param cwd string: The directory containing the docker-compose file to use.
+--- @param compose_filename string: The basename of the docker-compose file to
+--- use, passed via `-f` so Compose's own default-name/parent-directory
+--- lookup is never triggered.
 --- @usage
 --- -- Run all services with `docker-compose up -d`:
---- docker_compose_task("up")
+--- docker_compose_task("up", nil, nil, nil, cwd, "docker-compose.yml")
 ---
 --- -- Stop a specific service with `docker-compose stop web`:
---- docker_compose_task("stop", "web")
-local function docker_compose_task(command, service, pre_service_args, post_service_args)
+--- docker_compose_task("stop", "web", nil, nil, cwd, "docker-compose.yml")
+local function docker_compose_task(command, service, pre_service_args, post_service_args, cwd, compose_filename)
 	command = command or "up"
-	local args = { command }
+	local args = { "-f", compose_filename, command }
 	if pre_service_args and #pre_service_args > 0 then
 		vim.list_extend(args, pre_service_args)
 	end
@@ -327,8 +332,6 @@ local function docker_compose_task(command, service, pre_service_args, post_serv
 		vim.list_extend(args, post_service_args)
 	end
 	local tasks = require("LYRD.layers.tasks")
-	--- get the current working directory as the folder where the current file is located
-	local cwd = vim.fn.expand("%:p:h")
 
 	tasks.run_task({
 		name = "Docker Compose",
@@ -361,7 +364,9 @@ function L.docker_compose_run_at_cursor()
 			text_capture_name = "service-name",
 		},
 		skip_visual_selection = true,
-		generator = function(_, service)
+		generator = function(filename, service)
+			local cwd = vim.fn.fnamemodify(filename, ":p:h")
+			local compose_filename = vim.fn.fnamemodify(filename, ":t")
 			local result = {}
 			-- If a service name is found at the cursor, generate commands specific to that service
 			if service and service ~= "" then
@@ -374,14 +379,17 @@ function L.docker_compose_run_at_cursor()
 							command,
 							service,
 							definition.pre_service_args,
-							definition.post_service_args
+							definition.post_service_args,
+							compose_filename
 						),
 						runner = function()
 							docker_compose_task(
 								command,
 								service,
 								definition.pre_service_args,
-								definition.post_service_args
+								definition.post_service_args,
+								cwd,
+								compose_filename
 							)
 						end,
 					}
@@ -398,10 +406,18 @@ function L.docker_compose_run_at_cursor()
 						command,
 						nil,
 						definition.pre_service_args,
-						definition.post_service_args
+						definition.post_service_args,
+						compose_filename
 					),
 					runner = function()
-						docker_compose_task(command, nil, definition.pre_service_args, definition.post_service_args)
+						docker_compose_task(
+							command,
+							nil,
+							definition.pre_service_args,
+							definition.post_service_args,
+							cwd,
+							compose_filename
+						)
 					end,
 				}
 			end, compose_command_definitions)
