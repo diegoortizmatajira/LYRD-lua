@@ -137,6 +137,12 @@ local L = {
 					-- Set the SQL dialect based on the new connection's adapter
 					set_dialect(map_adapter_to_dialect(new_connection.adapter))
 				end,
+				new_buffer_handler = function(bufnr)
+					require("db-cli-adapter.config").attach_lsp_for_filetype_handler(bufnr)
+				end,
+				sidebar = {
+					open_as_temp_file = true,
+				},
 				backup = {
 					container_picker = db_cli_container_picker,
 				},
