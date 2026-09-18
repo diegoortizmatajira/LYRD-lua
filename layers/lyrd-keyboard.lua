@@ -555,6 +555,7 @@ function L.keybindings()
 			{ "s", cmd.LYRDDevServerStart },
 			{ "S", cmd.LYRDDevExposeLocalServer },
 			{ "x", cmd.LYRDScanForSecrets },
+			{ "r", cmd.LYRDRegexTest, { "x" } },
 			{ "<Space>", cmd.LYRDCommandPalette },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {

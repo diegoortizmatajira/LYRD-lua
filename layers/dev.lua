@@ -33,6 +33,7 @@ local L = {
 	},
 	required_mason_packages = {
 		"editorconfig-checker",
+		"rgx",
 	},
 	required_executables = {
 		"live-server",
@@ -152,6 +153,25 @@ function L.start_dev_server()
 	end)
 end
 
+--- Opens `rgx` (regex debugger) in a floating terminal popup, similar to the
+--- LazyGit/LazyDocker popups. If called from a visual selection, the selected
+--- text is passed to `rgx --vim` as the pattern to test; otherwise `rgx --vim`
+--- is opened without a pattern.
+function L.regex_test()
+	if vim.fn.executable("rgx") == 0 then
+		vim.notify("rgx is not installed. Please install it via Mason.", vim.log.levels.ERROR)
+		return
+	end
+	local utils = require("LYRD.shared.utils")
+	local ui = require("LYRD.layers.lyrd-ui")
+	local selection = utils.get_visual_selection()
+	local command = "rgx --vim"
+	if selection ~= "" then
+		command = string.format("%s %s", command, vim.fn.shellescape(selection))
+	end
+	ui.toggle_external_app_terminal(command)
+end
+
 function L.expose_local_server()
 	vim.ui.input({ prompt = "Enter port to expose:", default = "3000" }, function(port)
 		if not port or port == "" then
@@ -174,6 +194,7 @@ function L.settings()
 			end,
 		},
 		{ cmd.LYRDScanForSecrets, L.scan_for_secrets },
+		{ cmd.LYRDRegexTest, L.regex_test },
 	})
 end
 

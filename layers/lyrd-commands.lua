@@ -105,6 +105,7 @@ local L = {
 		LYRDDevServerStart = Command:new("Live server: Start", nil, icons.apps.server),
 		LYRDDevExposeLocalServer = Command:new("Expose local port to the web", nil, icons.apps.exposed_server),
 		LYRDScanForSecrets = Command:new("Diagnostic: Scan for secrets in current workspace", nil, icons.other.secret),
+		LYRDRegexTest = Command:new("Regex: Test Regular expressions", nil, icons.other.zoom, true),
 		LYRDDiagnosticLinesToggle = Command:new("Diagnostic: Toggle virtual lines", nil, icons.action.toggle_on),
 		LYRDEditTextCase = Command:new("Change text case", nil, icons.other.text_case),
 		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),
