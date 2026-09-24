@@ -71,14 +71,31 @@ end
 --- still-running session instead of spawning a duplicate -- this is what
 --- makes a plain overseer task bundle into a working recovery mechanism.
 --- @param cwd string
-local function recover_tmux_bundle(cwd)
+--- @param opts? { silent?: boolean } silent (used for the automatic startup
+--- recovery) swallows the "tmux not found"/"no saved tasks" cases instead of
+--- notifying.
+local function recover_tmux_bundle(cwd, opts)
+	opts = opts or {}
 	if vim.fn.executable("tmux") == 0 then
+		if not opts.silent then
+			vim.notify("LYRD Tasks: tmux not found, cannot recover tmux tasks", vim.log.levels.WARN)
+		end
 		return
 	end
 	require("overseer.task_bundle").load_task_bundle(tmux_bundle_name(cwd), {
 		autostart = true,
-		ignore_missing = true,
+		ignore_missing = opts.silent,
 	})
+end
+
+--- Forces a (re)load of this workspace's saved tmux tasks on demand -- e.g.
+--- after tasks were started from a different Neovim instance, or to retry
+--- after fixing whatever made the automatic startup recovery a no-op.
+--- Unlike the silent startup recovery, this always reports back via
+--- vim.notify (either from task_bundle.load_task_bundle itself, or the
+--- "tmux not found" warning above).
+function L.recover_tmux_tasks()
+	recover_tmux_bundle(vim.fn.getcwd(), { silent = false })
 end
 
 local function configure(filename)
@@ -261,13 +278,17 @@ function L.settings()
 		group = vim.api.nvim_create_augroup("LYRDTasksTmuxBundle", { clear = true }),
 		callback = schedule_tmux_bundle_save,
 	})
+
+	commands.implement("*", {
+		{ cmd.LYRDTasksRecoverTmux, L.recover_tmux_tasks },
+	})
 end
 
 function L.complete()
 	-- Deferred so it never blocks startup; safe to call even when no bundle
 	-- exists yet (ignore_missing) or tmux isn't installed.
 	vim.schedule(function()
-		recover_tmux_bundle(vim.fn.getcwd())
+		recover_tmux_bundle(vim.fn.getcwd(), { silent = true })
 	end)
 end
 

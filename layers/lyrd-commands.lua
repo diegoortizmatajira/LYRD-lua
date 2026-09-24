@@ -322,6 +322,7 @@ local L = {
 		LYRDTasksRun = Command:new("Tasks: Select and run", nil, icons.action.run_task),
 		LYRDTasksConfigure = Command:new("Tasks: Configure for workspace", nil, icons.other.task),
 		LYRDTasksConfigureLaunch = Command:new("Tasks: Configure launch profile", nil, icons.other.launch),
+		LYRDTasksRecoverTmux = Command:new("Tasks: Recover tmux tasks for this workspace", nil, icons.action.update),
 		LYRDToggleBufferDecorations = Command:new("Toggle buffer decorations", nil, icons.action.toggle_on),
 		LYRDEditLocalConfig = Command:new("Config: Edit local settings", nil, icons.other.wrench),
 		LYRDBookmarkAddLocal = Command:new("Add local bookmark", nil, icons.other.bookmark),
