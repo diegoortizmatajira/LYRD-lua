@@ -23,27 +23,30 @@ local function tmux_bundle_name(cwd)
 end
 
 --- @param task overseer.Task
---- @param cwd string
 --- @return boolean
-local function is_tmux_task_for_cwd(task, cwd)
-	return task.cwd == cwd and task.strategy ~= nil and task.strategy.name == "tmux"
+local function is_tmux_task(task)
+	return task.strategy ~= nil and task.strategy.name == "tmux"
 end
 
---- Saves the current cwd's tmux-strategy tasks into its overseer task bundle,
---- so they can be recovered (reattached to) on a later Neovim startup. Only
---- tmux-strategy tasks are included: a "terminal"-strategy task's process is
---- always dead by the time Neovim restarts, so silently re-running it would
---- be surprising (a one-shot build/test task should never auto-run again).
+--- Saves this Neovim session's tmux-strategy tasks into the current
+--- workspace's overseer task bundle, so they can be recovered (reattached to)
+--- on a later Neovim startup in the same directory. Only tmux-strategy tasks
+--- are included: a "terminal"-strategy task's process is always dead by the
+--- time Neovim restarts, so silently re-running it would be surprising (a
+--- one-shot build/test task should never auto-run again).
+---
+--- Deliberately NOT filtered by `task.cwd == cwd`: a task's own cwd is often
+--- a subdirectory the task runs in (e.g. the Hybris server tasks in
+--- shared/overseer/hybris_tasks.lua use bin/platform, not the workspace
+--- root), not the directory Neovim itself was opened in. Every task in this
+--- process's task list already belongs to this Neovim session/workspace --
+--- overseer's task list is per-process, so there's nothing else to filter by.
 --- @param cwd string
 local function save_tmux_bundle(cwd)
 	local overseer = require("overseer")
 	local task_bundle = require("overseer.task_bundle")
 	local name = tmux_bundle_name(cwd)
-	local tasks = overseer.list_tasks({
-		filter = function(task)
-			return is_tmux_task_for_cwd(task, cwd)
-		end,
-	})
+	local tasks = overseer.list_tasks({ filter = is_tmux_task })
 	if vim.tbl_isempty(tasks) then
 		task_bundle.delete_task_bundle(name, { ignore_missing = true })
 		return
