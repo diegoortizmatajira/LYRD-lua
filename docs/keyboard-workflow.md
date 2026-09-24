@@ -21,6 +21,7 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 - `<Space>s` - search/navigation
 - `<Space>t` - testing
 - `<Space>r` - tasks and REPL
+- `<Space>w` - static-site (Hugo) actions
 
 ## Common quick actions
 
