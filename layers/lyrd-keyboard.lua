@@ -540,6 +540,7 @@ function L.keybindings()
 			{ "t", cmd.LYRDTasksToggle },
 			{ "T", cmd.LYRDTasksConfigure },
 			{ "L", cmd.LYRDTasksConfigureLaunch },
+			{ "s", cmd.LYRDTasksRecoverTmux },
 			{ "b", cmd.LYRDDatabaseBackup },
 			{ "B", cmd.LYRDDatabaseRestore },
 		}, icons.code.run),
