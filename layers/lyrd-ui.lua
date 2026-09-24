@@ -312,8 +312,8 @@ function L.plugins()
 					--stylua: ignore
 					callback = function()
 						local buf = vim.api.nvim_get_current_buf()
-						pcall(vim.api.nvim_buf_del_keymap, 0, "n", "<C-p>")
-						pcall(vim.api.nvim_buf_del_keymap, 0, "n", "<C-n>")
+						vim.api.nvim_buf_del_keymap(0, "n", "<C-p>")
+						vim.api.nvim_buf_del_keymap(0, "n", "<C-n>")
 						vim.api.nvim_buf_set_keymap( 0, "n", "j", "<Cmd>lua MiniStarter.update_current_item('next')<CR>", {
 							noremap = true, silent = true })
 						vim.api.nvim_buf_set_keymap( 0, "n", "k", "<Cmd>lua MiniStarter.update_current_item('prev')<CR>", {

@@ -68,15 +68,45 @@ local function schedule_tmux_bundle_save()
 	end, 500)
 end
 
+--- Returns a copy of a serialized task's `components` list with any
+--- "open_output" component's `on_start` forced to "never" -- recovering a
+--- task (reattaching to a session that was already running) shouldn't yank
+--- the overseer panel open; the user can bring it up themselves whenever
+--- they want to look at it. `on_complete`/`focus` are left untouched, so if
+--- the recovered task later actually finishes for real, the normal
+--- on-complete-opens-output behavior still applies.
+--- @param components table[]
+--- @return table[]
+local function without_open_on_start(components)
+	-- A component loaded from JSON has its name under the string key "1"
+	-- instead of the integer key 1 (JSON object keys are always strings) --
+	-- overseer.util.split_config is upstream's own fix-up for this, used by
+	-- Task:add_components; reuse it here instead of re-guessing the shape.
+	local overseer_util = require("overseer.util")
+	return vim.tbl_map(function(comp)
+		local copy = type(comp) == "table" and vim.deepcopy(comp) or comp
+		local name = overseer_util.split_config(copy)
+		if name == "open_output" then
+			copy.on_start = "never"
+			return copy
+		end
+		return comp
+	end, components)
+end
+
 --- Loads (and autostarts) this cwd's saved tmux-strategy tasks, if any.
 --- Because the tmux strategy's start() is idempotent (`tmux new-session
 --- -A`), autostarting a loaded task definition reattaches to the
 --- still-running session instead of spawning a duplicate -- this is what
 --- makes a plain overseer task bundle into a working recovery mechanism.
+---
+--- Reimplements (rather than calls) overseer.task_bundle.load_task_bundle,
+--- so each recovered task's components can be adjusted (see
+--- without_open_on_start) before it starts.
 --- @param cwd string
 --- @param opts? { silent?: boolean } silent (used for the automatic startup
---- recovery) swallows the "tmux not found"/"no saved tasks" cases instead of
---- notifying.
+--- recovery) swallows the "tmux not found"/"no saved tasks"/"recovered N
+--- tasks" notifications entirely.
 local function recover_tmux_bundle(cwd, opts)
 	opts = opts or {}
 	if vim.fn.executable("tmux") == 0 then
@@ -85,18 +115,46 @@ local function recover_tmux_bundle(cwd, opts)
 		end
 		return
 	end
-	require("overseer.task_bundle").load_task_bundle(tmux_bundle_name(cwd), {
-		autostart = true,
-		ignore_missing = opts.silent,
-	})
+
+	local name = tmux_bundle_name(cwd)
+	local files = require("overseer.files")
+	local path = files.get_stdpath_filename("state", "overseer", name .. ".bundle.json")
+	local data = files.load_json_file(path)
+	if not data then
+		if not opts.silent then
+			vim.notify(
+				string.format("LYRD Tasks: no saved tmux tasks for this workspace (%s)", name),
+				vim.log.levels.WARN
+			)
+		end
+		return
+	end
+
+	local Task = require("overseer.task")
+	local count = 0
+	for _, params in ipairs(data) do
+		params = vim.deepcopy(params)
+		if params.components then
+			params.components = without_open_on_start(params.components)
+		end
+		local ok, task = pcall(Task.new, params)
+		if ok then
+			count = count + 1
+			task:start()
+		else
+			vim.notify("LYRD Tasks: could not recover a saved tmux task: " .. tostring(task), vim.log.levels.ERROR)
+		end
+	end
+	if not opts.silent then
+		vim.notify(string.format("LYRD Tasks: recovered %d tmux task(s)", count))
+	end
 end
 
 --- Forces a (re)load of this workspace's saved tmux tasks on demand -- e.g.
 --- after tasks were started from a different Neovim instance, or to retry
 --- after fixing whatever made the automatic startup recovery a no-op.
 --- Unlike the silent startup recovery, this always reports back via
---- vim.notify (either from task_bundle.load_task_bundle itself, or the
---- "tmux not found" warning above).
+--- vim.notify.
 function L.recover_tmux_tasks()
 	recover_tmux_bundle(vim.fn.getcwd(), { silent = false })
 end

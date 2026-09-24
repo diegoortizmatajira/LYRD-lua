@@ -115,6 +115,11 @@ function TmuxStrategy:start(task)
 		vim.list_extend(tmux_cmd, { "-e", string.format("%s=%s", key, tostring(value)) })
 	end
 	vim.list_extend(tmux_cmd, { "sh", "-c", wrapped })
+	-- Chained as separate tmux commands after the trailing shell-command
+	-- argument (a literal ";" argv terminates it, same as sidekick.nvim's own
+	-- tmux backend) so the pane fills the whole buffer -- no status bar, no
+	-- multi-window chrome to navigate, just the task's own output.
+	vim.list_extend(tmux_cmd, { ";", "set-option", "status", "off" })
 
 	self.bufnr = vim.api.nvim_create_buf(false, true)
 	local mode = vim.api.nvim_get_mode().mode
