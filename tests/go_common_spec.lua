@@ -1,4 +1,4 @@
-local generator = require("LYRD.layers.lang.go-generator")
+local generator = require("LYRD.shared.go-common")
 
 -- Save originals
 local orig_fnamemodify = vim.fn.fnamemodify
@@ -24,7 +24,7 @@ end
 
 -- ── get_package tests (no treesitter needed) ──────────────────────────
 
-describe("go-generator.get_package", function()
+describe("go-common.get_package", function()
 	after_each(function()
 		restore_mocks()
 	end)
@@ -148,7 +148,7 @@ local function get_buf_lines(bufnr)
 	return vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 end
 
-describe("go-generator.generate_getters", function()
+describe("go-common.generate_getters", function()
 	local bufnr
 
 	after_each(function()
@@ -275,7 +275,7 @@ describe("go-generator.generate_getters", function()
 	end)
 end)
 
-describe("go-generator.generate_setters", function()
+describe("go-common.generate_setters", function()
 	local bufnr
 
 	after_each(function()
@@ -350,7 +350,7 @@ describe("go-generator.generate_setters", function()
 	end)
 end)
 
-describe("go-generator.generate_mapping", function()
+describe("go-common.generate_mapping", function()
 	local bufnr
 
 	after_each(function()

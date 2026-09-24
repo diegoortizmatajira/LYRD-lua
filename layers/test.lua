@@ -51,6 +51,16 @@ function L.settings()
 			overseer = require("neotest.consumers.overseer"),
 		},
 	})
+
+	-- neotest-vstest (dotnet) groups parameterized/theory tests under a "parameterized"
+	-- position type that neotest's status consumer never defines a sign for, which errors
+	-- with "Unknown sign: neotest_parameterized" as soon as such a test is discovered/run.
+	local neotest_config = require("neotest.config")
+	vim.fn.sign_define("neotest_parameterized", {
+		text = neotest_config.icons.namespace,
+		texthl = neotest_config.highlights.namespace,
+	})
+
 	commands.implement("*", {
 		{
 			cmd.LYRDTest,

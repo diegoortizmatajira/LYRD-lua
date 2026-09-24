@@ -48,6 +48,12 @@
                 "language": [
                     "pascal"
                 ]
+            },
+            {
+                "path": "./all.json",
+                "language": [
+                    "all"
+                ]
             }
         ]
     },

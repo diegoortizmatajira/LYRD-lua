@@ -49,7 +49,13 @@ function L.plugins()
 		},
 		{
 			"nvim-telescope/telescope.nvim",
-			opts = {},
+			opts = {
+				defaults = {
+					-- Show the filename before the directory path, so long paths
+					-- (e.g. Java package trees) don't push the filename off-screen.
+					path_display = { filename_first = true },
+				},
+			},
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 				"nvim-telescope/telescope-fzf-native.nvim",

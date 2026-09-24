@@ -14,11 +14,14 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 - `<Space>b` - buffer operations
 - `<Space>c` - code/run/build actions
 - `<Space>d` - debugging
+- `<Space>e` - edit/clipboard/encoding actions
 - `<Space>g` - Git
+- `<Space>m` - markdown table actions
 - `<Space>p` - preferences and tooling
 - `<Space>s` - search/navigation
 - `<Space>t` - testing
 - `<Space>r` - tasks and REPL
+- `<Space>w` - static-site (Hugo) actions
 
 ## Common quick actions
 
@@ -27,6 +30,8 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 - `,x` - run selection
 - `,X` - run file
 - `<Space>pd` - update LYRD distro
+- `<Space>ect` - trim clipboard content
+- `<Space>ecu` - unquote clipboard content
 - `,c` - close buffer
 - `,[` / `,]` - previous/next buffer
 - `,<Space>` - clear search highlights

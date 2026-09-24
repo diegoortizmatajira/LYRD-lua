@@ -49,5 +49,6 @@
 - `tests/go_generator_spec.lua`
 - `tests/dotnet_generator_spec.lua`
 - `tests/treesitter_spec.lua`
+- `tests/markdown_format_spec.lua`
 - `test`
 

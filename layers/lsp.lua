@@ -604,6 +604,7 @@ function L.settings()
 		{ cmd.LYRDToolManager, ":Mason" },
 		{ cmd.LYRDBufferFormat, L.conform_format_handler() },
 		{ cmd.LYRDBufferFormatChangesOnly, L.conform_format_changes_only_handler() },
+		{ cmd.LYRDBufferFormatWith, L.format_with_selected },
 		{ cmd.LYRDLSPFindReferences, commands.wrap(vim.lsp.buf.references) },
 		{ cmd.LYRDLSPFindCodeActions, commands.wrap(require("actions-preview").code_actions) },
 		{
@@ -695,12 +696,10 @@ function L.format_with_lsp(filetype, lsp_name, pre_logic, post_logic)
 	})
 end
 
---- Configures the given LSP server to format buffers for a given filetype.
+--- Registers a formatter for a given filetype using conform.nvim.
 --- @param filetype string | string[] filetype(s) to format
 --- @param format_settings table Settings for the formatter
---- @param pre_logic function|nil function to execute before formatting
---- @param post_logic function|nil function to execute after formatting
-function L.format_with_conform(filetype, format_settings, pre_logic, post_logic)
+function L.register_with_conform(filetype, format_settings)
 	if type(filetype) == "string" then
 		L.conform_formatters_by_ft[filetype] = format_settings
 	elseif type(filetype) == "table" then
@@ -708,6 +707,15 @@ function L.format_with_conform(filetype, format_settings, pre_logic, post_logic)
 			L.conform_formatters_by_ft[ft] = format_settings
 		end
 	end
+end
+
+--- Configures the given LSP server to format buffers for a given filetype.
+--- @param filetype string | string[] filetype(s) to format
+--- @param format_settings table Settings for the formatter
+--- @param pre_logic function|nil function to execute before formatting
+--- @param post_logic function|nil function to execute after formatting
+function L.format_with_conform(filetype, format_settings, pre_logic, post_logic)
+	L.register_with_conform(filetype, format_settings)
 	if pre_logic or post_logic then
 		commands.implement(filetype, {
 			{ cmd.LYRDBufferFormat, L.conform_format_handler(pre_logic, post_logic) },
@@ -741,6 +749,64 @@ function L.lsp_format_handler(server_name, pre_logic, post_logic)
 			post_logic()
 		end
 	end
+end
+
+--- Lists the formatters available for the given buffer: attached LSP clients that support
+--- formatting, plus conform.nvim formatters configured for the buffer's filetype.
+--- @param bufnr integer
+--- @return { label: string, kind: "lsp"|"conform", name: string }[]
+local function list_available_formatters(bufnr)
+	local items = {}
+
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+		if
+			client:supports_method("textDocument/formatting", bufnr)
+			or client:supports_method("textDocument/rangeFormatting", bufnr)
+		then
+			table.insert(items, { label = ("LSP: %s"):format(client.name), kind = "lsp", name = client.name })
+		end
+	end
+
+	local ok, conform = pcall(require, "conform")
+	if ok then
+		for _, formatter in ipairs(conform.list_formatters(bufnr)) do
+			if formatter.available then
+				table.insert(
+					items,
+					{ label = ("Conform: %s"):format(formatter.name), kind = "conform", name = formatter.name }
+				)
+			end
+		end
+	end
+
+	return items
+end
+
+--- Prompts the user to pick a formatter (LSP client or conform formatter) and formats the
+--- current buffer with it.
+function L.format_with_selected()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local items = list_available_formatters(bufnr)
+	if vim.tbl_isempty(items) then
+		vim.notify("No formatters available for this buffer", vim.log.levels.WARN)
+		return
+	end
+
+	vim.ui.select(items, {
+		prompt = "Select a formatter",
+		format_item = function(item)
+			return item.label
+		end,
+	}, function(item)
+		if not item then
+			return
+		end
+		if item.kind == "lsp" then
+			vim.lsp.buf.format({ name = item.name, async = false })
+		else
+			require("conform").format({ formatters = { item.name }, async = true, lsp_format = "never" })
+		end
+	end)
 end
 
 --- Returns a handler that format using conform plugin

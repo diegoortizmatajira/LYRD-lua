@@ -121,6 +121,54 @@ function L.preview_markdown()
 	})
 end
 
+--- Finds the fenced code block or inline code span at the cursor and returns
+--- its text with the fence/backtick delimiters stripped.
+local function get_code_at_cursor()
+	local node = vim.treesitter.get_node()
+	while node do
+		local node_type = node:type()
+		if node_type == "fenced_code_block" then
+			for child in node:iter_children() do
+				if child:type() == "code_fence_content" then
+					return vim.treesitter.get_node_text(child, 0)
+				end
+			end
+			return vim.treesitter.get_node_text(node, 0)
+		elseif node_type == "code_span" then
+			return (vim.treesitter.get_node_text(node, 0):gsub("^`+", ""):gsub("`+$", ""))
+		end
+		node = node:parent()
+	end
+	return nil
+end
+
+function L.copy_code_block()
+	local text = get_code_at_cursor()
+	if not text then
+		vim.notify("No code block or inline code found at cursor", vim.log.levels.WARN)
+		return
+	end
+	vim.fn.setreg("+", text)
+	vim.notify("Copied code to the clipboard!")
+end
+
+--- Copies the current visual selection -- or the whole buffer if there's no
+--- selection -- to the clipboard with Markdown syntax stripped down to plain
+--- text.
+function L.copy_plain_text()
+	local utils = require("LYRD.shared.utils")
+	local markdown_strip = require("LYRD.shared.utils.markdown_strip")
+
+	local bufnr = vim.api.nvim_get_current_buf()
+	local text = utils.get_visual_selection(bufnr)
+	if text == "" then
+		text = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+	end
+
+	vim.fn.setreg("+", markdown_strip.strip(text))
+	vim.notify("Copied plain text to the clipboard!")
+end
+
 function L.settings()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.register_decoration_togglers("markdown", { ":RenderMarkdown toggle" })
@@ -128,9 +176,22 @@ function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 	local markdown_table = require("LYRD.shared.utils.markdown_table")
+	local markdown_format = require("LYRD.shared.utils.markdown_format")
 
 	commands.implement("markdown", {
 		{ cmd.LYRDDevServerStart, L.preview_markdown },
+		{ cmd.LYRDCopyCodeBlock, L.copy_code_block },
+		{ cmd.LYRDCopyOnlyText, L.copy_plain_text },
+		{ cmd.LYRDMarkdownToggleBold, markdown_format.toggle_bold },
+		{ cmd.LYRDMarkdownToggleItalic, markdown_format.toggle_italic },
+		{ cmd.LYRDMarkdownToggleUnderline, markdown_format.toggle_underline },
+		{ cmd.LYRDMarkdownToggleStrikethrough, markdown_format.toggle_strikethrough },
+		{ cmd.LYRDMarkdownToggleHighlight, markdown_format.toggle_highlight },
+		{ cmd.LYRDMarkdownToggleSuperscript, markdown_format.toggle_superscript },
+		{ cmd.LYRDMarkdownToggleSubscript, markdown_format.toggle_subscript },
+		{ cmd.LYRDMarkdownToggleInlineCode, markdown_format.toggle_inline_code },
+		{ cmd.LYRDMarkdownToggleCodeBlock, markdown_format.toggle_code_block },
+		{ cmd.LYRDMarkdownToggleQuoteBlock, markdown_format.toggle_quote_block },
 		{
 			cmd.LYRDMarkdownTableMoveColumnLeft,
 			function()

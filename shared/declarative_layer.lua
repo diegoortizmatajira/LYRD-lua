@@ -39,6 +39,9 @@ local function apply_preparation(proto)
 			vim.tbl_map(function(format_config)
 				if format_config.use_lsp and format_config.lsp_name then
 					lsp.format_with_lsp(format_config.target_filetype, format_config.lsp_name)
+					if format_config.format_settings then
+						lsp.register_with_conform(format_config.target_filetype, format_config.format_settings)
+					end
 				elseif format_config.format_settings then
 					lsp.format_with_conform(format_config.target_filetype, format_config.format_settings)
 				else

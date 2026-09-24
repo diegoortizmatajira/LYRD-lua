@@ -1,9 +1,19 @@
+local hybris_environment = require("LYRD.shared.hybris.environment")
+
 --- Environment variable used to locate the Hybris installation.
 local HYBRIS_HOME_ENV = "HYBRIS_HOME"
 
 local is_windows = vim.fn.has("win32") == 1
 local server_script = is_windows and "hybrisserver.bat" or "hybrisserver.sh"
 local ant_script = is_windows and "ant.bat" or "ant"
+
+-- Env overrides applied to every Hybris task so ant/the server always run on
+-- the required Java version (shared/hybris/environment.lua) regardless of the
+-- ambient JAVA_HOME (e.g. set to 21 for jdtls).
+---@return table<string, string>
+local function hybris_env()
+	return hybris_environment.env_overrides()
+end
 
 -- Returns the hybris installation root (the directory that contains bin/platform/).
 -- HYBRIS_HOME may point to the project root (which has a hybris/ subfolder) or
@@ -47,7 +57,14 @@ local function find_home_for_search(opts)
 	return nil
 end
 
-local function task_template(name, command, cwd)
+---@param name string
+---@param command string[]
+---@param cwd string
+---@param opts? { strategy?: string } strategy defaults to overseer's own default ("terminal").
+---Pass strategy = "tmux" for long-running tasks (e.g. servers) that should survive
+---closing Neovim and be reattached to later (see shared/overseer/tmux_strategy.lua).
+local function task_template(name, command, cwd, opts)
+	opts = opts or {}
 	---@type overseer.TemplateDefinition
 	return {
 		name = name,
@@ -58,7 +75,7 @@ local function task_template(name, command, cwd)
 		},
 		builder = function(params)
 			---@type overseer.TaskDefinition
-			local task = { cmd = vim.deepcopy(command), cwd = cwd }
+			local task = { cmd = vim.deepcopy(command), cwd = cwd, env = hybris_env(), strategy = opts.strategy }
 			if params.args and #params.args > 0 then
 				task.args = params.args
 			end
@@ -71,7 +88,9 @@ end
 -- matching lines reach the task's output buffer (e.g. the server's verbose
 -- debug-mode logging would otherwise peg Neovim's terminal redraw for hours).
 ---@param filter string pattern passed to grep/findstr
-local function filtered_task_template(name, command, cwd, filter)
+---@param opts? { strategy?: string } see task_template
+local function filtered_task_template(name, command, cwd, filter, opts)
+	opts = opts or {}
 	---@type overseer.TemplateDefinition
 	return {
 		name = name,
@@ -94,6 +113,8 @@ local function filtered_task_template(name, command, cwd, filter)
 				task = {
 					cmd = { "cmd.exe", "/c", table.concat(quoted, " ") .. ' | findstr /C:"' .. filter .. '"' },
 					cwd = cwd,
+					env = hybris_env(),
+					strategy = opts.strategy,
 				}
 			else
 				local quoted = vim.tbl_map(vim.fn.shellescape, parts)
@@ -104,6 +125,8 @@ local function filtered_task_template(name, command, cwd, filter)
 						table.concat(quoted, " ") .. " | grep --line-buffered " .. vim.fn.shellescape(filter),
 					},
 					cwd = cwd,
+					env = hybris_env(),
+					strategy = opts.strategy,
 				}
 			end
 			return task
@@ -156,9 +179,15 @@ return {
 		end
 
 		cb({
-			task_template("Hybris: Start server", { server, "start" }, platform_dir),
+			task_template("Hybris: Start server", { server, "start" }, platform_dir, { strategy = "tmux" }),
 			task_template("Hybris: Stop server", { server, "stop" }, platform_dir),
-			filtered_task_template("Hybris: Debug server", { server, "debug" }, platform_dir, "Server startup"),
+			filtered_task_template(
+				"Hybris: Debug server",
+				{ server, "debug" },
+				platform_dir,
+				"Server startup",
+				{ strategy = "tmux" }
+			),
 			task_template("Hybris: All", { ant, "all" }, platform_dir),
 			task_template("Hybris: Build", { ant, "build" }, platform_dir),
 			task_template("Hybris: Clean", { ant, "clean" }, platform_dir),

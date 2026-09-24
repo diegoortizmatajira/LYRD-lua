@@ -7,7 +7,8 @@ local L = {
 	commands = {},
 }
 
---- Wraps a function in a zero-argument closure, useful for passing callable tables (e.g., vim.lsp.buf methods) as command implementations.
+--- Wraps a function in a zero-argument closure, useful for passing callable
+--- tables (e.g., vim.lsp.buf methods) as command implementations.
 --- @param fn function The function to wrap.
 --- @return function
 function L.wrap(fn)
@@ -78,13 +79,15 @@ function Command:implement_for(target, implementation)
 	end
 end
 
---- Executes the command implementation corresponding to the current filetype or the default one if no specific implementation is available.
+--- Executes the command implementation corresponding to the current filetype
+--- or the default one if no specific implementation is available.
 --- If no implementation is found, a warning is shown.
 --- @param opts? table Options for the command execution.
 function Command:execute(opts)
 	-- Looks for the current filetype command implementation
 	local filetype = vim.bo.filetype
-	-- Just for safety, we check if the filetype is set. It should always be set, but in case it's not, we show an error and return.
+	-- Just for safety, we check if the filetype is set. It should always be
+	-- set, but in case it's not, we show an error and return.
 	if not filetype then
 		vim.notify("Filetype is not set", vim.log.levels.ERROR)
 		return
@@ -98,7 +101,8 @@ function Command:execute(opts)
 		return
 	end
 
-	-- Some filetypes are compound, like "javascript.react". In those cases, we try to find an implementation for each part.
+	-- Some filetypes are compound, like "javascript.react". In those cases, we
+	-- try to find an implementation for each part.
 	-- If filetype contains a dot, we try to split it and find implementations for each part.
 	if string.find(filetype, "%.") then
 		local split_filetypes = vim.split(filetype, ".", { plain = true })
@@ -268,7 +272,10 @@ end
 --- @field label string The label to show for the command, usually including its description and name
 --- @field cmd Command The command instance
 --- @field icon string An icon to show for the command
---- Returns a list of all registered commands, with their description and name as label, to be used in a picker or similar UI component.
+
+--- Returns a list of all registered commands, with their description and name
+--- as label, to be used in a picker or similar UI component.
+--- @return CommandListItem[]
 function L.get_command_list()
 	local icons = require("LYRD.layers.icons")
 	local items = {}

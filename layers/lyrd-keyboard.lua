@@ -101,6 +101,9 @@ function L.keybindings()
 	-- press a register key of their choice after pressing <leader> + q.
 	vim.keymap.set("n", "<leader>q", "q", { desc = "Start/stop recording macro", noremap = true })
 
+	mappings.map_surrounded_object("`")
+	mappings.map_surrounded_object("|")
+
 	mappings.keys({
 		-- Manual brackaeted mappings for buffers to override mini.bracketed defaults
 		{ "n", "[b", cmd.LYRDBufferPrev },
@@ -158,9 +161,11 @@ function L.keybindings()
 		{ "t", cmd.LYRDLSPFindTypeDefinition },
 		menu_header("y", "Yank", {
 			{ "a", cmd.LYRDCopyAbsoluteFilePath },
+			{ "c", cmd.LYRDCopyCodeBlock },
 			{ "f", cmd.LYRDCopyFileName },
 			{ "r", cmd.LYRDCopyRelativeFilePath },
 			{ "w", cmd.LYRDCopyWorkingDirectory },
+			{ "t", cmd.LYRDCopyOnlyText, { "x" } },
 		}, icons.action.copy),
 	})
 
@@ -169,8 +174,8 @@ function L.keybindings()
 			{ "a", cmd.LYRDAIAssistant, { "x" } },
 			{ "k", cmd.LYRDAIAsk, { "x" } },
 			{ "e", cmd.LYRDAIEdit, { "x" } },
-			{ "c", cmd.LYRDAICli },
-			{ "C", cmd.LYRDAICliSelect },
+			{ "c", cmd.LYRDAICliSelect },
+			{ "C", cmd.LYRDAICli },
 			{ "d", cmd.LYRDAIGenerateDocumentation, { "x" } },
 			{ "p", cmd.LYRDAICliPrompt },
 		}, icons.other.ia, { "x" }),
@@ -218,7 +223,10 @@ function L.keybindings()
 			{ "s", cmd.LYRDScratchOpen },
 			{ "d", cmd.LYRDScratchDelete },
 			{ "m", cmd.LYRDScratchMigrate },
-		}, icons.file.scratch),
+			{ "c", cmd.LYRDScratchClipboard },
+			{ "y", cmd.LYRDScratchYankToClipboard, { "x" } },
+			{ "p", cmd.LYRDScratchPasteFromClipboard },
+		}, icons.file.scratch, { "x" }),
 		{ "r", cmd.LYRDBufferReload },
 		menu_header("R", "Refactors", {
 			{ "f", cmd.LYRDCodeRefactor },
@@ -292,6 +300,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDBufferClose },
 			{ "D", cmd.LYRDBufferForceClose },
 			{ "f", cmd.LYRDBufferFormat, { "x" } },
+			{ "t", cmd.LYRDBufferFormatWith },
 			{ "F", cmd.LYRDBufferFormatChangesOnly },
 			{ "x", cmd.LYRDBufferCloseAll },
 			{ "X", cmd.LYRDBufferForceCloseAll },
@@ -303,13 +312,14 @@ function L.keybindings()
 			{ "/", cmd.LYRDSearchBuffers },
 			{ "s", cmd.LYRDBufferSave },
 			{ "S", cmd.LYRDBufferSaveAll },
-		}, icons.file.default),
+		}, icons.file.default, { "x" }),
 		menu_header("c", "Code", {
 			menu_header("g", "Code Generation", {
 				{ "x", cmd.LYRDCodeGenerate },
 				{ "g", cmd.LYRDCodeProduceGetter },
 				{ "s", cmd.LYRDCodeProduceSetter },
 				{ "m", cmd.LYRDCodeProduceMapping },
+				{ "h", cmd.LYRDCodeGenerateHttpFromOpenApi },
 			}, icons.code.generate),
 			menu_header("n", "Notebook", {
 				menu_header("r", "Run", {
@@ -365,14 +375,42 @@ function L.keybindings()
 			{ ";", cmd.LYRDDebugToggleUI },
 			{ "/", cmd.LYRDDebugToggleRepl },
 		}, icons.debug.breakpoint),
+		menu_header("e", "Edit", {
+			{ "d", cmd.LYRDCodeDecode, { "x" } },
+			{ "e", cmd.LYRDCodeEncode, { "x" } },
+			{ "b", cmd.LYRDCopyCodeBlock },
+			menu_header("c", "Clipboard content cleaning", {
+				{ "t", cmd.LYRDClipboardTrim },
+				{ "u", cmd.LYRDClipboardUnquote },
+			}, icons.action.clean),
+			menu_header("p", "Copy Path", {
+				{ "a", cmd.LYRDCopyAbsoluteFilePath },
+				{ "f", cmd.LYRDCopyFileName },
+				{ "r", cmd.LYRDCopyRelativeFilePath },
+				{ "w", cmd.LYRDCopyWorkingDirectory },
+			}, icons.action.copy),
+		}, icons.action.edit, { "x" }),
 		menu_header("m", "Markdown", {
-			{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },
-			{ "l", cmd.LYRDMarkdownTableMoveColumnRight },
-			{ "H", cmd.LYRDMarkdownTableInsertColumnLeft },
-			{ "L", cmd.LYRDMarkdownTableInsertColumnRight },
-			{ "k", cmd.LYRDMarkdownTableInsertRowAbove },
-			{ "j", cmd.LYRDMarkdownTableInsertRowBelow },
-		}, icons.file.markdown),
+			{ "b", cmd.LYRDMarkdownToggleBold, { "x" } },
+			{ "i", cmd.LYRDMarkdownToggleItalic, { "x" } },
+			{ "u", cmd.LYRDMarkdownToggleUnderline, { "x" } },
+			{ "s", cmd.LYRDMarkdownToggleStrikethrough, { "x" } },
+			{ "h", cmd.LYRDMarkdownToggleHighlight, { "x" } },
+			{ "^", cmd.LYRDMarkdownToggleSuperscript, { "x" } },
+			{ "_", cmd.LYRDMarkdownToggleSubscript, { "x" } },
+			{ "c", cmd.LYRDMarkdownToggleInlineCode, { "x" } },
+			{ "C", cmd.LYRDMarkdownToggleCodeBlock, { "x" } },
+			{ "q", cmd.LYRDMarkdownToggleQuoteBlock, { "x" } },
+			{ "y", cmd.LYRDCopyOnlyText, { "x" } },
+			menu_header("t", "Table", {
+				{ "h", cmd.LYRDMarkdownTableMoveColumnLeft },
+				{ "l", cmd.LYRDMarkdownTableMoveColumnRight },
+				{ "H", cmd.LYRDMarkdownTableInsertColumnLeft },
+				{ "L", cmd.LYRDMarkdownTableInsertColumnRight },
+				{ "k", cmd.LYRDMarkdownTableInsertRowAbove },
+				{ "j", cmd.LYRDMarkdownTableInsertRowBelow },
+			}, icons.other.table),
+		}, icons.file.markdown, { "x" }),
 		menu_header("s", "Search", {
 			{ ",", cmd.LYRDSearchCommands },
 			{ ".", cmd.LYRDSearchFiles },
@@ -439,6 +477,7 @@ function L.keybindings()
 				menu_header("r", "Release", {
 					{ "c", cmd.LYRDGithubReleaseCreate },
 				}, icons.git.tag),
+				{ "d", cmd.LYRDGithubDashboard },
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
@@ -501,6 +540,9 @@ function L.keybindings()
 			{ "t", cmd.LYRDTasksToggle },
 			{ "T", cmd.LYRDTasksConfigure },
 			{ "L", cmd.LYRDTasksConfigureLaunch },
+			{ "s", cmd.LYRDTasksRecoverTmux },
+			{ "b", cmd.LYRDDatabaseBackup },
+			{ "B", cmd.LYRDDatabaseRestore },
 		}, icons.code.run),
 		menu_header("<SPACE>", "Tools/Services", {
 			{ "d", cmd.LYRDDatabaseUI },
@@ -514,6 +556,7 @@ function L.keybindings()
 			{ "s", cmd.LYRDDevServerStart },
 			{ "S", cmd.LYRDDevExposeLocalServer },
 			{ "x", cmd.LYRDScanForSecrets },
+			{ "r", cmd.LYRDRegexTest, { "x" } },
 			{ "<Space>", cmd.LYRDCommandPalette },
 		}, icons.other.tools),
 		menu_header("u", "User interface", {
@@ -530,6 +573,13 @@ function L.keybindings()
 			{ "T", cmd.LYRDApplyCurrentTheme },
 			{ "t", cmd.LYRDApplyNextTheme },
 		}, icons.action.view),
+		menu_header("w", "Website", {
+			{ "n", cmd.LYRDSiteNewPage },
+			{ "a", cmd.LYRDSiteNewArticle },
+			{ "b", cmd.LYRDSiteBuild },
+			{ "s", cmd.LYRDSiteServe },
+			{ "l", cmd.LYRDSiteListDrafts },
+		}, icons.apps.browser),
 	})
 end
 

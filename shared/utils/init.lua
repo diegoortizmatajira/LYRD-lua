@@ -99,22 +99,19 @@ function M.index_of(array, value)
 	return nil -- si no se encuentra el valor
 end
 
---- Retrieves the visually selected text in the current buffer.
+--- Retrieves the normalized visual selection range in the current buffer.
 ---
---- This function identifies the range of visually selected lines in the current
---- buffer and extracts the selected text. It adjusts the text boundaries to
---- ensure only the selected portion is included, considering both the start
---- and end columns of the selection.
+--- This function identifies the range of the visual selection (0-indexed rows,
+--- with an inclusive end column) so callers can both read and rewrite the
+--- selected text. It must be called while still in visual mode (before the
+--- selection is left), as it relies on the `v` mark and the cursor position.
 ---
---- The function is useful for scenarios where a specific portion of the text
---- needs to be processed, such as running a database query on a selected range
---- of lines.
----
---- @return string The text within the visually selected range, or an empty string if no text is selected.
-function M.get_visual_selection(bufnr)
+--- @param bufnr? integer The buffer to inspect. Defaults to the current buffer.
+--- @return integer? start_row, integer? start_col, integer? end_row, integer? end_col Or nil if not in visual mode.
+function M.get_visual_range(bufnr)
 	local mode = vim.api.nvim_get_mode().mode
 	if mode ~= "v" and mode ~= "V" and mode ~= "\22" then
-		return "" -- Not in visual mode
+		return nil -- Not in visual mode
 	end
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	local start = vim.fn.getpos("v")
@@ -135,7 +132,28 @@ function M.get_visual_selection(bufnr)
 	if mode == "V" then
 		start_col = 0
 		local lines = vim.api.nvim_buf_get_lines(bufnr, end_row, end_row + 1, true)
-		end_col = #lines[1]
+		end_col = #lines[1] - 1
+	end
+	return start_row, start_col, end_row, end_col
+end
+
+--- Retrieves the visually selected text in the current buffer.
+---
+--- This function identifies the range of visually selected lines in the current
+--- buffer and extracts the selected text. It adjusts the text boundaries to
+--- ensure only the selected portion is included, considering both the start
+--- and end columns of the selection.
+---
+--- The function is useful for scenarios where a specific portion of the text
+--- needs to be processed, such as running a database query on a selected range
+--- of lines.
+---
+--- @return string The text within the visually selected range, or an empty string if no text is selected.
+function M.get_visual_selection(bufnr)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
+	local start_row, start_col, end_row, end_col = M.get_visual_range(bufnr)
+	if not start_row then
+		return ""
 	end
 	local lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col + 1, {})
 	return table.concat(lines, "\n")

@@ -24,6 +24,9 @@ local L = {
 			"nvim-neotest/neotest-jest",
 		},
 		{
+			"josewal/neotest-cypress",
+		},
+		{
 			"nvim-svelte/nvim-svelte-snippets",
 		},
 		{
@@ -42,6 +45,24 @@ local L = {
 					position = "eol", -- set to "after_key" to draw text directly after the key
 				},
 			},
+		},
+		{
+			"yelog/i18n.nvim",
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				-- optional pickers:
+				-- 'ibhagwan/fzf-lua',
+				-- 'nvim-telescope/telescope.nvim',
+			},
+			config = function()
+				require("i18n").setup({
+					locales = { "en", "es" },
+					sources = {
+						"src/locales/{locales}.json",
+						"src/messages/{locales}.json",
+					},
+				})
+			end,
 		},
 	},
 	required_mason_packages = {
@@ -89,6 +110,7 @@ local L = {
 	required_test_adapters = {
 		"neotest-vitest",
 		"neotest-jest",
+		"neotest-cypress",
 	},
 	focus_terminal_on_run = true,
 	ts_root_markers = {

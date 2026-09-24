@@ -1,4 +1,4 @@
-local generator = require("LYRD.layers.lang.java-generator")
+local generator = require("LYRD.shared.java-common")
 
 -- Save originals
 local orig_fnamemodify = vim.fn.fnamemodify
@@ -18,7 +18,7 @@ local function restore_mocks()
 	vim.notify = orig_notify
 end
 
-describe("java-generator.get_package", function()
+describe("java-common.get_package", function()
 	after_each(function()
 		restore_mocks()
 	end)
@@ -158,7 +158,7 @@ describe("java-generator.get_package", function()
 	end)
 end)
 
-describe("java-generator.get_runtimes", function()
+describe("java-common.get_runtimes", function()
 	local scratch
 	local ENV_KEYS = {
 		"JAVA_HOME",

@@ -23,7 +23,7 @@ local L = {
 Generate a concise git commit message from the diff below.
 
 Format:
-<type>: <summary in imperative mood, max 72 chars>
+<type>: <optional issue reference> <summary in imperative mood, max 72 chars>
 
 - <what changed and why>
 - <what changed and why>
@@ -39,6 +39,13 @@ Rules:
 	- Do NOT use filler like "improve maintainability" or "enhance
 	functionality" — be specific about what improved and how.
 	- Write in imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed").
+	- Check for missing issue/ticket references in the commit message. If none are found, check the
+	 current branch name for a ticket code and propose it by adding it to the commit
+	 message. If no code is found at all, include a comment line at the end requesting the
+	 user to provide an "ISSUE NUMBER". Following are some common formats for
+	 issue/ticket references:
+		- GitHub-style: `<issue-number>-<description>` (e.g. `123-fix-login-bug`)
+  		- JIRA-style: `<PROJECT-PREFIX>-<sequence-number>` (e.g. `ABC-456`)
 ]],
 }
 
@@ -346,7 +353,7 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDSmartCoder, ":AvanteEdit" },
 		{ cmd.LYRDAIGenerateDocumentation, generate_documentation },
-		{ cmd.LYRDAIAssistant, ":AvanteToggle" },
+		{ cmd.LYRDAIAssistant, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICli, ":Sidekick cli toggle" },
 		{ cmd.LYRDAICliSelect, ":Sidekick cli select" },
 		{ cmd.LYRDAICliPrompt, ":Sidekick cli prompt" },

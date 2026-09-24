@@ -18,9 +18,11 @@ formatting, testing, debugging, and task workflows.
 
 - VTSLS, Vue LS, Angular LS
 - React/Vue/Angular/Svelte workflows
-- Jest/Vitest support
+- Jest/Vitest/Cypress test support
 - Prettier integration
 - i18n diagnostics and local dev server workflows
+- `i18n.nvim` integration for `en`/`es` JSON locale sources
+  (`src/locales`/`src/messages`), for translation-key lookups in source files
 
 ### Java
 
@@ -116,6 +118,10 @@ formatting, testing, debugging, and task workflows.
 - Database-aware query execution
 - Connection-aware dialect selection
 - In-editor result browsing
+- DB UI sidebar query buffers open as real temp files, so the SQL LSP
+  attaches automatically for completion/diagnostics
+- Database backup/restore against a running Docker container, picked via a
+  Telescope container list (`LYRDDatabaseBackup`/`LYRDDatabaseRestore`)
 
 ## Hybris (SAP Commerce) support
 
@@ -127,7 +133,9 @@ formatting, testing, debugging, and task workflows.
   jars (extension `lib`/`bin`, platform `lib`, `bootstrap/bin`, `tomcat/lib`).
 - Scan results are cached per project and reused on startup; a full rescan or
   cache reload is available via `LYRDJavaHybrisImportSolution`,
-  `LYRDJavaHybrisReloadSolution`, and `LYRDJavaHybrisConfigureSolution`.
+  `LYRDJavaHybrisLoadSolution`, and `LYRDJavaHybrisConfigureSolution`.
+- Includes a quick log-inspection command for current-day server output via
+  `LYRDJavaHybrisViewTodayLog`.
 - Wires the scanned classpath and source paths into JDT.LS
   (`java.project.referencedLibraries`, `sourcePaths`, `java.import.exclusions`)
   so Hybris extensions are treated as one workspace instead of per-extension

@@ -4,7 +4,7 @@
 --- cause "duplicate-set-field" diagnostics, which we can safely ignore in this
 --- test file.
 
-local generator = require("LYRD.layers.lang.dotnet-generator")
+local generator = require("LYRD.shared.dotnet-common")
 
 -- Mock storage for vim.notify calls
 local notify_calls = {}
@@ -55,7 +55,7 @@ local function restore_mocks()
 	vim.notify = orig_notify
 end
 
-describe("dotnet-generator.get_namespace", function()
+describe("dotnet-common.get_namespace", function()
 	after_each(function()
 		restore_mocks()
 	end)

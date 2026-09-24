@@ -2,27 +2,24 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
-	name = "Pascal language",
-	required_plugins = {},
+	name = "Clojure",
 	required_mason_packages = {
-		"pascal-language-server",
+		"clojure-lsp",
+		"cljfmt",
 	},
 	required_treesitter_parsers = {
-		"pascal",
+		"clojure",
 	},
 	required_enabled_lsp_servers = {
-		"pascal_ls",
+		"clojure_lsp",
 	},
 	required_executables = {
-		"pfc",
-	},
-	required_formatters = {
-		["pasfmt"] = require("LYRD.shared.conform.pasfmt"),
+		"clojure",
 	},
 	required_formatter_per_filetype = {
 		{
-			target_filetype = "pascal",
-			format_settings = { "pasfmt", lsp_format = "prefer" },
+			target_filetype = "clojure",
+			format_settings = { "cljfmt" },
 		},
 	},
 }

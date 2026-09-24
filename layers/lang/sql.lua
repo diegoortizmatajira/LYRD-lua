@@ -64,6 +64,16 @@ local function set_dialect(dialect)
 	vim.notify("SQL dialect set to: " .. dialect)
 end
 
+--- Container picker for db-cli-adapter's backup/restore flow: lists running
+--- Docker containers via Telescope instead of falling back to `vim.ui.input`.
+--- @param context DbCliAdapter.ContainerPickerContext
+--- @param callback fun(container: string|nil)
+local function db_cli_container_picker(context, callback)
+	require("LYRD.shared.docker.containers").picker({
+		prompt_title = string.format("Select container to %s '%s'", context.direction, context.connection_name),
+	}, callback)
+end
+
 local function map_adapter_to_dialect(adapter)
 	local mapping = {
 		postgres = "postgres",
@@ -127,6 +137,15 @@ local L = {
 					-- Set the SQL dialect based on the new connection's adapter
 					set_dialect(map_adapter_to_dialect(new_connection.adapter))
 				end,
+				new_buffer_handler = function(bufnr)
+					require("db-cli-adapter.config").attach_lsp_for_filetype_handler(bufnr)
+				end,
+				sidebar = {
+					open_as_temp_file = true,
+				},
+				backup = {
+					container_picker = db_cli_container_picker,
+				},
 			},
 		},
 		{
@@ -266,6 +285,8 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDDatabaseUI, ":DbCliSidebarToggle" },
 		{ cmd.LYRDDatabaseOutput, ":DbCliOutputToggle" },
+		{ cmd.LYRDDatabaseBackup, ":DbCliBackup" },
+		{ cmd.LYRDDatabaseRestore, ":DbCliRestore" },
 	})
 	commands.implement("sql", {
 		{

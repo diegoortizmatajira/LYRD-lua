@@ -29,6 +29,9 @@ function L.plugins()
 				require("luasnip.loaders.from_vscode").lazy_load({
 					paths = { L.snippets_path },
 				})
+				require("luasnip.loaders.from_lua").lazy_load({
+					paths = { L.snippets_path },
+				})
 				-- friendly-snippets - enable standardized comments snippets
 				require("luasnip").filetype_extend("typescript", { "tsdoc" })
 				require("luasnip").filetype_extend("javascript", { "jsdoc" })

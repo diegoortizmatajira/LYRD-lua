@@ -16,7 +16,6 @@ local L = {
 		"editorconfig",
 		"nginx",
 		"pem",
-		"tmux",
 		"vim",
 		"vimdoc",
 	},

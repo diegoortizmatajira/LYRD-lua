@@ -12,6 +12,7 @@ local L = {
 	},
 	required_mason_packages = {
 		"kulala-fmt",
+		"httpgenerator",
 	},
 	required_treesitter_parsers = {
 		"http",
@@ -45,7 +46,9 @@ function L.keybindings()
 	})
 end
 
---- Returns the closest environment file for the current working directory. Starts with the current file directory and checks parent directories until it finds the file or reaches the root.
+--- Returns the closest environment file for the current working directory.
+--- Starts with the current file directory and checks parent directories until
+--- it finds the file or reaches the root.
 function L.get_closest_environment_file()
 	local utils = require("LYRD.shared.utils")
 	local env_file = "http-client.env.json"
@@ -71,6 +74,33 @@ function L.get_closest_environment_file()
 
 	-- Return the default path in the current working directory if not found
 	return utils.join_paths(vim.fn.getcwd(), env_file)
+end
+
+--- Prompts for an OpenAPI spec (file path or URL) and a target directory, then runs
+--- httpgenerator to generate the corresponding .http files.
+function L.generate_from_openapi()
+	vim.ui.input({ prompt = "OpenAPI spec file or URL: ", completion = "file" }, function(spec)
+		if not spec or spec == "" then
+			return
+		end
+		vim.ui.input(
+			{ prompt = "Target directory: ", completion = "dir", default = vim.fn.getcwd() },
+			function(target_dir)
+				if not target_dir or target_dir == "" then
+					return
+				end
+				local tasks = require("LYRD.layers.tasks")
+				tasks.run_task({
+					name = "HTTP Generator",
+					cmd = "httpgenerator",
+					args = { spec, "-o", target_dir },
+					cwd = vim.fn.getcwd(),
+					open_in_split = true,
+					focus = true,
+				})
+			end
+		)
+	end)
 end
 
 function L.settings()
@@ -128,6 +158,12 @@ function L.settings()
 			function()
 				require("kulala").close()
 			end,
+		},
+	})
+	commands.implement("*", {
+		{
+			cmd.LYRDCodeGenerateHttpFromOpenApi,
+			L.generate_from_openapi,
 		},
 	})
 end

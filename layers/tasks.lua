@@ -2,8 +2,162 @@ local commands = require("LYRD.layers.commands")
 local setup = require("LYRD.shared.setup")
 local cmd = require("LYRD.layers.lyrd-commands").cmd
 
+-- overseer.strategy.load() does `require("overseer.strategy.<name>")` -- there's
+-- no registration API, so the "tmux" strategy name is made resolvable by
+-- preloading it here, before overseer.nvim (or any task using strategy =
+-- "tmux") is ever loaded.
+package.preload["overseer.strategy.tmux"] = function()
+	return require("LYRD.shared.overseer.tmux_strategy")
+end
+
 ---@class LYRD.layer.Tasks: LYRD.shared.setup.Module
 local L = { name = "Tasks Runner" }
+
+--- Deterministic per-workspace name for the overseer task bundle that holds
+--- this cwd's tmux-strategy tasks, so it can be found again on a later
+--- Neovim startup in the same directory.
+--- @param cwd string
+--- @return string
+local function tmux_bundle_name(cwd)
+	return "lyrd-tasks-" .. vim.fn.sha256(cwd):sub(1, 16)
+end
+
+--- @param task overseer.Task
+--- @return boolean
+local function is_tmux_task(task)
+	return task.strategy ~= nil and task.strategy.name == "tmux"
+end
+
+--- Saves this Neovim session's tmux-strategy tasks into the current
+--- workspace's overseer task bundle, so they can be recovered (reattached to)
+--- on a later Neovim startup in the same directory. Only tmux-strategy tasks
+--- are included: a "terminal"-strategy task's process is always dead by the
+--- time Neovim restarts, so silently re-running it would be surprising (a
+--- one-shot build/test task should never auto-run again).
+---
+--- Deliberately NOT filtered by `task.cwd == cwd`: a task's own cwd is often
+--- a subdirectory the task runs in (e.g. the Hybris server tasks in
+--- shared/overseer/hybris_tasks.lua use bin/platform, not the workspace
+--- root), not the directory Neovim itself was opened in. Every task in this
+--- process's task list already belongs to this Neovim session/workspace --
+--- overseer's task list is per-process, so there's nothing else to filter by.
+--- @param cwd string
+local function save_tmux_bundle(cwd)
+	local overseer = require("overseer")
+	local task_bundle = require("overseer.task_bundle")
+	local name = tmux_bundle_name(cwd)
+	local tasks = overseer.list_tasks({ filter = is_tmux_task })
+	if vim.tbl_isempty(tasks) then
+		task_bundle.delete_task_bundle(name, { ignore_missing = true })
+		return
+	end
+	task_bundle.save_task_bundle(name, tasks, { on_conflict = "overwrite" })
+end
+
+local tmux_bundle_save_timer = nil
+
+--- Debounces save_tmux_bundle so rapid-fire task list updates (several
+--- components dispatch on every status change) don't hammer the disk.
+local function schedule_tmux_bundle_save()
+	if tmux_bundle_save_timer then
+		return
+	end
+	tmux_bundle_save_timer = vim.defer_fn(function()
+		tmux_bundle_save_timer = nil
+		save_tmux_bundle(vim.fn.getcwd())
+	end, 500)
+end
+
+--- Returns a copy of a serialized task's `components` list with any
+--- "open_output" component's `on_start` forced to "never" -- recovering a
+--- task (reattaching to a session that was already running) shouldn't yank
+--- the overseer panel open; the user can bring it up themselves whenever
+--- they want to look at it. `on_complete`/`focus` are left untouched, so if
+--- the recovered task later actually finishes for real, the normal
+--- on-complete-opens-output behavior still applies.
+--- @param components table[]
+--- @return table[]
+local function without_open_on_start(components)
+	-- A component loaded from JSON has its name under the string key "1"
+	-- instead of the integer key 1 (JSON object keys are always strings) --
+	-- overseer.util.split_config is upstream's own fix-up for this, used by
+	-- Task:add_components; reuse it here instead of re-guessing the shape.
+	local overseer_util = require("overseer.util")
+	return vim.tbl_map(function(comp)
+		local copy = type(comp) == "table" and vim.deepcopy(comp) or comp
+		local name = overseer_util.split_config(copy)
+		if name == "open_output" then
+			copy.on_start = "never"
+			return copy
+		end
+		return comp
+	end, components)
+end
+
+--- Loads (and autostarts) this cwd's saved tmux-strategy tasks, if any.
+--- Because the tmux strategy's start() is idempotent (`tmux new-session
+--- -A`), autostarting a loaded task definition reattaches to the
+--- still-running session instead of spawning a duplicate -- this is what
+--- makes a plain overseer task bundle into a working recovery mechanism.
+---
+--- Reimplements (rather than calls) overseer.task_bundle.load_task_bundle,
+--- so each recovered task's components can be adjusted (see
+--- without_open_on_start) before it starts.
+--- @param cwd string
+--- @param opts? { silent?: boolean } silent (used for the automatic startup
+--- recovery) swallows the "tmux not found"/"no saved tasks"/"recovered N
+--- tasks" notifications entirely.
+local function recover_tmux_bundle(cwd, opts)
+	opts = opts or {}
+	if vim.fn.executable("tmux") == 0 then
+		if not opts.silent then
+			vim.notify("LYRD Tasks: tmux not found, cannot recover tmux tasks", vim.log.levels.WARN)
+		end
+		return
+	end
+
+	local name = tmux_bundle_name(cwd)
+	local files = require("overseer.files")
+	local path = files.get_stdpath_filename("state", "overseer", name .. ".bundle.json")
+	local data = files.load_json_file(path)
+	if not data then
+		if not opts.silent then
+			vim.notify(
+				string.format("LYRD Tasks: no saved tmux tasks for this workspace (%s)", name),
+				vim.log.levels.WARN
+			)
+		end
+		return
+	end
+
+	local Task = require("overseer.task")
+	local count = 0
+	for _, params in ipairs(data) do
+		params = vim.deepcopy(params)
+		if params.components then
+			params.components = without_open_on_start(params.components)
+		end
+		local ok, task = pcall(Task.new, params)
+		if ok then
+			count = count + 1
+			task:start()
+		else
+			vim.notify("LYRD Tasks: could not recover a saved tmux task: " .. tostring(task), vim.log.levels.ERROR)
+		end
+	end
+	if not opts.silent then
+		vim.notify(string.format("LYRD Tasks: recovered %d tmux task(s)", count))
+	end
+end
+
+--- Forces a (re)load of this workspace's saved tmux tasks on demand -- e.g.
+--- after tasks were started from a different Neovim instance, or to retry
+--- after fixing whatever made the automatic startup recovery a no-op.
+--- Unlike the silent startup recovery, this always reports back via
+--- vim.notify.
+function L.recover_tmux_tasks()
+	recover_tmux_bundle(vim.fn.getcwd(), { silent = false })
+end
 
 local function configure(filename)
 	return function()
@@ -27,6 +181,11 @@ end
 --- @field focus boolean?
 --- @field auto_close boolean?
 --- @field diagnostics_parser table?
+--- @field max_lines number?
+--- @field use_tmux boolean? Run in a detached tmux session instead of a Neovim-owned
+--- terminal job, so the task survives closing the split or restarting Neovim, and can
+--- be reattached to later (see shared/overseer/tmux_strategy.lua). Only for tasks that
+--- don't rely on diagnostics_parser/parsed output -- the tmux strategy is opaque.
 
 --- Runs a task in a terminal
 --- @param opts TaskRequest
@@ -34,6 +193,17 @@ function L.run_task(opts)
 	-- Use overseer.nvim to run the command and show output in a terminal window
 	local overseer = require("overseer")
 	local components = { "default" }
+	local strategy = "terminal"
+	if opts.use_tmux then
+		if vim.fn.executable("tmux") == 1 then
+			strategy = "tmux"
+		else
+			vim.notify(
+				string.format("LYRD Tasks: tmux not found, falling back to terminal strategy for '%s'", opts.name),
+				vim.log.levels.WARN
+			)
+		end
+	end
 	if opts.diagnostics_parser then
 		table.insert(components, 1, {
 			"on_output_parse",
@@ -63,8 +233,9 @@ function L.run_task(opts)
 		env = opts.env,
 		cwd = opts.cwd,
 		name = opts.name,
-		strategy = "terminal",
+		strategy = strategy,
 		components = components,
+		max_lines = opts.max_lines or 5000,
 	})
 	if opts.auto_close then
 		task:subscribe("on_complete", function()
@@ -81,6 +252,9 @@ function L.plugins()
 			"stevearc/overseer.nvim",
 			version = "1",
 			opts = {
+				task_defaults = {
+					max_lines = 5000,
+				},
 				templates = {
 					"builtin",
 				},
@@ -156,6 +330,27 @@ function L.settings()
 		{ cmd.LYRDTasksConfigure, configure("./.vscode/tasks.json") },
 		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json") },
 	})
+
+	-- Keep the current workspace's tmux-task bundle up to date, regardless of
+	-- how the task was started (L.run_task, or a template run via
+	-- :OverseerRun, e.g. the Hybris server tasks in shared/overseer/hybris_tasks.lua).
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "OverseerListUpdate",
+		group = vim.api.nvim_create_augroup("LYRDTasksTmuxBundle", { clear = true }),
+		callback = schedule_tmux_bundle_save,
+	})
+
+	commands.implement("*", {
+		{ cmd.LYRDTasksRecoverTmux, L.recover_tmux_tasks },
+	})
+end
+
+function L.complete()
+	-- Deferred so it never blocks startup; safe to call even when no bundle
+	-- exists yet (ignore_missing) or tmux isn't installed.
+	vim.schedule(function()
+		recover_tmux_bundle(vim.fn.getcwd(), { silent = true })
+	end)
 end
 
 return L

@@ -1,0 +1,274 @@
+-- Toggles inline emphasis markers, a blockquote prefix, and a fenced code
+-- block around the current visual selection, falling back to the whole
+-- current line when there's no selection. Each toggle checks whether the
+-- target already carries the marker and strips it if so, otherwise it
+-- wraps/prefixes it.
+
+local utils = require("LYRD.shared.utils")
+
+local M = {}
+
+--- Leaves Visual mode. Buffer edits made via the API don't do this on their
+--- own, so without it the selection stays highlighted after a toggle runs.
+local function exit_visual_mode()
+	vim.cmd("normal! \27")
+end
+
+--- Recognized inline markers, checked outermost-first when peeling nested
+--- layers. This lets formats be combined (e.g. "_**text**_") and toggled
+--- independently, instead of a toggle always stacking a new marker pair
+--- around whatever is already there.
+local MARKERS = {
+	{ "**", "**" },
+	{ "~~", "~~" },
+	{ "==", "==" },
+	{ "<u>", "</u>" },
+	{ "<sup>", "</sup>" },
+	{ "<sub>", "</sub>" },
+	{ "`", "`" },
+	{ "_", "_" },
+}
+
+--- Peels the outermost recognized marker layer off `text`, if any.
+---@param text string
+---@return {[1]: string, [2]: string}? marker start/stop pair peeled off, nil if none matched
+---@return string inner text with the layer removed (or `text` unchanged if none matched)
+local function peel_layer(text)
+	for _, marker in ipairs(MARKERS) do
+		local start_marker, end_marker = marker[1], marker[2]
+		if
+			#text >= #start_marker + #end_marker
+			and text:sub(1, #start_marker) == start_marker
+			and text:sub(-#end_marker) == end_marker
+		then
+			return marker, text:sub(#start_marker + 1, #text - #end_marker)
+		end
+	end
+	return nil, text
+end
+
+--- Expands a same-line [start_col, end_col] range outward while the text
+--- immediately surrounding it matches a recognized marker pair. This lets a
+--- selection made with e.g. `viw` on the word inside "**word**" -- which only
+--- covers "word", not the markers -- still be recognized as already
+--- formatted so the toggle strips the markers instead of adding a new pair
+--- around just the word.
+---@param bufnr integer
+---@param row integer 0-based
+---@param start_col integer 0-based, inclusive
+---@param end_col integer 0-based, inclusive
+---@return integer start_col, integer end_col
+local function expand_to_markers(bufnr, row, start_col, end_col)
+	local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+	while true do
+		local expanded = false
+		for _, marker in ipairs(MARKERS) do
+			local start_marker, end_marker = marker[1], marker[2]
+			local before_start = start_col - #start_marker
+			local after_end = end_col + 1 + #end_marker
+			if
+				before_start >= 0
+				and after_end <= #line
+				and line:sub(before_start + 1, start_col) == start_marker
+				and line:sub(end_col + 2, after_end) == end_marker
+			then
+				start_col = before_start
+				end_col = after_end - 1
+				expanded = true
+				break
+			end
+		end
+		if not expanded then
+			break
+		end
+	end
+	return start_col, end_col
+end
+
+--- Returns the range to operate on: the current visual selection, or, if
+--- there isn't one, the whole current line (mirroring how "V" linewise
+--- selection is reported by `get_visual_range`).
+---@param bufnr integer
+---@return integer start_row, integer start_col, integer end_row, integer end_col
+local function get_target_range(bufnr)
+	local start_row, start_col, end_row, end_col = utils.get_visual_range(bufnr)
+	if start_row then
+		return start_row, start_col, end_row, end_col
+	end
+
+	local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
+	local line = vim.api.nvim_buf_get_lines(bufnr, lnum, lnum + 1, false)[1] or ""
+	return lnum, 0, lnum, #line - 1
+end
+
+--- Toggles a marker pair around the current visual selection's text, or the
+--- whole current line when there's no selection. Leading/trailing spaces and
+--- tabs are left outside the markers, since CommonMark emphasis delimiters
+--- can't have whitespace right next to them -- e.g. a line ending in trailing
+--- spaces would otherwise get its closing marker placed after them, where it
+--- doesn't count as emphasis.
+---
+--- If the target marker is already present as one of the (possibly nested)
+--- layers wrapping the text -- e.g. toggling bold on "_**text**_" -- only
+--- that layer is removed and the others are kept in place, rather than
+--- stacking a new marker pair around the whole thing. This also applies when
+--- the selection only covers the inner word (e.g. `viw` inside "**word**"):
+--- the range is expanded outward to the surrounding markers first.
+---@param start_marker string
+---@param end_marker string
+local function toggle_wrap(start_marker, end_marker)
+	local bufnr = vim.api.nvim_get_current_buf()
+	local start_row, start_col, end_row, end_col = get_target_range(bufnr)
+
+	if start_row == end_row then
+		start_col, end_col = expand_to_markers(bufnr, start_row, start_col, end_col)
+	end
+
+	local text =
+		table.concat(vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col + 1, {}), "\n")
+
+	local leading_ws = text:match("^[ \t]*")
+	local trailing_ws = text:match("[ \t]*$")
+	local core = text:sub(#leading_ws + 1, #text - #trailing_ws)
+
+	local layers = {}
+	local remaining = core
+	while true do
+		local marker, inner = peel_layer(remaining)
+		if not marker then
+			break
+		end
+		table.insert(layers, marker)
+		remaining = inner
+	end
+
+	local target_index
+	for i, marker in ipairs(layers) do
+		if marker[1] == start_marker and marker[2] == end_marker then
+			target_index = i
+			break
+		end
+	end
+
+	local new_core
+	if target_index then
+		table.remove(layers, target_index)
+		new_core = remaining
+		for i = #layers, 1, -1 do
+			new_core = layers[i][1] .. new_core .. layers[i][2]
+		end
+	else
+		new_core = start_marker .. core .. end_marker
+	end
+
+	local result = leading_ws .. new_core .. trailing_ws
+
+	vim.api.nvim_buf_set_text(
+		bufnr,
+		start_row,
+		start_col,
+		end_row,
+		end_col + 1,
+		vim.split(result, "\n", { plain = true })
+	)
+	exit_visual_mode()
+end
+
+--- Toggles "**bold**" around the current visual selection.
+function M.toggle_bold()
+	toggle_wrap("**", "**")
+end
+
+--- Toggles "_italic_" around the current visual selection.
+function M.toggle_italic()
+	toggle_wrap("_", "_")
+end
+
+--- Toggles "<u>underline</u>" around the current visual selection.
+function M.toggle_underline()
+	toggle_wrap("<u>", "</u>")
+end
+
+--- Toggles "~~strikethrough~~" around the current visual selection.
+function M.toggle_strikethrough()
+	toggle_wrap("~~", "~~")
+end
+
+--- Toggles "==highlight==" around the current visual selection.
+function M.toggle_highlight()
+	toggle_wrap("==", "==")
+end
+
+--- Toggles "<sup>superscript</sup>" around the current visual selection.
+function M.toggle_superscript()
+	toggle_wrap("<sup>", "</sup>")
+end
+
+--- Toggles "<sub>subscript</sub>" around the current visual selection.
+function M.toggle_subscript()
+	toggle_wrap("<sub>", "</sub>")
+end
+
+--- Toggles "`inline code`" around the current visual selection.
+function M.toggle_inline_code()
+	toggle_wrap("`", "`")
+end
+
+--- Toggles a "> " blockquote prefix on every line of the current visual
+--- selection, or the current line when there's no selection. Blank lines are
+--- left untouched so a quoted paragraph followed by a blank separator line
+--- isn't turned into "> ".
+function M.toggle_quote_block()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local start_row, _, end_row = get_target_range(bufnr)
+
+	local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, end_row + 1, false)
+	local all_quoted = true
+	for _, line in ipairs(lines) do
+		if line ~= "" and not line:match("^> ?") then
+			all_quoted = false
+			break
+		end
+	end
+
+	local result = {}
+	for i, line in ipairs(lines) do
+		if line == "" then
+			result[i] = line
+		elseif all_quoted then
+			result[i] = (line:gsub("^> ?", ""))
+		else
+			result[i] = "> " .. line
+		end
+	end
+
+	vim.api.nvim_buf_set_lines(bufnr, start_row, end_row + 1, false, result)
+	exit_visual_mode()
+end
+
+--- Toggles a fenced code block ("```") around every line of the current
+--- visual selection, or the current line when there's no selection.
+function M.toggle_code_block()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local start_row, _, end_row = get_target_range(bufnr)
+
+	local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, end_row + 1, false)
+	local is_fenced = #lines >= 2 and lines[1]:match("^```") and lines[#lines] == "```"
+
+	local result
+	if is_fenced then
+		result = {}
+		for i = 2, #lines - 1 do
+			result[#result + 1] = lines[i]
+		end
+	else
+		result = { "```" }
+		vim.list_extend(result, lines)
+		table.insert(result, "```")
+	end
+
+	vim.api.nvim_buf_set_lines(bufnr, start_row, end_row + 1, false, result)
+	exit_visual_mode()
+end
+
+return M
