@@ -186,10 +186,17 @@ end
 --- terminal job, so the task survives closing the split or restarting Neovim, and can
 --- be reattached to later (see shared/overseer/tmux_strategy.lua). Only for tasks that
 --- don't rely on diagnostics_parser/parsed output -- the tmux strategy is opaque.
+--- @field set_interactive boolean? Open the task's terminal (forcing open_in_split and
+--- focus to true) and enter insert mode as soon as it starts, so the user can type into
+--- the running process right away (e.g. a REPL or a script that prompts for input).
 
 --- Runs a task in a terminal
 --- @param opts TaskRequest
 function L.run_task(opts)
+	if opts.set_interactive then
+		opts.open_in_split = true
+		opts.focus = true
+	end
 	-- Use overseer.nvim to run the command and show output in a terminal window
 	local overseer = require("overseer")
 	local components = { "default" }
@@ -240,6 +247,21 @@ function L.run_task(opts)
 	if opts.auto_close then
 		task:subscribe("on_complete", function()
 			require("overseer.window").close()
+			return false
+		end)
+	end
+	if opts.set_interactive then
+		task:subscribe("on_start", function(started_task)
+			-- The "dock" open_output component only focuses the task *list*
+			-- window; the terminal itself lives in a sibling window (the
+			-- task_view split), which is where insert mode actually needs to
+			-- land for the user to interact with the running process.
+			local bufnr = started_task:get_bufnr()
+			local winid = bufnr and vim.fn.bufwinid(bufnr)
+			if winid and winid ~= -1 then
+				vim.api.nvim_set_current_win(winid)
+			end
+			vim.cmd("startinsert")
 			return false
 		end)
 	end

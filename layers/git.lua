@@ -7,7 +7,8 @@ local icons = require("LYRD.layers.icons")
 local declarative_layer = require("LYRD.shared.declarative_layer")
 
 --- @param key_table table
---- @param replacement_pairs  {[1]: string, [2]:string}[] contains pairs of (original_key, new_key) for keybinding replacements
+--- @param replacement_pairs  {[1]: string, [2]:string}[] contains pairs of
+--- (original_key, new_key) for keybinding replacements
 local function replace_keybindings(key_table, replacement_pairs)
 	for _, replacement in ipairs(replacement_pairs) do
 		local original_key, new_key = unpack(replacement)
@@ -52,7 +53,6 @@ end
 --- @name string? The name of the task to display in the UI
 local function run_git_command(args, name)
 	return function()
-		local utils = require("LYRD.shared.utils")
 		local tasks = require("LYRD.layers.tasks")
 
 		tasks.run_task({
@@ -65,6 +65,21 @@ local function run_git_command(args, name)
 	end
 end
 
+--- Runs a github command in the current repository and opens the output in a new split.
+--- @args string[] The full command to run, e.g. { "pull" }
+--- @name string? The name of the task to display in the UI
+local function run_gh_command(args, name)
+	return function()
+		local tasks = require("LYRD.layers.tasks")
+
+		tasks.run_task({
+			name = name or "Github Command",
+			cmd = "gh",
+			args = args,
+			set_interactive = true,
+		})
+	end
+end
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Git Integration",
@@ -279,10 +294,7 @@ function L.populate_gitignore(buf)
 end
 
 function L.git_flow_init()
-	return function()
-		local ui = require("LYRD.layers.lyrd-ui")
-		ui.toggle_external_app_terminal("git flow init -d", { keep_open_on_exit = true })
-	end
+	return run_git_command({ "flow", "init", "-d" }, "Git Flow Init")
 end
 
 function L.git_flow_start(what)
@@ -291,11 +303,8 @@ function L.git_flow_start(what)
 			if not name then
 				return
 			end
-			local ui = require("LYRD.layers.lyrd-ui")
-			ui.toggle_external_app_terminal(
-				"git flow " .. what .. " start " .. vim.fn.shellescape(name),
-				{ keep_open_on_exit = true }
-			)
+			name = vim.fn.shellescape(name)
+			run_git_command({ "flow", what, "start", name }, "Git Flow Start: " .. what .. "/" .. name)()
 		end)
 	end
 end
@@ -308,11 +317,7 @@ function L.git_flow_finish(what)
 		end
 		local parts = vim.fn.split(head, "/")
 		local name = parts[#parts]
-		local ui = require("LYRD.layers.lyrd-ui")
-		ui.toggle_external_app_terminal(
-			string.format("git flow %s finish %s", what, vim.fn.shellescape(name)),
-			{ keep_open_on_exit = true }
-		)
+		run_git_command({ "flow", what, "finish", name }, "Git Flow Finish: " .. what .. "/" .. name)()
 	end
 end
 
@@ -323,17 +328,17 @@ function L.git_flow_publish(what)
 			return
 		end
 		local target_branch = what == "feature" and "develop" or "main"
-		local parts = vim.fn.split(head, "/")
-		local name = parts[#parts]
-		local ui = require("LYRD.layers.lyrd-ui")
-		ui.toggle_external_app_terminal(
-			string.format(
-				[[gh pr create --base %s --head %s/%s --assignee "@me" --draft ]],
-				target_branch,
-				what,
-				vim.fn.shellescape(name)
-			)
-		)
+		run_gh_command({
+			"pr",
+			"create",
+			"--base",
+			vim.fn.shellescape(target_branch),
+			"--head",
+			vim.fn.shellescape(head),
+			"--assignee",
+			"@me",
+			"--draft",
+		}, "Git Flow Publish: " .. head)()
 	end
 end
 
@@ -563,15 +568,17 @@ function L.github_pull_request_create()
 						vim.notify("No title provided. Aborting pull request creation.", vim.log.levels.INFO)
 						return
 					end
-					local command = string.format(
-						"gh pr create --base %s --head %s --title %s%s",
+					run_gh_command({
+						"pr",
+						"create",
+						"--base",
 						vim.fn.shellescape(base),
+						"--head",
 						vim.fn.shellescape(head),
+						"--title",
 						vim.fn.shellescape(title),
-						status == "Draft" and " --draft" or ""
-					)
-					local ui = require("LYRD.layers.lyrd-ui")
-					ui.toggle_external_app_terminal(command, { keep_open_on_exit = true })
+						status == "Draft" and "--draft" or "",
+					}, "Create GitHub Pull Request")()
 				end)
 			end)
 		end)

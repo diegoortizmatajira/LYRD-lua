@@ -49,8 +49,7 @@ local function script_run_task(script_path, interpreter)
 		cmd = interpreter,
 		args = { "-c", script_path },
 		cwd = cwd,
-		open_in_split = true,
-		focus = true,
+		set_interactive = true,
 	})
 end
 
