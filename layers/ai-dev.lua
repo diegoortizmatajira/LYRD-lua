@@ -59,6 +59,7 @@ local function avante_dependencies()
 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 		"HakonHarnes/img-clip.nvim",
 		"MeanderingProgrammer/render-markdown.nvim",
+		{ "ColinKennedy/mega.cmdparse", dependencies = { "ColinKennedy/mega.logging" } },
 	}
 	if L.avante_provider == ai_providers.COPILOT then
 		table.insert(result, "zbirenbaum/copilot.lua")
