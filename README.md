@@ -115,6 +115,7 @@ distribution:
 | [workspace-scratch-files.nvim](https://github.com/diegoortizmatajira/workspace-scratch-files.nvim) | `layers/lyrd-ui.lua`  | Global and per-workspace scratch file management, including migrating between scopes.         |
 | [breakpoints.nvim](https://github.com/diegoortizmatajira/breakpoints.nvim)                         | `layers/debug.lua`    | DAP breakpoint management with persistence and a picker (fork of lenincamp/breakpoints.nvim). |
 | [jupytext.nvim](https://github.com/diegoortizmatajira/jupytext.nvim)                               | `layers/repl.lua`     | Jupyter notebooks in Neovim via Jupytext (fork of GCBallesteros/jupytext.nvim).               |
+| [docker-sidebar.nvim](https://github.com/diegoortizmatajira/docker-sidebar.nvim)                   | `layers/docker.lua`   | Sidebar for browsing and managing Docker containers, images, and compose services.            |
 
 ## Contributing
 
