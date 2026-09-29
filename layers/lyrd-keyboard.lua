@@ -256,6 +256,7 @@ function L.keybindings()
 			{ "T", cmd.LYRDTestOutput },
 			{ "X", cmd.LYRDTerminal },
 			{ "b", cmd.LYRDDatabaseOutput },
+			{ "c", cmd.LYRDContainersSidebar },
 			{ "d", cmd.LYRDLSPShowDocumentDiagnosticLocList },
 			{ "e", cmd.LYRDViewFileExplorer },
 			{ "f", cmd.LYRDViewFileTree },

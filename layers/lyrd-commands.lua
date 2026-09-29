@@ -289,6 +289,7 @@ local L = {
 		LYRDDatabaseBackup = Command:new("Database: Backup", nil, icons.action.save),
 		LYRDDatabaseRestore = Command:new("Database: Restore", nil, icons.action.import),
 		LYRDContainersUI = Command:new("Running containers UI", nil, icons.other.docker),
+		LYRDContainersSidebar = Command:new("Toggles Containers sidebar", nil, icons.other.docker),
 		LYRDKubernetesUI = Command:new("Kubernetes UI", nil, icons.other.kubernetes),
 		LYRDScratchNew = Command:new("Scratch: Create new", nil, icons.file.scratch),
 		LYRDScratchDelete = Command:new("Scratch: Delete", nil, icons.action.delete),

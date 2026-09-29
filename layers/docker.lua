@@ -20,6 +20,15 @@ local declarative_layer = require("LYRD.shared.declarative_layer")
 --- @type table|LYRD.shared.setup.DeclarativeLayer
 local L = {
 	name = "Docker Containers and Compose",
+	required_plugins = {
+		{
+			"diegoortizmatajira/docker-sidebar.nvim",
+			-- dir = "/home/diegoortizmatajira/Development/contrib/docker-sidebar.nvim",
+			opts = {
+				runner = "overseer",
+			},
+		},
+	},
 	required_mason_packages = {
 		"dockerfile-language-server",
 		"docker-language-server",
@@ -451,6 +460,7 @@ function L.settings()
 	})
 	commands.implement("*", {
 		{ cmd.LYRDContainersUI, L.toggle_lazydocker },
+		{ cmd.LYRDContainersSidebar, ":DockerSidebarToggle" },
 	})
 
 	-- Registers the local Docker image completion source, scoped to
