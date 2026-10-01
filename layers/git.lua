@@ -596,7 +596,7 @@ function L.toggle_github_dashboard()
 end
 
 function L.settings()
-	commands.implement({ "DiffviewFileHistory", "DiffviewFiles" }, {
+	commands.implement({ "DiffviewFiles" }, {
 		{ cmd.LYRDBufferClose, ":DiffviewClose" },
 	})
 	commands.implement("*", {

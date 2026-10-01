@@ -8,6 +8,8 @@ local cmd = require("LYRD.layers.lyrd-commands").cmd
 ---@field allow_saving? boolean
 ---@field prevent_closing? boolean
 ---@field map_q? boolean
+---@field close_with_window? boolean
+---@field close_with_tab? boolean
 
 ---@class LYRD.layer.Buffers: LYRD.shared.setup.Module
 local L = {
@@ -25,7 +27,7 @@ local L = {
 	special_filetypes = {
 		-- You can add entries here to mark special filetypes that have a header in their
 		-- sidebar or that should close with their window (unless the value true is provided)
-		{ type_id = "DiffviewFileHistory" },
+		{ type_id = "DiffviewFileHistory", map_q = true, close_with_tab = true },
 		{ type_id = "DiffviewFiles", title = "Diff View" },
 		{ type_id = "NeogitPopup" },
 		{ type_id = "NeogitStatus" },
@@ -184,6 +186,26 @@ function L.settings()
 	})
 	-- Disable saving for special filetypes
 	for _, value in pairs(L.special_filetypes) do
+		if value.close_with_tab then
+			commands.implement(value.type_id, {
+				{
+					cmd.LYRDBufferClose,
+					function()
+						vim.cmd("tabclose")
+					end,
+				},
+			})
+		end
+		if value.close_with_window then
+			commands.implement(value.type_id, {
+				{
+					cmd.LYRDBufferClose,
+					function()
+						vim.cmd("close")
+					end,
+				},
+			})
+		end
 		if not value.allow_saving then
 			commands.implement(value.type_id, {
 				{
