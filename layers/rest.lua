@@ -4,7 +4,7 @@ local L = {
 	name = "REST Client",
 	required_plugins = {
 		{
-			"mistweaverco/kulala.nvim",
+			"dont-be-evil-company/kulala.nvim",
 			opts = {
 				default_view = "headers_body",
 			},
