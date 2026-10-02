@@ -503,6 +503,7 @@ function L.keybindings()
 			{ "d", cmd.LYRDGitViewDiff },
 			{ "D", cmd.LYRDGitCompareWithBranch },
 			{ "a", cmd.LYRDGitStageAll },
+			{ "A", cmd.LYRDGitAddCurrentFile },
 			{ "b", cmd.LYRDGitViewBlame },
 			{ "l", cmd.LYRDGitViewCurrentFileLog },
 			{ "x", cmd.LYRDGitBrowseOnWeb },

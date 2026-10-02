@@ -607,6 +607,7 @@ function L.settings()
 		{ cmd.LYRDGitPull, run_git_command({ "pull" }, "Git Pull") },
 		{ cmd.LYRDGitViewDiff, ":DiffviewOpen -- %" },
 		{ cmd.LYRDGitStageAll, run_git_command({ "add", "." }, "Stage All Changes") },
+		{ cmd.LYRDGitAddCurrentFile, ":!git add -f %" },
 		{ cmd.LYRDGitViewCurrentFileLog, ":DiffviewFileHistory %" },
 		{ cmd.LYRDGitViewLog, ":DiffviewFileHistory" },
 		{

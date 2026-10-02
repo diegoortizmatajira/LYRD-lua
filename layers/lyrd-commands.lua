@@ -129,6 +129,7 @@ local L = {
 		LYRDGitFlowReleasePublish = Command:new("Gitflow: Release publish (pull req.)", nil, icons.git.pull_request),
 		LYRDGitPull = Command:new("Git: Pull", nil, icons.git.pull),
 		LYRDGitPush = Command:new("Git: Push", nil, icons.git.push),
+		LYRDGitAddCurrentFile = Command:new("Git: Add current file (even if ignored)", nil, icons.git.stage),
 		LYRDGitStageAll = Command:new("Git: Stage all", nil, icons.git.stage_all),
 		LYRDGitStatus = Command:new("Git: Status", nil, icons.git.status),
 		LYRDGitViewBlame = Command:new("Git: View blame", nil, icons.git.blame),
