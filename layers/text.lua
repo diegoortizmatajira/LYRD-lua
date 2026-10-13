@@ -39,6 +39,31 @@ function L.settings()
 
 	commands.implement("*", {
 		{ cmd.LYRDEditTextCase, ":TextCaseOpenTelescope" },
+		{ cmd.LYRDTextWordCount, L.word_count },
+	})
+end
+
+--- Shows the number of words and characters in the current selection, the
+--- given command range, or the whole document.
+---@param opts? table Command options (as received from nvim_create_user_command)
+function L.word_count(opts)
+	local mode = vim.api.nvim_get_mode().mode
+	local words, chars, scope
+	if mode == "v" or mode == "V" or mode == "\22" then
+		local wc = vim.fn.wordcount()
+		words, chars, scope = wc.visual_words, wc.visual_chars, "Selection"
+	elseif opts and opts.range and opts.range > 0 then
+		local lines = vim.api.nvim_buf_get_lines(0, opts.line1 - 1, opts.line2, false)
+		local text = table.concat(lines, "\n")
+		words = select(2, text:gsub("%S+", ""))
+		chars = vim.fn.strchars(text)
+		scope = string.format("Lines %d-%d", opts.line1, opts.line2)
+	else
+		local wc = vim.fn.wordcount()
+		words, chars, scope = wc.words, wc.chars, "Document"
+	end
+	vim.notify(string.format("%s: %d words, %d characters", scope, words, chars), vim.log.levels.INFO, {
+		title = "Word count",
 	})
 end
 

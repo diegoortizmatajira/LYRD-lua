@@ -99,7 +99,7 @@ function L.keybindings()
 	local hop = require("hop")
 	local directions = require("hop.hint").HintDirection
 	mappings.keys({
-		{ { "n", "v" }, "<Leader>w", c("HopWord"), { desc = "Go to word" } },
+		{ { "n", "v" }, "<Leader>W", c("HopWord"), { desc = "Go to word" } },
 		{ { "n", "v" }, "gl", c("HopLine"), { desc = "Go to line" } },
 		{ { "n", "v" }, "gL", c("HopLineStart"), { desc = "Go to line" } },
 		{ { "n", "v" }, "g/", c("HopPattern"), { desc = "Go to pattern" } },

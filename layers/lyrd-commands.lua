@@ -110,6 +110,7 @@ local L = {
 		LYRDRegexTest = Command:new("Regex: Test Regular expressions", nil, icons.other.zoom, true),
 		LYRDDiagnosticLinesToggle = Command:new("Diagnostic: Toggle virtual lines", nil, icons.action.toggle_on),
 		LYRDEditTextCase = Command:new("Change text case", nil, icons.other.text_case),
+		LYRDTextWordCount = Command:new("Text: Count words", nil, icons.code.text, true),
 		LYRDGitUI = Command:new("Git UI", nil, icons.apps.git),
 		LYRDGrammarToggle = Command:new("Toggle grammar checker", nil, icons.action.toggle_on),
 		LYRDGitBrowseOnWeb = Command:new("Git: Browse line on web", nil, icons.apps.browser),

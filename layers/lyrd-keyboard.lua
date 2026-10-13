@@ -283,6 +283,7 @@ function L.keybindings()
 		{ "p", cmd.LYRDPasteFromHistory },
 		{ "t", cmd.LYRDEditTextCase, { "x" } },
 		{ "T", cmd.LYRDApplyNextTheme },
+		{ "w", cmd.LYRDTextWordCount, { "x" } },
 		{ "y", cmd.LYRDCodeQuerySelection, { "x" } },
 		{ "Y", cmd.LYRDCodeQuerySelectionAsEditable, { "x" } },
 		{ "x", cmd.LYRDCodeRunSelection, { "x" } },
