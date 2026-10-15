@@ -234,7 +234,7 @@ local function hotswap_preflight(platform_dir)
 			table.insert(
 				problems,
 				string.format(
-					"server JVM (%s) is not a JetBrains Runtime; run `Hybris: Install hotswap runtime`, then `Hybris: All`",
+					"server JVM (%s) is not a JetBrains Runtime; set $JBR_HOME to a JBRSDK 17 or run `Hybris: Install hotswap runtime`, then `Hybris: All`",
 					java_home
 				)
 			)
@@ -244,7 +244,7 @@ local function hotswap_preflight(platform_dir)
 			table.insert(
 				problems,
 				string.format(
-					"HotswapAgent not installed at %s; run `Hybris: Install hotswap runtime`, then `Hybris: All`",
+					"HotswapAgent not installed at %s; copy hotswap-agent.jar there or run `Hybris: Install hotswap runtime`, then `Hybris: All`",
 					agent
 				)
 			)

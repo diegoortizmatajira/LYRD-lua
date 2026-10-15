@@ -18,7 +18,11 @@ local M = {
 	REQUIRED_JAVA_VERSION = 17,
 }
 
+--- Optional: points at the JBRSDK 17 Hybris tasks must use (highest priority).
+local JBR_HOME_ENV = "JBR_HOME"
+
 local warned_missing = false
+local warned_jbr_home = false
 
 -- Only a JBR *SDK* counts: ant needs javac, which the plain JBR runtimes
 -- bundled with JetBrains IDEs lack.
@@ -51,8 +55,58 @@ local function without_jenv_shims(path, sep)
 	return table.concat(kept, sep)
 end
 
+-- Why $JBR_HOME can't be used as the Hybris JDK, or nil when it can.
+---@param home string
+---@return string?
+local function jbr_home_problem(home)
+	if vim.fn.executable(home .. "/bin/java") ~= 1 then
+		return "has no bin/java"
+	end
+	if not hotswap_runtime.is_jbr(home) then
+		return "is not a JetBrains Runtime"
+	end
+	local major = hotswap_runtime.java_major(home)
+	if major ~= M.REQUIRED_JAVA_VERSION then
+		return string.format("is Java %s, not %d", tostring(major or "?"), M.REQUIRED_JAVA_VERSION)
+	end
+	if vim.fn.executable(home .. "/bin/javac") ~= 1 then
+		return "has no bin/javac (a JBR runtime, not a JBRSDK)"
+	end
+	return nil
+end
+
+-- Explicit, per-machine override for when several JBR 17s are around (jenv,
+-- the install command, IDE leftovers) and ranking would pick the wrong one.
+-- An unusable value warns once and falls through to the other sources.
+---@return string?
+local function jbr_home_from_env()
+	local raw = os.getenv(JBR_HOME_ENV)
+	if not raw or raw == "" then
+		return nil
+	end
+	local home = vim.fs.normalize(raw)
+	local problem = jbr_home_problem(home)
+	if not problem then
+		return home
+	end
+	if not warned_jbr_home then
+		warned_jbr_home = true
+		vim.schedule(function()
+			vim.notify(
+				string.format("Hybris: ignoring $%s (%s): %s.", JBR_HOME_ENV, home, problem),
+				vim.log.levels.WARN
+			)
+		end)
+	end
+	return nil
+end
+
 ---@return JavaRuntime?
 function M.find_runtime()
+	local jbr_home = jbr_home_from_env()
+	if jbr_home then
+		return { name = "JavaSE-" .. M.REQUIRED_JAVA_VERSION, path = jbr_home }
+	end
 	-- A JBRSDK installed via LYRDJavaHybrisInstallHotswapRuntime is an explicit
 	-- opt-in, so it wins over whatever 17 runtime discovery would pick; that
 	-- keeps ant (and therefore the java.home baked into the server's wrapper

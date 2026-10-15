@@ -52,6 +52,25 @@ function M.is_jbr(home)
 	return false
 end
 
+-- Major Java version from <home>/release (e.g. 17), or nil if unknown.
+---@param home string
+---@return integer?
+function M.java_major(home)
+	local release = home .. "/release"
+	if vim.fn.filereadable(release) ~= 1 then
+		return nil
+	end
+	for _, line in ipairs(vim.fn.readfile(release)) do
+		local version = line:match('^JAVA_VERSION="([^"]+)"')
+		if version then
+			-- "1.8.0_x" style versions report their major after the "1."
+			local major = tonumber(version:match("^1%.(%d+)") or version:match("^(%d+)"))
+			return major
+		end
+	end
+	return nil
+end
+
 ---@param home string
 ---@return boolean
 function M.has_agent(home)

@@ -717,13 +717,16 @@ function L.healthcheck()
 	-- whatever JAVA_HOME is ambient in this session (e.g. Java 21 for jdtls
 	-- debugging).
 	local required_version = hybris_environment.REQUIRED_JAVA_VERSION
-	if hybris_environment.available() then
-		vim.health.ok(string.format("Java %d runtime found for Hybris ant build/server tasks", required_version))
+	local runtime = hybris_environment.find_runtime()
+	if runtime then
+		vim.health.ok(
+			string.format("Java %d runtime for Hybris ant build/server tasks: %s", required_version, runtime.path)
+		)
 	else
 		vim.health.warn(
 			string.format(
 				"No Java %d runtime found; Hybris ant build/server tasks need one "
-					.. "(set $JAVA%d_HOME or install via sdkman/asdf/jenv)",
+					.. "(set $JBR_HOME or $JAVA%d_HOME, or install via sdkman/asdf/jenv)",
 				required_version,
 				required_version
 			)

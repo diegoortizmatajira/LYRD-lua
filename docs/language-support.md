@@ -147,7 +147,10 @@ formatting, testing, debugging, and task workflows.
   a JetBrains Runtime SDK 17 plus HotswapAgent into a chosen directory and
   makes it the JDK for Hybris build/server tasks; the `Hybris: Hotswap server`
   task then runs the server with enhanced class redefinition, so structural
-  code changes reload without a restart.
+  code changes reload without a restart. The JDK for Hybris tasks is chosen
+  in this order: `$JBR_HOME` (optional; must be a JBRSDK 17), the runtime
+  installed by that command, then the discovered Java 17 runtimes, preferring
+  a JBRSDK.
 - Lemminx XML validation and schema association for `items.xml`, `beans.xml`,
   `extensioninfo.xml`, and Spring config files scoped to each extension.
 - Activates automatically for Java projects once a Hybris installation is
