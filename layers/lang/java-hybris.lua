@@ -3,6 +3,7 @@ local icons = require("LYRD.layers.icons")
 local Command = commands.Command
 local dap_hybris = require("LYRD.shared.dap.java-hybris")
 local declarative_layer = require("LYRD.shared.declarative_layer")
+local hotswap_runtime = require("LYRD.shared.hybris.hotswap_runtime")
 local hybris_environment = require("LYRD.shared.hybris.environment")
 local resolver = require("LYRD.shared.hybris.resolver")
 local scanner = require("LYRD.shared.hybris.scanner")
@@ -44,6 +45,11 @@ local L = {
 		-- ICON NEEDED for the next two (Type System: find/reindex).
 		LYRDJavaHybrisFindType = Command:new("Hybris: Find ItemType", nil, nil),
 		LYRDJavaHybrisReindexTypes = Command:new("Hybris: Reindex types (items.xml)", nil, nil),
+		LYRDJavaHybrisInstallHotswapRuntime = Command:new(
+			"Hybris: Install hotswap runtime (JBR 17 + HotswapAgent)",
+			nil,
+			icons.action.install
+		),
 	},
 	-- Full solution config (per-extension jars/sources + independent jars) from
 	-- the last Import/Reload/Configure-save, or empty if none applied yet.
@@ -396,6 +402,19 @@ local function find_type()
 	end)
 end
 
+local function install_hotswap_runtime()
+	vim.ui.input({
+		prompt = "Install JBR 17 + HotswapAgent into: ",
+		default = hotswap_runtime.DEFAULT_LOCATION,
+		completion = "dir",
+	}, function(location)
+		if not location or vim.trim(location) == "" then
+			return
+		end
+		hotswap_runtime.install(vim.trim(location))
+	end)
+end
+
 local function reindex_types()
 	local hybris_home = scanner.find_hybris_home()
 	if not hybris_home then
@@ -473,6 +492,7 @@ function L.settings()
 		{ L.commands.LYRDJavaHybrisAttachDebugger, attach_debugger },
 		{ L.commands.LYRDJavaHybrisFindType, find_type },
 		{ L.commands.LYRDJavaHybrisReindexTypes, reindex_types },
+		{ L.commands.LYRDJavaHybrisInstallHotswapRuntime, install_hotswap_runtime },
 	})
 	-- Register custom overseer task providers
 	local overseer = require("overseer")
@@ -512,6 +532,7 @@ function L.keybindings()
 			{ "d", L.commands.LYRDJavaHybrisAttachDebugger },
 			{ "t", L.commands.LYRDJavaHybrisFindType },
 			{ "T", L.commands.LYRDJavaHybrisReindexTypes },
+			{ "h", L.commands.LYRDJavaHybrisInstallHotswapRuntime },
 		}, L.hybris_icon),
 	})
 end

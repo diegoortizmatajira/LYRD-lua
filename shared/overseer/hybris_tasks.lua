@@ -1,3 +1,4 @@
+local hotswap_runtime = require("LYRD.shared.hybris.hotswap_runtime")
 local hybris_environment = require("LYRD.shared.hybris.environment")
 
 --- Environment variable used to locate the Hybris installation.
@@ -182,11 +183,10 @@ local function filtered_task_template(name, command, cwd, filter, opts)
 	}
 end
 
--- JVM flags that turn on enhanced class redefinition (structural hotswap:
--- new methods/fields/classes) plus HotswapAgent's framework reloading (Spring
--- beans etc.). Only a JetBrains Runtime (JBR) with HotswapAgent installed at
--- <jbr>/lib/hotswap/hotswap-agent.jar understands them.
-local HOTSWAP_JAVA_OPTIONS = "-XX:+AllowEnhancedClassRedefinition -XX:HotswapAgent=fat"
+-- Only a JetBrains Runtime (JBR) with HotswapAgent installed at
+-- <jbr>/lib/hotswap/hotswap-agent.jar understands these (see
+-- shared/hybris/hotswap_runtime.lua).
+local HOTSWAP_JAVA_OPTIONS = table.concat(hotswap_runtime.JAVA_OPTIONS, " ")
 
 -- hybrisserver.sh passes no extra args through to the JVM, and the JVM's
 -- options are baked into tomcat/conf/wrapper-debug.conf at `ant all` time, so
@@ -244,14 +244,20 @@ local function hotswap_preflight(platform_dir)
 			table.insert(
 				problems,
 				string.format(
-					"server JVM (%s) is not a JetBrains Runtime; point JAVA17_HOME at a JBR 17 and re-run `Hybris: All`",
+					"server JVM (%s) is not a JetBrains Runtime; run `Hybris: Install hotswap runtime`, then `Hybris: All`",
 					java_home
 				)
 			)
 		end
 		local agent = java_home .. "/lib/hotswap/hotswap-agent.jar"
 		if vim.fn.filereadable(agent) == 0 then
-			table.insert(problems, string.format("HotswapAgent not installed; copy hotswap-agent.jar to %s", agent))
+			table.insert(
+				problems,
+				string.format(
+					"HotswapAgent not installed at %s; run `Hybris: Install hotswap runtime`, then `Hybris: All`",
+					agent
+				)
+			)
 		end
 	end
 	return problems

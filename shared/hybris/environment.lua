@@ -9,6 +9,7 @@
 -- jenv, system JVM dirs, etc.) for a matching JDK instead of trusting the
 -- ambient environment.
 
+local hotswap_runtime = require("LYRD.shared.hybris.hotswap_runtime")
 local java_common = require("LYRD.shared.java-common")
 
 local is_windows = vim.fn.has("win32") == 1
@@ -21,6 +22,14 @@ local warned_missing = false
 
 ---@return JavaRuntime?
 function M.find_runtime()
+	-- A JBRSDK installed via LYRDJavaHybrisInstallHotswapRuntime is an explicit
+	-- opt-in, so it wins over whatever 17 runtime discovery would pick; that
+	-- keeps ant (and therefore the java.home baked into the server's wrapper
+	-- conf) on the JVM the Hotswap server task needs.
+	local hotswap_home = hotswap_runtime.installed_home()
+	if hotswap_home then
+		return { name = "JavaSE-" .. M.REQUIRED_JAVA_VERSION, path = hotswap_home }
+	end
 	for _, runtime in ipairs(java_common.get_runtimes()) do
 		if tonumber(runtime.name:match("JavaSE%-(%d+)")) == M.REQUIRED_JAVA_VERSION then
 			return runtime

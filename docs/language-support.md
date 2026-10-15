@@ -143,6 +143,11 @@ formatting, testing, debugging, and task workflows.
 - Hybris Type System support: indexes `*-items.xml` type, attribute, enum,
   and relation declarations to provide completion and go-to-definition in
   `items.xml`/ImpEx files, plus a type picker via `LYRDJavaHybrisFindType`.
+- Hotswap development server: `LYRDJavaHybrisInstallHotswapRuntime` downloads
+  a JetBrains Runtime SDK 17 plus HotswapAgent into a chosen directory and
+  makes it the JDK for Hybris build/server tasks; the `Hybris: Hotswap server`
+  task then runs the server with enhanced class redefinition, so structural
+  code changes reload without a restart.
 - Lemminx XML validation and schema association for `items.xml`, `beans.xml`,
   `extensioninfo.xml`, and Spring config files scoped to each extension.
 - Activates automatically for Java projects once a Hybris installation is
