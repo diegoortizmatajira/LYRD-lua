@@ -61,7 +61,7 @@ function M.to_jdtls_settings(resolved, workspace_root)
 			local rel_path = abs_path
 			-- Make relative to workspace_root by removing the prefix
 			if abs_path:sub(1, #workspace_root) == workspace_root then
-				rel_path = abs_path:sub(#workspace_root + 2)  -- +2 to skip the leading /
+				rel_path = abs_path:sub(#workspace_root + 2) -- +2 to skip the leading /
 			end
 			table.insert(source_paths, rel_path)
 		end

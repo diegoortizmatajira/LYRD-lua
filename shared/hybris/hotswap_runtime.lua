@@ -37,6 +37,27 @@ local function is_java_home(home)
 	return vim.fn.executable(java) == 1
 end
 
+---@param home string
+---@return boolean
+function M.is_jbr(home)
+	local release = home .. "/release"
+	if vim.fn.filereadable(release) ~= 1 then
+		return false
+	end
+	for _, line in ipairs(vim.fn.readfile(release)) do
+		if line:match("^IMPLEMENTOR=.*JetBrains") then
+			return true
+		end
+	end
+	return false
+end
+
+---@param home string
+---@return boolean
+function M.has_agent(home)
+	return vim.fn.filereadable(home .. "/lib/hotswap/hotswap-agent.jar") == 1
+end
+
 ---@return string?
 function M.installed_home()
 	local path = state_path()

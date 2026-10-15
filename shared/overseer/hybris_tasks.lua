@@ -230,17 +230,7 @@ local function hotswap_preflight(platform_dir)
 	if not java_home then
 		table.insert(problems, "tomcat/conf/wrapper-debug.conf not found; run `Hybris: All` first")
 	else
-		local is_jbr = false
-		local release = java_home .. "/release"
-		if vim.fn.filereadable(release) == 1 then
-			for _, line in ipairs(vim.fn.readfile(release)) do
-				if line:match("^IMPLEMENTOR=.*JetBrains") then
-					is_jbr = true
-					break
-				end
-			end
-		end
-		if not is_jbr then
+		if not hotswap_runtime.is_jbr(java_home) then
 			table.insert(
 				problems,
 				string.format(
