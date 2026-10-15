@@ -84,13 +84,41 @@ local function task_template(name, command, cwd, opts)
 	}
 end
 
+-- Overseer calls template builders without a pcall, so erroring out would just
+-- dump a traceback. Instead, a builder that must not launch its command returns
+-- this stand-in: it prints the problems and exits 1, so the task shows up as
+-- failed with the reason in its output (and nothing like a tmux session is
+-- left behind).
+---@param name string
+---@param problems string[]
+---@param cwd string
+---@return overseer.TaskDefinition
+local function aborted_task(name, problems, cwd)
+	vim.schedule(function()
+		vim.notify(name .. " aborted:\n" .. table.concat(problems, "\n"), vim.log.levels.ERROR)
+	end)
+	if is_windows then
+		local lines = vim.tbl_map(function(p)
+			return "echo " .. p:gsub("[%^&|<>]", "^%0")
+		end, problems)
+		return { cmd = { "cmd.exe", "/c", table.concat(lines, " & ") .. " & exit /b 1" }, cwd = cwd }
+	end
+	local cmd = { "sh", "-c", 'printf "%s\\n" "$@" >&2; exit 1', "sh" }
+	vim.list_extend(cmd, problems)
+	return { cmd = cmd, cwd = cwd }
+end
+
 -- Like task_template, but pipes the command's output through a filter so only
 -- matching lines reach the task's output buffer (e.g. the server's verbose
 -- debug-mode logging would otherwise peg Neovim's terminal redraw for hours).
----@param filter string pattern passed to grep/findstr
----@param opts? { strategy?: string } see task_template
+---@param filter string|string[] literal string(s) passed to grep/findstr; a line matching any of them is kept
+---@param opts? { strategy?: string, env?: fun(): table<string, string>, preflight?: fun(): string[] }
+---see task_template; env returns extra env vars merged over hybris_env(), and
+---preflight runs when the task is built and returns blocking problems -- if
+---any, the command is not launched (see aborted_task).
 local function filtered_task_template(name, command, cwd, filter, opts)
 	opts = opts or {}
+	local filters = type(filter) == "table" and filter or { filter }
 	---@type overseer.TemplateDefinition
 	return {
 		name = name,
@@ -104,34 +132,129 @@ local function filtered_task_template(name, command, cwd, filter, opts)
 			if params.args and #params.args > 0 then
 				vim.list_extend(parts, params.args)
 			end
+			if opts.preflight then
+				local problems = opts.preflight()
+				if #problems > 0 then
+					return aborted_task(name, problems, cwd)
+				end
+			end
+			local env = hybris_env()
+			if opts.env then
+				env = vim.tbl_extend("force", env, opts.env())
+			end
 			---@type overseer.TaskDefinition
 			local task
 			if is_windows then
 				local quoted = vim.tbl_map(function(p)
 					return string.format('"%s"', p)
 				end, parts)
+				local findstr_args = vim.tbl_map(function(f)
+					return '/C:"' .. f .. '"'
+				end, filters)
 				task = {
-					cmd = { "cmd.exe", "/c", table.concat(quoted, " ") .. ' | findstr /C:"' .. filter .. '"' },
+					cmd = {
+						"cmd.exe",
+						"/c",
+						table.concat(quoted, " ") .. " | findstr " .. table.concat(findstr_args, " "),
+					},
 					cwd = cwd,
-					env = hybris_env(),
+					env = env,
 					strategy = opts.strategy,
 				}
 			else
 				local quoted = vim.tbl_map(vim.fn.shellescape, parts)
+				local grep_args = vim.tbl_map(function(f)
+					return "-e " .. vim.fn.shellescape(f)
+				end, filters)
 				task = {
 					cmd = {
 						"sh",
 						"-c",
-						table.concat(quoted, " ") .. " | grep --line-buffered " .. vim.fn.shellescape(filter),
+						table.concat(quoted, " ") .. " | grep --line-buffered " .. table.concat(grep_args, " "),
 					},
 					cwd = cwd,
-					env = hybris_env(),
+					env = env,
 					strategy = opts.strategy,
 				}
 			end
 			return task
 		end,
 	}
+end
+
+-- JVM flags that turn on enhanced class redefinition (structural hotswap:
+-- new methods/fields/classes) plus HotswapAgent's framework reloading (Spring
+-- beans etc.). Only a JetBrains Runtime (JBR) with HotswapAgent installed at
+-- <jbr>/lib/hotswap/hotswap-agent.jar understands them.
+local HOTSWAP_JAVA_OPTIONS = "-XX:+AllowEnhancedClassRedefinition -XX:HotswapAgent=fat"
+
+-- hybrisserver.sh passes no extra args through to the JVM, and the JVM's
+-- options are baked into tomcat/conf/wrapper-debug.conf at `ant all` time, so
+-- the hotswap flags go in via JAVA_TOOL_OPTIONS (honored by every JVM) instead,
+-- appended to any ambient value.
+---@return table<string, string>
+local function hotswap_env()
+	local ambient = os.getenv("JAVA_TOOL_OPTIONS")
+	local value = (ambient and ambient ~= "") and (ambient .. " " .. HOTSWAP_JAVA_OPTIONS) or HOTSWAP_JAVA_OPTIONS
+	return { JAVA_TOOL_OPTIONS = value }
+end
+
+-- Hybris bakes the build JVM's java.home into the generated wrapper conf at
+-- `ant all` time, so that's the JVM the server actually runs on -- not
+-- whatever JAVA17_HOME currently resolves to.
+---@param platform_dir string
+---@return string?
+local function server_java_home(platform_dir)
+	local conf = platform_dir .. "/tomcat/conf/wrapper-debug.conf"
+	if vim.fn.filereadable(conf) == 0 then
+		return nil
+	end
+	for _, line in ipairs(vim.fn.readfile(conf)) do
+		local command = line:match("^%s*wrapper%.java%.command%s*=%s*(.-)%s*$")
+		if command then
+			local home = command:gsub("%.exe$", ""):gsub("[/\\]bin[/\\]java$", "")
+			return home
+		end
+	end
+	return nil
+end
+
+-- A plain JDK rejects the hotswap flags and the JVM dies on startup (with the
+-- wrapper retrying it a few times), so check the setup up front and refuse to
+-- launch instead.
+---@param platform_dir string
+---@return string[] problems empty when the server can be launched with hotswap
+local function hotswap_preflight(platform_dir)
+	local problems = {}
+	local java_home = server_java_home(platform_dir)
+	if not java_home then
+		table.insert(problems, "tomcat/conf/wrapper-debug.conf not found; run `Hybris: All` first")
+	else
+		local is_jbr = false
+		local release = java_home .. "/release"
+		if vim.fn.filereadable(release) == 1 then
+			for _, line in ipairs(vim.fn.readfile(release)) do
+				if line:match("^IMPLEMENTOR=.*JetBrains") then
+					is_jbr = true
+					break
+				end
+			end
+		end
+		if not is_jbr then
+			table.insert(
+				problems,
+				string.format(
+					"server JVM (%s) is not a JetBrains Runtime; point JAVA17_HOME at a JBR 17 and re-run `Hybris: All`",
+					java_home
+				)
+			)
+		end
+		local agent = java_home .. "/lib/hotswap/hotswap-agent.jar"
+		if vim.fn.filereadable(agent) == 0 then
+			table.insert(problems, string.format("HotswapAgent not installed; copy hotswap-agent.jar to %s", agent))
+		end
+	end
+	return problems
 end
 
 ---@param platform_dir string
@@ -188,6 +311,20 @@ return {
 				"Server startup",
 				{ strategy = "tmux" }
 			),
+			-- Debug mode (so jdtls/nvim-dap hot code replace still works when
+			-- attached) plus JBR enhanced redefinition and HotswapAgent.
+			filtered_task_template("Hybris: Hotswap server", { server, "debug" }, platform_dir, {
+				"Server startup",
+				"HOTSWAP AGENT",
+				"Could not create the Java Virtual Machine",
+				"Unrecognized VM option",
+			}, {
+				strategy = "tmux",
+				env = hotswap_env,
+				preflight = function()
+					return hotswap_preflight(platform_dir)
+				end,
+			}),
 			task_template("Hybris: All", { ant, "all" }, platform_dir),
 			task_template("Hybris: Build", { ant, "build" }, platform_dir),
 			task_template("Hybris: Clean", { ant, "clean" }, platform_dir),
