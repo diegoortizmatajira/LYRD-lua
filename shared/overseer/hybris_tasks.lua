@@ -325,6 +325,7 @@ return {
 			task_template("Hybris: Build", { ant, "build" }, platform_dir),
 			task_template("Hybris: Clean", { ant, "clean" }, platform_dir),
 			task_template("Hybris: Clean all", { ant, "clean", "all" }, platform_dir),
+			task_template("Hybris: Customize", { ant, "customize" }, platform_dir),
 			task_template("Hybris: Update system", { ant, "updatesystem" }, platform_dir),
 			task_template("Hybris: Ant (custom target)", { ant }, platform_dir),
 		})
