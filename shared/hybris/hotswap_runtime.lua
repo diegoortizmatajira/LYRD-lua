@@ -15,7 +15,19 @@ local M = {
 	-- framework reloading (Spring beans etc.), using the agent jar installed at
 	-- <jbr>/lib/hotswap/hotswap-agent.jar.
 	JAVA_OPTIONS = { "-XX:+AllowEnhancedClassRedefinition", "-XX:HotswapAgent=fatjar" },
+	-- Values for JBR's -XX:HotswapAgent. "fatjar" loads every HotswapAgent
+	-- plugin (Spring/Tomcat/resource watchers -- many file watchers on a Hybris
+	-- classpath); "disabled" keeps only JBR's enhanced class redefinition.
+	-- ("core" is omitted: it needs a hotswap-agent-core.jar that HotswapAgent
+	-- 2.x no longer publishes.)
+	AGENT_MODES = { "fatjar", "disabled" },
 }
+
+---@param mode? string one of M.AGENT_MODES (default "fatjar")
+---@return string[]
+function M.java_options(mode)
+	return { "-XX:+AllowEnhancedClassRedefinition", "-XX:HotswapAgent=" .. (mode or "fatjar") }
+end
 
 local JBR_RELEASES_URL = "https://api.github.com/repos/JetBrains/JetBrainsRuntime/releases"
 local HOTSWAP_AGENT_LATEST_URL = "https://api.github.com/repos/HotswapProjects/HotswapAgent/releases/latest"

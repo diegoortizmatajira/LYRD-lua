@@ -109,14 +109,25 @@ local function aborted_task(name, problems, cwd)
 	return { cmd = cmd, cwd = cwd }
 end
 
+-- Shell prefix lifting the soft open-files limit to the hard limit (falling
+-- back to 65536 when the hard limit is "unlimited" but the kernel caps it, as
+-- on macOS). Needed because the server inherits the tmux server's limits, not
+-- the user's shell's, and HotswapAgent's watchers exhaust the usual 1024.
+-- Best effort: the server still starts if neither raise is allowed. The
+-- effective value is echoed outside the output filter.
+local RAISE_OPEN_FILES = 'ulimit -n "$(ulimit -Hn)" 2>/dev/null || ulimit -n 65536 2>/dev/null; '
+	.. 'echo "Open files limit: $(ulimit -n)"; '
+
 -- Like task_template, but pipes the command's output through a filter so only
 -- matching lines reach the task's output buffer (e.g. the server's verbose
 -- debug-mode logging would otherwise peg Neovim's terminal redraw for hours).
 ---@param filter string|string[] literal string(s) passed to grep/findstr; a line matching any of them is kept
----@param opts? { strategy?: string, env?: fun(): table<string, string>, preflight?: fun(): string[] }
----see task_template; env returns extra env vars merged over hybris_env(), and
----preflight runs when the task is built and returns blocking problems -- if
----any, the command is not launched (see aborted_task).
+---@param opts? { strategy?: string, params?: table<string, table>, env?: fun(params: table): table<string, string>, preflight?: fun(params: table): string[], raise_open_files?: boolean }
+---see task_template; params are extra template params (beside `args`), env
+---returns extra env vars merged over hybris_env(), preflight runs when the
+---task is built and returns blocking problems -- if any, the command is not
+---launched (see aborted_task) -- and raise_open_files lifts the soft
+---open-files limit before launching (POSIX only; see RAISE_OPEN_FILES).
 local function filtered_task_template(name, command, cwd, filter, opts)
 	opts = opts or {}
 	local filters = type(filter) == "table" and filter or { filter }
@@ -124,24 +135,24 @@ local function filtered_task_template(name, command, cwd, filter, opts)
 	return {
 		name = name,
 		priority = 60,
-		params = {
+		params = vim.tbl_extend("force", {
 			---@type overseer.ListParam
 			args = { optional = true, type = "list", delimiter = " " },
-		},
+		}, opts.params or {}),
 		builder = function(params)
 			local parts = vim.deepcopy(command)
 			if params.args and #params.args > 0 then
 				vim.list_extend(parts, params.args)
 			end
 			if opts.preflight then
-				local problems = opts.preflight()
+				local problems = opts.preflight(params)
 				if #problems > 0 then
 					return aborted_task(name, problems, cwd)
 				end
 			end
 			local env = hybris_env()
 			if opts.env then
-				env = vim.tbl_extend("force", env, opts.env())
+				env = vim.tbl_extend("force", env, opts.env(params))
 			end
 			---@type overseer.TaskDefinition
 			local task
@@ -171,7 +182,10 @@ local function filtered_task_template(name, command, cwd, filter, opts)
 					cmd = {
 						"sh",
 						"-c",
-						table.concat(quoted, " ") .. " | grep --line-buffered " .. table.concat(grep_args, " "),
+						(opts.raise_open_files and RAISE_OPEN_FILES or "")
+							.. table.concat(quoted, " ")
+							.. " | grep --line-buffered "
+							.. table.concat(grep_args, " "),
 					},
 					cwd = cwd,
 					env = env,
@@ -183,19 +197,17 @@ local function filtered_task_template(name, command, cwd, filter, opts)
 	}
 end
 
--- Only a JetBrains Runtime (JBR) with HotswapAgent installed at
--- <jbr>/lib/hotswap/hotswap-agent.jar understands these (see
--- shared/hybris/hotswap_runtime.lua).
-local HOTSWAP_JAVA_OPTIONS = table.concat(hotswap_runtime.JAVA_OPTIONS, " ")
-
 -- hybrisserver.sh passes no extra args through to the JVM, and the JVM's
 -- options are baked into tomcat/conf/wrapper-debug.conf at `ant all` time, so
 -- the hotswap flags go in via JAVA_TOOL_OPTIONS (honored by every JVM) instead,
--- appended to any ambient value.
+-- appended to any ambient value. Only a JetBrains Runtime (JBR) understands
+-- them (see shared/hybris/hotswap_runtime.lua).
+---@param params table task params (params.agent: one of hotswap_runtime.AGENT_MODES)
 ---@return table<string, string>
-local function hotswap_env()
+local function hotswap_env(params)
+	local options = table.concat(hotswap_runtime.java_options(params.agent), " ")
 	local ambient = os.getenv("JAVA_TOOL_OPTIONS")
-	local value = (ambient and ambient ~= "") and (ambient .. " " .. HOTSWAP_JAVA_OPTIONS) or HOTSWAP_JAVA_OPTIONS
+	local value = (ambient and ambient ~= "") and (ambient .. " " .. options) or options
 	return { JAVA_TOOL_OPTIONS = value }
 end
 
@@ -223,8 +235,9 @@ end
 -- wrapper retrying it a few times), so check the setup up front and refuse to
 -- launch instead.
 ---@param platform_dir string
+---@param agent_mode? string one of hotswap_runtime.AGENT_MODES
 ---@return string[] problems empty when the server can be launched with hotswap
-local function hotswap_preflight(platform_dir)
+local function hotswap_preflight(platform_dir, agent_mode)
 	local problems = {}
 	local java_home = server_java_home(platform_dir)
 	if not java_home then
@@ -240,7 +253,7 @@ local function hotswap_preflight(platform_dir)
 			)
 		end
 		local agent = java_home .. "/lib/hotswap/hotswap-agent.jar"
-		if vim.fn.filereadable(agent) == 0 then
+		if agent_mode ~= "disabled" and vim.fn.filereadable(agent) == 0 then
 			table.insert(
 				problems,
 				string.format(
@@ -316,9 +329,20 @@ return {
 				"Unrecognized VM option",
 			}, {
 				strategy = "tmux",
+				params = {
+					---@type overseer.EnumParam
+					agent = {
+						type = "enum",
+						choices = hotswap_runtime.AGENT_MODES,
+						default = "fatjar",
+						desc = "fatjar: all HotswapAgent plugins (Spring bean reload); "
+							.. "disabled: JBR class redefinition only, no agent file watchers",
+					},
+				},
+				raise_open_files = true,
 				env = hotswap_env,
-				preflight = function()
-					return hotswap_preflight(platform_dir)
+				preflight = function(params)
+					return hotswap_preflight(platform_dir, params.agent)
 				end,
 			}),
 			task_template("Hybris: All", { ant, "all" }, platform_dir),
