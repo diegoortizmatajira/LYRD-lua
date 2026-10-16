@@ -334,9 +334,9 @@ return {
 					agent = {
 						type = "enum",
 						choices = hotswap_runtime.AGENT_MODES,
-						default = "fatjar",
-						desc = "fatjar: all HotswapAgent plugins (Spring bean reload); "
-							.. "disabled: JBR class redefinition only, no agent file watchers",
+						default = "disabled",
+						desc = "disabled: JBR class redefinition only, no agent file watchers; "
+							.. "fatjar: all HotswapAgent plugins (Spring bean reload; needs many file descriptors)",
 					},
 				},
 				raise_open_files = true,

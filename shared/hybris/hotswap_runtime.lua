@@ -20,13 +20,13 @@ local M = {
 	-- classpath); "disabled" keeps only JBR's enhanced class redefinition.
 	-- ("core" is omitted: it needs a hotswap-agent-core.jar that HotswapAgent
 	-- 2.x no longer publishes.)
-	AGENT_MODES = { "fatjar", "disabled" },
+	AGENT_MODES = { "disabled", "fatjar" },
 }
 
----@param mode? string one of M.AGENT_MODES (default "fatjar")
+---@param mode? string one of M.AGENT_MODES (default "disabled")
 ---@return string[]
 function M.java_options(mode)
-	return { "-XX:+AllowEnhancedClassRedefinition", "-XX:HotswapAgent=" .. (mode or "fatjar") }
+	return { "-XX:+AllowEnhancedClassRedefinition", "-XX:HotswapAgent=" .. (mode or "disabled") }
 end
 
 local JBR_RELEASES_URL = "https://api.github.com/repos/JetBrains/JetBrainsRuntime/releases"
