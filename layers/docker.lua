@@ -26,6 +26,22 @@ local L = {
 			-- dir = "/home/diegoortizmatajira/Development/contrib/docker-sidebar.nvim",
 			opts = {
 				runner = "overseer",
+				sidebar = {
+					hide_panel_on_run = {
+						start = false,
+						stop = false,
+						restart = false,
+						pause = false,
+						unpause = false,
+						remove = false,
+						logs = false,
+						exec = false,
+						up = false,
+						down = false,
+						edit = true,
+						inspect = true,
+					},
+				},
 			},
 		},
 	},
