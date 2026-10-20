@@ -8,6 +8,7 @@ local hybris_environment = require("LYRD.shared.hybris.environment")
 local resolver = require("LYRD.shared.hybris.resolver")
 local scanner = require("LYRD.shared.hybris.scanner")
 local store = require("LYRD.shared.hybris.store")
+local tests = require("LYRD.shared.hybris.tests")
 local types = require("LYRD.shared.hybris.types")
 
 -- Tracks which jdtls client IDs have already received the Hybris classpath in
@@ -45,6 +46,7 @@ local L = {
 		-- ICON NEEDED for the next two (Type System: find/reindex).
 		LYRDJavaHybrisFindType = Command:new("Hybris: Find ItemType", nil, nil),
 		LYRDJavaHybrisReindexTypes = Command:new("Hybris: Reindex types (items.xml)", nil, nil),
+		LYRDJavaHybrisRunTest = Command:new("Hybris: Run test (pick extension/class)", nil, icons.code.test),
 		LYRDJavaHybrisInstallHotswapRuntime = Command:new(
 			"Hybris: Install hotswap runtime (JBR 17 + HotswapAgent)",
 			nil,
@@ -402,6 +404,23 @@ local function find_type()
 	end)
 end
 
+local function run_test()
+	local hybris_home = scanner.find_hybris_home()
+	if not hybris_home then
+		vim.notify("Hybris: HYBRIS_HOME is not set or points to an invalid directory.", vim.log.levels.ERROR)
+		return
+	end
+	tests.pick(hybris_home, function(target)
+		if not target then
+			return
+		end
+		require("overseer").run_task({
+			name = "Hybris: Test",
+			params = { kind = "unittests", property = target.property, target = target.value },
+		})
+	end)
+end
+
 local function install_hotswap_runtime()
 	vim.ui.input({
 		prompt = "Install JBR 17 + HotswapAgent into: ",
@@ -492,6 +511,7 @@ function L.settings()
 		{ L.commands.LYRDJavaHybrisAttachDebugger, attach_debugger },
 		{ L.commands.LYRDJavaHybrisFindType, find_type },
 		{ L.commands.LYRDJavaHybrisReindexTypes, reindex_types },
+		{ L.commands.LYRDJavaHybrisRunTest, run_test },
 		{ L.commands.LYRDJavaHybrisInstallHotswapRuntime, install_hotswap_runtime },
 	})
 	-- Register custom overseer task providers
@@ -532,6 +552,7 @@ function L.keybindings()
 			{ "d", L.commands.LYRDJavaHybrisAttachDebugger },
 			{ "t", L.commands.LYRDJavaHybrisFindType },
 			{ "T", L.commands.LYRDJavaHybrisReindexTypes },
+			{ "r", L.commands.LYRDJavaHybrisRunTest },
 			{ "h", L.commands.LYRDJavaHybrisInstallHotswapRuntime },
 		}, L.hybris_icon),
 	})

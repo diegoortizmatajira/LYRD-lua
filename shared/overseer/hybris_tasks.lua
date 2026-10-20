@@ -279,6 +279,50 @@ local function resolve_ant_command(platform_dir)
 	return nil, string.format('Ant command not found. Expected "%s" or global "ant" in PATH', local_ant)
 end
 
+-- Runs ant's unittests/integrationtests for one extension or one package/class
+-- pattern. Without a target the task asks for one via the params prompt; the
+-- LYRDJavaHybrisRunTest command (shared/hybris/tests.lua) fills it in from a
+-- vim.ui.select picker instead.
+---@param ant string
+---@param platform_dir string
+---@return overseer.TemplateDefinition
+local function test_template(ant, platform_dir)
+	---@type overseer.TemplateDefinition
+	return {
+		name = "Hybris: Test",
+		priority = 60,
+		params = {
+			---@type overseer.EnumParam
+			kind = {
+				type = "enum",
+				choices = { "unittests", "integrationtests" },
+				default = "unittests",
+				desc = "ant target to run",
+			},
+			---@type overseer.EnumParam
+			property = {
+				type = "enum",
+				choices = { "extensions", "packages" },
+				default = "packages",
+				desc = "testclasses.* property the target is passed as",
+			},
+			---@type overseer.StringParam
+			target = {
+				type = "string",
+				desc = "Extension name, or package/class pattern (e.g. com.acme.core.*, com.acme.FooTest)",
+			},
+		},
+		builder = function(params)
+			---@type overseer.TaskDefinition
+			return {
+				cmd = { ant, params.kind, string.format("-Dtestclasses.%s=%s", params.property, params.target) },
+				cwd = platform_dir,
+				env = hybris_env(),
+			}
+		end,
+	}
+end
+
 ---@type overseer.TemplateFileProvider
 return {
 	name = "Hybris (SAP Commerce) tasks",
@@ -351,6 +395,7 @@ return {
 			task_template("Hybris: Clean all", { ant, "clean", "all" }, platform_dir),
 			task_template("Hybris: Customize", { ant, "customize" }, platform_dir),
 			task_template("Hybris: Update system", { ant, "updatesystem" }, platform_dir),
+			test_template(ant, platform_dir),
 			task_template("Hybris: Ant (custom target)", { ant }, platform_dir),
 		})
 	end,
