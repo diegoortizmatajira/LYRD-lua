@@ -22,9 +22,9 @@ local TEST_FILE_PATTERN = "Tests?%.java$"
 ---@return table<string, string> extension name -> root dir
 local function custom_extensions(hybris_home)
 	local roots = {}
-	local files = vim.fn.glob(hybris_home .. "/bin/custom/**/extensioninfo.xml", false, true)
-	for _, file in ipairs(files) do
-		local root = vim.fn.fnamemodify(file, ":h")
+	-- The scanner follows symlinks (bin/custom is often one); vim's ** glob doesn't.
+	for _, root in ipairs(require("LYRD.shared.hybris.scanner").find_extension_roots(hybris_home .. "/bin/custom")) do
+		local file = root .. "/extensioninfo.xml"
 		local name = table.concat(vim.fn.readfile(file), "\n"):match('<extension[^>]-%sname%s*=%s*"([^"]+)"')
 		if name then
 			roots[name] = root
