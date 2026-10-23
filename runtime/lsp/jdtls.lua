@@ -3,6 +3,7 @@ local join = require("LYRD.shared.utils").join_paths
 local jdtls = require("jdtls")
 local jdtls_install = lsp.get_pkg_path("jdtls")
 local generator = require("LYRD.shared.java-common")
+local hotswap_runtime = require("LYRD.shared.hybris.hotswap_runtime")
 
 local bundles = {}
 
@@ -86,9 +87,9 @@ end
 -- failures at a completely different layer (e.g. "Unresolved requirement:
 -- osgi.ee ... version=21" cascading into org.eclipse.jdt.core failing to
 -- fully initialize before another bundle depends on it -- a confusing,
--- hard-to-diagnose failure mode). Prefers JAVA_HOME, then the highest
--- runtime java-common.lua discovers within [MIN,MAX], and only falls back
--- to a bare "java" if nothing in range is found.
+-- hard-to-diagnose failure mode). Prefers JAVA_HOME when it is within
+-- [MIN,MAX], then the highest runtime java-common.lua discovers within
+-- [MIN,MAX], and only falls back to a bare "java" if nothing in range is found.
 --
 -- MAX exists because "newest is safest" is also false: jdtls 1.43.0's bundled
 -- OSGi stack (Apache Aries SpiFly's ASM) cannot parse class files from
@@ -106,10 +107,19 @@ local MAX_LAUNCHER_JAVA_VERSION = 21
 
 ---@return string
 local function resolve_launcher_java()
+	-- JAVA_HOME is only honored inside the supported range: a project's ambient
+	-- JAVA_HOME (e.g. Java 17 for Hybris' ant) must not pick the launcher, or
+	-- the java-debug-adapter plugin (compiled for 21) silently fails to load.
 	local java_home = os.getenv("JAVA_HOME")
 	if java_home and java_home ~= "" then
 		local candidate = join(java_home, "bin", "java")
-		if vim.fn.executable(candidate) == 1 then
+		local major = hotswap_runtime.java_major(java_home)
+		if
+			vim.fn.executable(candidate) == 1
+			and major
+			and major >= MIN_LAUNCHER_JAVA_VERSION
+			and major <= MAX_LAUNCHER_JAVA_VERSION
+		then
 			return candidate
 		end
 	end
