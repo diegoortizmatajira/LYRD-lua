@@ -214,8 +214,35 @@ function L.find_duplicates()
 	end)
 end
 
+local duplicates_ns = vim.api.nvim_create_namespace("lyrd_duplicates")
+
+--- Replaces the duplicate diagnostics with one hint per quickfix item, covering the
+--- duplicated lines. Files that aren't loaded get a (hidden) buffer so the
+--- diagnostics show up as soon as they are opened.
+--- @param items table[] quickfix items as built by `report_to_quickfix`
+local function set_duplicate_diagnostics(items)
+	vim.diagnostic.reset(duplicates_ns)
+	local by_buffer = {}
+	for _, item in ipairs(items) do
+		local bufnr = vim.fn.bufadd(item.filename)
+		by_buffer[bufnr] = by_buffer[bufnr] or {}
+		table.insert(by_buffer[bufnr], {
+			lnum = item.lnum - 1,
+			end_lnum = (item.end_lnum or item.lnum) - 1,
+			col = 0,
+			end_col = 0,
+			severity = vim.diagnostic.severity.HINT,
+			source = "jscpd",
+			message = item.text,
+		})
+	end
+	for bufnr, diagnostics in pairs(by_buffer) do
+		vim.diagnostic.set(duplicates_ns, bufnr, diagnostics)
+	end
+end
+
 --- Runs jscpd over the current working directory through overseer and loads the
---- clones into the quickfix list, showing both locations of every clone.
+--- clones into the quickfix list and the diagnostics, showing both locations of every clone.
 --- @param extra_args string[] mode specific jscpd flags
 function L.run_duplicates_scan(extra_args)
 	local opts = L.duplicates
@@ -263,6 +290,7 @@ function L.run_duplicates_scan(extra_args)
 				return
 			end
 			local items = report_to_quickfix(report, root)
+			set_duplicate_diagnostics(items)
 			if #items == 0 then
 				vim.notify("No duplicated code found", vim.log.levels.INFO)
 				return
