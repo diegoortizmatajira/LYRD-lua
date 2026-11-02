@@ -242,7 +242,7 @@ end
 -- the real path JDTLS sees for the corresponding buffers.
 ---@param base_dir string
 ---@return string[]
-local function find_extension_roots(base_dir)
+function M.find_extension_roots(base_dir)
 	local roots = {}
 	for _, ext_info in ipairs(find_extensioninfo_files(base_dir)) do
 		table.insert(roots, vim.fn.resolve(vim.fn.fnamemodify(ext_info, ":h")))
@@ -582,7 +582,7 @@ function M.scan(hybris_home, extra_patterns)
 	---@param ext_type "platform"|"custom"|"module"|"extra-pattern"
 	---@param group string?
 	local function add_extensions(base_dir, ext_type, group)
-		for _, ext_root in ipairs(find_extension_roots(base_dir)) do
+		for _, ext_root in ipairs(M.find_extension_roots(base_dir)) do
 			known_roots[vim.fn.fnamemodify(ext_root, ":p")] = true
 			local record = scan_extension(ext_root, ext_type, group, active_extensions)
 			extensions[record.name] = record

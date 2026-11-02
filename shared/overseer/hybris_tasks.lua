@@ -279,6 +279,61 @@ local function resolve_ant_command(platform_dir)
 	return nil, string.format('Ant command not found. Expected "%s" or global "ant" in PATH', local_ant)
 end
 
+-- Runs ant's unittests/integrationtests for one extension or one package/class
+-- pattern. Without a target the task asks for one via the params prompt; the
+-- LYRDJavaHybrisRunTest command (shared/hybris/tests.lua) fills it in from a
+-- vim.ui.select picker instead.
+---@param ant string
+---@param platform_dir string
+---@return overseer.TemplateDefinition
+local function test_template(ant, platform_dir)
+	---@type overseer.TemplateDefinition
+	return {
+		name = "Hybris: Test",
+		priority = 60,
+		params = {
+			---@type overseer.EnumParam
+			kind = {
+				type = "enum",
+				choices = { "unittests", "integrationtests" },
+				default = "unittests",
+				desc = "ant target to run",
+			},
+			---@type overseer.EnumParam
+			property = {
+				type = "enum",
+				choices = { "extensions", "classes" },
+				default = "classes",
+				desc = "extensions: -Dtestclasses.extensions; classes: -Dtestclasses (fully qualified class)",
+			},
+			---@type overseer.BooleanParam
+			suppress_tenant = {
+				type = "boolean",
+				default = true,
+				desc = "-Dtestclasses.suppress.junit.tenant: skip the per-test platform restart (needs `ant yunitinit` once)",
+			},
+			---@type overseer.StringParam
+			target = {
+				type = "string",
+				desc = "Extension name, or fully qualified class (e.g. sip.costco.core.FooTest)",
+			},
+		},
+		builder = function(params)
+			---@type overseer.TaskDefinition
+			local key = params.property == "extensions" and "testclasses.extensions" or "testclasses"
+			local cmd = { ant, params.kind, string.format("-D%s=%s", key, params.target) }
+			if params.suppress_tenant then
+				table.insert(cmd, "-Dtestclasses.suppress.junit.tenant=true")
+			end
+			return {
+				cmd = cmd,
+				cwd = platform_dir,
+				env = hybris_env(),
+			}
+		end,
+	}
+end
+
 ---@type overseer.TemplateFileProvider
 return {
 	name = "Hybris (SAP Commerce) tasks",
@@ -351,6 +406,8 @@ return {
 			task_template("Hybris: Clean all", { ant, "clean", "all" }, platform_dir),
 			task_template("Hybris: Customize", { ant, "customize" }, platform_dir),
 			task_template("Hybris: Update system", { ant, "updatesystem" }, platform_dir),
+			task_template("Hybris: Init JUnit tenant", { ant, "yunitinit" }, platform_dir),
+			test_template(ant, platform_dir),
 			task_template("Hybris: Ant (custom target)", { ant }, platform_dir),
 		})
 	end,
