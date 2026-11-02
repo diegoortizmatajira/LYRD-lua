@@ -24,6 +24,35 @@
                 [(string_fragment) (multiline_string_fragment)] @injection.content)))
     (#set! injection.language "sql"))
 
+; @Query("..." + "...") concatenations (up to three parts, combined into one injection)
+(annotation
+    name: (identifier) @_name
+    (#any-of? @_name "Query" "NamedQuery" "NamedNativeQuery")
+    arguments: (annotation_argument_list
+        [
+            (binary_expression
+                (string_literal
+                    (string_fragment) @injection.content))
+            (binary_expression
+                (binary_expression
+                    (string_literal
+                        (string_fragment) @injection.content)))
+            (element_value_pair
+                key: (identifier) @_key
+                (#any-of? @_key "value" "query")
+                value: [
+                    (binary_expression
+                        (string_literal
+                            (string_fragment) @injection.content))
+                    (binary_expression
+                        (binary_expression
+                            (string_literal
+                                (string_fragment) @injection.content)))
+                ])
+        ])
+    (#set! injection.language "sql")
+    (#set! injection.combined))
+
 ; em.createQuery("..."), createNamedQuery is a name lookup so it is excluded
 (method_invocation
     name: (identifier) @_method
