@@ -54,10 +54,12 @@ local L = {
 					lsp.get_pkg_path("spring-boot-tools")
 						.. "/extension/language-server/spring-boot-language-server*.jar"
 				)
+				-- Attach the server only to workspaces that depend on Spring Boot.
+				local opts = { project_filter = require("spring_boot.util").has_spring_boot_dependency }
 				if ls_path ~= "" then
-					return { ls_path = ls_path }
+					opts.ls_path = ls_path
 				end
-				return {}
+				return opts
 			end,
 		},
 	},

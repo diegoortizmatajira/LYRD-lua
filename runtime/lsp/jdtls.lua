@@ -39,10 +39,9 @@ local plug_jar_map = {
 		},
 	},
 	["java-debug-adapter"] = { dir = "server", patterns = { "*.jar" } },
-	-- Disabled: spring-boot-tools bundles fail OSGi loading (commons-lsp-extensions.jar,
-	-- xml-ls-extension.jar have broken/incompatible manifests). jdtls crashes on init.
-	-- java-debug-adapter is sufficient; can re-enable if spring-boot-tools versions improve.
-	-- ["spring-boot-tools"] = { dir = "jars", patterns = { "*.jar" } },
+	-- spring-boot-tools is not listed here: loading every jar crashes jdtls on init
+	-- (commons-lsp-extensions.jar, xml-ls-extension.jar have broken OSGi manifests).
+	-- Only the jars spring-boot.nvim whitelists are added below.
 }
 
 local function get_workspace_path()
@@ -225,6 +224,16 @@ for mason_package, config in pairs(plug_jar_map) do
 			vim.list_extend(bundles, pkg_bundle)
 		end
 	end
+end
+
+-- The Spring Boot language server reads the project classpath from jdtls through these
+-- extension jars; spring-boot.nvim filters out the ones that fail OSGi loading.
+local spring_boot_ok, spring_boot = pcall(require, "spring_boot")
+if spring_boot_ok then
+	vim.list_extend(
+		bundles,
+		spring_boot.java_extensions(join(lsp.get_pkg_path("spring-boot-tools"), "extension", "jars"))
+	)
 end
 
 -- Configures the platform-specific settings for JDTLS.
