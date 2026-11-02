@@ -141,6 +141,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDGithubPullRequestCreate`           | Create GitHub pull request                  | `<Space>ghC`                                                     | `*`                                   |
 | `LYRDGithubPullRequestList`             | List GitHub pull requests                   | `<Space>ghL`                                                     | `*`                                   |
 | `LYRDGithubReleaseCreate`               | Create GitHub release                       | `<Space>ghrc`                                                    | `*`                                   |
+| `LYRDGithubSyncFork`                    | Sync GitHub fork with upstream              | `<Space>ghs`                                                     | `*`                                   |
 | `LYRDGrammarToggle`                     | Toggle grammar checker                      | `<Leader>g`                                                      | `*`                                   |
 | `LYRDHardModeToggle`                    | Toggle hard mode                            | `<Space>uh`                                                      | `*`                                   |
 | `LYRDInsertImage`                       | Insert image                                | `<Leader>ii`                                                     | `default`                             |

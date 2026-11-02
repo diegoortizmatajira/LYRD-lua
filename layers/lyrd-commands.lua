@@ -155,6 +155,7 @@ local L = {
 		),
 		LYRDGithubReleaseCreate = Command:new("GitHub: Create release", nil, icons.git.release.open),
 		LYRDGithubDashboard = Command:new("GitHub: Dashboard", nil, icons.git.github),
+		LYRDGithubSyncFork = Command:new("GitHub: Sync fork with upstream", nil, icons.action.update),
 		LYRDGitWorkTreeList = Command:new("Git: List Worktrees", nil, icons.git.worktree),
 		LYRDGitViewGraph = Command:new("Git: View Repository Graph", nil, icons.git.branch),
 		LYRDGitPatchCreate = Command:new("Git Patch: Create from last N commits", nil, icons.git.diff),

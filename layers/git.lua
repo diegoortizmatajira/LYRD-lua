@@ -590,6 +590,16 @@ function L.create_github_release()
 	ui.toggle_external_app_terminal("gh release create")
 end
 
+--- Syncs the fork on GitHub with its upstream and then pulls the result locally.
+function L.github_sync_fork()
+	local repo = vim.fn.systemlist({ "gh", "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner" })[1]
+	if vim.v.shell_error ~= 0 or not repo or repo == "" then
+		vim.notify("Could not resolve the current GitHub repository", vim.log.levels.ERROR)
+		return
+	end
+	run_gh_command({ "repo", "sync", repo }, "GitHub Sync Fork: " .. repo)()
+end
+
 function L.toggle_github_dashboard()
 	local ui = require("LYRD.layers.lyrd-ui")
 	ui.toggle_external_app_terminal("gh dash")
@@ -658,6 +668,7 @@ function L.settings()
 		{ cmd.LYRDGithubPullRequestList, ":Octo pr list" },
 		{ cmd.LYRDGithubReleaseCreate, L.create_github_release },
 		{ cmd.LYRDGithubDashboard, L.toggle_github_dashboard },
+		{ cmd.LYRDGithubSyncFork, L.github_sync_fork },
 	})
 end
 

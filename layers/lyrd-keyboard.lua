@@ -481,6 +481,7 @@ function L.keybindings()
 					{ "c", cmd.LYRDGithubReleaseCreate },
 				}, icons.git.tag),
 				{ "d", cmd.LYRDGithubDashboard },
+				{ "s", cmd.LYRDGithubSyncFork },
 			}, icons.git.github),
 			menu_header("w", "Worktrees", {
 				{ "t", cmd.LYRDGitWorkTreeList },
