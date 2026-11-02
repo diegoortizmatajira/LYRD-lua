@@ -29,7 +29,19 @@ formatting, testing, debugging, and task workflows.
 - JDT.LS + Java debug adapter
 - Maven/Gradle support
 - JUnit/TestNG test workflows
-- Spring Boot tooling support
+- Spring Boot tooling support: the Spring Boot language server attaches only to
+  workspaces that depend on Spring Boot and completes Spring Data derived query
+  method names (`findByEmailAndStatus...`). It reports no diagnostics for invalid
+  `@Query` strings or derived method names (verified with `spring-boot-tools`
+  1.59.0)
+- Query string highlighting: `@Query`, `@NamedQuery`, `@NamedNativeQuery`,
+  `createQuery` and `createNativeQuery` strings (including text blocks and
+  `"..." + "..."` concatenations) are highlighted through a treesitter `sql`
+  injection. Native queries are real SQL. JPQL/HQL has no treesitter grammar, so
+  it is highlighted as approximate SQL: entity and field names are treated as
+  tables and columns, and JPQL-only syntax (`JOIN FETCH`, `NEW com.x.Dto(...)`,
+  `MEMBER OF`, `TYPE(...)`) may be highlighted imperfectly. There is no
+  completion or validation against the JPA entity model
 - Runtime selection via `LYRDCodeSelectEnvironment` (`:JdtSetRuntime`)
 - Hybris (SAP Commerce) project support — see
   [Hybris support](#hybris-sap-commerce-support) below
