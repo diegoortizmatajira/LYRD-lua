@@ -74,6 +74,7 @@ local L = {
 		"java",
 		"javadoc",
 		"properties",
+		"sql",
 	},
 	required_enabled_lsp_servers = {
 		"jdtls",
