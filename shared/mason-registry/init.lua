@@ -3,5 +3,6 @@ return {
 	["pascal-language-server"] = "LYRD.shared.mason-registry.pascal-language-server",
 	["pasfmt"] = "LYRD.shared.mason-registry.pasfmt",
 	["httpgenerator"] = "LYRD.shared.mason-registry.httpgenerator",
+	["jscpd"] = "LYRD.shared.mason-registry.jscpd",
 	["rgx"] = "LYRD.shared.mason-registry.rgx",
 }

@@ -53,6 +53,7 @@ descriptions, keybindings, and the filetypes where they are implemented.
 | `LYRDCodeDecode`                        | Code: Decode selection                      | `<Space>ed`                                                      | `*`                                   |
 | `LYRDCodeEditSnippet`                   | Edit snippet                                | `<Space>cse`                                                     | `*`                                   |
 | `LYRDCodeEncode`                        | Code: Encode selection                      | `<Space>ee`                                                      | `*`                                   |
+| `LYRDCodeFindDuplicates`                | Find duplicated code                        | `<Space>cD`                                                      | `*`                                   |
 | `LYRDCodeFillStructure`                 | Fill structure                              | `<Space>cf`                                                      | `go`                                  |
 | `LYRDCodeFixImports`                    | Fix imports                                 | `<Space>ci`                                                      | `go`<br>`python`                      |
 | `LYRDCodeGenerate`                      | Run Generator Tool                          | `<Space>cgx`                                                     | `go`                                  |

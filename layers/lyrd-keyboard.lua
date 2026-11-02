@@ -353,6 +353,7 @@ function L.keybindings()
 			{ "b", cmd.LYRDCodeBuildAll },
 			{ "c", cmd.LYRDCodeTooling },
 			{ "C", cmd.LYRDCodeGlobalCheck },
+			{ "D", cmd.LYRDCodeFindDuplicates },
 			{ "d", cmd.LYRDLSPClearCache },
 			{ "e", cmd.LYRDCodeSelectEnvironment },
 			{ "f", cmd.LYRDCodeFillStructure },

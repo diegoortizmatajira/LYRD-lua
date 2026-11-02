@@ -172,7 +172,7 @@ local function configure(filename)
 end
 
 --- @class TaskRequest
---- @field cmd string
+--- @field cmd string|string[]
 --- @field args string[]
 --- @field env table<string, string>?
 --- @field cwd string?
@@ -192,6 +192,7 @@ end
 
 --- Runs a task in a terminal
 --- @param opts TaskRequest
+--- @return overseer.Task
 function L.run_task(opts)
 	if opts.set_interactive then
 		opts.open_in_split = true
@@ -266,6 +267,7 @@ function L.run_task(opts)
 		end)
 	end
 	task:start()
+	return task
 end
 
 function L.plugins()

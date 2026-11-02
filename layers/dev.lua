@@ -34,6 +34,7 @@ local L = {
 	required_mason_packages = {
 		"editorconfig-checker",
 		"rgx",
+		"jscpd",
 	},
 	required_executables = {
 		"live-server",
@@ -134,6 +135,129 @@ function L.scan_for_secrets()
 	})
 end
 
+--- Options for `L.find_duplicates`. A `.jscpd.json` in the project root is still honored by jscpd itself.
+L.duplicates = {
+	min_lines = 5,
+	min_tokens = 50,
+	ignore = {
+		"**/node_modules/**",
+		"**/.git/**",
+		"**/dist/**",
+		"**/build/**",
+		"**/target/**",
+		"**/bin/platform/**",
+		"**/*.min.*",
+	},
+	--- Restrict to these jscpd formats (e.g. { "java", "lua" }); empty means all.
+	formats = {},
+}
+
+--- @param file { name: string, start?: integer, startLoc?: { line: integer } }
+local function clone_line(file)
+	return file.startLoc and file.startLoc.line or file.start or 1
+end
+
+--- Converts a jscpd JSON report into quickfix items, two per clone (one per side).
+--- @param report table
+--- @param root string
+local function report_to_quickfix(report, root)
+	local items = {}
+	for _, dup in ipairs(report.duplicates or {}) do
+		local sides = { dup.firstFile, dup.secondFile }
+		for i, file in ipairs(sides) do
+			local other = sides[3 - i]
+			local name = file.name
+			if not vim.startswith(name, "/") then
+				name = root .. "/" .. name
+			end
+			table.insert(items, {
+				filename = name,
+				lnum = clone_line(file),
+				end_lnum = file.endLoc and file.endLoc.line or file["end"],
+				text = string.format(
+					"Duplicated %d lines (%d tokens) with %s:%d",
+					dup.lines or 0,
+					dup.tokens or 0,
+					other.name,
+					clone_line(other)
+				),
+			})
+		end
+	end
+	return items
+end
+
+--- Runs jscpd over the current working directory through overseer and loads the
+--- clones into the quickfix list, showing both locations of every clone.
+function L.find_duplicates()
+	if vim.fn.executable("jscpd") == 0 then
+		vim.notify("jscpd is not installed. Please install it via Mason.", vim.log.levels.ERROR)
+		return
+	end
+	local opts = L.duplicates
+	local root = vim.fn.getcwd()
+	local output = vim.fn.tempname()
+	-- Passed as a list (no shell involved) so globs in --ignore aren't expanded by fish/zsh.
+	local cmdline = {
+		"jscpd",
+		"--reporters",
+		"json",
+		"--output",
+		output,
+		"--min-lines",
+		tostring(opts.min_lines),
+		"--min-tokens",
+		tostring(opts.min_tokens),
+	}
+	if #opts.ignore > 0 then
+		vim.list_extend(cmdline, { "--ignore", table.concat(opts.ignore, ",") })
+	end
+	if #opts.formats > 0 then
+		vim.list_extend(cmdline, { "--format", table.concat(opts.formats, ",") })
+	end
+	table.insert(cmdline, ".")
+
+	local tasks = require("LYRD.layers.tasks")
+	local task = tasks.run_task({
+		name = "Finding duplicated code with jscpd",
+		cmd = cmdline,
+		cwd = root,
+		open_in_split = false,
+	})
+	task:subscribe("on_complete", function(_, status)
+		vim.schedule(function()
+			local report_path = output .. "/jscpd-report.json"
+			if status ~= "SUCCESS" or vim.fn.filereadable(report_path) == 0 then
+				vim.notify("jscpd failed to produce a report", vim.log.levels.ERROR)
+				return
+			end
+			local ok, report = pcall(vim.json.decode, table.concat(vim.fn.readfile(report_path), "\n"))
+			vim.fn.delete(output, "rf")
+			if not ok then
+				vim.notify("jscpd report could not be parsed", vim.log.levels.ERROR)
+				return
+			end
+			local items = report_to_quickfix(report, root)
+			if #items == 0 then
+				vim.notify("No duplicated code found", vim.log.levels.INFO)
+				return
+			end
+			local total = report.statistics and report.statistics.total or {}
+			vim.fn.setqflist({}, " ", { title = "Duplicated code (jscpd)", items = items })
+			vim.cmd("copen")
+			vim.notify(
+				string.format(
+					"%d clones found, %s%% of lines duplicated",
+					#items / 2,
+					tostring(total.percentage or "?")
+				),
+				vim.log.levels.INFO
+			)
+		end)
+		return false
+	end)
+end
+
 function L.start_dev_server()
 	vim.ui.input({ prompt = "Enter port number:", default = "3000" }, function(port)
 		local current_dir = vim.fn.getcwd()
@@ -195,6 +319,7 @@ function L.settings()
 		},
 		{ cmd.LYRDScanForSecrets, L.scan_for_secrets },
 		{ cmd.LYRDRegexTest, L.regex_test },
+		{ cmd.LYRDCodeFindDuplicates, L.find_duplicates },
 	})
 end
 

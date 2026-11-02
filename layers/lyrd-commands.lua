@@ -62,6 +62,7 @@ local L = {
 		LYRDCodeDecode = Command:new("Code: Decode selection", nil, icons.action.replace_text, true),
 		LYRDCodeEncode = Command:new("Code: Encode selection", nil, icons.action.switch, true),
 		LYRDCodeFillStructure = Command:new("Code: Fill structure", nil, icons.code.outline),
+		LYRDCodeFindDuplicates = Command:new("Code: Find duplicated code", nil, icons.action.copy),
 		LYRDCodeFixImports = Command:new("Code: Fix imports", nil, icons.code.fix),
 		LYRDCodeGenerate = Command:new("Code: Run Generator Tool", nil, icons.code.generate),
 		LYRDCodeGenerateHttpFromOpenApi = Command:new(
