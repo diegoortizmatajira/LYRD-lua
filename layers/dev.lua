@@ -247,7 +247,7 @@ function L.run_duplicates_scan(extra_args)
 		name = "Finding duplicated code with jscpd",
 		cmd = cmdline,
 		cwd = root,
-		open_in_split = false,
+		silent = true,
 	})
 	task:subscribe("on_complete", function(_, status)
 		vim.schedule(function()

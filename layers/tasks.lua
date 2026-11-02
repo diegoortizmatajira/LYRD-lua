@@ -178,6 +178,7 @@ end
 --- @field cwd string?
 --- @field name string
 --- @field open_in_split boolean?
+--- @field silent boolean? Run without any task window or notification (the caller reports results itself)
 --- @field focus boolean?
 --- @field auto_close boolean?
 --- @field diagnostics_parser table?
@@ -201,6 +202,9 @@ function L.run_task(opts)
 	-- Use overseer.nvim to run the command and show output in a terminal window
 	local overseer = require("overseer")
 	local components = { "default" }
+	if opts.silent then
+		components = { "on_exit_set_status", { "on_complete_dispose", timeout = 30 } }
+	end
 	local strategy = "terminal"
 	if opts.use_tmux then
 		if vim.fn.executable("tmux") == 1 then
