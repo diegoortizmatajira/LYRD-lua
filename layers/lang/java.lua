@@ -61,6 +61,14 @@ local L = {
 				end
 				return opts
 			end,
+			config = function(_, opts)
+				local spring_boot = require("spring_boot")
+				spring_boot.setup(opts)
+				-- nvim-jdtls installs its own handler first, which returns a bare nil for
+				-- `vscode-spring-boot.ls.start` and makes jdtls log SERVER_REQUEST_HANDLER_ERROR.
+				-- The spring-boot.nvim variant answers with vim.NIL instead.
+				vim.lsp.handlers["workspace/executeClientCommand"] = spring_boot.execute_client_command
+			end,
 		},
 	},
 	required_mason_packages = {
