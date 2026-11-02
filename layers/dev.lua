@@ -150,6 +150,15 @@ L.duplicates = {
 	},
 	--- Restrict to these jscpd formats (e.g. { "java", "lua" }); empty means all.
 	formats = {},
+	--- Search kinds offered by the prompt, with the extra jscpd flags each one needs.
+	modes = {
+		{ label = "Exact copies", args = {} },
+		{
+			label = "Renamed (identifiers and literals may differ)",
+			args = { "--ignore-identifiers", "--ignore-literals" },
+		},
+		{ label = "Similar functions (structural, supported languages only)", args = { "--similarity" } },
+	},
 }
 
 --- @param file { name: string, start?: integer, startLoc?: { line: integer } }
@@ -175,9 +184,9 @@ local function report_to_quickfix(report, root)
 				lnum = clone_line(file),
 				end_lnum = file.endLoc and file.endLoc.line or file["end"],
 				text = string.format(
-					"Duplicated %d lines (%d tokens) with %s:%d",
+					"Duplicated (%s) %d lines with %s:%d",
+					dup.kind or "exact",
 					dup.lines or 0,
-					dup.tokens or 0,
 					other.name,
 					clone_line(other)
 				),
@@ -187,13 +196,28 @@ local function report_to_quickfix(report, root)
 	return items
 end
 
---- Runs jscpd over the current working directory through overseer and loads the
---- clones into the quickfix list, showing both locations of every clone.
+--- Asks which kind of duplicates to look for, then runs `run_duplicates_scan`.
 function L.find_duplicates()
 	if vim.fn.executable("jscpd") == 0 then
 		vim.notify("jscpd is not installed. Please install it via Mason.", vim.log.levels.ERROR)
 		return
 	end
+	vim.ui.select(L.duplicates.modes, {
+		prompt = "Find duplicated code:",
+		format_item = function(mode)
+			return mode.label
+		end,
+	}, function(mode)
+		if mode then
+			L.run_duplicates_scan(mode.args)
+		end
+	end)
+end
+
+--- Runs jscpd over the current working directory through overseer and loads the
+--- clones into the quickfix list, showing both locations of every clone.
+--- @param extra_args string[] mode specific jscpd flags
+function L.run_duplicates_scan(extra_args)
 	local opts = L.duplicates
 	local root = vim.fn.getcwd()
 	local output = vim.fn.tempname()
@@ -209,6 +233,7 @@ function L.find_duplicates()
 		"--min-tokens",
 		tostring(opts.min_tokens),
 	}
+	vim.list_extend(cmdline, extra_args)
 	if #opts.ignore > 0 then
 		vim.list_extend(cmdline, { "--ignore", table.concat(opts.ignore, ",") })
 	end
