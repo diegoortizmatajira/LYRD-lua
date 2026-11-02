@@ -241,6 +241,38 @@ local function set_duplicate_diagnostics(items)
 	end
 end
 
+--- Finds the window to show a duplicate in: the first regular window or, when only
+--- the home page is open, that one (quickfix would otherwise split for it).
+--- @return integer?
+local function window_for_duplicate()
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		local is_floating = vim.api.nvim_win_get_config(win).relative ~= ""
+		if not is_floating and (vim.bo[buf].buftype == "" or vim.bo[buf].filetype == "ministarter") then
+			return win
+		end
+	end
+end
+
+--- Makes <CR> in this quickfix list open the entry in `window_for_duplicate()`, the
+--- default jump splits when the only candidate window is the home page.
+local function map_open_duplicate()
+	vim.keymap.set("n", "<CR>", function()
+		local idx = vim.fn.line(".")
+		local item = vim.fn.getqflist()[idx]
+		local win = window_for_duplicate()
+		if not item or not win or vim.fn.getqflist({ title = 1 }).title ~= "Duplicated code (jscpd)" then
+			vim.api.nvim_feedkeys(vim.keycode("<CR>"), "n", false)
+			return
+		end
+		vim.fn.setqflist({}, "a", { idx = idx })
+		vim.api.nvim_set_current_win(win)
+		vim.cmd.edit(vim.fn.fnameescape(vim.fn.bufname(item.bufnr)))
+		vim.api.nvim_win_set_cursor(win, { math.max(item.lnum, 1), 0 })
+		vim.cmd("normal! zz")
+	end, { buffer = true, desc = "Open duplicate in a file window" })
+end
+
 --- Runs jscpd over the current working directory through overseer and loads the
 --- clones into the quickfix list and the diagnostics, showing both locations of every clone.
 --- @param extra_args string[] mode specific jscpd flags
@@ -298,6 +330,7 @@ function L.run_duplicates_scan(extra_args)
 			local total = report.statistics and report.statistics.total or {}
 			vim.fn.setqflist({}, " ", { title = "Duplicated code (jscpd)", items = items })
 			vim.cmd("copen")
+			map_open_duplicate()
 			vim.notify(
 				string.format(
 					"%d clones found, %s%% of lines duplicated",
