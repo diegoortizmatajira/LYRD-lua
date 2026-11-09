@@ -42,6 +42,11 @@ formatting, testing, debugging, and task workflows.
   tables and columns, and JPQL-only syntax (`JOIN FETCH`, `NEW com.x.Dto(...)`,
   `MEMBER OF`, `TYPE(...)`) may be highlighted imperfectly. There is no
   completion or validation against the JPA entity model
+- Maven annotation-processor output (`target/generated-sources/<generator>/src/*/java`,
+  for example MapStruct, Querydsl or OpenAPI generators) is exposed to JDT.LS
+  by patching each module's `.classpath` before the server starts. It only runs
+  in projects with a `pom.xml` at the root; set
+  `NVIM_JDTLS_NO_FIX_GENERATED_SOURCES=1` to disable it
 - Runtime selection via `LYRDCodeSelectEnvironment` (`:JdtSetRuntime`)
 - Debugging: a launch configuration per project main class is registered once
   JDT.LS attaches, so the debug start command lists them

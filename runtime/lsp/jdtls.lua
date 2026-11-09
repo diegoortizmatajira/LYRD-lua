@@ -258,6 +258,12 @@ local paths = {
 -- caches `require`d modules, and vim.lsp.enable("jdtls") loads this file once).
 reap_stale_jdtls(paths.workspace_path)
 
+-- Expose Maven annotation-processor output (target/generated-sources/**) to jdtls
+-- by patching the modules' .classpath files before the server imports them.
+pcall(function()
+	require("LYRD.shared.java-generated-sources").patch(vim.fn.getcwd())
+end)
+
 return {
 	cmd = {
 		resolve_launcher_java(),
