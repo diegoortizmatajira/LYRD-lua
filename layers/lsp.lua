@@ -320,6 +320,31 @@ function L.organize_imports()
 	vim.lsp.buf.code_action({ only = { "source.organizeImports" }, apply = true })
 end
 
+--- Builds a command implementation that applies the LSP code action of the given
+--- kind (e.g. "refactor.extract.variable") to the cursor or visual selection.
+--- Works with any server that publishes that kind; notifies when none is offered.
+--- @param kind string LSP code action kind.
+--- @param label string Human-readable name used in the "not available" notice.
+--- @return fun(opts?: table)
+function L.code_action_by_kind(kind, label)
+	return function(opts)
+		local params = { context = { only = { kind } }, apply = true }
+		if opts and opts.range == 2 then
+			local start_pos = vim.api.nvim_buf_get_mark(0, "<")
+			local end_pos = vim.api.nvim_buf_get_mark(0, ">")
+			params.range = { start = start_pos, ["end"] = end_pos }
+		end
+		-- Servers that offer nothing for the kind make code_action a silent no-op,
+		-- so check first to be able to tell the user why nothing happened.
+		local clients = vim.lsp.get_clients({ bufnr = 0, method = "textDocument/codeAction" })
+		if #clients == 0 then
+			vim.notify(label .. ": no language server with code actions is attached", vim.log.levels.WARN)
+			return
+		end
+		vim.lsp.buf.code_action(params)
+	end
+end
+
 --- Refreshes diagnostics from null-ls by notifying the client about an open text document.
 --- This function triggers a "textDocument/didOpen" event for the current buffer to refresh diagnostics.
 function L.refresh_null_ls_diagnostics()
@@ -647,6 +672,21 @@ function L.settings()
 		{ cmd.LYRDDiagnosticLinesToggle, toggle_diagnostic_lines },
 		{ cmd.LYRDLSPToggleLens, ":LspLensToggle" },
 		{ cmd.LYRDCodeFixImports, L.organize_imports },
+		{
+			cmd.LYRDCodeRefactorExtractVariable,
+			L.code_action_by_kind("refactor.extract.variable", "Extract variable"),
+		},
+		{
+			cmd.LYRDCodeRefactorExtractConstant,
+			L.code_action_by_kind("refactor.extract.constant", "Extract constant"),
+		},
+		{
+			cmd.LYRDCodeRefactorExtractFunction,
+			L.code_action_by_kind("refactor.extract.function", "Extract function"),
+		},
+		{ cmd.LYRDCodeRefactorExtractField, L.code_action_by_kind("refactor.extract.field", "Extract field") },
+		{ cmd.LYRDCodeRefactorInline, L.code_action_by_kind("refactor.inline", "Inline") },
+		{ cmd.LYRDCodeRefactorMove, L.code_action_by_kind("refactor.move", "Move") },
 	})
 end
 

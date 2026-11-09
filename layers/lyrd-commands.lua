@@ -81,6 +81,17 @@ local L = {
 		LYRDCodeRestorePackages = Command:new("Project: Restore packages", nil, icons.code.package),
 		LYRDCodeTooling = Command:new("Code: Language tooling", nil, icons.other.tools),
 		LYRDCodeRefactor = Command:new("Code: Refactor", nil, icons.code.refactor),
+		LYRDCodeRefactorExtractConstant = Command:new("Refactor: Extract constant", nil, icons.code.refactor, true),
+		LYRDCodeRefactorExtractField = Command:new("Refactor: Extract field", nil, icons.code.refactor, true),
+		LYRDCodeRefactorExtractFunction = Command:new(
+			"Refactor: Extract function/method",
+			nil,
+			icons.code.refactor,
+			true
+		),
+		LYRDCodeRefactorExtractVariable = Command:new("Refactor: Extract variable", nil, icons.code.refactor, true),
+		LYRDCodeRefactorInline = Command:new("Refactor: Inline", nil, icons.code.refactor, true),
+		LYRDCodeRefactorMove = Command:new("Refactor: Move", nil, icons.code.refactor, true),
 		LYRDCodeRunSelection = Command:new("Code: Run selection", nil, icons.code.run, true),
 		LYRDCodeRun = Command:new("Code: Run file", nil, icons.code.run),
 		LYRDCodeQuerySelection = Command:new("Code: Run selection as query", nil, icons.code.run, true),

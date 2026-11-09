@@ -228,10 +228,6 @@ function L.keybindings()
 			{ "p", cmd.LYRDScratchPasteFromClipboard },
 		}, icons.file.scratch, { "x" }),
 		{ "r", cmd.LYRDBufferReload },
-		menu_header("R", "Refactors", {
-			{ "f", cmd.LYRDCodeRefactor },
-			{ "n", cmd.LYRDLSPRename },
-		}, icons.code.refactor),
 		menu_header(".", function()
 			return "'" .. vim.bo.filetype .. "' specific commands"
 		end, {}, icons.filetype_icon),
@@ -346,6 +342,16 @@ function L.keybindings()
 				{ "c", cmd.LYRDCodeCreateSnippet },
 				{ "e", cmd.LYRDCodeEditSnippet },
 			}, icons.action.move, { "x" }),
+			menu_header("r", "Refactors", {
+				{ "f", cmd.LYRDCodeRefactor },
+				{ "n", cmd.LYRDLSPRename },
+				{ "v", cmd.LYRDCodeRefactorExtractVariable },
+				{ "c", cmd.LYRDCodeRefactorExtractConstant },
+				{ "m", cmd.LYRDCodeRefactorExtractFunction },
+				{ "F", cmd.LYRDCodeRefactorExtractField },
+				{ "i", cmd.LYRDCodeRefactorInline },
+				{ "M", cmd.LYRDCodeRefactorMove },
+			}, icons.code.refactor, { "x" }),
 			{ "A", cmd.LYRDLSPFindRangeCodeActions },
 			{ "B", cmd.LYRDCodeBuild },
 			{ "I", cmd.LYRDCodeImplementInterface },
@@ -360,7 +366,6 @@ function L.keybindings()
 			{ "i", cmd.LYRDCodeFixImports },
 			{ "l", cmd.LYRDDiagnosticLinesToggle },
 			{ "p", cmd.LYRDCodeRestorePackages },
-			{ "r", cmd.LYRDCodeRefactor },
 			{ "S", cmd.LYRDCodeSecrets },
 			{ "t", cmd.LYRDCodeAlternateFile },
 			{ "x", cmd.LYRDCodeRun },
