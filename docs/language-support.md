@@ -51,8 +51,8 @@ formatting, testing, debugging, and task workflows.
   `"type": "java"` and `"request": "launch"` (`mainClass`, `vmArgs`, `args`,
   `env`, `cwd`, `preLaunchTask`) are listed by the debug start command and the
   `LYRDCodeRun` picker, and are layered over the discovered main class.
-  `LYRDTasksConfigureLaunch` creates the file with a sample Java profile in
-  Maven/Gradle projects
+  `LYRDTasksConfigureLaunch` creates the file with one profile per main class
+  found by JDT.LS (an empty file when the server is not ready yet)
 - Refactors (extract variable/constant/method/field, inline, move) are offered
   through the generic `LYRDCodeRefactor*` commands, backed by JDT.LS code actions
 - Hybris (SAP Commerce) project support — see

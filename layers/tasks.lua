@@ -159,32 +159,112 @@ function L.recover_tmux_tasks()
 	recover_tmux_bundle(vim.fn.getcwd(), { silent = false })
 end
 
---- Initial launch.json content. In a Maven/Gradle project it includes a sample
---- Java profile (the Java run/debug pickers read their profiles from here).
---- @return string[]
-local function launch_json_template()
-	local is_java_project = vim.iter({ "pom.xml", "mvnw", "build.gradle", "build.gradle.kts", "gradlew" })
-		:any(function(f)
-			return vim.fn.filereadable(f) == 1
-		end)
-	if not is_java_project then
-		return { "{", '\t"version": "0.2.0",', '\t"configurations": []', "}" }
+--- @alias LYRD.LaunchConfigProvider fun(callback: fun(configs: table[]))
+
+--- @type LYRD.LaunchConfigProvider[]
+local launch_config_providers = {}
+
+--- Registers a source of launch.json entries used when the file is created.
+--- The provider must call `callback` exactly once with a (possibly empty) list
+--- of launch configurations for the current project, e.g. one per main class
+--- discovered by a language server.
+--- @param provider LYRD.LaunchConfigProvider
+function L.register_launch_config_provider(provider)
+	table.insert(launch_config_providers, provider)
+end
+
+--- Runs every provider and gathers their configurations. Providers that do not
+--- answer within the timeout are skipped so one stuck server can't block it.
+--- @param callback fun(configs: table[])
+local function collect_launch_configs(callback)
+	local pending, results, finished = #launch_config_providers, {}, false
+	local function finish()
+		if not finished then
+			finished = true
+			callback(results)
+		end
 	end
-	return {
-		"{",
-		'\t"version": "0.2.0",',
-		'\t"configurations": [',
-		"\t\t{",
-		'\t\t\t"type": "java",',
-		'\t\t\t"request": "launch",',
-		'\t\t\t"name": "Run Application",',
-		'\t\t\t"mainClass": "com.example.Application",',
-		'\t\t\t"vmArgs": "-Xmx512m",',
-		'\t\t\t"args": ""',
-		"\t\t}",
-		"\t]",
-		"}",
-	}
+	if pending == 0 then
+		return finish()
+	end
+	vim.defer_fn(finish, 10000)
+	for _, provider in ipairs(launch_config_providers) do
+		local ok = pcall(provider, function(configs)
+			if finished then
+				return
+			end
+			vim.list_extend(results, configs or {})
+			pending = pending - 1
+			if pending == 0 then
+				finish()
+			end
+		end)
+		if not ok then
+			pending = pending - 1
+			if pending == 0 then
+				finish()
+			end
+		end
+	end
+end
+
+local launch_key_order = { "type", "request", "name", "mainClass", "projectName", "vmArgs", "args" }
+
+--- Renders launch.json content, one configuration per block with a stable key order.
+--- @param configs table[]
+--- @return string[]
+local function render_launch_json(configs)
+	local lines = { "{", '\t"version": "0.2.0",' }
+	if #configs == 0 then
+		table.insert(lines, '\t"configurations": []')
+	else
+		table.insert(lines, '\t"configurations": [')
+		for i, config in ipairs(configs) do
+			local keys = vim.list_extend({}, launch_key_order)
+			local extra = vim.tbl_filter(function(k)
+				return not vim.tbl_contains(launch_key_order, k)
+			end, vim.tbl_keys(config))
+			table.sort(extra)
+			vim.list_extend(keys, extra)
+			keys = vim.tbl_filter(function(k)
+				return config[k] ~= nil
+			end, keys)
+			table.insert(lines, "\t\t{")
+			for j, key in ipairs(keys) do
+				local comma = j < #keys and "," or ""
+				table.insert(
+					lines,
+					string.format("\t\t\t%s: %s%s", vim.json.encode(key), vim.json.encode(config[key]), comma)
+				)
+			end
+			table.insert(lines, "\t\t}" .. (i < #configs and "," or ""))
+		end
+		table.insert(lines, "\t]")
+	end
+	table.insert(lines, "}")
+	return lines
+end
+
+--- Opens .vscode/launch.json. When missing, creates it first with the
+--- configurations offered by the registered providers (empty if none).
+local function configure_launch()
+	local filename = "./.vscode/launch.json"
+	if vim.fn.filereadable(filename) == 1 then
+		vim.cmd.edit(filename)
+		return
+	end
+	collect_launch_configs(function(configs)
+		vim.fn.mkdir(vim.fn.fnamemodify(filename, ":h"), "p")
+		vim.fn.writefile(render_launch_json(configs), filename)
+		vim.cmd.edit(filename)
+		if #configs == 0 and #launch_config_providers > 0 then
+			vim.notify(
+				"No launch configurations were discovered (is the language server attached and indexed?). "
+					.. "Created an empty launch.json.",
+				vim.log.levels.WARN
+			)
+		end
+	end)
 end
 
 --- Opens the given VS Code style config file, creating it first when missing.
@@ -390,7 +470,7 @@ function L.settings()
 			cmd.LYRDTasksConfigure,
 			configure("./.vscode/tasks.json", { "{", '\t"version": "2.0.0",', '\t"tasks": []', "}" }),
 		},
-		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json", launch_json_template) },
+		{ cmd.LYRDTasksConfigureLaunch, configure_launch },
 	})
 
 	-- Keep the current workspace's tmux-task bundle up to date, regardless of

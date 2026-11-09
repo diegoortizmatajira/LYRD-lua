@@ -260,7 +260,36 @@ function L.complete()
 	})
 end
 
+-- Offers one launch.json profile per main class jdtls resolves. Only the identifying
+-- fields are written: jdtls resolves classpaths and the java executable at launch.
+---@param callback fun(configs: table[])
+local function launch_config_provider(callback)
+	local ok, jdtls_dap = pcall(require, "jdtls.dap")
+	local client = vim.lsp.get_clients({ name = "jdtls" })[1]
+	local bufnr = client and next(client.attached_buffers)
+	if not (ok and bufnr) then
+		return callback({})
+	end
+	-- fetch_main_configs resolves against the current buffer's jdtls client.
+	vim.api.nvim_buf_call(bufnr, function()
+		jdtls_dap.fetch_main_configs({}, function(discovered)
+			callback(vim.tbl_map(function(config)
+				return {
+					type = "java",
+					request = "launch",
+					name = "Run " .. config.mainClass:match("([^.]+)$"),
+					mainClass = config.mainClass,
+					projectName = config.projectName,
+					vmArgs = "",
+					args = "",
+				}
+			end, discovered))
+		end)
+	end)
+end
+
 function L.settings()
+	require("LYRD.layers.tasks").register_launch_config_provider(launch_config_provider)
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 
