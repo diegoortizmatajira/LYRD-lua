@@ -59,6 +59,9 @@ LYRD is built to keep your hands on the keyboard and minimize context switching.
 - `K` hover documentation
 - `<Alt-Enter>` or `<Ctrl-.>` code actions
 - `<Ctrl-r><Ctrl-r>` rename symbol
+- `<Space>cr` refactors menu: `f` pick a refactor, `n` rename, `v` extract
+  variable, `c` extract constant, `m` extract function/method, `F` extract
+  field, `i` inline, `M` move (works on a visual selection too)
 
 ## Example loop
 

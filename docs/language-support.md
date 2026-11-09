@@ -43,6 +43,12 @@ formatting, testing, debugging, and task workflows.
   `MEMBER OF`, `TYPE(...)`) may be highlighted imperfectly. There is no
   completion or validation against the JPA entity model
 - Runtime selection via `LYRDCodeSelectEnvironment` (`:JdtSetRuntime`)
+- Debugging: a launch configuration per project main class is registered once
+  JDT.LS attaches, so the debug start command lists them
+- `LYRDCodeRun` runs a project main class (a picker is shown when there are
+  several) without attaching the debugger
+- Refactors (extract variable/constant/method/field, inline, move) are offered
+  through the generic `LYRDCodeRefactor*` commands, backed by JDT.LS code actions
 - Hybris (SAP Commerce) project support — see
   [Hybris support](#hybris-sap-commerce-support) below
 
