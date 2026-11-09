@@ -157,12 +157,85 @@ local function clean_jdtls_cache()
 	)
 end
 
+-- Discovers the project's main classes through jdtls and lets the user pick one
+-- (skipped when there is only one). `no_debug` runs it without attaching the
+-- debugger, which is what the "run" flow wants; the debug flow reuses the same
+-- picker. Output goes to the dap-ui/integrated terminal console.
+local function pick_main_class(no_debug)
+	local ok_dap, dap = pcall(require, "dap")
+	local ok_dap_java, jdtls_dap = pcall(require, "jdtls.dap")
+	if not (ok_dap and ok_dap_java) then
+		vim.notify("nvim-dap / nvim-jdtls are not available", vim.log.levels.ERROR)
+		return
+	end
+	if #vim.lsp.get_clients({ name = "jdtls", bufnr = 0 }) == 0 then
+		vim.notify("jdtls is not attached to this buffer", vim.log.levels.WARN)
+		return
+	end
+	local function launch(config)
+		config = vim.deepcopy(config)
+		config.noDebug = no_debug or nil
+		dap.run(config)
+	end
+	jdtls_dap.fetch_main_configs({}, function(configs)
+		if #configs == 0 then
+			vim.notify("No main class found in this project", vim.log.levels.WARN)
+		elseif #configs == 1 then
+			launch(configs[1])
+		else
+			vim.ui.select(configs, {
+				prompt = "Main class",
+				format_item = function(item)
+					return item.name
+				end,
+			}, function(choice)
+				if choice then
+					launch(choice)
+				end
+			end)
+		end
+	end)
+end
+
+function L.complete()
+	-- Registers dap.adapters.java and refreshes the main-class launch configs
+	-- once jdtls is up, so :DapContinue works in plain Maven/Gradle projects
+	-- (the Hybris layer only adds remote-attach configs).
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = vim.api.nvim_create_augroup("LYRDJavaDapSetup", { clear = true }),
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			if not client or client.name ~= "jdtls" then
+				return
+			end
+			local ok, jdtls_dap = pcall(require, "jdtls.dap")
+			if not ok then
+				return
+			end
+			-- The java-debug bundle loads asynchronously; wait for jdtls to be ready.
+			vim.defer_fn(function()
+				if client:is_stopped() then
+					return
+				end
+				pcall(jdtls_dap.setup_dap, { hotcodereplace = "auto" })
+				pcall(jdtls_dap.setup_dap_main_class_configs)
+			end, 2000)
+		end,
+	})
+end
+
 function L.settings()
 	local commands = require("LYRD.layers.commands")
 	local cmd = require("LYRD.layers.lyrd-commands").cmd
 
 	commands.implement("java", {
 		{ cmd.LYRDCodeBuildAll, ":JdtCompile" },
+		{
+			cmd.LYRDCodeRun,
+			function()
+				pick_main_class(true)
+			end,
+		},
 		{ cmd.LYRDCodeTooling, start_tooling },
 		{ cmd.LYRDCodeSelectEnvironment, ":JdtSetRuntime" },
 		{ cmd.LYRDLSPClearCache, clean_jdtls_cache },
