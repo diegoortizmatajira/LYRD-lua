@@ -159,13 +159,44 @@ function L.recover_tmux_tasks()
 	recover_tmux_bundle(vim.fn.getcwd(), { silent = false })
 end
 
-local function configure(filename)
+--- Initial launch.json content. In a Maven/Gradle project it includes a sample
+--- Java profile (the Java run/debug pickers read their profiles from here).
+--- @return string[]
+local function launch_json_template()
+	local is_java_project = vim.iter({ "pom.xml", "mvnw", "build.gradle", "build.gradle.kts", "gradlew" })
+		:any(function(f)
+			return vim.fn.filereadable(f) == 1
+		end)
+	if not is_java_project then
+		return { "{", '\t"version": "0.2.0",', '\t"configurations": []', "}" }
+	end
+	return {
+		"{",
+		'\t"version": "0.2.0",',
+		'\t"configurations": [',
+		"\t\t{",
+		'\t\t\t"type": "java",',
+		'\t\t\t"request": "launch",',
+		'\t\t\t"name": "Run Application",',
+		'\t\t\t"mainClass": "com.example.Application",',
+		'\t\t\t"vmArgs": "-Xmx512m",',
+		'\t\t\t"args": ""',
+		"\t\t}",
+		"\t]",
+		"}",
+	}
+end
+
+--- Opens the given VS Code style config file, creating it first when missing.
+--- @param filename string
+--- @param template? string[]|fun():string[] Initial content for a newly created file.
+local function configure(filename, template)
 	return function()
 		-- check if the filename path exists, or create it otherwise, then open it
 		if vim.fn.filereadable(filename) == 0 then
 			vim.fn.mkdir(vim.fn.fnamemodify(filename, ":h"), "p")
-			-- Create an empty file if it doesn't exist
-			vim.fn.writefile({}, filename)
+			local content = type(template) == "function" and template() or template
+			vim.fn.writefile(content or {}, filename)
 		end
 		vim.cmd.edit(filename)
 	end
@@ -355,8 +386,11 @@ function L.settings()
 	commands.implement("*", {
 		{ cmd.LYRDTasksToggle, ":OverseerToggle" },
 		{ cmd.LYRDTasksRun, ":OverseerRun" },
-		{ cmd.LYRDTasksConfigure, configure("./.vscode/tasks.json") },
-		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json") },
+		{
+			cmd.LYRDTasksConfigure,
+			configure("./.vscode/tasks.json", { "{", '\t"version": "2.0.0",', '\t"tasks": []', "}" }),
+		},
+		{ cmd.LYRDTasksConfigureLaunch, configure("./.vscode/launch.json", launch_json_template) },
 	})
 
 	-- Keep the current workspace's tmux-task bundle up to date, regardless of

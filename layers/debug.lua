@@ -16,6 +16,11 @@ function L.plugins()
 			config = function()
 				local dap = require("dap")
 				local dapui = require("dapui")
+				-- overseer is configured with `dap = false` so it doesn't force-load nvim-dap;
+				-- enable preLaunchTask/postDebugTask support now that dap is loaded.
+				pcall(function()
+					require("overseer").enable_dap()
+				end)
 				dap.set_log_level("info")
 				dap.listeners.before.attach.dapui_config = function()
 					dapui.open()

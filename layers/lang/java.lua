@@ -157,6 +157,41 @@ local function clean_jdtls_cache()
 	)
 end
 
+-- Combines the main classes discovered by jdtls with the Java launch profiles
+-- from .vscode/launch.json (the single source of run/debug profiles). A profile
+-- naming a discovered `mainClass` is layered over the discovered config, so it
+-- inherits the resolved classpath/java executable and only overrides what the
+-- profile sets (vmArgs, args, env, cwd, preLaunchTask...). Profiles without a
+-- known `mainClass` are kept as-is; jdtls resolves them when launching.
+---@param dap table
+---@param discovered table[]
+---@return table[]
+local function merge_launch_json_profiles(dap, discovered)
+	local provider = dap.providers and dap.providers.configs["dap.launch.json"]
+	local profiles = provider and provider() or {}
+	local by_main_class = {}
+	for _, config in ipairs(discovered) do
+		by_main_class[config.mainClass] = config
+	end
+
+	local result, covered = {}, {}
+	for _, profile in ipairs(profiles) do
+		if profile.type == "java" and profile.request == "launch" then
+			local base = profile.mainClass and by_main_class[profile.mainClass]
+			if base then
+				covered[profile.mainClass] = true
+			end
+			table.insert(result, vim.tbl_extend("force", base or {}, profile))
+		end
+	end
+	for _, config in ipairs(discovered) do
+		if not covered[config.mainClass] then
+			table.insert(result, config)
+		end
+	end
+	return result
+end
+
 -- Discovers the project's main classes through jdtls and lets the user pick one
 -- (skipped when there is only one). `no_debug` runs it without attaching the
 -- debugger, which is what the "run" flow wants; the debug flow reuses the same
@@ -177,14 +212,15 @@ local function pick_main_class(no_debug)
 		config.noDebug = no_debug or nil
 		dap.run(config)
 	end
-	jdtls_dap.fetch_main_configs({}, function(configs)
+	jdtls_dap.fetch_main_configs({}, function(discovered)
+		local configs = merge_launch_json_profiles(dap, discovered)
 		if #configs == 0 then
 			vim.notify("No main class found in this project", vim.log.levels.WARN)
 		elseif #configs == 1 then
 			launch(configs[1])
 		else
 			vim.ui.select(configs, {
-				prompt = "Main class",
+				prompt = "Main class / profile",
 				format_item = function(item)
 					return item.name
 				end,

@@ -47,6 +47,12 @@ formatting, testing, debugging, and task workflows.
   JDT.LS attaches, so the debug start command lists them
 - `LYRDCodeRun` runs a project main class (a picker is shown when there are
   several) without attaching the debugger
+- Run/debug profiles live in `.vscode/launch.json`: entries with
+  `"type": "java"` and `"request": "launch"` (`mainClass`, `vmArgs`, `args`,
+  `env`, `cwd`, `preLaunchTask`) are listed by the debug start command and the
+  `LYRDCodeRun` picker, and are layered over the discovered main class.
+  `LYRDTasksConfigureLaunch` creates the file with a sample Java profile in
+  Maven/Gradle projects
 - Refactors (extract variable/constant/method/field, inline, move) are offered
   through the generic `LYRDCodeRefactor*` commands, backed by JDT.LS code actions
 - Hybris (SAP Commerce) project support — see
